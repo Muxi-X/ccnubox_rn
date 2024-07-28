@@ -1,4 +1,4 @@
-import { SingleTabType } from '@/app/(tabs)/types';
+import { SingleTabType } from '@/types/tabBarTypes';
 
 export interface TabBarItemProps extends SingleTabType {
   /**
