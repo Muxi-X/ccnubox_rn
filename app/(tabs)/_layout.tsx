@@ -1,37 +1,31 @@
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { Tabs } from 'expo-router';
-import React from 'react';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { tabConfig } from '@/constants/tabBar';
+
+import { SingleTabType } from './types';
+import TabBar from '../../components/navi/index';
+import { keyGenerator } from '../../utils/autoKey';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+  const render = (configs: SingleTabType[]) =>
+    configs.map(config => {
+      const { name, title, iconName } = config;
+      return (
+        <Tabs.Screen
+          name={name}
+          key={keyGenerator.next().value as number}
+          options={{
+            title: title || name,
+            // tabBarIcon: ({ color }) => (
+            //   // @ts-ignore 并未提供 iconName 的 type， 只能用 string 代替
+            //   <AntDesign size={28} name={iconName ?? 'home'} color={color} />
+            // ),
+          }}
+        />
+      );
+    });
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <Tabs tabBar={props => <TabBar {...props} />}>{render(tabConfig)}</Tabs>
   );
 }
