@@ -3,6 +3,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withSpring,
 } from 'react-native-reanimated';
 
@@ -15,13 +16,14 @@ const AnimatedScale = ({
   outputRange = [0.8, 1.2],
   duration = 350,
   trigger = true,
+  delay = 0,
   children,
   style,
   ...restProps
 }: ScaleAnimationProps) => {
   const scale = useSharedValue(0);
   useEffect(() => {
-    scale.value = withSpring(trigger ? 1 : 0, { duration: duration });
+    scale.value = withDelay(delay, withSpring(trigger ? 1 : 0, { duration }));
   }, [scale, duration, trigger]);
   const ScaleAnimation = useAnimatedStyle(() => {
     const scaleValue = interpolate(scale.value, [0, 1], outputRange);

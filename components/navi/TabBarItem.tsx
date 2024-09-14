@@ -23,17 +23,12 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
           // @ts-ignore
           name={iconName}
           color={color}
-          className="flex justify-center"
+          style={styles.icon}
         ></TabBarIcon>
       </AnimatedScale>
 
-      <AnimatedOpacity trigger={isFocused}>
-        <Text
-          style={{ color: color, marginTop: 2 }}
-          className={'flex justify-center text-center'}
-        >
-          {label}
-        </Text>
+      <AnimatedOpacity trigger toVisible={!isFocused}>
+        <Text style={[{ color: color }, styles.text]}>{label}</Text>
       </AnimatedOpacity>
     </Pressable>
   );
@@ -47,5 +42,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 4,
+  },
+  icon: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  text: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
   },
 });

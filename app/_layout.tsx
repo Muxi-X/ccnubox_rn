@@ -1,5 +1,6 @@
+import { Toast, Provider } from '@ant-design/react-native';
+import { loadAsync } from 'expo-font';
 import { Stack } from 'expo-router';
-import '../global.css';
 import { useLayoutEffect } from 'react';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -7,11 +8,27 @@ import useVisualScheme from '@/store/visualScheme';
 export default function RootLayout() {
   const initStyles = useVisualScheme(state => state.initStyles);
   useLayoutEffect(() => {
+    // 引入所有样式
     initStyles();
+    // 加载字体
+    loadAsync({
+      antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
+    }).then(() => {
+      console.log('icon loaded');
+    });
+    // 配置Toast
+    Toast.config({ mask: true, stackable: true });
   }, []);
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    /** 没有 Provider，Toast 和 Modal 会失效，误删 */
+    <Provider>
+      <Stack>
+        <Stack.Screen
+          name="login"
+          options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </Provider>
   );
 }

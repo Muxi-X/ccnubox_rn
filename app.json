@@ -21,6 +21,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "googleServicesFile": "./secret/google-services.json",
       "package": "com.kbkbk.ccnu_coursetable"
     },
     "web": {
@@ -42,9 +43,7 @@
         "projectId": "590abf04-02b7-4b62-be4c-b59a4d4e1b0a"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/590abf04-02b7-4b62-be4c-b59a4d4e1b0a"
     }

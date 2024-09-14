@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactChildren, ReactElement, ReactNode } from 'react';
 import { ViewProps } from 'react-native';
 
 export interface BaseAnimatedProps extends ViewProps {
@@ -9,13 +9,29 @@ export interface BaseAnimatedProps extends ViewProps {
   /**
    * 应用动画的组件
    */
-  children: ReactElement;
+  children: ReactNode;
   /**
    * 动画时长
    */
   duration?: number;
+  /**
+   * 延迟
+   */
+  delay?: number;
 }
 
 export interface ScaleAnimationProps extends BaseAnimatedProps {
   outputRange?: [number, number];
+}
+
+export interface OpacityAnimationProps extends BaseAnimatedProps {
+  /** 由不可见变可见或是相反 */
+  toVisible?: boolean;
+}
+
+export interface FadeAnimationProps extends BaseAnimatedProps {
+  /** 动画距离 */
+  distance?: number;
+  direction?: 'vertical' | 'horizontal';
+  toVisible?: boolean;
 }
