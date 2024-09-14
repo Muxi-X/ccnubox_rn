@@ -8,8 +8,6 @@ import { TABBAR_COLOR, tabConfig } from '../../constants/tabBar';
 const TabBar: FC<BottomTabBarProps> = props => {
   const { state, descriptors, navigation } = props;
   return (
-    // nativewind v4 的bug，不能控制tabBar，因此只能用style
-    // issue: https://github.com/nativewind/nativewind/issues/682
     <View style={styles.tabbar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -60,10 +58,6 @@ const TabBar: FC<BottomTabBarProps> = props => {
 
 export default TabBar;
 
-/**
- * @description nativewind v4 的bug，不能控制tabBar，因此只能用style
- * @description issue: https://github.com/nativewind/nativewind/issues/682
- */
 const styles = StyleSheet.create({
   tabbar: {
     position: 'absolute',

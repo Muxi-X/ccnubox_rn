@@ -3,12 +3,13 @@ import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
 export type layoutStyleType = 'android' | 'ios';
 /** 可配置style名 */
 export type ConfigurableThemeNames =
-  | 'default_text_style'
-  | 'default_border_color'
+  | 'text_style'
+  | 'border_style'
+  | 'button_style'
   | 'background';
 /** 完整themem应有配置类型 */
 export type ThemeType = {
-  [key in layoutStyleType]: SubThemeType;
+  [key in layoutStyleType]: Partial<SubThemeType>;
 };
 /** 单个布局配置类型 */
 export type SubThemeType = {

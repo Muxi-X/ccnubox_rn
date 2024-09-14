@@ -24,20 +24,22 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       newStyles.delete(name);
       return { ...state, styles: newStyles };
     }),
-  changeColorStyle: type =>
+  // 更改颜色
+  changeColorStyle: styleName =>
     set(state => {
-      const { styles, name, currentStyle } = state;
-      const currentTheme = styles.get(name);
+      const { styles, type, currentStyle } = state;
+      const currentTheme = styles.get(styleName);
       return {
         ...state,
         currentStyle: currentTheme ? currentTheme[type] : currentStyle,
       };
     }),
+  // 更改布局
   changeLayoutStyle: type =>
     set(state => {
       const { name, styles, currentStyle } = state;
       const newStyle = styles.get(name)![type];
-      return { ...state, currentStyle: newStyle ?? currentStyle };
+      return { ...state, currentStyle: newStyle ?? currentStyle, type };
     }),
 }));
 
