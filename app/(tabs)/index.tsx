@@ -1,6 +1,6 @@
 import { Button } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import { FC, memo } from 'react';
+import React, { FC, memo } from 'react';
 import { Text, View } from 'react-native';
 
 import useNotification from '@/hooks/useNotification';
@@ -13,8 +13,15 @@ const IndexPage: FC = () => {
       <Text>Hello Index😎</Text>
       <Button
         onPress={() => {
-          // registerNotification().then(null, null);
           router.push('/login');
+        }}
+      >
+        前往登陆页面测试
+      </Button>
+      <Button
+        loading={!notification}
+        onPress={() => {
+          registerNotification().then(null, null);
         }}
       >
         通知测试

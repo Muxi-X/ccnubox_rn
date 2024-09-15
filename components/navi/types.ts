@@ -8,10 +8,6 @@ export interface TabBarItemProps extends SingleTabType {
   onPress?: (e: any) => void;
   onLongPress?: (e: any) => void;
   /**
-   * 按钮颜色
-   */
-  color?: string;
-  /**
    * 展示文本
    */
   label?: string;

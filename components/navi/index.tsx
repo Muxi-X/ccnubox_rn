@@ -2,13 +2,18 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 
+import { tabConfig } from '@/constants/tabBar';
+import useVisualScheme from '@/store/visualScheme';
+
 import TabBarItem from './TabBarItem';
-import { TABBAR_COLOR, tabConfig } from '../../constants/tabBar';
 
 const TabBar: FC<BottomTabBarProps> = props => {
   const { state, descriptors, navigation } = props;
+  const navbarStyle = useVisualScheme(
+    state => state.currentStyle?.navbar_style
+  );
   return (
-    <View style={styles.tabbar}>
+    <View style={[styles.tabbar, navbarStyle]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const iconName = tabConfig[index]?.iconName;
@@ -47,7 +52,6 @@ const TabBar: FC<BottomTabBarProps> = props => {
             isFocused={isFocused}
             name={route.name}
             iconName={iconName}
-            color={isFocused ? TABBAR_COLOR.ACTIVE : TABBAR_COLOR.PRIMARY}
             label={label as string}
           />
         );

@@ -2,11 +2,9 @@ import { SingleTabType } from '@/types/tabBarTypes';
 /**
  * @enum tabBar颜色
  * @description PRIMARY 为默认
- * @description ACTIVE 为选中
  */
 export const TABBAR_COLOR = {
   PRIMARY: '#a0a0a0',
-  ACTIVE: '#ffbb40',
 };
 /** 导航栏配置 */
 export const tabConfig: SingleTabType[] = [
