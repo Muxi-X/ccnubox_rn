@@ -21,7 +21,7 @@ export default function RootLayout() {
     Toast.config({ mask: false, stackable: true });
     // 获取更新
     fetchUpdates().then(null, null);
-  }, []);
+  }, [initStyles]);
   return (
     /** 没有 Provider，Toast 和 Modal 会失效，误删 */
     <Provider>

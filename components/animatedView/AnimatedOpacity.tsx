@@ -31,7 +31,7 @@ const AnimatedOpacity = ({
         })
       );
     }
-  }, [sharedOpacity, duration, trigger, toVisible]);
+  }, [sharedOpacity, duration, trigger, toVisible, delay]);
   const opacityStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
       sharedOpacity.value,

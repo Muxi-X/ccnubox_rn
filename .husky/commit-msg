@@ -1,1 +1,1 @@
-pnpx --no-install commitlint --edit $1
+pnpx commitlint --edit $1
