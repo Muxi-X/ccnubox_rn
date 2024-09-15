@@ -6,7 +6,8 @@ export type ConfigurableThemeNames =
   | 'text_style'
   | 'border_style'
   | 'button_style'
-  | 'background';
+  | 'navbar_style'
+  | 'navbar_icon_style';
 /** 完整themem应有配置类型 */
 export type ThemeType = {
   [key in layoutStyleType]: Partial<SubThemeType>;

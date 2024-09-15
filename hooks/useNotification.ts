@@ -34,7 +34,9 @@ export default function useNotification(
       body: '不知道不知道不知道',
       data: { data: '123435' },
     },
-    trigger: {},
+    trigger: {
+      seconds: 5, // Trigger the notification in 24 hours
+    },
   }
 ) {
   const [expoPushToken, setExpoPushToken] = useState('');

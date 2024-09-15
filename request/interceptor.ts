@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { router } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 
 const axiosInstance = axios.create({
-  baseURL: '你的API基础路径',
+  baseURL: 'http://localhost:8080',
 });
 
 function getStoredToken() {
@@ -39,6 +40,7 @@ axiosInstance.interceptors.response.use(
         return response;
       case 401:
         console.error('token过期');
+        router.navigate('/login');
         break;
       case 403:
         console.error('无权限');
