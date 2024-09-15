@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { styleMap } from '@/styles';
+import { SubThemeType } from '@/styles/types';
 
 import { visualSchemeType } from './types';
 
@@ -14,7 +15,7 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       const newStyles = new Map(Object.entries(styleMap));
       return {
         ...state,
-        currentStyle: styleMap[state.name][state.type],
+        currentStyle: styleMap[state.name][state.type] as SubThemeType,
         styles: newStyles,
       };
     }),
@@ -31,7 +32,9 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       const currentTheme = styles.get(styleName);
       return {
         ...state,
-        currentStyle: currentTheme ? currentTheme[type] : currentStyle,
+        currentStyle: (currentTheme
+          ? currentTheme[type]
+          : currentStyle) as SubThemeType,
       };
     }),
   // 更改布局
@@ -39,7 +42,11 @@ const useVisualScheme = create<visualSchemeType>(set => ({
     set(state => {
       const { name, styles, currentStyle } = state;
       const newStyle = styles.get(name)![type];
-      return { ...state, currentStyle: newStyle ?? currentStyle, type };
+      return {
+        ...state,
+        currentStyle: (newStyle ?? currentStyle) as SubThemeType,
+        type,
+      };
     }),
 }));
 
