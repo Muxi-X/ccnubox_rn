@@ -43,7 +43,7 @@ const AnimatedFade = ({
         })
       );
     }
-  }, [duration, trigger, distance, toVisible]);
+  }, [duration, trigger, distance, toVisible, delay]);
   const FadeAnimation = useAnimatedStyle(() => {
     const shiftValue = interpolate(
       posShift.value,

@@ -18,7 +18,6 @@ import Divider from '@/components/divider';
 import { useKeyboardShow } from '@/hooks/useKeyboardShow';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
-import axiosInstance from '@/request/interceptor';
 
 const Login: FC = () => {
   // 监听键盘弹起，避免元素遮挡

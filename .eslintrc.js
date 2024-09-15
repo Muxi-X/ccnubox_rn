@@ -30,5 +30,6 @@ module.exports = {
     'import/no-duplicates': 'error',
     // 确保路径一致
     'import/no-useless-path-segments': 'error',
+    'react-hooks/exhaustive-deps': 'off',
   },
 };

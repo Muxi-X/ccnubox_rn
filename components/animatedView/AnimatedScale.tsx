@@ -24,7 +24,7 @@ const AnimatedScale = ({
   const scale = useSharedValue(0);
   useEffect(() => {
     scale.value = withDelay(delay, withSpring(trigger ? 1 : 0, { duration }));
-  }, [scale, duration, trigger]);
+  }, [scale, duration, trigger, delay]);
   const ScaleAnimation = useAnimatedStyle(() => {
     const scaleValue = interpolate(scale.value, [0, 1], outputRange);
     const top = interpolate(scale.value, [0, 1], [0, 8]);
