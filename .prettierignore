@@ -1,0 +1,9 @@
+secret
+assets
+.expo
+.husky
+.vscode
+dist
+package.json
+pnpm-lock.yaml
+node_modules

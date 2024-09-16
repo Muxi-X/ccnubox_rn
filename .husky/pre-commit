@@ -1,1 +1,2 @@
 eslint --fix .
+prettier --write "**/*.{ts,tsx,js,jsx}"
