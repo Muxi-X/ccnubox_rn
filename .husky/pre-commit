@@ -1,4 +1,13 @@
+start_time=$(date +%s)
+
 eslint --fix .
-echo "\033[32m✅ Eslint检查通过\033[0m"
-prettier --write "**/*.{ts,tsx,js,jsx}" --log-level silent
-echo "\033[32m✅ Prettier格式化完成\033[0m"
+
+eslint_end_time=$(date +%s)
+echo -e "\033[32m✅ Eslint检查通过 (耗时 $((eslint_end_time - start_time)) 秒)\033[0m"
+
+prettier_start_time=$(date +%s)
+
+prettier --write "**/*.{ts,tsx,js,jsx}" --loglevel silent
+
+prettier_end_time=$(date +%s)
+echo -e "\033[32m✅ Prettier格式化完成 (耗时 $((prettier_end_time - prettier_start_time)) 秒)\033[0m"
