@@ -1,4 +1,4 @@
 eslint --fix .
-echo -e "\033[32m✅Eslint检查通过\033[0m"
+echo "\033[32m✅ Eslint检查通过\033[0m"
 prettier --write "**/*.{ts,tsx,js,jsx}" --log-level silent
-echo -e "\033[32m✅Prettier格式化完成\033[0m"
+echo "\033[32m✅ Prettier格式化完成\033[0m"
