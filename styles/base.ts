@@ -12,7 +12,7 @@ const baseStyle: SubThemeType = {
   },
   button_style: {
     backgroundColor: '#7B71F1',
-    color: 'white',
+    color: '#fff',
     borderColor: '#7B71F1',
   },
 };

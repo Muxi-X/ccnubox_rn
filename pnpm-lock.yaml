@@ -41,6 +41,9 @@ dependencies:
   expo-gl:
     specifier: ^14.0.2
     version: 14.0.2(expo@51.0.20)
+  expo-insights:
+    specifier: ~0.7.0
+    version: 0.7.0(expo@51.0.20)
   expo-linear-gradient:
     specifier: ~13.0.2
     version: 13.0.2(expo@51.0.20)
@@ -84,7 +87,7 @@ dependencies:
     specifier: ^2.2.1
     version: 2.2.1(react-native@0.74.3)(react@18.2.0)
   react-native-gesture-handler:
-    specifier: ~2.16.1
+    specifier: ~2.16.2
     version: 2.16.2(react-native@0.74.3)(react@18.2.0)
   react-native-reanimated:
     specifier: ~3.10.1
@@ -7274,6 +7277,15 @@ packages:
       invariant: 2.2.4
     dev: false
 
+  /expo-insights@0.7.0(expo@51.0.20):
+    resolution: {integrity: sha512-GC8WpaynF8QB+GoOfq1kBNeD1UICHvN2ek3KMmIIs1Iho1y3fwwwgLDeGCpOsVKQsNaX6viDVPCedj4V2SD4lA==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 51.0.20(@babel/core@7.24.7)(@babel/preset-env@7.24.8)
+      expo-eas-client: 0.12.0
+    dev: false
+
   /expo-json-utils@0.13.1:
     resolution: {integrity: sha512-mlfaSArGVb+oJmUcR22jEONlgPp0wj4iNIHfQ2je9Q8WTOqMc0Ws9tUciz3JdJnhffdHqo/k8fpvf0IRmN5HPA==}
     dev: false
@@ -7922,7 +7934,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
+    deprecated: Upgrade to fsevents v2 to mitigate potential security issues
     requiresBuild: true
     dependencies:
       bindings: 1.5.0

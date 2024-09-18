@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 /**
  * 分割线
@@ -51,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Divider;
+export default memo(Divider);

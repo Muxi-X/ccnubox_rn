@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -77,4 +77,4 @@ const AnimatedFade = ({
   );
 };
 
-export default AnimatedFade;
+export default memo(AnimatedFade);

@@ -1,24 +1,25 @@
 {
   "expo": {
     "name": "ccnu_coursetable",
-    "slug": "ccnu_coursetable",
+    "slug": "ccnucoursetable",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/mx-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/mx-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "release-20240724"
+      "bundleIdentifier": "release-20240916",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/mx-logo.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -30,7 +31,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/mx-logo.png"
     },
     "plugins": [
       "expo-router"
@@ -43,14 +44,15 @@
         "origin": false
       },
       "eas": {
-        "projectId": "590abf04-02b7-4b62-be4c-b59a4d4e1b0a"
+        "projectId": "d6863b18-d443-4651-b836-5129afd64edc"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/590abf04-02b7-4b62-be4c-b59a4d4e1b0a"
-    }
+      "url": "https://u.expo.dev/d6863b18-d443-4651-b836-5129afd64edc"
+    },
+    "owner": "muxi_fe"
   }
 }

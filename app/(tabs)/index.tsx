@@ -13,7 +13,7 @@ const IndexPage: FC = () => {
       <Text>Hello Index😎</Text>
       <Button
         onPress={() => {
-          router.push('/login');
+          router.push('/auth/guide/');
         }}
       >
         前往登陆页面测试
