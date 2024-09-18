@@ -1,4 +1,4 @@
-import { Modal } from '@ant-design/react-native';
+import { Modal, Toast } from '@ant-design/react-native';
 import * as Updates from 'expo-updates';
 
 async function fetchUpdate() {
