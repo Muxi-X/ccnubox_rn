@@ -1,12 +1,11 @@
 import { Toast, Provider } from '@ant-design/react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { loadAsync } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import useVisualScheme from '@/store/visualScheme';
 import fetchUpdates from '@/utils/fetchUpdates';
-
 export default function RootLayout() {
   const initStyles = useVisualScheme(state => state.initStyles);
   useEffect(() => {

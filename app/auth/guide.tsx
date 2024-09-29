@@ -1,17 +1,26 @@
 import { Button, Icon, Toast } from '@ant-design/react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { FC, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { FC, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Pagination from '@/components/pagination';
 import { preloginGuide } from '@/constants/prelogin';
 import useVisualScheme from '@/store/visualScheme';
-import { LinearGradient } from 'expo-linear-gradient';
+import { commonStyles } from '@/styles/common';
 
 const PAGE_SWIPE_ANIMATION_DURATION = 450;
+const { height: screenHeight } = Dimensions.get('window');
 const Guide: FC = () => {
   return (
     <View style={styles.guide_wrap}>
@@ -28,6 +37,23 @@ export const PreLoginCard: FC = () => {
   const [toVisible, setToVisible] = useState<boolean>(true);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
+  const gradientValue = useSharedValue(0);
+  const titleShift = useSharedValue(0);
+  useEffect(() => {
+    const percent = Math.floor(150 / preloginGuide.length);
+    titleShift.value = withTiming(Math.floor(percent * activeIndex), {
+      easing: Easing.out(Easing.ease),
+    });
+    gradientValue.value = withTiming(percent * (activeIndex + 1) - 150, {
+      easing: Easing.out(Easing.ease),
+    });
+  }, [gradientValue, activeIndex, titleShift]);
+  const gradientStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: gradientValue.value }],
+  }));
+  const titleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: titleShift.value }],
+  }));
   const handleStart = () => {
     router.navigate('/auth/login');
   };
@@ -61,21 +87,27 @@ export const PreLoginCard: FC = () => {
     <>
       <GestureDetector gesture={onSwipe}>
         <View style={styles.card_wrap}>
-          <LinearGradient
-            colors={[
-              '#94A6FF',
-              '#70F5FF',
-              '#94A6FF',
-              '#70F5FF',
-              '#94A6FF',
-              '#70F5FF',
-              '#94A6FF',
+          <Animated.Text
+            style={[
+              styles.title,
+              commonStyles.fontExtraLarge,
+              commonStyles.fontBold,
+              titleStyle,
             ]}
-            style={styles.gradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            collapsable
-          ></LinearGradient>
+          >
+            {preloginGuide[activeIndex].title}
+          </Animated.Text>
+          <View style={styles.gradient_box}>
+            <Animated.View style={gradientStyle}>
+              <LinearGradient
+                colors={['#94A6FF', '#70F5FF', '#94A6FF', '#94A6FF']}
+                style={styles.gradient}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                collapsable
+              ></LinearGradient>
+            </Animated.View>
+          </View>
           <AnimatedOpacity
             toVisible={toVisible}
             duration={PAGE_SWIPE_ANIMATION_DURATION}
@@ -119,26 +151,38 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  gradient_box: {
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 12,
+  },
   gradient: {
-    width: '240%',
-    height: 6,
+    width: 400,
+    height: 5,
   },
   card_wrap: {
     width: '80%',
-    height: '50%',
+    height: screenHeight < 700 ? '56%' : '61%',
     backgroundColor: '#8F95F6',
     borderRadius: 12,
     borderColor: 'white',
     borderWidth: 6,
-    marginVertical: 20,
+    marginTop: screenHeight < 750 ? 80 : 20,
+    marginBottom: 20,
+    padding: 12,
   },
   start_button: {
     width: 200,
     borderRadius: 12,
     marginTop: 20,
   },
+  title: {
+    color: '#46F2FF',
+    marginBottom: 5,
+    marginTop: 20,
+  },
   pagination_active: {
-    backgroundColor: '#7be9ee',
+    backgroundColor: '#46F2FF',
   },
   pagination_both: {
     marginHorizontal: 12,

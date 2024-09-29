@@ -21,8 +21,8 @@ const TabBar: FC<BottomTabBarProps> = props => {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state?.index === index;
 
@@ -65,14 +65,15 @@ export default TabBar;
 const styles = StyleSheet.create({
   tabbar: {
     position: 'absolute',
-    bottom: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    marginHorizontal: 20,
+    width: '100%',
+    bottom: 0,
     paddingVertical: 15,
-    borderRadius: 25,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     borderCurve: 'continuous',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 10 },
