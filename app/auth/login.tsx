@@ -4,11 +4,11 @@ import { Link } from 'expo-router';
 import { FC, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
+import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import { useKeyboardShow } from '@/hooks/useKeyboardShow';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
-import AnimatedFade from '@/components/animatedView/AnimatedFade';
 
 const Login: FC = () => {
   // 监听键盘弹起，避免元素遮挡
@@ -40,7 +40,13 @@ const Login: FC = () => {
         style={styles.logo}
       ></Image>
       <AnimatedOpacity toVisible={!isKeyboardShow}>
-        <Text style={[commonStyles.fontExtraLarge, styles.auth]}>
+        <Text
+          style={[
+            commonStyles.fontExtraLarge,
+            commonStyles.fontBold,
+            styles.auth,
+          ]}
+        >
           统一身份认证
         </Text>
       </AnimatedOpacity>

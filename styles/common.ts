@@ -6,4 +6,10 @@ export const commonStyles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
   },
+  fontLarge: {
+    fontSize: 20,
+  },
+  fontBold: {
+    fontWeight: 'bold',
+  },
 });

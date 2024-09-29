@@ -28,10 +28,22 @@ const Login: FC = () => {
           distance={20}
           toVisible={!isKeyboardShow}
         >
-          <Text style={[styles.text1, commonStyles.fontExtraLarge]}>
+          <Text
+            style={[
+              styles.text1,
+              commonStyles.fontExtraLarge,
+              commonStyles.fontBold,
+            ]}
+          >
             “需求太多？
           </Text>
-          <Text style={[styles.text2, commonStyles.fontExtraLarge]}>
+          <Text
+            style={[
+              styles.text2,
+              commonStyles.fontExtraLarge,
+              commonStyles.fontBold,
+            ]}
+          >
             用匣子试试！”
           </Text>
         </AnimatedFade>
