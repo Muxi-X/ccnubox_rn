@@ -1,20 +1,27 @@
 import { Button } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import BottomModal from '@/components/modal';
+import DatePicker from '@/components/picker';
+import { scrapeCourse, scrapeGrade, semesterMap } from '@/constants/scraper';
 import useNotification from '@/hooks/useNotification';
+import useScraper from '@/store/scraper';
+import { getUpdateInfo } from '@/utils/fetchUpdates';
 
 const IndexPage: FC = () => {
   const [notification, registerNotification] = useNotification();
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(true);
-
+  const inject = useScraper(state => state.injectJavaScript);
   const openModal = () => {
     setModalVisible(true);
   };
-
+  useEffect(() => {
+    getUpdateInfo().then(res => {
+      alert(JSON.stringify(res));
+    });
+  }, []);
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -39,14 +46,29 @@ const IndexPage: FC = () => {
       <Button onPress={() => openModal()}>modal测试</Button>
       <Button
         onPress={() => {
-          router.push('/webview');
+          inject(scrapeCourse(2024, semesterMap.first));
         }}
       >
-        webview测试
+        课表测试
       </Button>
-      <BottomModal visible={modalVisible} onClose={closeModal}>
-        <Text>This is a bottom modal!</Text>
-      </BottomModal>
+      <Button
+        onPress={() => {
+          inject(scrapeGrade(2024, semesterMap.first));
+        }}
+      >
+        成绩测试
+      </Button>
+      <Button
+        onPress={() => {
+          getUpdateInfo().then(res => {
+            alert(JSON.stringify(res));
+          });
+        }}
+      >
+        文件测试
+      </Button>
+      {/*{JSON.stringify(getUpdateInfo())}*/}
+      <DatePicker visible={modalVisible} onClose={closeModal}></DatePicker>
     </View>
   );
 };

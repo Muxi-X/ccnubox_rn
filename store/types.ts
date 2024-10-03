@@ -1,3 +1,6 @@
+import React, { MutableRefObject } from 'react';
+import WebView from 'react-native-webview';
+
 import { SubThemeType, ThemeType, layoutStyleType } from '@/styles/types';
 
 /** 配色、布局整体store类型 */
@@ -17,4 +20,13 @@ export type visualSchemeType = {
   /** 注册style中样式 */
   initStyles: () => void;
   removeStyles: (name: string) => void;
+};
+
+export type scraperType = {
+  /* webview 的 ref */
+  ref: MutableRefObject<WebView<{}> | undefined>;
+  /* 注入的 js */
+  injectJavaScript: (injected: string) => void;
+  /* 设置 ref */
+  setRef: (newRef: React.RefObject<WebView<{}> | null>) => void;
 };

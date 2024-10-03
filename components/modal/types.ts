@@ -5,7 +5,7 @@ export interface BottomModalProps {
   visible: boolean;
   /* 关闭Modal */
   onClose?: () => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /* 是否具有title，不填则没有 */
   title?: React.ReactNode;
   /* 点击确认 */

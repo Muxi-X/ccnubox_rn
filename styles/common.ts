@@ -4,10 +4,12 @@ import { StyleSheet } from 'react-native';
 export const commonStyles = StyleSheet.create({
   fontExtraLarge: {
     fontSize: 26,
-    fontWeight: 'bold',
   },
   fontLarge: {
     fontSize: 20,
+  },
+  fontMedium: {
+    fontSize: 16,
   },
   fontBold: {
     fontWeight: 'bold',
