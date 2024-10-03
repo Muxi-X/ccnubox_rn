@@ -1,5 +1,4 @@
 import { Button, Toast } from '@ant-design/react-native';
-import * as Updates from 'expo-updates';
 import { FC, memo, useState, useTransition } from 'react';
 import { View, Text } from 'react-native';
 
@@ -7,7 +6,7 @@ import fetchUpdate from '@/utils/fetchUpdates';
 
 const SettingPage: FC = () => {
   const [isPending, startTransition] = useTransition();
-  const [updates, setNewUpdates] = useState<Updates.UpdateCheckResult>();
+  const [updates, setNewUpdates] = useState<any>();
   const handlePress = () => {
     startTransition(() => {
       fetchUpdate().then(res => {

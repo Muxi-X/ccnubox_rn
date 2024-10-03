@@ -14,6 +14,9 @@ dependencies:
   '@expo/vector-icons':
     specifier: ^14.0.2
     version: 14.0.2
+  '@react-native-community/datetimepicker':
+    specifier: 8.0.1
+    version: 8.0.1(react-native@0.74.3)(react@18.2.0)
   '@react-navigation/native':
     specifier: ^6.0.2
     version: 6.1.17(react-native@0.74.3)(react@18.2.0)
@@ -102,8 +105,8 @@ dependencies:
     specifier: ~0.19.10
     version: 0.19.12(react-dom@18.2.0)(react@18.2.0)
   react-native-webview:
-    specifier: 13.8.6
-    version: 13.8.6(react-native@0.74.3)(react@18.2.0)
+    specifier: 13.6.3
+    version: 13.6.3(react-native@0.74.3)(react@18.2.0)
   zustand:
     specifier: ^4.5.4
     version: 4.5.4(@types/react@18.2.79)(react@18.2.0)
@@ -3369,6 +3372,21 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: false
+
+  /@react-native-community/datetimepicker@8.0.1(react-native@0.74.3)(react@18.2.0):
+    resolution: {integrity: sha512-4BO0t3geMNNw9cIIm9p9FNUzwMXexdzD4pAH0AaUAycs3BS71HLrX8jHbrI7nzq/+8O7cLAXn5Gudte+YpTV8Q==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+      react-native-windows: '*'
+    peerDependenciesMeta:
+      react-native-windows:
+        optional: true
+    dependencies:
+      invariant: 2.2.4
+      react: 18.2.0
+      react-native: 0.74.3(@babel/core@7.24.7)(@babel/preset-env@7.24.8)(@types/react@18.2.79)(react@18.2.0)
     dev: false
 
   /@react-native/assets-registry@0.74.85:
@@ -11125,6 +11143,7 @@ packages:
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
 
   /npm-package-arg@7.0.0:
     resolution: {integrity: sha512-xXxr8y5U0kl8dVkz2oK7yZjPBvqM2fwaO5l3Yg13p03v8+E3qQcD0JNhHzjL1vyGgxcKkD0cco+NLR72iuPk3g==}
@@ -12107,8 +12126,8 @@ packages:
       - encoding
     dev: false
 
-  /react-native-webview@13.8.6(react-native@0.74.3)(react@18.2.0):
-    resolution: {integrity: sha512-jtZ9OgB2AN6rhDwto6dNL3PtOtl/SI4VN93pZEPbMLvRjqHfxiUrilGllL5fKAXq5Ry5FJyfUi82A4Ii8olZ7A==}
+  /react-native-webview@13.6.3(react-native@0.74.3)(react@18.2.0):
+    resolution: {integrity: sha512-IApO0JSj0uAWsBGKWagyfgDYoX29piiMYLmkHtRjKeL1rIVjLoR/bMe7KJ/0X47y86b//a6u3cYQtphyay+F2A==}
     peerDependencies:
       react: '*'
       react-native: '*'

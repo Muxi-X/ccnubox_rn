@@ -1,10 +1,11 @@
-import { Modal, Toast } from '@ant-design/react-native';
+import { Modal } from '@ant-design/react-native';
 import * as Updates from 'expo-updates';
 
 async function fetchUpdate() {
   const update = await Updates.checkForUpdateAsync();
+  const updateInfo = await getUpdateInfo();
   if (update.isAvailable) {
-    Modal.alert('有新的发布', '是否更新', [
+    Modal.alert('有新的发布', `是否更新`, [
       {
         text: '更新',
         onPress: async () => {
@@ -20,7 +21,12 @@ async function fetchUpdate() {
       },
     ]);
   }
-  return update;
+  return updateInfo;
 }
 
 export default fetchUpdate;
+
+/* 获取更新信息 */
+export async function getUpdateInfo() {
+  return require('../assets/data/updateInfo');
+}

@@ -11,6 +11,21 @@
         "buildType": "apk"
       }
     },
+    "simulator": {
+      "channel": "simulator",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "test": {
+      "channel": "test",
+      "env": {
+        "GOOGLE_SERVICES_JSON": "${EAS_ENV.GOOGLE_SERVICES_JSON}"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
@@ -27,6 +42,11 @@
   },
   "submit": {
     "production": {},
+    "test": {
+      "ios": {
+        "ascAppId": "6689522026"
+      }
+    },
     "development": {}
   }
 }

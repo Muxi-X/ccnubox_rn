@@ -37,38 +37,37 @@ const BottomModal: React.FC<BottomModalProps> = ({
           activeOpacity={1}
           style={styles.modalBackground}
           onPress={handleClose}
+        ></TouchableOpacity>
+        <AnimatedSlide
+          distance={100}
+          direction="vertical"
+          duration={200}
+          trigger={visible}
+          style={styles.modalContent}
         >
-          <AnimatedSlide
-            distance={250}
-            direction="vertical"
-            duration={350}
-            trigger={visible}
-            style={styles.modalContent}
-          >
-            <LinearGradient
-              colors={['#C5B8F8BB', '#E6E1F9BB', '#E6E1F944', '#E6E1F900']}
-              style={styles.linearGradient}
-            ></LinearGradient>
-            {title && (
-              <View style={[styles.title]}>
-                <Text style={commonStyles.fontExtraLarge}>{title}</Text>
-              </View>
-            )}
-            <View style={styles.modalChildren}>{children}</View>
-            <View style={styles.bottomChoice}>
-              <TouchableOpacity onPress={handleConfirm}>
-                <Text style={[styles.bottomChoiceText, commonStyles.fontLarge]}>
-                  确认
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCancel}>
-                <Text style={[styles.bottomChoiceText, commonStyles.fontLarge]}>
-                  取消
-                </Text>
-              </TouchableOpacity>
+          <LinearGradient
+            colors={['#C5B8F8BB', '#E6E1F900']}
+            style={styles.linearGradient}
+          ></LinearGradient>
+          {title && (
+            <View style={[styles.title]}>
+              <Text style={commonStyles.fontExtraLarge}>{title}</Text>
             </View>
-          </AnimatedSlide>
-        </TouchableOpacity>
+          )}
+          <View style={styles.modalChildren}>{children}</View>
+          <View style={styles.bottomChoice}>
+            <TouchableOpacity onPress={handleConfirm}>
+              <Text style={[styles.bottomChoiceText, commonStyles.fontLarge]}>
+                确认
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCancel}>
+              <Text style={[styles.bottomChoiceText, commonStyles.fontLarge]}>
+                取消
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </AnimatedSlide>
       </View>
     </Modal>
   );
@@ -99,11 +98,11 @@ const styles = StyleSheet.create({
     color: '#7878F8',
   },
   modalContent: {
-    width: '100%',
+    width: '94%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    marginHorizontal: 20,
+    borderRadius: 20,
+    margin: 20,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
   },
   modalChildren: {
     width: '100%',
-    marginTop: 20,
+    marginTop: 24,
     paddingHorizontal: 30,
   },
   closeButton: {
@@ -125,9 +124,9 @@ const styles = StyleSheet.create({
   },
   linearGradient: {
     width: '100%',
-    height: '100%',
+    height: '40%',
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     right: 0,
   },
   title: {
@@ -135,7 +134,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 24,
   },
   closeText: {
     color: '#333',
