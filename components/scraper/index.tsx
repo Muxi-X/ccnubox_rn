@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import { View } from 'react-native';
 import WebView from 'react-native-webview';
 

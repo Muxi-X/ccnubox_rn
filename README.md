@@ -14,3 +14,5 @@
  eas update --branch production --message "wdigets test_1"
 
 ```
+# 更新须知
+- 热更新更新通知位于 `assets/data/updateInfo.json`中，每次热更新手动更新其中的版本号以及更新内容
