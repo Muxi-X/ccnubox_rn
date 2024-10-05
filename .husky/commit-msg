@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
-printf "正在检查 commit 格式... "
+printf "\n正在检查 commit 格式... "
+
 pnpx commitlint --edit $1 || echo -e "\r\033[31m❌ commit 检查失败\033[0m"
-echo -e "\033[32m✅ commit 检查通过\033[0m"
+
+echo -e "\r\033[32m✅ commit 检查通过\033[0m"
