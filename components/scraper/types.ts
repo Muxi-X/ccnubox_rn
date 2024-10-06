@@ -10,5 +10,5 @@ export interface ScraperProps {
   /* 爬取函数 */
   scrape?: (year: number, semester: semesterMap) => string;
   /* 消息监听，与 webview 通信 */
-  onMessage: (event: WebViewMessageEvent) => void;
+  onMessage: (event: string) => void;
 }

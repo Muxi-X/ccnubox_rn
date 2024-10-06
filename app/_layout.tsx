@@ -14,7 +14,10 @@ export default function RootLayout() {
   const initStyles = useVisualScheme(state => state.initStyles);
   const scraperRef = useRef<WebView>();
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
-  const handleMessage = useCallback(() => {}, []);
+  const handleMessage = useCallback(data => {
+    alert(data);
+    console.log(JSON.stringify(data));
+  }, []);
   useEffect(() => {
     // 引入所有样式
     initStyles();

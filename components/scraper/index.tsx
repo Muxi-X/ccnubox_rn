@@ -30,7 +30,7 @@ const Scraper = forwardRef<WebView | null, ScraperProps>(
           injectedJavaScriptBeforeContentLoaded={`window.open = (str) => location.href = 'https://' + str`}
           injectedJavaScriptForMainFrameOnly={false}
           onMessage={event => {
-            onMessage?.(event);
+            onMessage?.(event.nativeEvent.data);
             // console.log(event.nativeEvent.data);
           }}
         />
