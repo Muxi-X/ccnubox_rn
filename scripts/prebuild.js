@@ -1,15 +1,6 @@
 const { spawn } = require('child_process');
-const fs = require('fs');
-const path = require('path');
 
 const { select } = require('@inquirer/prompts');
-
-// 定义要添加的源
-const sourceUrl =
-  'https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git';
-
-// 定义 Podfile 的路径
-const podfilePath = path.join(__dirname, '../ios', 'Podfile');
 
 async function prebuild() {
   const platform = await select({
