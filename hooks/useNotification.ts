@@ -92,7 +92,7 @@ export default function useNotification(
       channels: typeof channels;
       notification: typeof notification;
     },
-    typeof registerNotification,
+    typeof registerNotification
   ];
 }
 
