@@ -1,31 +1,24 @@
-import { Button, Toast } from '@ant-design/react-native';
-import { FC, memo, useState, useTransition } from 'react';
-import { View, Text } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import * as Updates from 'expo-updates';
+import { useEffect } from 'react';
+import { Button, View } from 'react-native';
 
-import fetchUpdate from '@/utils/fetchUpdates';
+export default function Setting() {
+  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
 
-const SettingPage: FC = () => {
-  const [isPending, startTransition] = useTransition();
-  const [updates, setNewUpdates] = useState<any>();
-  const handlePress = () => {
-    startTransition(() => {
-      fetchUpdate().then(res => {
-        if (!res.isAvailable) Toast.success('已是最新版');
-        setNewUpdates(res);
-      }, null);
-    });
-  };
-  console.log(isPending);
+  useEffect(() => {
+    if (isUpdatePending) {
+      void Updates.reloadAsync();
+    }
+  }, [isUpdatePending]);
+
   return (
-    <>
-      <View>
-        <Button onPress={handlePress} loading={updates?.isAvailable}>
-          检查更新
-        </Button>
-        <Text>{JSON.stringify(updates)}</Text>
-      </View>
-    </>
+    <View>
+      <Button onPress={() => Updates.checkForUpdateAsync()} title="检查更新" />
+      {isUpdateAvailable ? (
+        <Button onPress={() => Updates.fetchUpdateAsync()} title="下载并更新" />
+      ) : null}
+      <StatusBar style="auto" />
+    </View>
   );
-};
-
-export default memo(SettingPage);
+}

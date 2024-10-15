@@ -18,6 +18,10 @@ export interface BaseAnimatedProps extends ViewProps {
    * 延迟
    */
   delay?: number;
+  /**
+   * 动画结束监听
+   */
+  onAnimationEnd?: () => void;
 }
 
 export interface ScaleAnimationProps extends BaseAnimatedProps {

@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
 import Animated, {
   interpolate,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -19,6 +20,7 @@ const AnimatedScale = ({
   delay = 0,
   children,
   style,
+  onAnimationEnd,
   ...restProps
 }: ScaleAnimationProps) => {
   const scale = useSharedValue(0);
@@ -37,6 +39,11 @@ const AnimatedScale = ({
       top,
     };
   });
+  useEffect(() => {
+    if (typeof onAnimationEnd === 'function') {
+      runOnJS(onAnimationEnd)();
+    }
+  }, [scale.value, onAnimationEnd]);
   return (
     <Animated.View style={[ScaleAnimation, style]} {...restProps}>
       {children}

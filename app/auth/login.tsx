@@ -1,6 +1,5 @@
 import { Icon, Input, Checkbox, Button, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
-import { Link } from 'expo-router';
 import { FC, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
@@ -80,10 +79,7 @@ const Login: FC = () => {
       <View style={styles.rules}>
         <Checkbox onChange={onCheckPrivacy}>
           <Text style={styles.rules_radio}>
-            已阅读并同意{' '}
-            <Link href="/login" style={styles.link}>
-              服务协议
-            </Link>
+            已阅读并同意 <Text style={styles.link}>服务协议</Text>
           </Text>
         </Checkbox>
       </View>

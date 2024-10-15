@@ -28,5 +28,8 @@ export class EventBus {
   }
 }
 
+/**
+ * 全局事件总线
+ */
 const globalEventBus = new EventBus();
 export default globalEventBus;

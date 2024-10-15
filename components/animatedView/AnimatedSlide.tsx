@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
   withDelay,
   Easing,
+  runOnJS,
 } from 'react-native-reanimated';
 
 import { SlideInProps } from '@/components/animatedView/types';
@@ -16,7 +17,9 @@ const AnimatedSlideIn: React.FC<SlideInProps> = ({
   trigger = true,
   children,
   distance = 100,
+  onAnimationEnd,
   direction = 'vertical',
+  ...restProps
 }) => {
   const translateY = useSharedValue(
     direction === 'vertical' ? distance : -distance
@@ -41,9 +44,15 @@ const AnimatedSlideIn: React.FC<SlideInProps> = ({
       ],
     };
   });
-
+  useEffect(() => {
+    if (typeof onAnimationEnd === 'function') {
+      runOnJS(onAnimationEnd)();
+    }
+  }, [translateY.value, onAnimationEnd]);
   return (
-    <Animated.View style={[style, animatedStyle]}>{children}</Animated.View>
+    <Animated.View style={[style, animatedStyle]} {...restProps}>
+      {children}
+    </Animated.View>
   );
 };
 

@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
 import Animated, {
   interpolate,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -19,6 +20,7 @@ const AnimatedOpacity = ({
   style,
   delay = 0,
   toVisible = true,
+  onAnimationEnd,
   ...restProps
 }: OpacityAnimationProps) => {
   const sharedOpacity = useSharedValue(toVisible ? 0 : 1);
@@ -44,6 +46,11 @@ const AnimatedOpacity = ({
       opacity,
     };
   });
+  useEffect(() => {
+    if (typeof onAnimationEnd === 'function') {
+      runOnJS(onAnimationEnd)();
+    }
+  }, [sharedOpacity.value, onAnimationEnd]);
   return (
     <Animated.View style={[opacityStyle, style]} {...restProps}>
       {children}

@@ -6,6 +6,7 @@ import Animated, {
   withDelay,
   withTiming,
   Easing,
+  runOnJS,
 } from 'react-native-reanimated';
 
 import { FadeAnimationProps } from './types';
@@ -22,6 +23,7 @@ const AnimatedFade = ({
   children,
   delay = 0,
   style,
+  onAnimationEnd,
   ...restProps
 }: FadeAnimationProps) => {
   const posShift = useSharedValue(0);
@@ -70,6 +72,12 @@ const AnimatedFade = ({
       opacity: opacityValue,
     };
   });
+  useEffect(() => {
+    if (typeof onAnimationEnd === 'function') {
+      // 使用 runOnJS 来确保 onAnimationEnd 回调在正确的线程上执行
+      runOnJS(onAnimationEnd)();
+    }
+  }, [opacity.value, onAnimationEnd]);
   return (
     <Animated.View style={[FadeAnimation, style]} {...restProps}>
       {children}

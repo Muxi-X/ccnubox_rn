@@ -3,10 +3,15 @@ import { View } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { ScraperProps } from '@/components/scraper/types';
-import { scrapeLogin, semesterMap } from '@/constants/scraper';
+import { scrapeLogin } from '@/constants/scraper';
 
+/**
+ * 爬虫组件，用于爬取研究生课表、成绩
+ * 位于全局，通过 ref 调用
+ * @example
+ */
 const Scraper = forwardRef<WebView | null, ScraperProps>(
-  ({ year = 2024, semester = semesterMap.first, scrape, onMessage }, ref) => {
+  ({ onMessage }, ref) => {
     const secretUserName = '2023122691';
     const secretPassword = 'zhao1638678192%';
 
@@ -27,7 +32,6 @@ const Scraper = forwardRef<WebView | null, ScraperProps>(
           }}
           javaScriptEnabled
           injectedJavaScript={runFirst}
-          injectedJavaScriptBeforeContentLoaded={`window.open = (str) => location.href = 'https://' + str`}
           injectedJavaScriptForMainFrameOnly={false}
           onMessage={event => {
             onMessage?.(event.nativeEvent.data);

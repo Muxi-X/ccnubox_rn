@@ -21,21 +21,6 @@ export const scrapeLogin = (username = '', password = '') => {
       true; // note: this is required, or you'll sometimes get silent failures
   `;
 };
-const retry = (MAX_RETRIES: number) => `
-((MAX_RETRIES) => {
-  let tried_times = 0;
-  const MAX_RETRIES = ${MAX_RETRIES}
-  return () => {
-    if(tried_times < MAX_RETRIES) {
-      location.reload()
-      ${scrapeLogin()}
-      tried_times++;
-      return;
-    }
-    window.ReactNativeWebView.postMessage(JSON.stringify({data: {_errMsg: '超出最大请求次数'}, type: 'course'}));
-  }
-})(${MAX_RETRIES})
-`;
 export const scrapeGrade = (year?: number, semester?: semesterMap) => {
   return `
         (
@@ -56,6 +41,7 @@ export const scrapeGrade = (year?: number, semester?: semesterMap) => {
               }
               return response.json();
             })
+            .catch(() => {location.reload();})
             .then((res) => {
               window.ReactNativeWebView.postMessage(JSON.stringify({data: res, type: 'grade'}))
               gradeData = null;
@@ -83,6 +69,7 @@ export const scrapeCourse = (year: number, semester: semesterMap) => {
               'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             }
           })
+          .catch(() => {location.reload();})
           .then(response => {
               if (!response.ok) {
                 location.reload();
