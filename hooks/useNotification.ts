@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 /**
  * 消息通知
+ * @deprecated 国内安卓 fcm 用不了，此 hook 目前只能用于个性化定制
  * @param behavior 通知选项
  * @example {
  *  shouldPlaySound: true, // 是否播放声音
@@ -91,11 +92,14 @@ export default function useNotification(
       channels: typeof channels;
       notification: typeof notification;
     },
-    typeof registerNotification
+    typeof registerNotification,
   ];
 }
 
-async function registerForPushNotificationsAsync() {
+/**
+ * @deprecated 国内安卓 fcm 用不了，此 hook 目前只能用于个性化定制
+ */
+export async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === 'android') {

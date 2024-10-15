@@ -12,15 +12,6 @@
       "assets/data/",
       "assets/fonts"
     ],
-    "eas": {
-      "build": {
-        "assetBundlePatterns": [
-          "assets/images/",
-          "assets/fonts",
-          "assets/data/"
-        ]
-      }
-    },
     "splash": {
       "image": "./assets/images/mx-logo.png",
       "resizeMode": "contain",
@@ -43,7 +34,10 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.SCHEDULE_EXACT_ALARM"
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.ACCESS_NOTIFICATION_POLICY",
+        "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
       "googleServicesFile": "./secret/google-services.json",
       "package": "com.kbkbk.ccnu_coursetable"
@@ -54,7 +48,23 @@
       "favicon": "./assets/images/mx-logo.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font",
+      [
+        "jpush-expo-config-plugin",
+        {
+          "appKey": "3fdd1ecdd0325fa2a197df7e",
+          "channel": "course_box"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -67,9 +77,7 @@
         "projectId": "d6863b18-d443-4651-b836-5129afd64edc"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.2.0",
     "updates": {
       "url": "https://u.expo.dev/d6863b18-d443-4651-b836-5129afd64edc"
     },

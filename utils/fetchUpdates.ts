@@ -9,8 +9,14 @@ async function fetchUpdate() {
       {
         text: '更新',
         onPress: async () => {
-          await Updates.fetchUpdateAsync();
-          await Updates.reloadAsync();
+          Updates.fetchUpdateAsync().then(res => {
+            if (res.isNew) {
+              alert('更新成功，即将重启应用');
+              Updates.reloadAsync();
+            } else {
+              alert('更新失败，请稍后重试');
+            }
+          });
         },
       },
       {

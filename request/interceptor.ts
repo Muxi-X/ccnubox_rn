@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
         return response;
       case 401:
         console.error('token过期');
-        router.navigate('/login');
+        router.navigate('/auth/login');
         break;
       case 403:
         console.error('无权限');

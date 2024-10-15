@@ -1,27 +1,24 @@
 import { Button } from '@ant-design/react-native';
-import { useRouter } from 'expo-router';
-import React, { FC, memo, useEffect, useState } from 'react';
+import { Href, useRouter } from 'expo-router';
+import { getItem } from 'expo-secure-store';
+import React, { FC, memo, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import DatePicker from '@/components/picker';
 import { scrapeCourse, scrapeGrade, semesterMap } from '@/constants/scraper';
-import useNotification from '@/hooks/useNotification';
+import { registerForPushNotificationsAsync } from '@/hooks/useNotification';
 import useScraper from '@/store/scraper';
 import { getUpdateInfo } from '@/utils/fetchUpdates';
 
 const IndexPage: FC = () => {
-  const [notification, registerNotification] = useNotification();
+  const [notification, setNotification] = useState<string>('');
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(true);
+  /* 注入 js 实现爬虫 */
   const inject = useScraper(state => state.injectJavaScript);
   const openModal = () => {
     setModalVisible(true);
   };
-  useEffect(() => {
-    getUpdateInfo().then(res => {
-      alert(JSON.stringify(res));
-    });
-  }, []);
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -30,7 +27,7 @@ const IndexPage: FC = () => {
       <Text>Hello Index😎</Text>
       <Button
         onPress={() => {
-          router.push('/auth/guide/');
+          router.push('/auth/guide/' as Href);
         }}
       >
         前往登陆页面测试
@@ -38,7 +35,10 @@ const IndexPage: FC = () => {
       <Button
         loading={!notification}
         onPress={() => {
-          registerNotification().then(null, null);
+          alert(getItem('pushToken'));
+          registerForPushNotificationsAsync().then(res => {
+            setNotification(res ?? '');
+          });
         }}
       >
         通知测试
@@ -67,8 +67,12 @@ const IndexPage: FC = () => {
       >
         文件测试
       </Button>
-      {/*{JSON.stringify(getUpdateInfo())}*/}
-      <DatePicker visible={modalVisible} onClose={closeModal}></DatePicker>
+      <DatePicker
+        visible={modalVisible}
+        prefixes={[, , '至']}
+        onClose={closeModal}
+      ></DatePicker>
+      <Text>token:{notification}</Text>
     </View>
   );
 };

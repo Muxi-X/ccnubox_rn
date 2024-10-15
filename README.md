@@ -5,9 +5,9 @@
 
 
 # 指令
-## build（打包部署production环境）
+## build（打包->注入极光推送sdk->部署到expo）
 ```bash
-  eas build --platform android --profile production
+  pnpm run build
 ```
 ## update（热更新）
 ```bash

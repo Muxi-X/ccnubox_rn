@@ -5,11 +5,11 @@ import { FC, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   Easing,
+  runOnJS,
 } from 'react-native-reanimated';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
@@ -18,6 +18,7 @@ import Pagination from '@/components/pagination';
 import { preloginGuide } from '@/constants/prelogin';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
+import { percent2px } from '@/utils/percent2px';
 
 const PAGE_SWIPE_ANIMATION_DURATION = 450;
 const { height: screenHeight } = Dimensions.get('window');
@@ -34,19 +35,25 @@ export default Guide;
 
 export const PreLoginCard: FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  // title和content的改变时机不一样，单独列一个state
+  const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
   const [toVisible, setToVisible] = useState<boolean>(true);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
   const gradientValue = useSharedValue(0);
   const titleShift = useSharedValue(0);
   useEffect(() => {
-    const percent = Math.floor(150 / preloginGuide.length);
+    // 每次移动多少
+    const percent = Math.floor((percent2px(80) - 36) / preloginGuide.length);
     titleShift.value = withTiming(Math.floor(percent * activeIndex), {
       easing: Easing.out(Easing.ease),
     });
-    gradientValue.value = withTiming(percent * (activeIndex + 1) - 150, {
-      easing: Easing.out(Easing.ease),
-    });
+    gradientValue.value = withTiming(
+      percent * (activeIndex + 1) - percent2px(60 * 2),
+      {
+        easing: Easing.out(Easing.ease),
+      }
+    );
   }, [gradientValue, activeIndex, titleShift]);
   const gradientStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: gradientValue.value }],
@@ -57,6 +64,9 @@ export const PreLoginCard: FC = () => {
   const handleStart = () => {
     router.navigate('/auth/login');
   };
+  useEffect(() => {
+    runOnJS(() => setActiveContentIndex(activeIndex))();
+  }, [titleShift.value]);
   // 跳转第几条
   const jump = (pageNum: number) => {
     if (pageNum > preloginGuide.length - 1 || pageNum < 0) {
@@ -67,8 +77,8 @@ export const PreLoginCard: FC = () => {
       return;
     }
     if (pageNum === preloginGuide.length - 1) setReachedLastPage(true);
-    setActiveIndex(pageNum);
     setToVisible(false);
+    setActiveIndex(pageNum);
     setTimeout(() => {
       setToVisible(true);
     }, PAGE_SWIPE_ANIMATION_DURATION + 200);
@@ -100,7 +110,7 @@ export const PreLoginCard: FC = () => {
           <View style={styles.gradient_box}>
             <Animated.View style={gradientStyle}>
               <LinearGradient
-                colors={['#94A6FF', '#70F5FF', '#94A6FF', '#94A6FF']}
+                colors={['#94A6FF', '#94A6FF', '#70F5FF', '#94A6FF', '#94A6FF']}
                 style={styles.gradient}
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 1, y: 0.5 }}
@@ -110,9 +120,10 @@ export const PreLoginCard: FC = () => {
           </View>
           <AnimatedOpacity
             toVisible={toVisible}
+            style={{ flex: 1 }}
             duration={PAGE_SWIPE_ANIMATION_DURATION}
           >
-            <Text>123123123</Text>
+            {preloginGuide[activeContentIndex].content}
           </AnimatedOpacity>
         </View>
       </GestureDetector>
@@ -157,7 +168,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   gradient: {
-    width: 400,
+    width: percent2px(60 * 4),
     height: 5,
   },
   card_wrap: {
@@ -167,7 +178,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: 'white',
     borderWidth: 6,
-    marginTop: screenHeight < 750 ? 80 : 20,
+    marginTop: 80,
     marginBottom: 20,
     padding: 12,
   },

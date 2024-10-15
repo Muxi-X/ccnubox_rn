@@ -1,12 +1,16 @@
 import { PickerView } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import BottomModal from '@/components/modal';
 import { DatePickerProps } from '@/components/picker/types';
 import { commonStyles } from '@/styles/common';
+import { keyGenerator } from '@/utils/autoKey';
+import { percent2px } from '@/utils/percent2px';
 
+const BORDER_LEFT_WIDTH = 8;
+const PICKER_HEIGHT = 200;
 /* 生成上课时间 */
 const geneClassRange = (length: number) => {
   const range = [];
@@ -32,6 +36,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   onConfirm,
   onClose,
   defaultValue,
+  prefixes,
   data = basicColumns,
   titleDisplayLogic = (pickerValue, data) => {
     const pickedLabels = pickerValue.map((value, index) => {
@@ -57,6 +62,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const handleConfirm = () => {
     onConfirm && onConfirm(pickerValue.map(item => String(item)));
   };
+  const contentWidth = useMemo(() => {
+    return percent2px(94) - 60;
+  }, []);
   return (
     <BottomModal
       visible={visible}
@@ -65,16 +73,37 @@ const DatePicker: React.FC<DatePickerProps> = ({
       onClose={onClose}
       onCancel={onCancel}
     >
-      <Text
+      <View
         style={{
           position: 'absolute',
-          right: '33%',
-          bottom: '45%',
-          color: '#7878F8',
+          alignItems: 'center',
+          flex: 1,
+          right: 30,
+          top: (PICKER_HEIGHT - commonStyles.fontMedium.fontSize) / 2,
+          width: contentWidth,
+          display: 'flex',
+          justifyContent: 'center',
         }}
       >
-        至
-      </Text>
+        {prefixes &&
+          prefixes.map((prefix, index) => (
+            <Text
+              style={{
+                flex: 1,
+                fontSize: commonStyles.fontMedium.fontSize,
+                textAlign: 'center',
+                left:
+                  (contentWidth / prefixes.length +
+                    commonStyles.fontMedium.fontSize) /
+                  2,
+                color: '#6D6D75',
+              }}
+              key={keyGenerator.next() as unknown as number}
+            >
+              {prefix ?? '1'}
+            </Text>
+          ))}
+      </View>
       <PickerView
         data={data}
         numberOfLines={1}
@@ -85,7 +114,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           <View
             style={{
               flex: 1,
-              borderLeftWidth: 10,
+              borderLeftWidth: BORDER_LEFT_WIDTH,
               borderLeftColor: '#F6F3F5',
               borderRadius: 5,
             }}
@@ -101,10 +130,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
         styles={{
           maskMiddle: {
             backgroundColor: '#ADA5A612',
-            borderLeftWidth: 10,
-            borderLeftColor: '#7878F8',
-            borderRadius: 5,
+            borderLeftWidth: BORDER_LEFT_WIDTH,
+            borderColor: '#7878F8',
             borderTopWidth: 0,
+            borderBottomWidth: 0,
           },
           maskTop: {
             flex: 1,
@@ -113,7 +142,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
             borderLeftWidth: 10,
             borderLeftColor: '#F6F3F5',
             backgroundColor: '#ffffff01',
-            borderRadius: 5,
           },
           itemStyle: {
             ...commonStyles.fontMedium,
@@ -126,15 +154,16 @@ const DatePicker: React.FC<DatePickerProps> = ({
             backgroundColor: '#ffffff01',
           },
           itemActiveStyle: {
+            ...commonStyles.fontMedium,
             fontWeight: 'bold',
             color: '#7878F8',
           },
         }}
-        style={{ height: 200 }}
+        style={{ height: PICKER_HEIGHT }}
         cascade={false}
       />
     </BottomModal>
   );
 };
 
-export default DatePicker;
+export default memo(DatePicker);

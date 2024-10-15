@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 
 import Scraper from '@/components/scraper';
+import { useJPush } from '@/hooks/useJPush';
 import useScraper from '@/store/scraper';
 import useVisualScheme from '@/store/visualScheme';
 import fetchUpdates from '@/utils/fetchUpdates';
@@ -14,10 +15,15 @@ export default function RootLayout() {
   const initStyles = useVisualScheme(state => state.initStyles);
   const scraperRef = useRef<WebView>();
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
-  const handleMessage = useCallback(data => {
+  const handleMessage = useCallback((data: string) => {
     alert(data);
-    console.log(JSON.stringify(data));
   }, []);
+  // 配置JPush,消息推送
+  try {
+    useJPush();
+  } catch (err) {
+    alert(JSON.stringify(err));
+  }
   useEffect(() => {
     // 引入所有样式
     initStyles();
@@ -31,8 +37,8 @@ export default function RootLayout() {
     Toast.config({ mask: false, stackable: true });
     // 获取更新
     fetchUpdates().then(null, null);
-    // 设置 ref
-    setRef(scraperRef as RefObject<WebView<{}> | null>);
+    // 在 store 中设置爬虫 ref
+    setRef(scraperRef);
   }, [initStyles]);
   return (
     /** 没有 Provider，Toast 和 Modal 会失效，误删 */

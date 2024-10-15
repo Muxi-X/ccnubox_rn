@@ -24,9 +24,9 @@ export type visualSchemeType = {
 
 export type scraperType = {
   /* webview 的 ref */
-  ref: MutableRefObject<WebView<{}> | undefined>;
+  ref: MutableRefObject<WebView<{}> | undefined> | null;
   /* 注入的 js */
   injectJavaScript: (injected: string) => void;
   /* 设置 ref */
-  setRef: (newRef: React.RefObject<WebView<{}> | null>) => void;
+  setRef: (newRef: MutableRefObject<WebView<{}> | undefined> | null) => void;
 };
