@@ -10,13 +10,13 @@ export const useJPush = () => {
       production: true,
     });
     //连接状态
+    console.log('init');
     const connectListener = (result: any) => {
       console.log('connectListener:' + JSON.stringify(result));
       // 获取registerID
-      JPush.getRegistrationID(result => {
-        console.log('registerID:' + JSON.stringify(result));
-        result?.registerID && setItem('pushToken', result.registerID);
-      });
+      JPush.getRegistrationID(result =>
+        console.log('registerID:' + JSON.stringify(result))
+      );
     };
     JPush.addConnectEventListener(connectListener);
     //通知回调
