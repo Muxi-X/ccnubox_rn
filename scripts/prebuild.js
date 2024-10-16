@@ -16,6 +16,11 @@ async function prebuild() {
         value: 'ios',
         description: '🍎',
       },
+      {
+        name: 'all',
+        value: 'all',
+        description: '🤖 & 🍎',
+      },
     ],
   });
   const profile = await select({

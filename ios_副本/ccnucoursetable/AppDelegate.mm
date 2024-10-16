@@ -12,8 +12,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  // JPush初始化配置
+  // JPush 初始化配置
   [JPUSHService setupWithOption:launchOptions appKey:@"3fdd1ecdd0325fa2a197df7e" channel:@"course_box" apsForProduction:YES];
+  
   // APNS 注册实体配置
   JPUSHRegisterEntity *entity = [[JPUSHRegisterEntity alloc] init];
   if (@available(iOS 12.0, *)) {
@@ -25,7 +26,7 @@
   NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
   [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
 
-
+  
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
   InitializeFlipper(application);
 #endif
@@ -60,8 +61,7 @@
   return [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler] || [super application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
 }
 
-//************************************************JPush start************************************************
-
+// Remote Notification Delegates
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
   [JPUSHService registerDeviceToken:deviceToken];
 }
@@ -75,6 +75,8 @@
   [[NSNotificationCenter defaultCenter] postNotificationName:J_APNS_NOTIFICATION_ARRIVED_EVENT object:userInfo];
   completionHandler(UIBackgroundFetchResultNewData);
 }
+
+//************************************************JPush start************************************************
 
 // iOS 10 及以上版本的通知处理
 - (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler {

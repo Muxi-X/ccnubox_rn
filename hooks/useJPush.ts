@@ -4,6 +4,10 @@ import { useEffect } from 'react';
 
 export const useJPush = () => {
   useEffect(() => {
+    if (__DEV__) {
+      alert('开发环境，禁用notification');
+      return;
+    }
     JPush.init({
       appKey: '3fdd1ecdd0325fa2a197df7e',
       channel: 'course_box',
@@ -14,9 +18,10 @@ export const useJPush = () => {
     const connectListener = (result: any) => {
       console.log('connectListener:' + JSON.stringify(result));
       // 获取registerID
-      JPush.getRegistrationID(result =>
-        console.log('registerID:' + JSON.stringify(result))
-      );
+      JPush.getRegistrationID(result => {
+        console.log('registerID:' + JSON.stringify(result));
+        setItem('pushToken', result.registerID);
+      });
     };
     JPush.addConnectEventListener(connectListener);
     //通知回调
