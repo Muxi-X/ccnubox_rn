@@ -36,9 +36,9 @@ const IndexPage: FC = () => {
         loading={!notification}
         onPress={() => {
           alert(getItem('pushToken'));
-          registerForPushNotificationsAsync().then(res => {
-            setNotification(res ?? '');
-          });
+          // registerForPushNotificationsAsync().then(res => {
+          //   setNotification(res ?? '');
+          // });
         }}
       >
         通知测试
