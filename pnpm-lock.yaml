@@ -80,12 +80,12 @@ dependencies:
   jcore-react-native:
     specifier: ^2.1.5
     version: 2.2.2(react-native@0.74.5)
-  jpush-expo-config-plugin:
-    specifier: ^0.0.6
-    version: 0.0.6
   jpush-react-native:
     specifier: ^3.0.6
     version: 3.1.1(jcore-react-native@2.2.2)(react-native@0.74.5)
+  mx-jpush-expo:
+    specifier: ^0.0.1
+    version: 0.0.1
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -766,7 +766,7 @@ packages:
     resolution: {integrity: sha512-EStJpq4OuY8xYfhGVXngigBJRWxftKX9ksiGDnmlY3o7B/V7KIAc9X4oiK87uPJSc/vs5L869bem5fhZa8caZw==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-validator-identifier': 7.24.7
+      '@babel/helper-validator-identifier': 7.25.7
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.0.1
@@ -2711,10 +2711,6 @@ packages:
     resolution: {integrity: sha512-r0pWfuhkv7KIcXMUiNACJmJKKwlTBGMw9VZHNdppS8/0Nve8HZMTkNRFQzTHW1uH3pBj8jEXpyw/2vSWDHex9g==}
     dev: true
 
-  /@expo/config-types@51.0.2:
-    resolution: {integrity: sha512-IglkIoiDwJMY01lYkF/ZSBoe/5cR+O3+Gx6fpLFjLfgZGBTdyPkKa1g8NWoWQCk+D3cKL2MDbszT2DyRRB0YqQ==}
-    dev: false
-
   /@expo/config-types@51.0.3:
     resolution: {integrity: sha512-hMfuq++b8VySb+m9uNNrlpbvGxYc8OcFCUX9yTmi9tlx6A4k8SDabWFBgmnr4ao3wEArvWrtUQIfQCVtPRdpKA==}
 
@@ -2741,7 +2737,7 @@ packages:
     dependencies:
       '@babel/code-frame': 7.10.4
       '@expo/config-plugins': 8.0.10
-      '@expo/config-types': 51.0.2
+      '@expo/config-types': 51.0.3
       '@expo/json-file': 8.3.3
       getenv: 1.0.0
       glob: 7.1.6
@@ -10917,14 +10913,6 @@ packages:
     resolution: {integrity: sha512-bF7vcQxbODoGK1imE2P9GS9aw4zD0Sd+Hni68IMZLj7zRnquH7dXUmMw9hDI5S/Jzt7q+IyTXN0rSg2GI0IKhQ==}
     dev: false
 
-  /jpush-expo-config-plugin@0.0.6:
-    resolution: {integrity: sha512-BXh1mFrmEUD9J1W9cr6cCdR0olt4iMPJyLWj/qi18x8l3xK1D+xRRVh7mxnE+OzESPFxWife6d+ZWzTQxuynQA==}
-    dependencies:
-      '@expo/config-plugins': 3.1.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /jpush-react-native@3.1.1(jcore-react-native@2.2.2)(react-native@0.74.5):
     resolution: {integrity: sha512-guzuzCISRUm7mLti/dW1XOGyP0k6ENkWnPfZD0kuHv0XgdhEyUXHFDG+qSeMt9ZmCxHZZWXWsheC1PdN4Mk9nQ==}
     peerDependencies:
@@ -12058,6 +12046,14 @@ packages:
       rimraf: 2.4.5
     dev: false
     optional: true
+
+  /mx-jpush-expo@0.0.1:
+    resolution: {integrity: sha512-kNawVR4BFywFclePSC+9TlTdX6zNL5z3J7Ki/byECayVhXoBU77qBLxQCVb/OabDc6xHcXdgc14rC9I5wYFiig==}
+    dependencies:
+      '@expo/config-plugins': 3.1.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
