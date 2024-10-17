@@ -1,4 +1,3 @@
-import { CSSProperties } from 'react';
 import { TextStyle, ViewStyle } from 'react-native';
 
 export interface PaginationType {

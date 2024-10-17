@@ -1,4 +1,4 @@
-import React, { MutableRefObject } from 'react';
+import { MutableRefObject } from 'react';
 import WebView from 'react-native-webview';
 
 import { SubThemeType, ThemeType, layoutStyleType } from '@/styles/types';

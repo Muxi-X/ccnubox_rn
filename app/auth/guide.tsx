@@ -2,7 +2,7 @@ import { Button, Icon, Toast } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,

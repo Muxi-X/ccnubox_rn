@@ -1,8 +1,8 @@
+import { Button } from '@ant-design/react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { Button } from '@ant-design/react-native';
 
 export default function Setting() {
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();

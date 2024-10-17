@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { ViewProps, ViewStyle } from 'react-native';
 
 export interface BaseAnimatedProps extends ViewProps {
