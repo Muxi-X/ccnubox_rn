@@ -41,7 +41,8 @@ export default function RootLayout() {
     setRef(scraperRef);
   }, [initStyles]);
   return (
-    /** 没有 Provider，Toast 和 Modal 会失效，误删 */
+    /** Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删 */
+    // @fix-me 自建 portal 组件，支持自定义 Toast Modal
     <Provider>
       {/* 手势检测 */}
       <GestureHandlerRootView style={{ flex: 1 }}>

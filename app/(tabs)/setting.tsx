@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
-import { useEffect } from 'react';
-import { Button, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { Button } from '@ant-design/react-native';
 
 export default function Setting() {
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
-
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     if (isUpdatePending) {
       void Updates.reloadAsync();
@@ -14,9 +15,30 @@ export default function Setting() {
 
   return (
     <View>
-      <Button onPress={() => Updates.checkForUpdateAsync()} title="检查更新" />
+      <Button
+        onPress={() => {
+          setLoading(true);
+          Updates.checkForUpdateAsync()
+            .then(res => {
+              if (!res.isAvailable) {
+                alert('已是最新版');
+              }
+            })
+            .catch(err => {
+              alert(err);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }}
+        loading={loading}
+        children="检查更新"
+      />
       {isUpdateAvailable ? (
-        <Button onPress={() => Updates.fetchUpdateAsync()} title="下载并更新" />
+        <Button
+          onPress={() => Updates.fetchUpdateAsync()}
+          children="下载并更新"
+        />
       ) : null}
       <StatusBar style="auto" />
     </View>

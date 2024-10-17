@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "4",
+      "buildNumber": "6",
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
@@ -51,7 +51,7 @@
       "expo-router",
       "expo-font",
       [
-        "mx-jpush-expo",
+        "./plugin.js",
         {
           "appKey": "3fdd1ecdd0325fa2a197df7e",
           "channel": "course_box"

@@ -1,48 +1,8 @@
 const { spawn } = require('child_process');
 
-const { select } = require('@inquirer/prompts');
+const { select, confirm } = require('@inquirer/prompts');
 
 async function prebuild() {
-  const platform = await select({
-    message: '选择 build 平台',
-    choices: [
-      {
-        name: 'android',
-        value: 'android',
-        description: '🤖',
-      },
-      {
-        name: 'ios',
-        value: 'ios',
-        description: '🍎',
-      },
-      {
-        name: 'all',
-        value: 'all',
-        description: '🤖 & 🍎',
-      },
-    ],
-  });
-  const profile = await select({
-    message: '选择发布环境',
-    choices: [
-      {
-        name: '测试',
-        value: 'test',
-        description: 'test',
-      },
-      {
-        name: '开发',
-        value: 'development',
-        description: 'development',
-      },
-      {
-        name: '正式',
-        value: 'production',
-        description: 'production',
-      },
-    ],
-  });
   /* 以 promise 的方式执行命令 */
   function runCommand(command, args) {
     return new Promise((resolve, reject) => {
@@ -63,22 +23,65 @@ async function prebuild() {
       });
     });
   }
-  async function executeBuild(platform, profile) {
+  async function executeBuild() {
     try {
-      console.log('\r镜像源配置完成.');
-      // 然后执行 prebuild 和 build
       console.log('开始构建...');
-      await runCommand('sh', ['-c', `pnpx expo prebuild --no-install --clean`]);
+      await runCommand('sh', ['-c', `pnpx expo prebuild --no-install`]);
       console.log('\r构建完成');
-      await runCommand('sh', [
-        '-c',
-        `eas build --platform ${platform} --profile ${profile}`,
-      ]);
+      const publish = await confirm({
+        message: '是否发布到 expo',
+      });
+      if (publish) {
+        const platform = await select({
+          message: '选择 build 平台',
+          choices: [
+            {
+              name: 'android',
+              value: 'android',
+              description: '🤖',
+            },
+            {
+              name: 'ios',
+              value: 'ios',
+              description: '🍎',
+            },
+            {
+              name: 'all',
+              value: 'all',
+              description: '🤖 & 🍎',
+            },
+          ],
+        });
+        const profile = await select({
+          message: '选择发布环境',
+          choices: [
+            {
+              name: '测试',
+              value: 'test',
+              description: 'test',
+            },
+            {
+              name: '开发',
+              value: 'development',
+              description: 'development',
+            },
+            {
+              name: '正式',
+              value: 'production',
+              description: 'production',
+            },
+          ],
+        });
+        void runCommand('sh', [
+          '-c',
+          `eas build --platform ${platform} --profile ${profile}`,
+        ]);
+      }
     } catch (error) {
       console.error(`执行出错: ${error.message}`);
     }
   }
-  void executeBuild(platform, profile);
+  void executeBuild();
 }
 
 void prebuild();
