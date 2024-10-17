@@ -2,7 +2,7 @@ import { Button, Icon, Toast } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -44,7 +44,10 @@ export const PreLoginCard: FC = () => {
   const titleShift = useSharedValue(0);
   useEffect(() => {
     // 每次移动多少
-    const percent = Math.floor((percent2px(80) - 36) / preloginGuide.length);
+    const percent = Math.floor(
+      (percent2px(80) - 4 * commonStyles.fontExtraLarge.fontSize - 32) /
+        (preloginGuide.length - 1)
+    );
     titleShift.value = withTiming(Math.floor(percent * activeIndex), {
       easing: Easing.out(Easing.ease),
     });
@@ -84,10 +87,11 @@ export const PreLoginCard: FC = () => {
     }, PAGE_SWIPE_ANIMATION_DURATION + 200);
   };
   const onSwipe = Gesture.Pan()
-    .minDistance(20)
+    .minDistance(30)
     .onEnd(event => {
       // 渐入渐出动画
-      jump(activeIndex + (event.translationX < 0 ? 1 : -1));
+      if (event.translationX < -30) jump(activeIndex + 1);
+      if (event.translationX > 30) jump(activeIndex - 1);
     })
     .runOnJS(true);
   const handleChange = (current: number) => {

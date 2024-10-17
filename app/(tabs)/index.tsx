@@ -11,7 +11,6 @@ import useScraper from '@/store/scraper';
 import { getUpdateInfo } from '@/utils/fetchUpdates';
 
 const IndexPage: FC = () => {
-  const [notification, setNotification] = useState<string>('');
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(true);
   /* 注入 js 实现爬虫 */
@@ -33,12 +32,9 @@ const IndexPage: FC = () => {
         前往登陆页面测试
       </Button>
       <Button
-        loading={!notification}
-        onPress={() => {
-          alert(getItem('pushToken'));
-          // registerForPushNotificationsAsync().then(res => {
-          //   setNotification(res ?? '');
-          // });
+        onPress={async () => {
+          const pushToken = getItem('pushToken');
+          alert(pushToken);
         }}
       >
         通知测试
@@ -72,7 +68,6 @@ const IndexPage: FC = () => {
         prefixes={[, , '至']}
         onClose={closeModal}
       ></DatePicker>
-      <Text>token:{notification}</Text>
     </View>
   );
 };

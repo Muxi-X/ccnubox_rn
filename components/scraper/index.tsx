@@ -9,6 +9,15 @@ import { scrapeLogin } from '@/constants/scraper';
  * 爬虫组件，用于爬取研究生课表、成绩
  * 位于全局，通过 ref 调用
  * @example
+ * const inject = useScraper(state => state.injectJavaScript);
+ * //...
+ * <Button
+ *    onPress={() => {
+ *      inject(scrapeCourse(2024, semesterMap.first));
+ *    }}
+ * >
+ *    课表测试
+ * </Button>
  */
 const Scraper = forwardRef<WebView | null, ScraperProps>(
   ({ onMessage }, ref) => {

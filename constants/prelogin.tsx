@@ -1,5 +1,5 @@
 import { FC, ReactElement } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import { commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
@@ -9,7 +9,10 @@ export const GuideContent: FC<{
   extraNodes?: ReactElement;
 }> = ({ texts, extraNodes }) => {
   return (
-    <View style={styles.contentWrap}>
+    <ScrollView
+      contentContainerStyle={styles.contentWrap}
+      showsVerticalScrollIndicator={true}
+    >
       {texts.map(text => (
         <Text
           style={[commonStyles.fontLarge, styles.textStyle]}
@@ -19,7 +22,7 @@ export const GuideContent: FC<{
         </Text>
       ))}
       {extraNodes ?? <></>}
-    </View>
+    </ScrollView>
   );
 };
 export const preloginGuide: { title: string; content: ReactElement }[] = [
@@ -84,9 +87,9 @@ const styles = StyleSheet.create({
   contentWrap: {
     display: 'flex',
     width: '100%',
-    flex: 1,
+    // flex: 1,
+    height: 'auto',
     alignItems: 'center',
-    marginTop: 20,
   },
   textStyle: {
     color: '#fff',
