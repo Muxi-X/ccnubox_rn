@@ -16,14 +16,14 @@ const SkeletonLoader: FC<SkeletonType> = ({ loading, children, style }) => {
     height: number;
   } | null>(null);
   const translateX = useMemo(() => {
-    return new Animated.Value(layout ? -layout.width : 0);
+    return new Animated.Value(layout ? -layout.width * 1.5 : 0);
   }, [layout?.width]);
 
   React.useEffect(() => {
     layout &&
       Animated.loop(
         Animated.timing(translateX, {
-          toValue: layout.width,
+          toValue: layout.width * 1.25,
           duration: 1500,
           useNativeDriver: true,
         })

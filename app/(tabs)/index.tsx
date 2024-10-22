@@ -15,8 +15,15 @@ import { getUpdateInfo } from '@/utils/fetchUpdates';
 
 const IndexPage: FC = () => {
   const router = useRouter();
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<{ key: number }[]>([
+    { key: 1 },
+    { key: 2 },
+    { key: 3 },
+    { key: 4 },
+    { key: 5 },
+  ]);
   const handleRender = (item: { key: number }, order: number): ReactElement => {
     return (
       <>
@@ -95,7 +102,8 @@ const IndexPage: FC = () => {
       ></DatePicker>
       <DraggableGrid
         numColumns={4}
-        data={[{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }]}
+        data={items}
+        onDragRelease={data => setItems(data)}
         renderItem={(item, order) => handleRender(item, order)}
       ></DraggableGrid>
     </View>
