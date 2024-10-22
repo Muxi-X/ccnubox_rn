@@ -78,10 +78,10 @@ dependencies:
     specifier: ~13.0.3
     version: 13.0.3(expo@51.0.38)
   jcore-react-native:
-    specifier: ^2.1.5
+    specifier: ^2.2.2
     version: 2.2.2(react-native@0.74.5)
   jpush-react-native:
-    specifier: ^3.0.6
+    specifier: ^3.1.1
     version: 3.1.1(jcore-react-native@2.2.2)(react-native@0.74.5)
   react:
     specifier: 18.2.0

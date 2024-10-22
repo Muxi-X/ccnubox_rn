@@ -1,10 +1,12 @@
 import { Button } from '@ant-design/react-native';
 import { Href, useRouter } from 'expo-router';
-import { getItem } from 'expo-secure-store';
+import { getItem, setItem } from 'expo-secure-store';
+import JPush from 'jpush-react-native';
 import React, { FC, memo, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import DatePicker from '@/components/picker';
+import Skeleton from '@/components/skeleton';
 import { scrapeCourse, scrapeGrade, semesterMap } from '@/constants/scraper';
 import { registerForPushNotificationsAsync } from '@/hooks/useNotification';
 import useScraper from '@/store/scraper';
@@ -23,6 +25,7 @@ const IndexPage: FC = () => {
   };
   return (
     <View>
+      <Skeleton></Skeleton>
       <Text>Hello Index😎</Text>
       <Button
         onPress={() => {
@@ -33,6 +36,10 @@ const IndexPage: FC = () => {
       </Button>
       <Button
         onPress={async () => {
+          JPush.getRegistrationID(result => {
+            console.log('registerID:' + JSON.stringify(result));
+            setItem('pushToken', result.registerID);
+          });
           const pushToken = getItem('pushToken');
           alert(pushToken);
         }}
