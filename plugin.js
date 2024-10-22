@@ -278,53 +278,6 @@ const setAndroidManifest = config =>
         '${JPUSH_APPKEY}'
       );
     }
-    if (
-      config.modResults.manifest.application[0].activity.findIndex(
-        item =>
-          item.$['android:name'] === 'cn.jpush.android.service.JNotifyActivity'
-      ) === -1
-    ) {
-      console.log(
-        '\n[MX_JPush_Expo] 此后两项为BUG修复, 对应版本 jpush-react-native 2.8.3'
-      );
-      console.log('\n[MX_JPush_Expo] - 配置 AndroidManifest xmlns:tools ... ');
-      config.modResults.manifest.$['xmlns:tools'] =
-        'http://schemas.android.com/tools';
-      console.log('\n[MX_JPush_Expo] - 配置 AndroidManifest activity ... ');
-      config.modResults.manifest.application[0].activity.push({
-        $: {
-          'android:name': 'cn.jpush.android.service.JNotifyActivity',
-          'android:exported': 'true',
-          'tools:node': 'replace',
-          'android:taskAffinity': 'jpush.custom',
-          'android:theme': '@android:style/Theme.Translucent.NoTitleBar',
-        },
-        'intent-filter': [
-          {
-            action: [
-              {
-                $: {
-                  'android:name': 'cn.jpush.android.intent.JNotifyActivity',
-                },
-              },
-            ],
-            category: [
-              {
-                $: {
-                  'android:name': 'android.intent.category.DEFAULT',
-                },
-              },
-              {
-                $: {
-                  'android:name': '${applicationId}',
-                },
-              },
-            ],
-          },
-        ],
-      });
-    }
-
     return config;
   });
 

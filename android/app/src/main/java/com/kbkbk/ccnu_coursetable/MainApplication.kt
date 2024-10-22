@@ -14,6 +14,7 @@ import com.facebook.soloader.SoLoader
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+import cn.jiguang.plugins.push.JPushModule
 
 class MainApplication : Application(), ReactApplication {
 
@@ -45,6 +46,8 @@ class MainApplication : Application(), ReactApplication {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
+    //调用此方法：点击通知让应用从后台切到前台
+    JPushModule.registerActivityLifecycle(this)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
   }
 

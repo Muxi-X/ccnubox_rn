@@ -4,14 +4,15 @@ import { useEffect } from 'react';
 
 export const useJPush = () => {
   useEffect(() => {
-    if (__DEV__) {
-      alert('开发环境，禁用notification');
-      return;
-    }
+    // if (__DEV__) {
+    //   alert('开发环境，禁用notification');
+    //   return;
+    // }
+    JPush.setLoggerEnable(true);
     JPush.init({
       appKey: '3fdd1ecdd0325fa2a197df7e',
       channel: 'course_box',
-      production: true,
+      production: 1,
     });
     //连接状态
     console.log('init');
