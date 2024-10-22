@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { FC, memo, ReactElement, useMemo, useState } from 'react';
+import React, { FC, memo, useMemo, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
