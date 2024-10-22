@@ -2,6 +2,7 @@ import * as Notifications from 'expo-notifications';
 import { setItem } from 'expo-secure-store';
 import JPush from 'jpush-react-native';
 import { useEffect } from 'react';
+
 import { JPushSecrets } from '@/secret/JPush';
 
 export const useJPush = () => {
