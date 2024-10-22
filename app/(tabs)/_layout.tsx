@@ -9,13 +9,16 @@ import TabBar from '../../components/navi/index';
 export default function TabLayout() {
   const render = (configs: SingleTabType[]) =>
     configs.map(config => {
-      const { name, title } = config;
+      const { name, title, headerRight, headerLeft } = config;
       return (
         <Tabs.Screen
           name={name}
           key={keyGenerator.next().value as number}
           options={{
-            title: title || name,
+            title: title || '',
+            // eslint-disable-next-line react/jsx-no-undef
+            headerRight: headerRight,
+            headerLeft: headerLeft,
           }}
         />
       );

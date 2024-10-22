@@ -14,4 +14,7 @@ export const commonStyles = StyleSheet.create({
   fontBold: {
     fontWeight: 'bold',
   },
+  TabBarPadding: {
+    marginHorizontal: 30,
+  },
 });

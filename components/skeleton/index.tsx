@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { FC, memo, useMemo, useState } from 'react';
+import React, { FC, memo, ReactElement, useMemo, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
@@ -10,7 +10,7 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
  * @param children {ReactElement} 渲染组件
  * @constructor
  */
-const SkeletonLoader: FC<SkeletonType> = ({ loading, children, style }) => {
+const SkeletonLoader: FC<SkeletonType> = ({ loading, children }) => {
   const [layout, setLayout] = useState<{
     width: number;
     height: number;
@@ -39,32 +39,39 @@ const SkeletonLoader: FC<SkeletonType> = ({ loading, children, style }) => {
   };
 
   if (loading && layout) {
-    return (
-      <View style={[style, styles.skeletons, layout]}>
-        <Animated.View
-          style={[
-            styles.shimmer,
-            {
-              transform: [{ translateX }],
-            },
-          ]}
-        >
-          <LinearGradient
-            colors={[
-              'transparent',
-              'rgba(216, 216, 216, 0.253)',
-              'transparent',
+    if (React.isValidElement(children)) {
+      const childStyle = (children as ReactElement).props?.style || {};
+      return (
+        <View style={[childStyle, styles.skeletons, layout]}>
+          <Animated.View
+            style={[
+              styles.shimmer,
+              {
+                transform: [{ translateX }],
+              },
             ]}
-            style={styles.gradient}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 2, y: 0.5 }}
-          />
-        </Animated.View>
-      </View>
-    );
+          >
+            <LinearGradient
+              colors={[
+                'transparent',
+                'rgba(216, 216, 216, 0.253)',
+                'transparent',
+              ]}
+              style={styles.gradient}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 2, y: 0.5 }}
+            />
+          </Animated.View>
+        </View>
+      );
+    }
+    return null;
   }
 
-  return children && React.cloneElement(children, { onLayout: handleLayout });
+  return (
+    children &&
+    React.cloneElement(children as ReactElement, { onLayout: handleLayout })
+  );
 };
 const styles = StyleSheet.create({
   skeletons: {
@@ -96,20 +103,11 @@ export default memo(SkeletonLoader);
  */
 export const SkeletonView: FC<SkeletonViewType> = ({ loading, children }) => {
   const wrappedChildren = React.Children.map(children, child => {
-    if (React.isValidElement(child)) {
-      const childStyle = child.props.style || {};
-
-      return (
-        <SkeletonLoader
-          loading={loading}
-          key={Math.random().toString()}
-          style={childStyle}
-        >
-          {React.cloneElement(child)}
-        </SkeletonLoader>
-      );
-    }
-    return child; // In case the child is not a valid element
+    return (
+      <SkeletonLoader loading={loading} key={Math.random().toString()}>
+        {React.cloneElement(child as ReactElement)}
+      </SkeletonLoader>
+    );
   });
 
   return <View>{wrappedChildren}</View>;
