@@ -1,4 +1,9 @@
+import { Text } from 'react-native';
+
 import { SingleTabType } from '@/types/tabBarTypes';
+import { Icon } from '@ant-design/react-native';
+import { commonStyles } from '@/styles/common';
+
 /**
  * @enum tabBar颜色
  * @description PRIMARY 为默认
@@ -10,8 +15,16 @@ export const TABBAR_COLOR = {
 export const tabConfig: SingleTabType[] = [
   {
     name: 'index',
-    title: '首页',
+    title: '',
     iconName: 'home',
+    headerLeft: () => (
+      <Text style={[commonStyles.TabBarPadding, commonStyles.fontLarge]}>
+        华师匣子
+      </Text>
+    ),
+    headerRight: () => (
+      <Icon name="menu" style={commonStyles.TabBarPadding}></Icon>
+    ),
   },
   {
     name: 'schedule',
