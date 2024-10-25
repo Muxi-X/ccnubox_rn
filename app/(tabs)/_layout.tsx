@@ -1,11 +1,11 @@
 import { Tabs } from 'expo-router';
+import { Text } from 'react-native';
 
 import { tabConfig } from '@/constants/tabBar';
 import { SingleTabType } from '@/types/tabBarTypes';
 import { keyGenerator } from '@/utils/autoKey';
 
 import TabBar from '../../components/navi/index';
-import { Text } from 'react-native';
 
 export default function TabLayout() {
   const render = (configs: SingleTabType[]) =>

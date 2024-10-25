@@ -1,16 +1,14 @@
 import React, { memo, useState } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { DraggableGrid as Grid } from 'react-native-draggable-grid';
 
 import {
   DraggableGridProps,
   GridDataType as ItemData,
 } from '@/components/grid/type';
-import Skeleton from '@/components/skeleton';
 
 const DraggableGrid: React.FC<DraggableGridProps> = ({
   data: initData,
-  loading,
   renderItem,
 }) => {
   const [data, setData] = useState<ItemData[]>(
@@ -21,22 +19,6 @@ const DraggableGrid: React.FC<DraggableGridProps> = ({
       { name: '4', key: 'four' },
     ]
   );
-
-  const render = (item: ItemData) => {
-    return (
-      <View style={styles.item} key={item.key}>
-        <Skeleton style={styles.item} loading={loading}>
-          <Image
-            style={{ width: 60, height: 60, borderRadius: 30 }}
-            source={require('../../assets/images/mx-logo.png')}
-          ></Image>
-        </Skeleton>
-        <Skeleton loading={loading}>
-          <Text style={styles.itemText}>{item.name}</Text>
-        </Skeleton>
-      </View>
-    );
-  };
 
   const onDragRelease = (data: ItemData[]) => {
     setData(data);
