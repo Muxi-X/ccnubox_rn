@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-  GestureUpdateEvent,
-  PanGestureHandlerEventPayload,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -51,7 +46,6 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 组件是否位于顶部，由于原生组件没有检测 overscroll 的能力，因此用 state 代替
   const [isAtTop, setIsAtTop] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
-  const timeSideBarRef = useRef<ScrollView>(null);
   // 下拉刷新动画
   const backHeight = useSharedValue(0);
   const scale = useSharedValue(0);
@@ -83,16 +77,6 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   };
   const handleScrollBottom = () => {
     setIsAtBottom(true);
-  };
-  // 同步时间轴和内容
-  const innerScrollHandler = (
-    event: GestureUpdateEvent<PanGestureHandlerEventPayload>
-  ) => {
-    timeSideBarRef.current!.scrollTo({
-      x: 0,
-      y: event.translationY,
-      animated: false,
-    });
   };
   // 外部滚动检测蒙层
   const pan = Gesture.Pan()
