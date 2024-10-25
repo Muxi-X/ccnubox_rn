@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+
 import { ColorType } from '@/styles/types';
 
 /** 与主题无关通用样式 */

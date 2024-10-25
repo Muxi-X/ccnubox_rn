@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, ViewProps } from 'react-native';
+
 import { commonColors } from '@/styles/common';
 /**
  * 分割线

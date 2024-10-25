@@ -36,7 +36,7 @@ export default function RootLayout() {
     // 配置Toast
     Toast.config({ mask: false, stackable: true });
     // 获取更新
-    // fetchUpdates().then(null, null);
+    fetchUpdates().then(null, null);
     // 在 store 中设置爬虫 ref
     setRef(scraperRef);
   }, [initStyles]);

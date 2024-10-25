@@ -16,8 +16,8 @@ import Animated, {
 
 import { CourseTableProps } from '@/components/courseTable/type';
 import Divider from '@/components/divider';
-import { commonColors } from '@/styles/common';
 import ScrollableView from '@/components/scrollView';
+import { commonColors } from '@/styles/common';
 
 const COURSE_ITEM_WIDTH = 100;
 const COURSE_ITEM_HEIGHT = 80;
@@ -51,8 +51,6 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 组件是否位于顶部，由于原生组件没有检测 overscroll 的能力，因此用 state 代替
   const [isAtTop, setIsAtTop] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
-  // 记录拖动中 x,y 偏移
-  const movedPos = useRef<Record<'x' | 'y', number>>({ x: 0, y: 0 });
   const timeSideBarRef = useRef<ScrollView>(null);
   // 下拉刷新动画
   const backHeight = useSharedValue(0);
