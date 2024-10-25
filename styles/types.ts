@@ -16,3 +16,9 @@ export type ThemeType = {
 export type SubThemeType = {
   [key in ConfigurableThemeNames]: ViewStyle | TextStyle | ImageStyle;
 };
+
+/** 颜色表 */
+export type ColorType = Record<
+  'red' | 'blue' | 'yellow' | 'purple' | 'black' | 'green' | 'gray',
+  string
+>;

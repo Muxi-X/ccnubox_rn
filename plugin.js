@@ -119,7 +119,7 @@ const setAppDelegate = config =>
 
     if (
       config.modResults.contents.indexOf(
-        'JPUSHService setupWithOption:launchOptions'
+        'JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];'
       ) === -1
     ) {
       console.log(
@@ -164,32 +164,32 @@ const setAppDelegate = config =>
         /appKey\:\@\"(.*)\" channel\:\@\"(.*)\" /,
         `appKey:@"${JPUSH_APPKEY}" channel:@"${JPUSH_CHANNEL}" `
       );
-      if (
-        config.modResults.contents.indexOf(
-          'return [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];'
-        ) > -1
-      ) {
-        config.modResults.contents = config.modResults.contents.replace(
-          'return [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];',
-          '[JPUSHService registerDeviceToken:deviceToken];'
-        );
-      }
-      if (
-        config.modResults.contents.indexOf(
-          'return [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];'
-        ) > -1
-      ) {
-        config.modResults.contents = config.modResults.contents.replace(
-          'return [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];',
-          `
+    }
+    if (
+      config.modResults.contents.indexOf(
+        'return [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];'
+      ) > -1
+    ) {
+      config.modResults.contents = config.modResults.contents.replace(
+        'return [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];',
+        '[JPUSHService registerDeviceToken:deviceToken];'
+      );
+    }
+    if (
+      config.modResults.contents.indexOf(
+        'return [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];'
+      ) > -1
+    ) {
+      config.modResults.contents = config.modResults.contents.replace(
+        'return [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];',
+        `
         // iOS 10 以下 Required
         NSLog(@"iOS 7 APNS");
         [JPUSHService handleRemoteNotification:userInfo];
         [[NSNotificationCenter defaultCenter] postNotificationName:J_APNS_NOTIFICATION_ARRIVED_EVENT object:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
         `
-        );
-      }
+      );
     }
     if (config.modResults.contents.indexOf('JPush start') === -1) {
       console.log('\n[MX_JPush_Expo] 配置 AppDelegate other ... ');
@@ -236,7 +236,8 @@ const setAppDelegate = config =>
 
 // 自定义消息
 - (void)networkDidReceiveMessage:(NSNotification *)notification {
-  [[NSNotificationCenter defaultCenter] postNotificationName:J_CUSTOM_NOTIFICATION_EVENT object:[notification userInfo]];
+  NSDictionary * userInfo = [notification userInfo];
+  [[NSNotificationCenter defaultCenter] postNotificationName:J_CUSTOM_NOTIFICATION_EVENT object:userInfo];
 }
 
 //************************************************JPush end************************************************

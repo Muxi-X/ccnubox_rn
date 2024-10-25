@@ -21,8 +21,8 @@ const TabBar: FC<BottomTabBarProps> = props => {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state?.index === index;
 

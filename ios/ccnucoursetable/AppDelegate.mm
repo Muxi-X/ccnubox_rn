@@ -15,18 +15,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  // JPush初始化配置
-  [JPUSHService setupWithOption:launchOptions appKey:@"3fdd1ecdd0325fa2a197df7e" channel:@"course_box" apsForProduction:YES];
-  // APNS 注册实体配置
-  JPUSHRegisterEntity *entity = [[JPUSHRegisterEntity alloc] init];
-  if (@available(iOS 12.0, *)) {
-    entity.types = JPAuthorizationOptionAlert | JPAuthorizationOptionBadge | JPAuthorizationOptionSound;
-  }
-  [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
-  
-  // 监听远程通知和响应通知
-  NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
-  [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
+  JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
+    if (@available(iOS 12.0, *)) {
+      // entity.types = JPAuthorizationOptionNone; //JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSou//nd|JPAuthorizationOptionProvidesAppNotificationSettings;
+      entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
+    }
+    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
 
   self.moduleName = @"main";
 
@@ -128,7 +122,8 @@
 
 // 自定义消息
 - (void)networkDidReceiveMessage:(NSNotification *)notification {
-  [[NSNotificationCenter defaultCenter] postNotificationName:J_CUSTOM_NOTIFICATION_EVENT object:[notification userInfo]];
+  NSDictionary * userInfo = [notification userInfo];
+  [[NSNotificationCenter defaultCenter] postNotificationName:J_CUSTOM_NOTIFICATION_EVENT object:userInfo];
 }
 
 //************************************************JPush end************************************************

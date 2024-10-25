@@ -1,4 +1,6 @@
+import { Button, Carousel } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
+import { getItem } from 'expo-secure-store';
 import React, { FC, memo, useEffect, useState } from 'react';
 import {
   Text,
@@ -7,10 +9,11 @@ import {
   Image,
   ImageSourcePropType,
 } from 'react-native';
-import { Carousel } from '@ant-design/react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 
 import Skeleton from '@/components/skeleton';
+import { keyGenerator } from '@/utils/autoKey';
+import DualScrollView from '@/components/scrollView';
 
 type MainPageGridDataType = {
   text: string;
@@ -52,10 +55,14 @@ const IndexPage: FC = () => {
   }, []);
   return (
     <View style={styles.wrapper}>
+      <DualScrollView rows={4} columns={5}></DualScrollView>
       <Skeleton loading={loading}>
         <Carousel style={styles.banner} autoplay infinite dots={false}>
           {banners.map(banner => (
-            <View style={styles.bannerItem}></View>
+            <View
+              style={styles.bannerItem}
+              key={keyGenerator.next().value as unknown as number}
+            ></View>
           ))}
         </Carousel>
       </Skeleton>

@@ -5,17 +5,19 @@ import { SingleTabType } from '@/types/tabBarTypes';
 import { keyGenerator } from '@/utils/autoKey';
 
 import TabBar from '../../components/navi/index';
+import { Text } from 'react-native';
 
 export default function TabLayout() {
   const render = (configs: SingleTabType[]) =>
     configs.map(config => {
-      const { name, title, headerRight, headerLeft } = config;
+      const { name, title, headerTitle, headerRight, headerLeft } = config;
       return (
         <Tabs.Screen
           name={name}
           key={keyGenerator.next().value as number}
           options={{
-            title: title || '',
+            title: title,
+            headerTitle: headerTitle ?? (() => <Text>{title}</Text>),
             // eslint-disable-next-line react/jsx-no-undef
             headerRight: headerRight,
             headerLeft: headerLeft,
