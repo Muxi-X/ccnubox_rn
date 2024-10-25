@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import { DraggableGrid as Grid } from 'react-native-draggable-grid';
+
 import {
   DraggableGridProps,
   GridDataType as ItemData,

@@ -22,4 +22,8 @@ export type SingleTabType = {
    * Tab右侧
    */
   headerRight?: () => ReactElement;
+  /**
+   * header 居中展示
+   */
+  headerTitle?: () => ReactElement;
 };

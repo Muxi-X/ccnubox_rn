@@ -3,6 +3,7 @@ import React, { FC, memo, ReactElement, useMemo, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
+import { keyGenerator } from '@/utils/autoKey';
 
 /**
  * 骨架屏组件
@@ -104,7 +105,10 @@ export default memo(SkeletonLoader);
 export const SkeletonView: FC<SkeletonViewType> = ({ loading, children }) => {
   const wrappedChildren = React.Children.map(children, child => {
     return (
-      <SkeletonLoader loading={loading} key={Math.random().toString()}>
+      <SkeletonLoader
+        loading={loading}
+        key={keyGenerator.next().value as unknown as number}
+      >
         {React.cloneElement(child as ReactElement)}
       </SkeletonLoader>
     );

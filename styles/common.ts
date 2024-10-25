@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { ColorType } from '@/styles/types';
 
 /** 与主题无关通用样式 */
 export const commonStyles = StyleSheet.create({
@@ -17,4 +18,9 @@ export const commonStyles = StyleSheet.create({
   TabBarPadding: {
     marginHorizontal: 30,
   },
+  courseTableDividerLine: {},
 });
+
+export const commonColors: ColorType = {
+  gray: '#ccc',
+};

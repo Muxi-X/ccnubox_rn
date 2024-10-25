@@ -2,6 +2,7 @@ import * as Notifications from 'expo-notifications';
 import { setItem } from 'expo-secure-store';
 import JPush from 'jpush-react-native';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 
 import { JPushSecrets } from '@/secret/JPush';
 
@@ -11,7 +12,16 @@ export const useJPush = () => {
       alert('开发环境，禁用notification');
       return;
     }
-    getPermission().then(initJPush);
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('course_box', {
+        name: '华师匣子',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      })
+        .then(getPermission)
+        .then(initJPush);
+    }
   }, []);
 };
 /**
