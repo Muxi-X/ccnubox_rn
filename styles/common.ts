@@ -22,6 +22,6 @@ export const commonStyles = StyleSheet.create({
   courseTableDividerLine: {},
 });
 
-export const commonColors: ColorType = {
+export const commonColors: Partial<ColorType> = {
   gray: '#ccc',
 };
