@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { CourseTableProps } from '@/components/courseTable/type';
-import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
 import { commonColors } from '@/styles/common';
 
@@ -43,12 +35,6 @@ const timeSlots = [
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  // 组件是否位于顶部，由于原生组件没有检测 overscroll 的能力，因此用 state 代替
-  const [isAtTop, setIsAtTop] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  // 下拉刷新动画
-  const backHeight = useSharedValue(0);
-  const scale = useSharedValue(0);
   const translateY = useSharedValue(0);
   useEffect(() => {
     if (isFetching) {
@@ -71,121 +57,61 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       timetableMatrix[rowIndex][colIndex] = courseName;
     }
   });
-  // 滚动到头后松手，进入到下拉刷新
-  const handleScrollTop = () => {
-    setIsAtTop(true);
-  };
-  const handleScrollBottom = () => {
-    setIsAtBottom(true);
-  };
-  // 外部滚动检测蒙层
-  const pan = Gesture.Pan()
-    .onEnd(evt => {
-      runOnJS(setIsFetching)(true);
-      runOnJS(setIsAtBottom)(false);
-      runOnJS(setIsAtTop)(false);
-      if (evt.translationY < 0) translateY.value = withSpring(0);
-    })
-    .onUpdate(evt => {
-      scale.value = withTiming(evt.translationY);
-      translateY.value = backHeight.value = withSpring(evt.translationY);
-    });
-  const outerScrollStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
   return (
     <View style={{ flex: 1 }}>
-      <Animated.View
-        style={[
-          {
-            width: '100%',
-            height: backHeight,
-            backgroundColor: '#000',
-            zIndex: -1,
-            position: 'absolute',
-            top: 0,
-          },
-        ]}
-      ></Animated.View>
-      <Animated.View
-        style={[{ backgroundColor: '#fff', flex: 1 }, outerScrollStyle]}
-      >
-        <View style={{ flex: 1 }}>
-          <View style={styles.container}>
-            {/* 内容部分包括天数以及课表内容 */}
-            <ScrollableView
-              // onScroll={innerScrollHandler}
-              onScrollToTop={handleScrollTop}
-              // 上方导航栏
-              stickyTop={
-                <>
-                  <View style={styles.header}>
-                    <View style={styles.headerRow}>
-                      {daysOfWeek.map((day, index) => (
-                        <View key={index} style={[styles.headerCell]}>
-                          <Text style={styles.headerText}>{day}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                </>
-              }
-              // 左侧时间栏
-              stickyLeft={
-                <>
-                  {timeSlots.map((time, index) => (
-                    <View key={index} style={styles.timeSlot}>
-                      <Text style={styles.timeText}>{time}</Text>
+      <View style={styles.container}>
+        {/* 内容部分包括天数以及课表内容 */}
+        <ScrollableView
+          // 上方导航栏
+          stickyTop={
+            <>
+              <View style={styles.header}>
+                <View style={styles.headerRow}>
+                  {daysOfWeek.map((day, index) => (
+                    <View key={index} style={[styles.headerCell]}>
+                      <Text style={styles.headerText}>{day}</Text>
                     </View>
                   ))}
-                </>
-              }
-              onScrollToBottom={handleScrollBottom}
-            >
-              {/* 内容部分 (课程表) */}
-              <View style={styles.courseWrapperStyle}>
-                {timetableMatrix.map((row, rowIndex) => (
-                  <View key={rowIndex} style={styles.row}>
-                    {row.map((subject, colIndex) => (
-                      <View
-                        key={colIndex}
-                        style={[
-                          styles.cell,
-                          {
-                            borderBottomColor:
-                              (rowIndex + 1) % courseCollapse
-                                ? 'transparent'
-                                : commonColors.gray,
-                          },
-                        ]}
-                      >
-                        <Text style={styles.cellText}>{subject || ''}</Text>
-                      </View>
-                    ))}
+                </View>
+              </View>
+            </>
+          }
+          // 左侧时间栏
+          stickyLeft={
+            <>
+              {timeSlots.map((time, index) => (
+                <View key={index} style={styles.timeSlot}>
+                  <Text style={styles.timeText}>{time}</Text>
+                </View>
+              ))}
+            </>
+          }
+        >
+          {/* 内容部分 (课程表) */}
+          <View style={styles.courseWrapperStyle}>
+            {timetableMatrix.map((row, rowIndex) => (
+              <View key={rowIndex} style={styles.row}>
+                {row.map((subject, colIndex) => (
+                  <View
+                    key={colIndex}
+                    style={[
+                      styles.cell,
+                      {
+                        borderBottomColor:
+                          (rowIndex + 1) % courseCollapse
+                            ? 'transparent'
+                            : commonColors.gray,
+                      },
+                    ]}
+                  >
+                    <Text style={styles.cellText}>{subject || ''}</Text>
                   </View>
                 ))}
               </View>
-            </ScrollableView>
+            ))}
           </View>
-          <Divider color={commonColors.gray}>别闹，学霸也是要睡觉的</Divider>
-        </View>
-        {/* 避免滚动冲突，当内部内容滚到边界时，启动蒙层，滚动外部 */}
-        {(isAtTop || isAtBottom) && (
-          <GestureDetector gesture={pan}>
-            <View
-              style={{
-                flex: 1,
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'transparent',
-              }}
-            ></View>
-          </GestureDetector>
-        )}
-      </Animated.View>
+        </ScrollableView>
+      </View>
     </View>
   );
 };
@@ -203,7 +129,6 @@ const styles = StyleSheet.create({
     width: COURSE_ITEM_WIDTH * daysOfWeek.length,
     height: COURSE_ITEM_HEIGHT * timeSlots.length + COURSE_HEADER_HEIGHT,
     overflow: 'scroll',
-    // flexGrow: 1,
   },
   timeSideBar: {
     width: TIME_WIDTH,

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import {
   GestureUpdateEvent,
   PanGestureHandlerEventPayload,
@@ -8,7 +8,7 @@ export interface ScrollableViewProps {
   onScroll?: (evt: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   onScrollToTop?: () => void;
   onScrollToBottom?: () => void;
-  children?: ReactNode;
+  children?: ReactElement;
   stickyLeft?: ReactNode;
   stickyTop?: ReactNode;
 }
