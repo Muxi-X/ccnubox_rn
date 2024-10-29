@@ -25,8 +25,8 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       newStyles.delete(name);
       return { ...state, styles: newStyles };
     }),
-  // 更改颜色
-  changeColorStyle: styleName =>
+  // 更改主题
+  changeTheme: styleName =>
     set(state => {
       const { styles, type, currentStyle } = state;
       const currentTheme = styles.get(styleName);

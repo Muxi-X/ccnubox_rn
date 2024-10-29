@@ -11,7 +11,7 @@ const Divider = ({
   children,
   color,
   ...props
-}: { children: string; color: string } & ViewProps) => {
+}: { children: string; color?: string } & ViewProps) => {
   return (
     <View style={[styles.container, props.style]}>
       {children && (

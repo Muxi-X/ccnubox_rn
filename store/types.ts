@@ -13,8 +13,8 @@ export type visualSchemeType = {
   styles: Map<string, ThemeType>;
   /** 当前样式表 */
   currentStyle: SubThemeType | null;
-  /** 更改颜色 */
-  changeColorStyle: (name: keyof ThemeType) => void;
+  /** 更改主题 */
+  changeTheme: (name: keyof ThemeType) => void;
   /** 更改布局 ios | android */
   changeLayoutStyle: (type: layoutStyleType) => void;
   /** 注册style中样式 */
