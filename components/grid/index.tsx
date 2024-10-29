@@ -7,6 +7,13 @@ import {
   GridDataType as ItemData,
 } from '@/components/grid/type';
 
+/**
+ * 可拖动 grid， 调的包
+ * 不知道会不会用到，如果用不到就放 app/(tabs)/index 中好了
+ * @param initData 初始 data
+ * @param renderItem 每个 item 渲染函数
+ * @constructor
+ */
 const DraggableGrid: React.FC<DraggableGridProps> = ({
   data: initData,
   renderItem,

@@ -4,7 +4,12 @@ import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 export default function Setting() {
+  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+    currentStyle,
+  }));
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -16,6 +21,7 @@ export default function Setting() {
   return (
     <View>
       <Button
+        style={currentStyle?.button_style}
         onPress={() => {
           setLoading(true);
           Updates.checkForUpdateAsync()

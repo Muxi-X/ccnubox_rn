@@ -41,9 +41,10 @@ export const PreLoginCard: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
   const gradientValue = useSharedValue(0);
+  // 标题移动距离
   const titleShift = useSharedValue(0);
   useEffect(() => {
-    // 每次移动多少
+    // 渐变条每次移动多少
     const percent = Math.floor(
       (percent2px(80) - 4 * commonStyles.fontExtraLarge.fontSize - 32) /
         (preloginGuide.length - 1)
@@ -68,9 +69,9 @@ export const PreLoginCard: FC = () => {
     router.navigate('/auth/login');
   };
   useEffect(() => {
-    runOnJS(() => setActiveContentIndex(activeIndex))();
+    setActiveContentIndex(activeIndex);
   }, [titleShift.value]);
-  // 跳转第几条
+  // 跳转第几条内容
   const jump = (pageNum: number) => {
     if (pageNum > preloginGuide.length - 1 || pageNum < 0) {
       Toast.show({
@@ -112,6 +113,7 @@ export const PreLoginCard: FC = () => {
             {preloginGuide[activeIndex].title}
           </Animated.Text>
           <View style={styles.gradient_box}>
+            {/* 渐变条 */}
             <Animated.View style={gradientStyle}>
               <LinearGradient
                 colors={['#94A6FF', '#94A6FF', '#70F5FF', '#94A6FF', '#94A6FF']}
@@ -122,6 +124,7 @@ export const PreLoginCard: FC = () => {
               ></LinearGradient>
             </Animated.View>
           </View>
+          {/* 内容部分 */}
           <AnimatedOpacity
             toVisible={toVisible}
             style={{ flex: 1 }}

@@ -4,34 +4,17 @@ import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { CourseTableProps } from '@/components/courseTable/type';
 import ScrollableView from '@/components/scrollView';
+import {
+  COURSE_HEADER_HEIGHT,
+  COURSE_ITEM_HEIGHT,
+  COURSE_ITEM_WIDTH,
+  courseCollapse,
+  daysOfWeek,
+  TIME_WIDTH,
+  timeSlots,
+} from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
 
-const COURSE_ITEM_WIDTH = 100;
-const COURSE_ITEM_HEIGHT = 80;
-const COURSE_HEADER_HEIGHT = 40;
-const TIME_WIDTH = 60;
-const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sta', 'Sun'];
-const courseCollapse = 2;
-const timeSlots = [
-  '08:00',
-  '10:00',
-  '12:00',
-  '14:00',
-  '16:00',
-  '18:00',
-  '20:00',
-  '14:00',
-  '16:00',
-  '18:00',
-  '20:00',
-  '14:00',
-  '16:00',
-  '18:00',
-  '20:00',
-  '14:00',
-  '16:00',
-  '18:00',
-];
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -97,6 +80,8 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                     style={[
                       styles.cell,
                       {
+                        // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
+                        // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
                         borderBottomColor:
                           (rowIndex + 1) % courseCollapse
                             ? 'transparent'
