@@ -1,19 +1,23 @@
+import { commonColors } from '@/styles/common';
 import { SubThemeType } from '@/styles/types';
 
+const { white, purple } = commonColors;
 /** 基础样式 */
 const baseStyle: SubThemeType = {
   border_style: {},
   text_style: {},
   navbar_style: {
-    backgroundColor: '#fff',
+    backgroundColor: white,
   },
   navbar_icon_style: {
-    color: '#7B71F1',
+    color: purple,
   },
   button_style: {
-    backgroundColor: '#7B71F1',
-    color: '#fff',
-    borderColor: '#7B71F1',
+    backgroundColor: purple,
+    color: white,
+  },
+  button_text_style: {
+    color: white,
   },
 };
 

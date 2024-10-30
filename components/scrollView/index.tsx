@@ -1,4 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
+import { Toast } from '@ant-design/react-native';
+import React, { FC, memo, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,17 +14,25 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import Divider from '@/components/divider';
 import { ScrollableViewProps } from '@/components/scrollView/type';
 import { commonColors } from '@/styles/common';
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
-  const { onScrollToTop, onScrollToBottom, stickyTop, stickyLeft, children } =
-    props;
+  const {
+    onScrollToTop,
+    onScrollToBottom,
+    stickyBottom,
+    stickyTop,
+    stickyLeft,
+    children,
+    style,
+    onRefresh,
+  } = props;
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
+  const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
   // FIX_ME 此处为两个 sticky 交界处，会覆盖，很丑，目前方式为计算重叠块大小，用一个块覆盖
   const cornerWidth = useSharedValue(0);
   const cornerHeight = useSharedValue(0);
@@ -52,16 +61,22 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   // 监听边界事件
   const onReachTopEnd = () => {
-    console.log('Reached Top End');
-    setTimeout(() => {
+    onScrollToTop && onScrollToTop();
+    const handleHideRefreshing = () => {
       backHeight.value = withTiming(0);
       isAtTop.value = false;
-    }, 2000);
-    onScrollToTop && onScrollToTop();
+    };
+    const success = () => {
+      handleHideRefreshing();
+    };
+    const fail = () => {
+      handleHideRefreshing();
+      Toast.fail('刷新失败');
+    };
+    onRefresh && onRefresh(success, fail);
   };
 
   const onReachBottomEnd = () => {
-    console.log('Reached Bottom End');
     onScrollToBottom && onScrollToBottom();
     isAtBottom.value = false;
   };
@@ -76,7 +91,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       if (isAtTop.value && event.translationY > 100) {
         backHeight.value = withSpring(100);
       }
-      // 根据加速度切换动画效果，如果全用 withTiming
+      // 如果全用 withTiming 等动画
       // 低速下会造成卡顿的错觉
       translateX.value = Math.min(startX.value + event.translationX, 0);
       translateY.value = Math.min(startY.value + event.translationY, 0);
@@ -126,14 +141,17 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   };
 
   return (
-    <View style={styles.largeWrapper}>
+    <View style={[styles.largeWrapper, style]}>
       {/* refresh control */}
       <Animated.View
         style={{
           height: backHeight,
           width: '100%',
-          zIndex: 50,
-          backgroundColor: '#000',
+          // 解决下拉刷新时用户滚动页面溢出问题
+          zIndex: 21,
+          backgroundColor: commonColors.purple,
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       ></Animated.View>
       {/* sticky top */}
@@ -184,18 +202,11 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         >
           <GestureDetector gesture={panGesture}>
             <Animated.View style={[animatedStyle]}>
-              {/*{children}*/}
+              {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
               {children &&
                 React.cloneElement(children, { onLayout: handleChildLayout })}
-              <Divider
-                style={{
-                  flexShrink: 0,
-                  width: wrapperSize.width,
-                }}
-                color={commonColors.gray}
-              >
-                别闹，学霸也是要睡觉的
-              </Divider>
+              {/* sticky bottom */}
+              {stickyBottom}
             </Animated.View>
           </GestureDetector>
         </View>
@@ -242,4 +253,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ScrollLikeView;
+export default memo(ScrollLikeView);

@@ -1,4 +1,4 @@
-import { Button, Icon, Toast } from '@ant-design/react-native';
+import { Icon, Toast } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
@@ -9,11 +9,11 @@ import Animated, {
   useSharedValue,
   withTiming,
   Easing,
-  runOnJS,
 } from 'react-native-reanimated';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
+import Button from '@/components/button';
 import Pagination from '@/components/pagination';
 import { preloginGuide } from '@/constants/prelogin';
 import useVisualScheme from '@/store/visualScheme';
@@ -150,7 +150,6 @@ export const PreLoginCard: FC = () => {
         trigger={reachedLastPage}
       >
         <Button
-          type="primary"
           style={[styles.start_button, currentStyle?.button_style]}
           onPress={handleStart}
         >

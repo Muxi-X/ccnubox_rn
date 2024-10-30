@@ -6,6 +6,7 @@ export type ConfigurableThemeNames =
   | 'text_style'
   | 'border_style'
   | 'button_style'
+  | 'button_text_style'
   | 'navbar_style'
   | 'navbar_icon_style';
 /** 完整themem应有配置类型 */
@@ -19,6 +20,6 @@ export type SubThemeType = {
 
 /** 颜色表 */
 export type ColorType = Record<
-  'red' | 'blue' | 'yellow' | 'purple' | 'black' | 'green' | 'gray',
+  'red' | 'blue' | 'yellow' | 'purple' | 'black' | 'green' | 'gray' | 'white',
   string
 >;

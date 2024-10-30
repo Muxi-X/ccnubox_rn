@@ -1,9 +1,9 @@
-import { Button } from '@ant-design/react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
+import Button from '@/components/button';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function Setting() {
@@ -21,7 +21,7 @@ export default function Setting() {
   return (
     <View>
       <Button
-        style={currentStyle?.button_style}
+        style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
           setLoading(true);
           Updates.checkForUpdateAsync()
@@ -34,10 +34,10 @@ export default function Setting() {
               alert(err);
             })
             .finally(() => {
-              setLoading(false);
+              // setLoading(false);
             });
         }}
-        loading={loading}
+        isLoading={loading}
         children="检查更新"
       />
       {isUpdateAvailable ? (

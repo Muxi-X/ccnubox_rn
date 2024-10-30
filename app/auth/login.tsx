@@ -1,10 +1,11 @@
-import { Icon, Input, Checkbox, Button, Toast } from '@ant-design/react-native';
+import { Icon, Input, Checkbox, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import { FC, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
+import Button from '@/components/button';
 import { useKeyboardShow } from '@/hooks/useKeyboardShow';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
@@ -84,12 +85,9 @@ const Login: FC = () => {
         </Checkbox>
       </View>
       <Button
-        type="primary"
-        activeStyle={false}
         onPress={handleLogin}
-        loading={loginTriggered}
+        isLoading={loginTriggered}
         style={[styles.login_button, currentStyle?.button_style]}
-        disabled={loginTriggered}
       >
         登陆
       </Button>
