@@ -15,7 +15,7 @@ export const COURSE_ITEM_HEIGHT = 80;
  */
 export const TIME_WIDTH = 60;
 /**
- * 一周天数，为 i18n 做准备
+ * 一周天数
  */
 export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sta', 'Sun'];
 /**

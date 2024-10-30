@@ -14,6 +14,7 @@ import { ScaleAnimationProps } from './types';
  * @returns ReactElement
  */
 const AnimatedScale = ({
+  // 输出范围大小
   outputRange = [0.8, 1.2],
   duration = 350,
   trigger = true,

@@ -11,7 +11,7 @@ import Animated, {
 
 import { FadeAnimationProps } from './types';
 /**
- * 线性大小动画
+ * 线性渐入渐出动画
  * @returns ReactElement
  */
 const AnimatedFade = ({
