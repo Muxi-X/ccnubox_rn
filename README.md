@@ -18,9 +18,7 @@
 ├── components          # 组件栏
 │    ├── animatedView   # 动画组件
 │    ├── button         # button
-│    ├── courseTable    # 课表
 │    ├── divider        # 分割线
-│    ├── grid           # 可拖动表格
 │    ├── modal          # modal
 │    ├── navi           # 下方tabbar
 │    ├── pagination     # 分页器
@@ -28,6 +26,13 @@
 │    ├── scraper        # 爬虫组件，目前能爬研究生
 │    ├── scrollView     # 全方向滚动组件
 │    └── skeleton       # 骨架屏
+├── module              # 页面实现及相关组件
+│    ├── courseTable
+│    ├── guide
+│    ├── login
+│    ├── mainPage
+│    ├── notification
+│    └── setting
 ├── constants           # config 文件
 ├── dist                # expo 运行需要
 ├── eas.json            # eas 配置文件，详情见下文【打包发布】部分
@@ -225,7 +230,24 @@ export interface ScrollableViewProps {
      }, 7000);
  }}
 ```
-## 
+## Modal 组件
+建议使用`ModalTrigger`组件，通过`triggerComponent`定义触发弹窗元素
+`mode`分为两种模式: 
+- 底部：有渐变、动画为滑入
+- 中部：无渐变、动画为放大
+
+```tsx
+  <ModalTrigger
+      title={title}
+      onConfirm={handleConfirm}
+      onClose={onClose}
+      onCancel={onCancel}
+      mode={mode}
+      triggerComponent={children}
+      style={style}
+    >
+  </ModalTrigger>
+```
 
 # 常用指令
 
