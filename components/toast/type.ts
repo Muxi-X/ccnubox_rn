@@ -4,5 +4,7 @@ export interface ToastProps extends PortalBaseProps {
   /* 是否可见 */
   visible?: boolean;
   /* icon 类型 */
-  icon?: string;
+  icon?: 'success' | 'fail';
+  /* toast文字 */
+  text?: string;
 }

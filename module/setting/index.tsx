@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import Button from '@/components/button';
+import Toast from '@/components/toast';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SettingPage() {
@@ -27,11 +28,11 @@ export default function SettingPage() {
           Updates.checkForUpdateAsync()
             .then(res => {
               if (!res.isAvailable) {
-                alert('已是最新版');
+                Toast.show({ text: '已是最新版', icon: 'success' });
               }
             })
             .catch(err => {
-              alert(err);
+              Toast.show({ text: '我是谁' });
             })
             .finally(() => {
               setLoading(false);

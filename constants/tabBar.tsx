@@ -1,7 +1,7 @@
-import { Icon } from '@ant-design/react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Text } from 'react-native';
 
-import { commonStyles } from '@/styles/common';
+import { commonColors, commonStyles } from '@/styles/common';
 import { SingleTabType } from '@/types/tabBarTypes';
 
 /**
@@ -9,7 +9,7 @@ import { SingleTabType } from '@/types/tabBarTypes';
  * @description PRIMARY 为默认
  */
 export const TABBAR_COLOR = {
-  PRIMARY: '#a0a0a0',
+  PRIMARY: commonColors.darkGray,
 };
 /** 导航栏配置 */
 export const tabConfig: SingleTabType[] = [
@@ -24,7 +24,10 @@ export const tabConfig: SingleTabType[] = [
       </Text>
     ),
     headerRight: () => (
-      <Icon name="menu" style={commonStyles.TabBarPadding}></Icon>
+      <MaterialIcons
+        name="menu"
+        style={commonStyles.TabBarPadding}
+      ></MaterialIcons>
     ),
   },
   {

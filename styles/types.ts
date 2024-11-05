@@ -29,6 +29,7 @@ export type ColorType = Record<
   | 'green'
   | 'gray'
   | 'lightGray'
-  | 'white',
+  | 'white'
+  | 'darkGray',
   string
 >;

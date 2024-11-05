@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { ViewProps } from 'react-native';
+
 import { PortalBaseProps } from '@/components/portal';
 
 export interface ModalProps extends PortalBaseProps {
