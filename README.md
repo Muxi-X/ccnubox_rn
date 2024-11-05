@@ -232,6 +232,11 @@ export interface ScrollableViewProps {
 ```
 ## Modal 组件
 建议使用`ModalTrigger`组件，通过`triggerComponent`定义触发弹窗元素
+或者直接使用 `Modal.show()`方法调用
+> Modal.show 
+> 会在全局 portal 建立新对象
+> 用完即删除
+> 若要满足关闭 modal 仍能记住之前的状态，则需要通过 ModalTrigger 等其他方法
 `mode`分为两种模式: 
 - 底部：有渐变、动画为滑入
 - 中部：无渐变、动画为放大

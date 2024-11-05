@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Modal as NativeModal,
   View,
@@ -11,10 +11,11 @@ import {
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
 import { ModalProps, ModalTriggerProps } from '@/components/modal/types';
+import { usePortalStore } from '@/store/portal';
 import { commonColors, commonStyles } from '@/styles/common';
 
-const Modal: React.FC<ModalProps> = ({
-  visible,
+const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
+  visible: initVisible = true,
   onClose,
   children,
   title = '123123',
@@ -36,8 +37,27 @@ const Modal: React.FC<ModalProps> = ({
   const isBottomMode = useMemo(() => {
     return mode !== 'middle';
   }, [mode]);
+  const [visible, setVisible] = useState<boolean>(initVisible);
+  const { deleteChildren, elementTypeMap } = usePortalStore(
+    ({ deleteChildren, elementTypeMap }) => ({ deleteChildren, elementTypeMap })
+  );
+  useEffect(() => {
+    setVisible(initVisible);
+  }, [initVisible]);
   const handleClose = () => {
+    setVisible(false);
     onClose && onClose();
+    setTimeout(() => {
+      console.log(
+        'inner',
+        elementTypeMap['modal'],
+        (elementTypeMap['modal'] ?? [1]).at(-1)
+      );
+      deleteChildren(
+        (elementTypeMap['modal'] ?? [1]).at(-1) as number,
+        'modal'
+      );
+    }, 1000);
   };
   const modalContent = useMemo(() => {
     return (
@@ -157,8 +177,27 @@ const Modal: React.FC<ModalProps> = ({
     </NativeModal>
   );
 };
-
-//带有触发按钮的 trigger
+/**
+ * 函数式方法
+ * @param props modal 参数
+ * @example 示例
+ * Modal.show({title: '123'})
+ */
+Modal.show = props => {
+  const { updateChildren } = usePortalStore.getState();
+  updateChildren(<Modal {...props}></Modal>, 'modal');
+};
+/**
+ * 带有触发按钮的 trigger
+ * @param props
+ * @constructor
+ * @example 示例
+ * <ModalTrigger triggerComponent={<Text>点我</Text>}>
+ *    <View>
+ *      <Text>弹窗内容</Text>
+ *    </View>
+ *  </ModalTrigger>
+ */
 export const ModalTrigger: React.FC<ModalTriggerProps> = props => {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const { onPress, children, triggerComponent, onClose, ...restProps } = props;

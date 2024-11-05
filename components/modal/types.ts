@@ -3,7 +3,7 @@ import { ViewProps } from 'react-native';
 
 export interface ModalProps {
   /* 控制Modal是否显示 */
-  visible: boolean;
+  visible?: boolean;
   /* 关闭Modal */
   onClose?: () => void;
   children?: React.ReactNode;
@@ -21,6 +21,7 @@ export interface ModalProps {
   showCancel?: boolean;
   /* modal 类型 */
   mode?: 'bottom' | 'middle';
+  show?: () => void;
 }
 
 export interface ModalTriggerProps
