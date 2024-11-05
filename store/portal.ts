@@ -7,10 +7,9 @@ interface ModalStore {
   portalRef: React.RefObject<any>;
   elements: Record<number, ReactElement>;
   setPortalRef: (ref: React.RefObject<any>) => void;
-  updateChildren: (newChildren: ReactElement, type?: string) => void;
-  deleteChildren: (key: number, type?: string) => void;
+  updateChildren: (newChildren: ReactElement, portalType?: string) => void;
+  deleteChildren: (key: number) => void;
   updateFromElements: () => void;
-  elementTypeMap: Record<string, number[]>;
 }
 
 export const usePortalStore = create<ModalStore>((set, get) => ({
@@ -22,39 +21,29 @@ export const usePortalStore = create<ModalStore>((set, get) => ({
     const { elements, portalRef } = get();
     const portalInst = portalRef.current;
     if (portalInst)
-      portalInst.setChildren(
-        Object.entries(elements).map(element => element[1] as ReactElement)
-      );
+      portalInst.setChildren([
+        ...Object.entries(elements).map(element => element[1] as ReactElement),
+      ]);
   },
-  updateChildren: (newChildren, type = 'common') => {
-    let tmpMap: Record<number, ReactElement> = {};
-    const { updateFromElements, elementTypeMap } = get();
+  updateChildren: (newChildren, portalType = 'common') => {
+    let tmpMap: Record<number, ReactElement> = get().elements;
+    const { updateFromElements } = get();
     if (newChildren) {
       const key = keyGenerator.next().value as unknown as number;
-      tmpMap[key] = React.cloneElement(newChildren, { key });
+      tmpMap[key] = React.cloneElement(newChildren, {
+        key,
+        portalType,
+        currentKey: key,
+      });
     }
     set({
       elements: tmpMap,
-      elementTypeMap: {
-        ...elementTypeMap,
-        [type]: [
-          ...(elementTypeMap[type] ?? []),
-          ...Object.keys(tmpMap).map(key => Number(key)),
-        ],
-      },
     });
-    console.log(elementTypeMap);
     updateFromElements();
   },
-  deleteChildren: (key, type = 'common') => {
-    const { elements, updateFromElements, elementTypeMap } = get();
+  deleteChildren: key => {
+    const { elements, updateFromElements } = get();
     delete elements[key];
-    set({
-      elementTypeMap: {
-        ...elementTypeMap,
-        [type]: (elementTypeMap[type] ?? []).slice(0, -1),
-      },
-    });
     updateFromElements();
   },
 }));

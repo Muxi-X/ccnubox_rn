@@ -135,7 +135,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   }));
   const handleChildLayout = (event: LayoutChangeEvent) => {
     const { layout } = event.nativeEvent;
-    console.log(layout);
     setContainerSize(layout);
   };
 

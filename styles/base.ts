@@ -5,12 +5,17 @@ const { white, purple } = commonColors;
 /** 基础样式 */
 const baseStyle: SubThemeType = {
   border_style: {},
-  text_style: {},
+  text_style: {
+    color: commonColors.white,
+  },
   navbar_style: {
     backgroundColor: white,
   },
   navbar_icon_style: {
     color: purple,
+  },
+  modal_background_style: {
+    backgroundColor: white,
   },
   button_style: {
     backgroundColor: purple,

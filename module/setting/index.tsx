@@ -34,7 +34,7 @@ export default function SettingPage() {
               alert(err);
             })
             .finally(() => {
-              // setLoading(false);
+              setLoading(false);
             });
         }}
         isLoading={loading}
