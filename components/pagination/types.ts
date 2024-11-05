@@ -12,7 +12,7 @@ export interface PaginationType {
   /**
    * pagination 切换时回调
    */
-  onChange?: (current: number) => void;
+  onChange: (current: number) => void;
   /**
    * dot 颜色
    * common: 普通样式

@@ -20,6 +20,14 @@ export type SubThemeType = {
 
 /** 颜色表 */
 export type ColorType = Record<
-  'red' | 'blue' | 'yellow' | 'purple' | 'black' | 'green' | 'gray' | 'white',
+  | 'red'
+  | 'blue'
+  | 'yellow'
+  | 'purple'
+  | 'black'
+  | 'green'
+  | 'gray'
+  | 'lightGray'
+  | 'white',
   string
 >;

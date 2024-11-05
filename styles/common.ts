@@ -23,7 +23,9 @@ export const commonStyles = StyleSheet.create({
 });
 
 export const commonColors: Partial<ColorType> = {
+  white: '#fff',
+  lightGray: '#F5F5F5',
   gray: '#ccc',
   purple: '#7B71F1',
-  white: '#fff',
+  black: '#000',
 };

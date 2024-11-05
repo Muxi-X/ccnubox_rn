@@ -18,7 +18,7 @@ const Pagination: React.FC<PaginationType> = ({
       throw new Error('currentPage 的值超出范围');
   }, [totalPages, currentPage]);
   const handlePageChange = (newPage: number) => {
-    onChange && onChange(newPage);
+    onChange(newPage);
   };
   return (
     <View style={styles.paginationContainer}>

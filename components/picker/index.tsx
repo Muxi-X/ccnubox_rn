@@ -1,16 +1,18 @@
-import { PickerView } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
-import BottomModal from '@/components/modal';
+import { ModalTrigger } from '@/components/modal';
+import PickerView from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
-import { commonStyles } from '@/styles/common';
+import { commonColors, commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 import { percent2px } from '@/utils/percent2px';
 
+// picker 左侧紫色条宽度
 const BORDER_LEFT_WIDTH = 8;
-const PICKER_HEIGHT = 200;
+// picker 元素高度
+const PICKER_ITEM_HEIGHT = 45;
 /* 生成上课时间 */
 const geneClassRange = (length: number) => {
   const range = [];
@@ -30,14 +32,43 @@ const basicColumns = [
   geneClassRange(10),
   geneClassRange(10),
 ];
-const DatePicker: React.FC<DatePickerProps> = ({
-  visible = false,
+/**
+ * 位于底部的选择器，由于中部选择器与底部选择器存在样式差异，单独列出
+ * @param visible 可见与否
+ * @param onCancel 点击取消按钮回调
+ * @param onConfirm 点击确认回调
+ * @param onClose 无论取消或确认，关闭页面回调
+ * @param defaultValue 默认选择值
+ * @param prefixes 前缀，不动的列
+ * @param data 数据
+ * @param mode 'bottom' | 'middle' 弹窗位置
+ * @param itemHeight 每一行高度
+ * @param children 触发 picker 的元素
+ * @param titleDisplayLogic 选择值改变时，如何动态修改title
+ * @constructor
+ * @example 使用方法
+ * // 中框弹窗
+ * <Picker onConfirm={res => console.log(res)} mode="middle">
+ *   <Text>中框弹窗</Text>
+ * </Picker>
+ * // 下侧弹窗
+ * <Picker itemHeight={60}>
+ *   <Text>下侧弹窗</Text>
+ * </Picker>
+ * // 自定义数据
+ * <Picker data={basicColumns}></Picker>
+ */
+const Picker: React.FC<DatePickerProps> = ({
   onCancel,
   onConfirm,
   onClose,
   defaultValue,
   prefixes,
+  mode = 'bottom',
+  style,
+  itemHeight = PICKER_ITEM_HEIGHT,
   data = basicColumns,
+  children,
   titleDisplayLogic = (pickerValue, data) => {
     const pickedLabels = pickerValue.map((value, index) => {
       const curArr = data[index];
@@ -52,6 +83,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
     () => titleDisplayLogic(pickerValue, data),
     [pickerValue, data]
   );
+  const isBottomMode = useMemo(() => {
+    return mode !== 'middle';
+  }, [mode]);
   // 默认选择逻辑
   useEffect(() => {
     handlePick(defaultValue ? defaultValue : data.map(item => item[0].value));
@@ -66,38 +100,35 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return percent2px(94) - 60;
   }, []);
   return (
-    <BottomModal
-      visible={visible}
+    <ModalTrigger
       title={title}
       onConfirm={handleConfirm}
       onClose={onClose}
       onCancel={onCancel}
+      mode={mode}
+      triggerComponent={children}
+      style={style}
     >
       <View
-        style={{
-          position: 'absolute',
-          alignItems: 'center',
-          flex: 1,
-          right: 30,
-          top: (PICKER_HEIGHT - commonStyles.fontMedium.fontSize) / 2,
-          width: contentWidth,
-          display: 'flex',
-          justifyContent: 'center',
-        }}
+        style={[
+          styles.content,
+          { top: (3 * itemHeight - commonStyles.fontMedium.fontSize) / 2 },
+        ]}
       >
+        {/* FIX_ME：前缀，目前采用手动计算 */}
         {prefixes &&
           prefixes.map((prefix, index) => (
             <Text
-              style={{
-                flex: 1,
-                fontSize: commonStyles.fontMedium.fontSize,
-                textAlign: 'center',
-                left:
-                  (contentWidth / prefixes.length +
-                    commonStyles.fontMedium.fontSize) /
-                  2,
-                color: '#6D6D75',
-              }}
+              style={[
+                styles.prefix,
+                {
+                  // 手动计算距离左侧距离
+                  left:
+                    (contentWidth / prefixes.length +
+                      commonStyles.fontMedium.fontSize) /
+                    2,
+                },
+              ]}
               key={keyGenerator.next() as unknown as number}
             >
               {prefix ?? '1'}
@@ -107,63 +138,91 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <PickerView
         data={data}
         numberOfLines={1}
-        itemHeight={80}
+        itemHeight={itemHeight}
         onChange={handlePick}
         value={pickerValue}
-        renderMaskTop={() => (
-          <View
-            style={{
-              flex: 1,
-              borderLeftWidth: BORDER_LEFT_WIDTH,
-              borderLeftColor: '#F6F3F5',
-              borderRadius: 5,
-            }}
-          >
-            <LinearGradient
-              colors={['#ADA5A600', '#ffffff12']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={{ flex: 1 }}
-            ></LinearGradient>
-          </View>
-        )}
-        styles={{
-          maskMiddle: {
-            backgroundColor: '#ADA5A612',
-            borderLeftWidth: BORDER_LEFT_WIDTH,
-            borderColor: '#7878F8',
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
-          },
-          maskTop: {
-            flex: 1,
-          },
-          maskBottom: {
-            borderLeftWidth: 10,
-            borderLeftColor: '#F6F3F5',
-            backgroundColor: '#ffffff01',
-          },
-          itemStyle: {
-            ...commonStyles.fontMedium,
-            color: '#75757B',
-          },
-          wrappper: {
-            backgroundColor: '#ffffff01',
-          },
-          itemWrap: {
-            backgroundColor: '#ffffff01',
-          },
-          itemActiveStyle: {
-            ...commonStyles.fontMedium,
-            fontWeight: 'bold',
-            color: '#7878F8',
-          },
-        }}
-        style={{ height: PICKER_HEIGHT }}
+        renderMaskTop={() =>
+          isBottomMode ? (
+            <View style={styles.maskTop}>
+              <LinearGradient
+                colors={['#ADA5A600', '#ffffff12']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={{ flex: 1 }}
+              ></LinearGradient>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: commonColors.white,
+                opacity: 0.6,
+              }}
+            ></View>
+          )
+        }
+        styles={isBottomMode ? pickerStyles : {}}
+        style={{ height: 3 * itemHeight }}
         cascade={false}
       />
-    </BottomModal>
+    </ModalTrigger>
   );
 };
 
-export default memo(DatePicker);
+export default memo(Picker);
+
+const styles = StyleSheet.create({
+  content: {
+    position: 'absolute',
+    alignItems: 'center',
+    flex: 1,
+    right: 30,
+    width: percent2px(94) - 60,
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  maskTop: {
+    flex: 1,
+    borderLeftWidth: BORDER_LEFT_WIDTH,
+    borderLeftColor: '#F6F3F5',
+    borderRadius: 5,
+  },
+  prefix: {
+    flex: 1,
+    fontSize: commonStyles.fontMedium.fontSize,
+    textAlign: 'center',
+    color: '#6D6D75',
+  },
+});
+const pickerStyles = StyleSheet.create({
+  maskMiddle: {
+    backgroundColor: '#ADA5A612',
+    borderLeftWidth: BORDER_LEFT_WIDTH,
+    borderColor: '#7878F8',
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+  },
+  maskTop: {
+    flex: 1,
+  },
+  maskBottom: {
+    borderLeftWidth: 10,
+    borderLeftColor: '#F6F3F5',
+    backgroundColor: '#ffffff01',
+  },
+  itemStyle: {
+    ...commonStyles.fontMedium,
+    color: '#75757B',
+  },
+  wrappper: {
+    backgroundColor: '#ffffff01',
+  },
+  itemWrap: {
+    backgroundColor: '#ffffff01',
+  },
+  itemActiveStyle: {
+    ...commonStyles.fontMedium,
+    fontWeight: 'bold',
+    color: '#7878F8',
+  },
+});

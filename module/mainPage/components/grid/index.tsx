@@ -5,11 +5,11 @@ import { DraggableGrid as Grid } from 'react-native-draggable-grid';
 import {
   DraggableGridProps,
   GridDataType as ItemData,
-} from '@/components/grid/type';
+} from '@/module/mainPage/components/grid/type';
 
 /**
  * 可拖动 grid， 调的包
- * 不知道会不会用到，如果用不到就放 app/(tabs)/index 中好了
+ * 不知道会不会用到，如果用不到就放 app/(tabs)/mainPage 中好了
  * @param initData 初始 data
  * @param renderItem 每个 item 渲染函数
  * @constructor

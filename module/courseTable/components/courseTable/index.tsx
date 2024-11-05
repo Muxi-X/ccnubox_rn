@@ -2,7 +2,6 @@ import React, { memo, useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { CourseTableProps } from '@/components/courseTable/type';
 import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
 import {
@@ -15,6 +14,8 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
+
+import { CourseTableProps } from './type';
 
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
