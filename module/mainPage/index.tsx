@@ -14,6 +14,9 @@ import Picker from '@/components/picker';
 import Skeleton from '@/components/skeleton';
 import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
+import { usePortalStore } from '@/store/portal';
+import Button from '@/components/button';
+import Modal from '@/components/modal';
 
 type MainPageGridDataType = {
   text: string;
@@ -33,6 +36,7 @@ const IndexPage: FC = () => {
     },
   ]);
   const [loading, setLoading] = useState(true);
+  const updateChildren = usePortalStore(state => state.updateChildren);
   const render = ({ key, text, imageUrl }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
@@ -55,6 +59,9 @@ const IndexPage: FC = () => {
   }, []);
   return (
     <View style={styles.wrapper}>
+      <Button onPress={() => Modal.show({ title: '测试测试', mode: 'middle' })}>
+        123
+      </Button>
       <Skeleton loading={loading}>
         <Carousel style={styles.banner} autoplay infinite dots={false}>
           {banners.map(banner => (
