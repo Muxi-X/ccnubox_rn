@@ -6,7 +6,7 @@ const { white, purple } = commonColors;
 const baseStyle: SubThemeType = {
   border_style: {},
   text_style: {
-    color: commonColors.white,
+    color: commonColors.black,
   },
   navbar_style: {
     backgroundColor: white,

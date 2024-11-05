@@ -1,16 +1,20 @@
 import { View } from '@ant-design/react-native';
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import { ModalBack } from '@/components/modal';
 import { ToastProps } from '@/components/toast/type';
+import { statusImage } from '@/constants/toast';
 import { usePortalStore } from '@/store/portal';
+import useVisualScheme from '@/store/visualScheme';
+import { commonColors, commonStyles } from '@/styles/common';
 
-const Toast: FC<ToastProps> & { show: () => void } = ({
+const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
   visible: initVisible = false,
   currentKey,
   icon,
+  text,
 }) => {
   const [visible, setVisible] = useState<boolean>(initVisible);
   const deleteChildren = usePortalStore(state => state.deleteChildren);
@@ -49,18 +53,36 @@ const Toast: FC<ToastProps> & { show: () => void } = ({
             trigger={visible}
             style={styles.toastContent}
           >
-            <View
-              style={{ height: 200, width: 200, backgroundColor: '#000' }}
-            ></View>
+            {icon && (
+              <Image
+                source={statusImage['success']}
+                style={{
+                  margin: 10,
+                  borderRadius: 15,
+                  width: 100,
+                  height: 100,
+                  marginBottom: 20,
+                }}
+              ></Image>
+            )}
+            <Text
+              style={[
+                useVisualScheme.getState().currentStyle?.text_style,
+                commonStyles.fontLarge,
+                { color: commonColors.darkGray },
+              ]}
+            >
+              {text}
+            </Text>
           </AnimatedScale>
         </View>
       </ModalBack>
     </>
   );
 };
-Toast.show = () => {
+Toast.show = (props: ToastProps) => {
   const updateChildren = usePortalStore.getState().updateChildren;
-  updateChildren(<Toast visible={true}></Toast>);
+  updateChildren(<Toast visible={true} {...props}></Toast>);
 };
 export default Toast;
 
@@ -79,15 +101,19 @@ export const styles = StyleSheet.create({
     position: 'absolute',
   },
   toastContent: {
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 20,
+    width: 220,
+    // height: 180,
     marginBottom: 10,
+    padding: 30,
     shadowColor: '#000',
     backgroundColor: '#fff',
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
   },
 });

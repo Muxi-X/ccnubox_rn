@@ -1,6 +1,5 @@
 import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import { View } from 'react-native';
-import { percent2px } from '@/utils/percent2px';
 
 interface ModalPortalProps {
   children?: React.ReactNode;

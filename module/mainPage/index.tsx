@@ -11,8 +11,8 @@ import {
 import { DraggableGrid } from 'react-native-draggable-grid';
 
 import Skeleton from '@/components/skeleton';
-import { keyGenerator } from '@/utils/autoKey';
 import { commonColors } from '@/styles/common';
+import { keyGenerator } from '@/utils/autoKey';
 
 type MainPageGridDataType = {
   text: string;
@@ -109,6 +109,6 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 14,
     marginTop: 6,
-    color: commonColors.gray,
+    color: commonColors.darkGray,
   },
 });
