@@ -1,21 +1,25 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import {
-  Modal as NativeModal,
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
+  ViewProps,
 } from 'react-native';
 
+import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
 import { ModalProps, ModalTriggerProps } from '@/components/modal/types';
 import { usePortalStore } from '@/store/portal';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
+import { percent2px } from '@/utils/percent2px';
 
 const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
   visible: initVisible = true,
+  currentKey,
   onClose,
   children,
   title = '123123',
@@ -38,25 +42,21 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
     return mode !== 'middle';
   }, [mode]);
   const [visible, setVisible] = useState<boolean>(initVisible);
-  const { deleteChildren, elementTypeMap } = usePortalStore(
-    ({ deleteChildren, elementTypeMap }) => ({ deleteChildren, elementTypeMap })
-  );
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { deleteChildren } = usePortalStore(({ deleteChildren }) => ({
+    deleteChildren,
+  }));
   useEffect(() => {
     setVisible(initVisible);
   }, [initVisible]);
   const handleClose = () => {
     setVisible(false);
     onClose && onClose();
+    // FIX_ME： 由于rn自带modal不支持获取动画结束时间
+    // 因此这里采取定时器的方案
+    // 过一秒后清除动画
     setTimeout(() => {
-      console.log(
-        'inner',
-        elementTypeMap['modal'],
-        (elementTypeMap['modal'] ?? [1]).at(-1)
-      );
-      deleteChildren(
-        (elementTypeMap['modal'] ?? [1]).at(-1) as number,
-        'modal'
-      );
+      currentKey && deleteChildren(currentKey);
     }, 1000);
   };
   const modalContent = useMemo(() => {
@@ -88,9 +88,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
               <Text
                 style={[
                   styles.bottomChoiceText,
-                  !isBottomMode && {
-                    color: commonColors.white,
-                  },
+                  !isBottomMode && currentStyle?.text_style,
                   isBottomMode
                     ? commonStyles.fontLarge
                     : commonStyles.fontMedium,
@@ -114,9 +112,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
                 <Text
                   style={[
                     styles.bottomChoiceText,
-                    !isBottomMode && {
-                      color: commonColors.white,
-                    },
+                    !isBottomMode && currentStyle?.text_style,
                     isBottomMode
                       ? commonStyles.fontLarge
                       : commonStyles.fontMedium,
@@ -132,18 +128,12 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
     );
   }, [children, mode]);
   return (
-    <NativeModal
-      transparent={true}
-      visible={visible}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <ModalBack visible={visible} style={{ zIndex: currentKey }}>
       <View
         style={[
           styles.modalOverlay,
           {
             justifyContent: isBottomMode ? 'flex-end' : 'center',
-            alignItems: 'center',
           },
         ]}
       >
@@ -159,7 +149,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
             direction="vertical"
             duration={200}
             trigger={visible}
-            style={styles.modalContent}
+            style={[styles.modalContent, currentStyle?.modal_background_style]}
           >
             {modalContent}
           </AnimatedSlide>
@@ -168,13 +158,13 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
             duration={400}
             outputRange={[0.6, 1]}
             trigger={visible}
-            style={[styles.modalContent]}
+            style={[styles.modalContent, currentStyle?.modal_background_style]}
           >
             {modalContent}
           </AnimatedScale>
         )}
       </View>
-    </NativeModal>
+    </ModalBack>
   );
 };
 /**
@@ -185,7 +175,10 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
  */
 Modal.show = props => {
   const { updateChildren } = usePortalStore.getState();
-  updateChildren(<Modal {...props}></Modal>, 'modal');
+  updateChildren(
+    <Modal {...props} visible={true} mode="bottom"></Modal>,
+    'modal'
+  );
 };
 /**
  * 带有触发按钮的 trigger
@@ -220,12 +213,37 @@ export const ModalTrigger: React.FC<ModalTriggerProps> = props => {
     </>
   );
 };
+
+export const ModalBack: FC<
+  { children?: ReactElement; visible: boolean } & ViewProps
+> = ({ children, style, visible }) => {
+  return (
+    <>
+      <AnimatedOpacity
+        duration={500}
+        toVisible={visible}
+        style={[
+          {
+            flex: 1,
+            width: percent2px(100),
+            height: percent2px(100, 'height'),
+            position: 'absolute',
+            top: 0,
+          },
+          style,
+        ]}
+      >
+        {children}
+      </AnimatedOpacity>
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
   modalBackground: {
     flex: 1,
@@ -247,7 +265,6 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '94%',
-    backgroundColor: 'white',
     borderRadius: 20,
     margin: 20,
     marginBottom: 10,
@@ -301,7 +318,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   closeText: {
-    color: '#333',
+    color: commonColors.lightGray,
     fontWeight: 'bold',
   },
 });

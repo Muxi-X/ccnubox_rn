@@ -8,6 +8,7 @@ export type ConfigurableThemeNames =
   | 'button_style'
   | 'button_text_style'
   | 'navbar_style'
+  | 'modal_background_style'
   | 'navbar_icon_style';
 /** 完整themem应有配置类型 */
 export type ThemeType = {

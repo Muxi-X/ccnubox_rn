@@ -10,13 +10,9 @@ import {
 } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 
-import Button from '@/components/button';
-import Modal from '@/components/modal';
-import Picker from '@/components/picker';
 import Skeleton from '@/components/skeleton';
-import { usePortalStore } from '@/store/portal';
-import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
+import { commonColors } from '@/styles/common';
 
 type MainPageGridDataType = {
   text: string;
@@ -36,7 +32,6 @@ const IndexPage: FC = () => {
     },
   ]);
   const [loading, setLoading] = useState(true);
-  const updateChildren = usePortalStore(state => state.updateChildren);
   const render = ({ key, text, imageUrl }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
@@ -59,9 +54,6 @@ const IndexPage: FC = () => {
   }, []);
   return (
     <View style={styles.wrapper}>
-      <Button onPress={() => Modal.show({ title: '测试测试', mode: 'middle' })}>
-        123
-      </Button>
       <Skeleton loading={loading}>
         <Carousel style={styles.banner} autoplay infinite dots={false}>
           {banners.map(banner => (
@@ -88,7 +80,6 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     height: 100,
-    backgroundColor: 'blue',
   },
   banner: {
     width: '95%',
@@ -113,11 +104,11 @@ const styles = StyleSheet.create({
     width: '95%',
     height: 120,
     borderRadius: 10,
-    backgroundColor: '#000',
+    backgroundColor: commonColors.black,
   },
   itemText: {
     fontSize: 14,
     marginTop: 6,
-    color: '#969696',
+    color: commonColors.gray,
   },
 });

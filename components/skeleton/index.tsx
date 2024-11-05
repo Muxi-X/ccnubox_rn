@@ -34,7 +34,6 @@ const SkeletonLoader: FC<SkeletonType> = ({ loading, children }) => {
   const handleLayout = (event: any) => {
     const { width, height } = event.nativeEvent.layout;
     if (width && height) {
-      console.log(width, height);
       setLayout({ width, height });
     }
   };

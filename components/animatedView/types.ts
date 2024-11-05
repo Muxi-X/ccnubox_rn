@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ViewProps, ViewStyle } from 'react-native';
+import { ViewProps } from 'react-native';
 
 export interface BaseAnimatedProps extends ViewProps {
   /**
@@ -41,7 +41,6 @@ export interface FadeAnimationProps extends BaseAnimatedProps {
 }
 
 export interface SlideInProps extends BaseAnimatedProps {
-  style?: ViewStyle;
   direction?: 'vertical' | 'vertical-reverse';
   distance?: number;
 }

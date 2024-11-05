@@ -1,7 +1,8 @@
 import React, { ReactElement } from 'react';
 import { ViewProps } from 'react-native';
+import { PortalBaseProps } from '@/components/portal';
 
-export interface ModalProps {
+export interface ModalProps extends PortalBaseProps {
   /* 控制Modal是否显示 */
   visible?: boolean;
   /* 关闭Modal */
