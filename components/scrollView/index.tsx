@@ -32,7 +32,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const translateY = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
-  const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
   // FIX_ME 此处为两个 sticky 交界处，会覆盖，很丑，目前方式为计算重叠块大小，用一个块覆盖
   const cornerWidth = useSharedValue(0);
   const cornerHeight = useSharedValue(0);

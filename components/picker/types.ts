@@ -1,7 +1,8 @@
-import { BottomModalProps } from '@/components/modal/types';
+import { ModalTriggerProps } from '@/components/modal/types';
+import { ReactElement } from 'react';
 
 type PickerDataType = { value: string | number; label: string }[][];
-export interface DatePickerProps extends Omit<BottomModalProps, 'onConfirm'> {
+export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
   /** 数据，必须有 label 和 value */
   data?: PickerDataType;
   /** 默认选择的数据 */
@@ -19,4 +20,8 @@ export interface DatePickerProps extends Omit<BottomModalProps, 'onConfirm'> {
    *  最终呈现效果为 2024 - 09 - 18
    *  */
   prefixes?: (string | undefined)[];
+  /* 元素高度 */
+  itemHeight?: number;
+  /* 触发弹窗的按钮 */
+  children?: ReactElement;
 }
