@@ -1,12 +1,5 @@
-import React, {
-  forwardRef,
-  useState,
-  useImperativeHandle,
-  ReactElement,
-} from 'react';
+import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import { View } from 'react-native';
-
-import { keyGenerator } from '@/utils/autoKey';
 
 interface ModalPortalProps {
   children?: React.ReactNode;

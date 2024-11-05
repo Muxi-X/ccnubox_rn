@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 
-import Picker from '@/components/picker';
-import Skeleton from '@/components/skeleton';
-import { commonColors } from '@/styles/common';
-import { keyGenerator } from '@/utils/autoKey';
-import { usePortalStore } from '@/store/portal';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
+import Picker from '@/components/picker';
+import Skeleton from '@/components/skeleton';
+import { usePortalStore } from '@/store/portal';
+import { commonColors } from '@/styles/common';
+import { keyGenerator } from '@/utils/autoKey';
 
 type MainPageGridDataType = {
   text: string;
