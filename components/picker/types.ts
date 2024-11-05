@@ -1,5 +1,6 @@
-import { ModalTriggerProps } from '@/components/modal/types';
 import { ReactElement } from 'react';
+
+import { ModalTriggerProps } from '@/components/modal/types';
 
 type PickerDataType = { value: string | number; label: string }[][];
 export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {

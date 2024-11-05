@@ -12,8 +12,8 @@ import { DraggableGrid } from 'react-native-draggable-grid';
 
 import Picker from '@/components/picker';
 import Skeleton from '@/components/skeleton';
-import { keyGenerator } from '@/utils/autoKey';
 import { commonColors } from '@/styles/common';
+import { keyGenerator } from '@/utils/autoKey';
 
 type MainPageGridDataType = {
   text: string;
