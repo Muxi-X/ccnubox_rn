@@ -1,7 +1,7 @@
 import { commonColors } from '@/styles/common';
 import { ThemeType } from '@/styles/types';
 
-const { white, purple, black, gray, lightGray, lightDark } = commonColors;
+const { white, purple, black, lightGray, lightDark } = commonColors;
 /** 基础样式 */
 const baseStyle: ThemeType = {
   dark: {
