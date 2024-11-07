@@ -2,7 +2,6 @@ import React, { MutableRefObject, ReactElement } from 'react';
 import WebView from 'react-native-webview';
 
 import {
-  ThemeType,
   LayoutType,
   LayoutName,
   ThemeName,
@@ -62,5 +61,3 @@ export type ThemeBasedComponentMap = Record<
   LayoutName,
   Record<string, React.FC<any>>
 >;
-/** 获取当前 theme 下的组件 */
-export type GetComponentInCurrentTheme = <T>(name: string) => React.FC<T>;

@@ -16,7 +16,6 @@ import Animated, {
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
 import { commonColors } from '@/styles/common';
-import { COURSE_ITEM_WIDTH, daysOfWeek } from '@/constants/courseTable';
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const {
