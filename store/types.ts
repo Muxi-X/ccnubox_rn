@@ -1,25 +1,35 @@
-import { MutableRefObject } from 'react';
+import React, { MutableRefObject, ReactElement } from 'react';
 import WebView from 'react-native-webview';
 
-import { SubThemeType, ThemeType, layoutStyleType } from '@/styles/types';
+import {
+  ThemeType,
+  LayoutType,
+  LayoutName,
+  ThemeName,
+  SingleThemeType,
+} from '@/styles/types';
 
 /** 配色、布局整体store类型 */
 export type visualSchemeType = {
   /** 注册的样式名 */
-  name: string;
+  themeName: ThemeName;
   /** 布局类型 */
-  type: layoutStyleType;
-  /** 所有注册的样式表 */
-  styles: Map<string, ThemeType>;
+  layoutName: LayoutName;
+  /** 所有的可替换组件 */
+  themeBasedComponents: ThemeBasedComponentMap;
+  /** 目前的可替换组件 */
+  currentComponents: Record<string, React.FC<any>>;
+  /** 所有注册的 layout */
+  layouts: Map<LayoutName, LayoutType>;
   /** 当前样式表 */
-  currentStyle: SubThemeType | null;
+  currentStyle: SingleThemeType | null;
   /** 更改主题 */
-  changeTheme: (name: keyof ThemeType) => void;
+  changeTheme: (name: ThemeName) => void;
   /** 更改布局 ios | android */
-  changeLayoutStyle: (type: layoutStyleType) => void;
+  changeLayout: (type: LayoutName) => void;
   /** 注册style中样式 */
-  initStyles: () => void;
-  removeStyles: (name: string) => void;
+  init: () => void;
+  removeLayouts: (name: LayoutName) => void;
 };
 
 export type scraperType = {
@@ -30,3 +40,27 @@ export type scraperType = {
   /* 设置 ref */
   setRef: (newRef: MutableRefObject<WebView<{}> | undefined> | null) => void;
 };
+
+/** portal */
+export interface PortalStore {
+  /* 全局 portal 的引用 */
+  portalRef: React.RefObject<any>;
+  /* 当前 portal 下挂载的节点数 */
+  elements: Record<number, ReactElement>;
+  /* 设置 portal 的 ref */
+  setPortalRef: (ref: React.RefObject<any>) => void;
+  /* 在 portal 下挂载节点，可选 portalType，用于辨识节点类型，暂时没有用到 */
+  updateChildren: (newChildren: ReactElement, portalType?: string) => void;
+  /* 通过 key 删除节点，每个 portal 下的组件都会接收到一个 currentKey 参数，代表当前 key 值 */
+  deleteChildren: (key: number) => void;
+  /* 通过 elements 遍历得出 portal 下真正的节点结构 */
+  updateFromElements: () => void;
+}
+
+/** 基于 theme 变化而变化的组件 */
+export type ThemeBasedComponentMap = Record<
+  LayoutName,
+  Record<string, React.FC<any>>
+>;
+/** 获取当前 theme 下的组件 */
+export type GetComponentInCurrentTheme = <T>(name: string) => React.FC<T>;

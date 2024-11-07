@@ -1,21 +1,12 @@
 import React, { ReactElement } from 'react';
 import { create } from 'zustand';
 
+import { PortalStore } from '@/store/types';
 import { keyGenerator } from '@/utils/autoKey';
 
-interface ModalStore {
-  portalRef: React.RefObject<any>;
-  elements: Record<number, ReactElement>;
-  setPortalRef: (ref: React.RefObject<any>) => void;
-  updateChildren: (newChildren: ReactElement, portalType?: string) => void;
-  deleteChildren: (key: number) => void;
-  updateFromElements: () => void;
-}
-
-export const usePortalStore = create<ModalStore>((set, get) => ({
+export const usePortalStore = create<PortalStore>((set, get) => ({
   portalRef: React.createRef(),
   elements: {},
-  elementTypeMap: {},
   setPortalRef: ref => set({ portalRef: ref }),
   updateFromElements: () => {
     const { elements, portalRef } = get();

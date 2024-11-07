@@ -22,7 +22,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
   currentKey,
   onClose,
   children,
-  title = '123123',
+  title,
   onCancel,
   onConfirm,
   showCancel = true,
@@ -71,7 +71,11 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
         )}
         {title && (
           <View style={[styles.title]}>
-            <Text style={commonStyles.fontExtraLarge}>{title}</Text>
+            {typeof title === 'string' ? (
+              <Text style={commonStyles.fontExtraLarge}>{title}</Text>
+            ) : (
+              title
+            )}
           </View>
         )}
         <View style={styles.modalChildren}>{children}</View>
