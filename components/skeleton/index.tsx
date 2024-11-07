@@ -4,18 +4,27 @@ import { View, StyleSheet, Animated } from 'react-native';
 
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 import { keyGenerator } from '@/utils/autoKey';
+import useVisualScheme from '@/store/visualScheme';
 
 /**
  * 骨架屏组件
  * @param loading {boolean} 是否显示骨架屏
  * @param children {ReactElement} 渲染组件
+ * @param width {number} 钉死的高度（可选）
+ * @param height {number} 钉死的高度（可选）
  * @constructor
  */
-const SkeletonLoader: FC<SkeletonType> = ({ loading, children }) => {
+const SkeletonLoader: FC<SkeletonType> = ({
+  loading,
+  children,
+  width: propWidth,
+  height: propHeight,
+}) => {
   const [layout, setLayout] = useState<{
     width: number;
     height: number;
   } | null>(null);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const translateX = useMemo(() => {
     return new Animated.Value(layout ? -layout.width * 1.5 : 0);
   }, [layout?.width]);
@@ -33,16 +42,21 @@ const SkeletonLoader: FC<SkeletonType> = ({ loading, children }) => {
 
   const handleLayout = (event: any) => {
     const { width, height } = event.nativeEvent.layout;
-    if (width && height) {
-      setLayout({ width, height });
-    }
+    setLayout({ width: width ?? propWidth, height: height ?? propHeight });
   };
 
   if (loading && layout) {
     if (React.isValidElement(children)) {
       const childStyle = (children as ReactElement).props?.style || {};
       return (
-        <View style={[childStyle, styles.skeletons, layout]}>
+        <View
+          style={[
+            childStyle,
+            styles.skeletons,
+            currentStyle?.skeleton_background_style,
+            layout,
+          ]}
+        >
           <Animated.View
             style={[
               styles.shimmer,
@@ -76,7 +90,6 @@ const SkeletonLoader: FC<SkeletonType> = ({ loading, children }) => {
 const styles = StyleSheet.create({
   skeletons: {
     position: 'relative',
-    backgroundColor: '#ededed',
     overflow: 'hidden',
     minWidth: 40,
     minHeight: 17,

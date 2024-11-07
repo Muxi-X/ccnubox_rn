@@ -8,9 +8,15 @@ import Toast from '@/components/toast';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SettingPage() {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const { currentStyle, currentComponents, themeName, changeTheme } =
+    useVisualScheme(
+      ({ currentStyle, currentComponents, changeTheme, themeName }) => ({
+        currentStyle,
+        changeTheme,
+        currentComponents,
+        themeName,
+      })
+    );
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -20,7 +26,15 @@ export default function SettingPage() {
   }, [isUpdatePending]);
 
   return (
-    <View>
+    <View style={[{ flex: 1 }, currentStyle?.background_style]}>
+      <Button
+        style={[currentStyle?.button_style, { width: '100%' }]}
+        onPress={() => {
+          changeTheme(themeName === 'dark' ? 'light' : 'dark');
+        }}
+      >
+        切换模式
+      </Button>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {

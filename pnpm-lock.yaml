@@ -29,9 +29,6 @@ importers:
       expo:
         specifier: ^51.0.38
         version: 51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))
-      expo-2d-context:
-        specifier: ^0.0.4
-        version: 0.0.4(expo-asset@10.0.10(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))))
       expo-build-properties:
         specifier: ~0.12.5
         version: 0.12.5(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7)))
@@ -47,6 +44,9 @@ importers:
       expo-font:
         specifier: ~12.0.10
         version: 12.0.10(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7)))
+      expo-haptics:
+        specifier: ~13.0.1
+        version: 13.0.1(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7)))
       expo-insights:
         specifier: ~0.7.0
         version: 0.7.0(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7)))
@@ -98,9 +98,6 @@ importers:
       react-native:
         specifier: 0.74.5
         version: 0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0)
-      react-native-drag-sort-gridview:
-        specifier: ^1.5.0
-        version: 1.5.0(react-native-reanimated@3.10.1(@babel/core@7.24.7)(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       react-native-draggable-grid:
         specifier: ^2.2.1
         version: 2.2.1(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -196,8 +193,8 @@ importers:
         specifier: ^0.80.9
         version: 0.80.9
       mx-jpush-expo:
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^1.0.0
+        version: 1.0.0
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
@@ -2283,6 +2280,7 @@ packages:
   '@xmldom/xmldom@0.7.13':
     resolution: {integrity: sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version is no longer supported, please update to at least 0.8.*
 
   '@xmldom/xmldom@0.8.10':
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
@@ -2340,12 +2338,6 @@ packages:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  adaptive-bezier-curve@1.0.3:
-    resolution: {integrity: sha512-mDcwN284LlNAdunqnVmS0PAoDNHKze/PY8zvpCdxzyXD+ZZFeMWQ3FKNBw0VMOd9IfnhIyzAWJDXzRcWnXtoSg==}
-
-  adaptive-quadratic-curve@1.0.2:
-    resolution: {integrity: sha512-D6NxIKnelgRDqQijGR6FQzdWPgs4bC7H54LyukFKxTkoZW4+zNemU2JevF4BuMraoxYogvAIMRc2LD5oSCL34g==}
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -3117,9 +3109,6 @@ packages:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
     engines: {node: '>=8'}
 
-  css-font-parser@0.2.3:
-    resolution: {integrity: sha512-QhdfNV+RjQLVg24d/ls4I8UrA/5WCeEfUmi1je8ISPr7RGZJXwWU2AwZpCiUmWuLZW7dKaB3ER0Bq1W9UhEUag==}
-
   css-in-js-utils@3.1.0:
     resolution: {integrity: sha512-fJAcud6B3rRu+KHYk+Bwf+WFL2MDCJJ1XG9x137tJQ0xYxor7XziQtuGFbWNdqrvF4Tk26O3H73nfVqXt/fW1A==}
 
@@ -3359,9 +3348,6 @@ packages:
   dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
-
-  earcut@2.1.1:
-    resolution: {integrity: sha512-+BGT9Mffq3Oxf2nDOtzaJDd9P8g/z3WNYGO84Q23hDBot5VU8DNGY73Vc94eVDvHjMyhonnuEg+DNwEQ6iZn3w==}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -3727,11 +3713,6 @@ packages:
     resolution: {integrity: sha512-2Zks0hf1VLFYI1kbh0I5jP3KHHyCHpkfyHBzsSXRFgl/Bg9mWYfMW8oD+PdMPlEwy5HNsR9JutYy6pMeOh61nw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  expo-2d-context@0.0.4:
-    resolution: {integrity: sha512-zO76moHHUHblHX965yzitqUdsVUFv9wEGPi6zxIJhOxzBwHEXPE/U5EcVWVvP5hyEHg/BeJ2k6C5lg3v5ntZpw==}
-    peerDependencies:
-      expo-asset: '*'
-
   expo-application@5.9.1:
     resolution: {integrity: sha512-uAfLBNZNahnDZLRU41ZFmNSKtetHUT9Ua557/q189ua0AWV7pQjoVAx49E4953feuvqc9swtU3ScZ/hN1XO/FQ==}
     peerDependencies:
@@ -3787,6 +3768,11 @@ packages:
 
   expo-font@12.0.10:
     resolution: {integrity: sha512-Q1i2NuYri3jy32zdnBaHHCya1wH1yMAsI+3CCmj9zlQzlhsS9Bdwcj2W3c5eU5FvH2hsNQy4O+O1NnM6o/pDaQ==}
+    peerDependencies:
+      expo: '*'
+
+  expo-haptics@13.0.1:
+    resolution: {integrity: sha512-qG0EOLDE4bROVT3DtUSyV9g3iB3YFu9j3711X7SNNEnBDXc+2/p3wGDPTnJvPW0ao6HG3/McAOrBQA5hVSdWng==}
     peerDependencies:
       expo: '*'
 
@@ -4185,9 +4171,6 @@ packages:
     resolution: {integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==}
     engines: {node: '>=16'}
     hasBin: true
-
-  gl-matrix@2.8.1:
-    resolution: {integrity: sha512-0YCjVpE3pS5XWlN3J4X7AiAx65+nqAI54LndtVFnQZB6G/FVLkZH8y8V6R3cIoOQR4pUdfwQGd1iwyoXHJ4Qfw==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -5642,8 +5625,8 @@ packages:
     resolution: {integrity: sha512-at/ZndSy3xEGJ8i0ygALh8ru9qy7gWW1cmkaqBN29JmMlIvM//MEO9y1sk/avxuwnPcfhkejkLsuPxH81BrkSg==}
     engines: {node: '>=0.8.0'}
 
-  mx-jpush-expo@0.1.0:
-    resolution: {integrity: sha512-4A5thU872VNOyVk1epi39GG0/u5OdkaGm+MEZqyJiLEWidGYsvKHZOThKdbr3g+JsglJrW3jWfYO8/0fu62BYQ==}
+  mx-jpush-expo@1.0.0:
+    resolution: {integrity: sha512-hwAFyzB7GfukXjAKLNq/8vm6x3PSEOn0uD2abSrkqCaHEPHxAOmTuvpJ6KiiMQRp8WG4FRmI+eVtazf881YypA==}
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
@@ -5938,9 +5921,6 @@ packages:
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
-
-  parse-bmfont-ascii@1.0.6:
-    resolution: {integrity: sha512-U4RrVsUFCleIOBsIGYOMKjn9PavsGOXxbvYGtMOEfnId0SVNsgehXh1DxUdVPLoxd5mvcEtvmKs2Mmf0Mpa1ZA==}
 
   parse-color@1.0.0:
     resolution: {integrity: sha512-fuDHYgFHJGbpGMgw9skY/bj3HL/Jrn4l/5rSspy00DoT4RyLnDcRvPxdZ+r6OFwIsgAuhDh4I09tAId4mI12bw==}
@@ -6257,13 +6237,6 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
-
-  react-native-drag-sort-gridview@1.5.0:
-    resolution: {integrity: sha512-Cr6m5cCZQQP/JUKJN4uOUIHOcrSrXl0nhK8FKqEafE4541/fdSBJscNFJGNaYjW4rN0jgoGF0DYuzJGEKjQRUg==}
-    peerDependencies:
-      react: '>=18.0.0'
-      react-native: '>=0.70.0'
-      react-native-reanimated: '>=3.3.0'
 
   react-native-draggable-grid@2.2.1:
     resolution: {integrity: sha512-/nYSaHvu3JOBLbgGzzo3bG0z0rnnjINTnTAhjhpd9YCmlbQW8D+S0WT8CNc/9y7ys+DcoBgblgO4VBwohN/NwQ==}
@@ -6899,9 +6872,6 @@ packages:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
     engines: {node: '>=4'}
 
-  string-format@0.5.0:
-    resolution: {integrity: sha512-c/CiKQMy7uuEzi+Tsvnn63/PQw/F7IOSLHNuQ44Eypd0x5VvFnDXMd2T9H0ntphv8nrHAKoZcINPb/yitOAB/g==}
-
   string-length@4.0.2:
     resolution: {integrity: sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ==}
     engines: {node: '>=10'}
@@ -7069,9 +7039,6 @@ packages:
     resolution: {integrity: sha512-LGyRZVFm/QElZHy/CPr/O4eNZOZIzsrQ92y4v9UJe/pFJjypje2yI3C2FmPtvUEnhadlSbmG2nXtdcjHOjCfxw==}
     engines: {node: '>=10'}
     hasBin: true
-
-  tess2@1.0.0:
-    resolution: {integrity: sha512-iSWBSOUoPn3cCT26L5Wi6mvVgL11RV4kReSnVIIPdMN7qNpkL5SLKen5BJcWj+ZTN7kK6JrHBdqTV7vvL8g+9w==}
 
   test-exclude@5.2.3:
     resolution: {integrity: sha512-M+oxtseCFO3EDtAaGH7iiej3CBkzXqFMbzqYAACdzKui4eZA+pq3tZEwChvOdNfa7xxy8BfbmgJSIr43cC/+2g==}
@@ -11466,10 +11433,6 @@ snapshots:
 
   acorn@8.12.1: {}
 
-  adaptive-bezier-curve@1.0.3: {}
-
-  adaptive-quadratic-curve@1.0.2: {}
-
   agent-base@6.0.2:
     dependencies:
       debug: 4.3.5
@@ -12460,8 +12423,6 @@ snapshots:
 
   crypto-random-string@2.0.0: {}
 
-  css-font-parser@0.2.3: {}
-
   css-in-js-utils@3.1.0:
     dependencies:
       hyphenate-style-name: 1.1.0
@@ -12676,8 +12637,6 @@ snapshots:
       dotenv: 16.4.5
 
   dotenv@16.4.5: {}
-
-  earcut@2.1.1: {}
 
   eastasianwidth@0.2.0: {}
 
@@ -13305,20 +13264,6 @@ snapshots:
       jest-message-util: 29.7.0
       jest-util: 29.7.0
 
-  expo-2d-context@0.0.4(expo-asset@10.0.10(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7)))):
-    dependencies:
-      adaptive-bezier-curve: 1.0.3
-      adaptive-quadratic-curve: 1.0.2
-      color-convert: 1.9.3
-      css-font-parser: 0.2.3
-      domexception: 1.0.1
-      earcut: 2.1.1
-      expo-asset: 10.0.10(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7)))
-      gl-matrix: 2.8.1
-      parse-bmfont-ascii: 1.0.6
-      string-format: 0.5.0
-      tess2: 1.0.0
-
   expo-application@5.9.1(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))):
     dependencies:
       expo: 51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))
@@ -13393,6 +13338,10 @@ snapshots:
     dependencies:
       expo: 51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))
       fontfaceobserver: 2.3.0
+
+  expo-haptics@13.0.1(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))):
+    dependencies:
+      expo: 51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))
 
   expo-insights@0.7.0(expo@51.0.38(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))):
     dependencies:
@@ -13914,8 +13863,6 @@ snapshots:
       dargs: 8.1.0
       meow: 12.1.1
       split2: 4.2.0
-
-  gl-matrix@2.8.1: {}
 
   glob-parent@5.1.2:
     dependencies:
@@ -15909,7 +15856,7 @@ snapshots:
       rimraf: 2.4.5
     optional: true
 
-  mx-jpush-expo@0.1.0:
+  mx-jpush-expo@1.0.0:
     dependencies:
       '@expo/config-plugins': 3.1.0
     transitivePeerDependencies:
@@ -16236,8 +16183,6 @@ snapshots:
     dependencies:
       callsites: 3.1.0
 
-  parse-bmfont-ascii@1.0.6: {}
-
   parse-color@1.0.0:
     dependencies:
       color-convert: 0.5.3
@@ -16531,12 +16476,6 @@ snapshots:
     dependencies:
       react: 18.2.0
       react-native: 0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0)
-
-  react-native-drag-sort-gridview@1.5.0(react-native-reanimated@3.10.1(@babel/core@7.24.7)(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
-    dependencies:
-      react: 18.2.0
-      react-native: 0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0)
-      react-native-reanimated: 3.10.1(@babel/core@7.24.7)(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
 
   react-native-draggable-grid@2.2.1(react-native@0.74.5(@babel/core@7.24.7)(@babel/preset-env@7.24.8(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
     dependencies:
@@ -17337,8 +17276,6 @@ snapshots:
 
   strict-uri-encode@2.0.0: {}
 
-  string-format@0.5.0: {}
-
   string-length@4.0.2:
     dependencies:
       char-regex: 1.0.2
@@ -17525,8 +17462,6 @@ snapshots:
       acorn: 8.12.1
       commander: 2.20.3
       source-map-support: 0.5.21
-
-  tess2@1.0.0: {}
 
   test-exclude@5.2.3:
     dependencies:

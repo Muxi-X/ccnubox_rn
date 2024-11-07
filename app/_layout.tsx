@@ -15,7 +15,7 @@ import useVisualScheme from '@/store/visualScheme';
 import fetchUpdates from '@/utils/fetchUpdates';
 
 export default function RootLayout() {
-  const initStyles = useVisualScheme(state => state.initStyles);
+  const initVisualScheme = useVisualScheme(state => state.init);
   const scraperRef = useRef<WebView>();
   const portalRef = useRef<View>();
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
@@ -31,8 +31,8 @@ export default function RootLayout() {
     alert(JSON.stringify(err));
   }
   useEffect(() => {
-    // 引入所有样式
-    initStyles();
+    // 引入所有样式以及基于 theme 的组件
+    initVisualScheme();
     // 加载字体
     loadAsync({
       antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
@@ -47,7 +47,7 @@ export default function RootLayout() {
     setRef(scraperRef);
     // 在 store 中配置 portal ref
     setPortalRef(portalRef);
-  }, [initStyles]);
+  }, [initVisualScheme]);
   return (
     <>
       {/* Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删  */}

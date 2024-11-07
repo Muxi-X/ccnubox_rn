@@ -8,6 +8,10 @@ export interface SkeletonType {
   style?: ViewStyle | TextStyle;
   children?: ReactElement;
   loading?: boolean;
+  /* 钉死的宽度，如果组件是动态宽度的就钉死 */
+  width?: number;
+  /* 钉死的高度 */
+  height?: number;
 }
 
 /**

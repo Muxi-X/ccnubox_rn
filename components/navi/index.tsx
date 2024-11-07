@@ -10,7 +10,7 @@ import TabBarItem from './TabBarItem';
 const TabBar: FC<BottomTabBarProps> = props => {
   const { state, descriptors, navigation } = props;
   const navbarStyle = useVisualScheme(
-    state => state.currentStyle?.navbar_style
+    state => state.currentStyle?.navbar_background_style
   );
   return (
     <View style={[styles.tabbar, navbarStyle]}>
@@ -21,8 +21,8 @@ const TabBar: FC<BottomTabBarProps> = props => {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state?.index === index;
 

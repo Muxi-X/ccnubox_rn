@@ -13,6 +13,7 @@ import { DraggableGrid } from 'react-native-draggable-grid';
 import Skeleton from '@/components/skeleton';
 import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
+import useVisualScheme from '@/store/visualScheme';
 
 type MainPageGridDataType = {
   text: string;
@@ -24,6 +25,7 @@ const IndexPage: FC = () => {
   const [banners, setBanners] = useState<
     { bannerUrl: string; navUrl: string }[]
   >([{ bannerUrl: '', navUrl: '' }]);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const [data, setData] = useState<MainPageGridDataType[]>([
     {
       text: '我是',
@@ -53,7 +55,7 @@ const IndexPage: FC = () => {
     }, 5000);
   }, []);
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, currentStyle?.background_style]}>
       <Skeleton loading={loading}>
         <Carousel style={styles.banner} autoplay infinite dots={false}>
           {banners.map(banner => (
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
     width: '95%',
     height: 120,
     borderRadius: 10,
-    backgroundColor: commonColors.black,
+    backgroundColor: commonColors.purple,
   },
   itemText: {
     fontSize: 14,

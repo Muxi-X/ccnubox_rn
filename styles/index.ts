@@ -1,7 +1,14 @@
-import { defaultStyles } from './default';
-import { ThemeType } from './types';
+import { ThemeBasedComponentMap } from '@/store/types';
 
-export const styleMap: { [name: string]: ThemeType } = {
-  /** 默认样式 */
-  default: defaultStyles,
+import { defaultStyles } from './default';
+import { LayoutName, LayoutType } from './types';
+
+export const layoutMap: Record<LayoutName, LayoutType> = {
+  android: defaultStyles,
+  ios: defaultStyles,
+};
+
+export const componentMap: ThemeBasedComponentMap = {
+  ios: {},
+  android: {},
 };

@@ -113,7 +113,7 @@ export type ConfigurableThemeNames =
   | 'border_style'
   | 'button_style'
   | 'navbar_style'
-  | 'navbar_icon_style';
+  | 'navbar_icon_active_style';
 ```
 #### 样式使用：
 ```ts
