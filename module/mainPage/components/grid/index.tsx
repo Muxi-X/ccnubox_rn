@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import React, { memo, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { DraggableGrid as Grid } from 'react-native-draggable-grid';
@@ -37,6 +38,8 @@ const DraggableGrid: React.FC<DraggableGridProps> = ({
         numColumns={4}
         renderItem={renderItem}
         data={data}
+        onDragItemActive={() => Haptics.selectionAsync()}
+        // onDragStart={() => Haptics.selectionAsync()}
         onDragRelease={onDragRelease}
       />
     </View>

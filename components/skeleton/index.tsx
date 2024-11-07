@@ -3,8 +3,8 @@ import React, { FC, memo, ReactElement, useMemo, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
-import { keyGenerator } from '@/utils/autoKey';
 import useVisualScheme from '@/store/visualScheme';
+import { keyGenerator } from '@/utils/autoKey';
 
 /**
  * 骨架屏组件
