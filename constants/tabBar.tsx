@@ -1,9 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Text } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import { SingleTabType } from '@/types/tabBarTypes';
-import useVisualScheme from '@/store/visualScheme';
 
 /**
  * @enum tabBar颜色

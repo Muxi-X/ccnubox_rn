@@ -11,9 +11,9 @@ import {
 import { DraggableGrid } from 'react-native-draggable-grid';
 
 import Skeleton from '@/components/skeleton';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
-import useVisualScheme from '@/store/visualScheme';
 
 type MainPageGridDataType = {
   text: string;
@@ -24,13 +24,21 @@ const IndexPage: FC = () => {
   const router = useRouter();
   const [banners, setBanners] = useState<
     { bannerUrl: string; navUrl: string }[]
-  >([{ bannerUrl: '', navUrl: '' }]);
+  >([
+    { bannerUrl: '', navUrl: '' },
+    { bannerUrl: '', navUrl: '' },
+  ]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [data, setData] = useState<MainPageGridDataType[]>([
     {
       text: '我是',
       imageUrl: require('../../assets/images/mx-logo.png'),
       key: 'grid-1',
+    },
+    {
+      text: '谁',
+      imageUrl: require('../../assets/images/mx-logo.png'),
+      key: 'grid-2',
     },
   ]);
   const [loading, setLoading] = useState(true);
@@ -89,6 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 60,
     alignSelf: 'center',
+    // justifyContent: 'center',
   },
   wrapper: {
     flex: 1,
@@ -107,6 +116,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 10,
     backgroundColor: commonColors.purple,
+    // marginHorizontal: percent2px(3),
   },
   itemText: {
     fontSize: 14,

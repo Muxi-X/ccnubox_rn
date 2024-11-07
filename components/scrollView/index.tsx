@@ -16,6 +16,7 @@ import Animated, {
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
 import { commonColors } from '@/styles/common';
+import { COURSE_ITEM_WIDTH, daysOfWeek } from '@/constants/courseTable';
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const {
@@ -37,6 +38,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const cornerHeight = useSharedValue(0);
   // 下拉刷新背景高度
   const backHeight = useSharedValue(0);
+  const overScrollHeight = useSharedValue(0);
   const isAtTop = useSharedValue(false);
   const isAtBottom = useSharedValue(false);
   // 实际内容大小
@@ -55,8 +57,8 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   });
   useEffect(() => {
     isAtTop.value && onReachTopEnd();
-    isAtBottom && onReachBottomEnd();
-  }, [isAtTop.value, isAtBottom]);
+    isAtBottom.value && onReachBottomEnd();
+  }, [isAtTop.value, isAtBottom.value]);
 
   // 监听边界事件
   const onReachTopEnd = () => {
@@ -77,7 +79,11 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   const onReachBottomEnd = () => {
     onScrollToBottom && onScrollToBottom();
-    isAtBottom.value = false;
+    // setTimeout(() => {
+    //   // translateY.value = withTiming(wrapperSize.height - containerSize.height);
+    //   overScrollHeight.value = withTiming(0);
+    //   isAtBottom.value = false;
+    // }, 2000);
   };
 
   const panGesture = Gesture.Pan()
@@ -90,13 +96,61 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       if (isAtTop.value && event.translationY > 100) {
         backHeight.value = withSpring(100);
       }
+      if (isAtBottom.value) {
+        overScrollHeight.value = -event.translationY;
+      }
       // 如果全用 withTiming 等动画
       // 低速下会造成卡顿的错觉
-      translateX.value = Math.min(startX.value + event.translationX, 0);
-      translateY.value = Math.min(startY.value + event.translationY, 0);
+
+      // 限制 translateX 在 -leftLimit 到 0 范围内（左侧和右侧停住）
+      translateX.value = Math.min(
+        0,
+        Math.max(
+          startX.value + event.translationX,
+          wrapperSize.width - containerSize.width
+        )
+      );
+      translateY.value = Math.min(
+        0,
+        Math.max(
+          startY.value + event.translationY,
+          wrapperSize.height - containerSize.height
+        )
+      );
+      // 记录滑动距离
+      if (isAtBottom.value) {
+        overScrollHeight.value = withTiming(-event.translationY);
+      }
     })
-    .onEnd(() => {
+    .onEnd(event => {
       // 检查是否触及顶部或底部边界，触发状态
+      translateY.value = withTiming(
+        Math.min(
+          0,
+          Math.max(
+            startY.value + event.translationY + event.velocityY * 0.1,
+            wrapperSize.height - containerSize.height
+          )
+        )
+      );
+      translateX.value = withTiming(
+        Math.min(
+          0,
+          Math.max(
+            startX.value + event.translationX + event.velocityX * 0.1,
+            wrapperSize.width - containerSize.width
+          )
+        )
+      );
+      // 下方彩蛋弹回
+      if (isAtBottom.value) {
+        translateY.value = withSpring(
+          wrapperSize.height - containerSize.height + overScrollHeight.value
+        );
+        overScrollHeight.value = withTiming(0);
+        isAtBottom.value = false;
+      }
+      // 如果在边界大力滑动，则视为触及到边缘
       if (Math.abs(translateX.value - startX.value) < 30) {
         if (translateY.value >= 0) {
           if (!isAtTop.value) isAtTop.value = true;
@@ -106,17 +160,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           if (!isAtBottom.value) isAtBottom.value = true;
         }
       }
-      // 超出边界就弹回
-      translateX.value = withSpring(
-        Math.max(translateX.value, -(containerSize.width - wrapperSize.width))
-      );
-      console.log(translateX.value, containerSize.width, wrapperSize.width);
-      translateY.value = withSpring(
-        Math.max(
-          translateY.value,
-          -(containerSize?.height - wrapperSize?.height)
-        )
-      );
     });
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -177,7 +220,12 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           zIndex: 20,
         }}
       ></Animated.View>
-      <View style={{ flexDirection: 'row', flex: 1 }}>
+      <Animated.View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+        }}
+      >
         {/* stickyLeft */}
         <Animated.View
           onLayout={layout => {
@@ -203,12 +251,20 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
               {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
               {children &&
                 React.cloneElement(children, { onLayout: handleChildLayout })}
-              {/* sticky bottom */}
-              {stickyBottom}
             </Animated.View>
           </GestureDetector>
         </View>
-      </View>
+      </Animated.View>
+      {/* sticky bottom */}
+      <Animated.View
+        style={{
+          width: '100%',
+          height: overScrollHeight,
+          overflow: 'hidden',
+        }}
+      >
+        {stickyBottom}
+      </Animated.View>
     </View>
   );
 };
@@ -242,7 +298,7 @@ const styles = StyleSheet.create({
   box: {
     height: 200,
     backgroundColor: '#000',
-    marginVertical: 10,
+    marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
