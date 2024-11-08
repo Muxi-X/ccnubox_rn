@@ -7,6 +7,7 @@ import {
   ThemeName,
   SingleThemeType,
 } from '@/styles/types';
+import { ConfigurableComponentName } from '@/themeBasedComponents/type';
 
 /** 配色、布局整体store类型 */
 export type visualSchemeType = {
@@ -17,7 +18,7 @@ export type visualSchemeType = {
   /** 所有的可替换组件 */
   themeBasedComponents: ThemeBasedComponentMap;
   /** 目前的可替换组件 */
-  currentComponents: Record<string, React.FC<any>>;
+  currentComponents: ThemeBasedComponentRecord | null;
   /** 所有注册的 layout */
   layouts: Map<LayoutName, LayoutType>;
   /** 当前样式表 */
@@ -61,5 +62,10 @@ export interface PortalStore {
 /** 基于 theme 变化而变化的组件 */
 export type ThemeBasedComponentMap = Record<
   LayoutName,
-  Record<string, React.FC<any>>
+  ThemeBasedComponentRecord
+> | null;
+
+export type ThemeBasedComponentRecord = Record<
+  ConfigurableComponentName,
+  React.FC<any>
 >;
