@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 
 import Button from '@/components/button';
+import Picker, { basicColumns } from '@/components/picker';
 import Toast from '@/components/toast';
 import useVisualScheme from '@/store/visualScheme';
-import Picker, { basicColumns } from '@/components/picker';
 
 export default function SettingPage() {
   const { currentStyle, currentComponents, themeName, changeTheme } =
