@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 
-import { componentMap, layoutMap } from '@/styles';
+import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
+import { componentMap } from '@/themeBasedComponents';
 
 import { visualSchemeType } from './types';
 
@@ -9,8 +10,8 @@ const useVisualScheme = create<visualSchemeType>(set => ({
   themeName: 'light',
   layoutName: 'android',
   currentStyle: null,
-  themeBasedComponents: { android: {}, ios: {} },
-  currentComponents: {},
+  themeBasedComponents: null,
+  currentComponents: null,
   layouts: new Map(),
   init: () =>
     set(state => {
@@ -21,7 +22,7 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       return {
         ...state,
         themeBasedComponents: componentMap,
-        currentComponents: componentMap[state.layoutName],
+        currentComponents: componentMap![state.layoutName],
         currentStyle: layoutMap[state.layoutName][
           state.themeName
         ] as SingleThemeType,
@@ -57,7 +58,9 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       const newStyle = layouts.get(layoutName)![themeName] as SingleThemeType;
       return {
         ...state,
-        currentComponents: themeBasedComponents[layoutName],
+        currentComponents: themeBasedComponents
+          ? themeBasedComponents[layoutName]
+          : null,
         currentStyle: newStyle ?? currentStyle,
         layoutName,
       };

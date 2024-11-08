@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 
 import Button from '@/components/button';
-import Picker, { basicColumns } from '@/components/picker';
+import Modal from '@/components/modal';
+import Picker from '@/components/picker';
 import Toast from '@/components/toast';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -26,13 +27,14 @@ export default function SettingPage() {
     }
   }, [isUpdatePending]);
   useEffect(() => {
-    // Modal.show({
-    //   title: '检测到更新',
-    //   children: '是否更新',
-    //   onConfirm: () => {
-    //     Updates.fetchUpdateAsync();
-    //   },
-    // });
+    isUpdateAvailable &&
+      Modal.show({
+        title: '检测到更新',
+        children: '是否更新',
+        onConfirm: () => {
+          Updates.fetchUpdateAsync();
+        },
+      });
   }, [isUpdateAvailable]);
 
   return (
@@ -72,8 +74,9 @@ export default function SettingPage() {
         />
       ) : null}
       <StatusBar style="auto" />
+      {currentComponents && <currentComponents.test1 />}
       <Picker>
-        <Text>345345</Text>
+        <Text style={currentStyle?.text_style}>345345</Text>
       </Picker>
     </View>
   );
