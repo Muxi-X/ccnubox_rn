@@ -1,4 +1,3 @@
-import { Carousel } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
 import React, { FC, memo, useEffect, useState } from 'react';
 import {
@@ -9,11 +8,13 @@ import {
   ImageSourcePropType,
 } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
+import Carousel from 'react-native-reanimated-carousel';
 
 import Skeleton from '@/components/skeleton';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
+import { percent2px } from '@/utils/percent2px';
 
 type MainPageGridDataType = {
   text: string;
@@ -65,14 +66,25 @@ const IndexPage: FC = () => {
   return (
     <View style={[styles.wrapper, currentStyle?.background_style]}>
       <Skeleton loading={loading}>
-        <Carousel style={styles.banner} autoplay infinite dots={false}>
-          {banners.map(banner => (
-            <View
-              style={styles.bannerItem}
-              key={keyGenerator.next().value as unknown as number}
-            ></View>
-          ))}
-        </Carousel>
+        <View style={styles.banner}>
+          <Carousel
+            style={{ flex: 1, marginHorizontal: percent2px(2.5) }}
+            width={percent2px(95)}
+            height={120}
+            autoPlay
+            loop
+            data={banners}
+            scrollAnimationDuration={2000}
+            renderItem={() => {
+              return (
+                <View
+                  style={styles.bannerItem}
+                  key={keyGenerator.next().value as unknown as number}
+                ></View>
+              );
+            }}
+          ></Carousel>
+        </View>
       </Skeleton>
       <DraggableGrid
         numColumns={4}
@@ -95,6 +107,7 @@ const styles = StyleSheet.create({
     width: '95%',
     height: 120,
     marginTop: 20,
+    overflow: 'hidden',
     marginBottom: 60,
     alignSelf: 'center',
     // justifyContent: 'center',
@@ -116,7 +129,6 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 10,
     backgroundColor: commonColors.purple,
-    // marginHorizontal: percent2px(3),
   },
   itemText: {
     fontSize: 14,
