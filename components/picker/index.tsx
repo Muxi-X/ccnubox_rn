@@ -21,7 +21,7 @@ const geneClassRange = (length: number) => {
   }
   return range;
 };
-const basicColumns = [
+export const basicColumns = [
   [
     { label: '周一', value: 'Mon' },
     { label: '周二', value: 'Tues' },
@@ -141,6 +141,19 @@ const Picker: React.FC<DatePickerProps> = ({
         itemHeight={itemHeight}
         onChange={handlePick}
         value={pickerValue}
+        renderMaskBottom={() => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                borderLeftWidth: BORDER_LEFT_WIDTH,
+                borderLeftColor: commonColors.lightGray,
+                opacity: 0.6,
+                borderRadius: 5,
+              }}
+            ></View>
+          );
+        }}
         renderMaskTop={() =>
           isBottomMode ? (
             <View style={styles.maskTop}>
@@ -162,14 +175,14 @@ const Picker: React.FC<DatePickerProps> = ({
           )
         }
         styles={isBottomMode ? pickerStyles : {}}
-        style={{ height: 3 * itemHeight }}
+        style={{ height: 3 * itemHeight, width: '100%' }}
         cascade={false}
       />
     </ModalTrigger>
   );
 };
 
-export default memo(Picker);
+export default Picker;
 
 const styles = StyleSheet.create({
   content: {
@@ -184,35 +197,31 @@ const styles = StyleSheet.create({
   maskTop: {
     flex: 1,
     borderLeftWidth: BORDER_LEFT_WIDTH,
-    borderLeftColor: '#F6F3F5',
+    borderLeftColor: commonColors.lightGray,
     borderRadius: 5,
+    opacity: 0.6,
   },
   prefix: {
     flex: 1,
     fontSize: commonStyles.fontMedium.fontSize,
     textAlign: 'center',
-    color: '#6D6D75',
+    color: commonColors.darkGray,
   },
 });
 const pickerStyles = StyleSheet.create({
   maskMiddle: {
     backgroundColor: '#ADA5A612',
     borderLeftWidth: BORDER_LEFT_WIDTH,
-    borderColor: '#7878F8',
+    borderColor: commonColors.purple,
     borderTopWidth: 0,
     borderBottomWidth: 0,
   },
   maskTop: {
     flex: 1,
   },
-  maskBottom: {
-    borderLeftWidth: 10,
-    borderLeftColor: '#F6F3F5',
-    backgroundColor: '#ffffff01',
-  },
   itemStyle: {
     ...commonStyles.fontMedium,
-    color: '#75757B',
+    color: commonColors.darkGray,
   },
   wrappper: {
     backgroundColor: '#ffffff01',
@@ -223,6 +232,6 @@ const pickerStyles = StyleSheet.create({
   itemActiveStyle: {
     ...commonStyles.fontMedium,
     fontWeight: 'bold',
-    color: '#7878F8',
+    color: commonColors.purple,
   },
 });

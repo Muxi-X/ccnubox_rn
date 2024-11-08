@@ -16,11 +16,22 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
         ...Object.entries(elements).map(element => element[1] as ReactElement),
       ]);
   },
-  updateChildren: (newChildren, portalType = 'common') => {
+  updateChildren: (key, props) => {
+    const tmpMap = get().elements;
+    const currentElement = tmpMap[key];
+    if (currentElement) {
+      tmpMap[key] = React.cloneElement(currentElement, props);
+    }
+    set({
+      elements: tmpMap,
+    });
+    get().updateFromElements();
+  },
+  appendChildren: (newChildren, portalType = 'common') => {
     let tmpMap: Record<number, ReactElement> = get().elements;
     const { updateFromElements } = get();
+    const key = keyGenerator.next().value as unknown as number;
     if (newChildren) {
-      const key = keyGenerator.next().value as unknown as number;
       tmpMap[key] = React.cloneElement(newChildren, {
         key,
         portalType,
@@ -31,6 +42,7 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
       elements: tmpMap,
     });
     updateFromElements();
+    return newChildren ? key : -1;
   },
   deleteChildren: key => {
     const { elements, updateFromElements } = get();

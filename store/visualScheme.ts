@@ -6,7 +6,7 @@ import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 import { visualSchemeType } from './types';
 
 const useVisualScheme = create<visualSchemeType>(set => ({
-  themeName: 'dark',
+  themeName: 'light',
   layoutName: 'android',
   currentStyle: null,
   themeBasedComponents: { android: {}, ios: {} },

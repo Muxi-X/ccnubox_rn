@@ -81,8 +81,8 @@ const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
   );
 };
 Toast.show = (props: ToastProps) => {
-  const updateChildren = usePortalStore.getState().updateChildren;
-  updateChildren(<Toast visible={true} {...props}></Toast>);
+  const appendChildren = usePortalStore.getState().appendChildren;
+  appendChildren(<Toast visible={true} {...props}></Toast>);
 };
 export default Toast;
 

@@ -78,11 +78,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   const onReachBottomEnd = () => {
     onScrollToBottom && onScrollToBottom();
-    // setTimeout(() => {
-    //   // translateY.value = withTiming(wrapperSize.height - containerSize.height);
-    //   overScrollHeight.value = withTiming(0);
-    //   isAtBottom.value = false;
-    // }, 2000);
   };
 
   const panGesture = Gesture.Pan()
@@ -92,11 +87,16 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       startY.value = translateY.value;
     })
     .onUpdate(event => {
-      if (isAtTop.value && event.translationY > 100) {
-        backHeight.value = withSpring(100);
+      if (isAtTop.value) {
+        if (event.translationY > 100) {
+          backHeight.value = withSpring(100);
+        }
+        if (event.translationY < 0) {
+          isAtTop.value = false;
+        }
       }
       if (isAtBottom.value) {
-        overScrollHeight.value = -event.translationY;
+        overScrollHeight.value = -Math.min(event.translationY, 100);
       }
       // 如果全用 withTiming 等动画
       // 低速下会造成卡顿的错觉
@@ -118,7 +118,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       );
       // 记录滑动距离
       if (isAtBottom.value) {
-        overScrollHeight.value = withTiming(-event.translationY);
+        overScrollHeight.value = Math.min(-event.translationY, 100);
       }
     })
     .onEnd(event => {
@@ -127,7 +127,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         Math.min(
           0,
           Math.max(
-            startY.value + event.translationY + event.velocityY * 0.1,
+            translateY.value + event.velocityY * 0.2,
             wrapperSize.height - containerSize.height
           )
         )
@@ -136,28 +136,30 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         Math.min(
           0,
           Math.max(
-            startX.value + event.translationX + event.velocityX * 0.1,
+            translateX.value + event.velocityX * 0.2,
             wrapperSize.width - containerSize.width
           )
         )
       );
-      // 下方彩蛋弹回
+      // 如果在顶部大力滑动，则触发刷新
+      if (translateY.value === 0 && !isAtTop.value) {
+        isAtTop.value = true;
+      }
+      // 若在底部滚动到底，触发彩蛋
       if (isAtBottom.value) {
         translateY.value = withSpring(
-          wrapperSize.height - containerSize.height + overScrollHeight.value
+          Math.max(
+            wrapperSize.height - containerSize.height + overScrollHeight.value,
+            translateY.value
+          )
         );
         overScrollHeight.value = withTiming(0);
         isAtBottom.value = false;
-      }
-      // 如果在边界大力滑动，则视为触及到边缘
-      if (Math.abs(translateX.value - startX.value) < 30) {
-        if (translateY.value >= 0) {
-          if (!isAtTop.value) isAtTop.value = true;
-        } else if (
-          translateY.value <= -(containerSize.height - wrapperSize.height)
-        ) {
-          if (!isAtBottom.value) isAtBottom.value = true;
-        }
+      } else if (
+        translateY.value <= -(containerSize.height - wrapperSize.height) &&
+        !isAtBottom.value
+      ) {
+        isAtBottom.value = true;
       }
     });
 
@@ -259,6 +261,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         style={{
           width: '100%',
           height: overScrollHeight,
+          zIndex: -20,
           overflow: 'hidden',
         }}
       >
@@ -275,6 +278,7 @@ const styles = StyleSheet.create({
   wrapper: {
     overflow: 'hidden',
     flex: 1,
+    zIndex: 2,
   },
   stickyTop: {
     position: 'absolute',
@@ -300,6 +304,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 2,
   },
   text: {
     fontSize: 18,
