@@ -48,8 +48,10 @@ export interface PortalStore {
   elements: Record<number, ReactElement>;
   /* 设置 portal 的 ref */
   setPortalRef: (ref: React.RefObject<any>) => void;
-  /* 在 portal 下挂载节点，可选 portalType，用于辨识节点类型，暂时没有用到 */
-  updateChildren: (newChildren: ReactElement, portalType?: string) => void;
+  /* 更新 portal 组件的值 */
+  updateChildren: (key: number, props: any) => void;
+  /* 在 portal 下挂载节点，可选 portalType，用于辨识节点类型，暂时没有用到，返回对应 key 值 */
+  appendChildren: (newChildren: ReactElement, portalType?: string) => number;
   /* 通过 key 删除节点，每个 portal 下的组件都会接收到一个 currentKey 参数，代表当前 key 值 */
   deleteChildren: (key: number) => void;
   /* 通过 elements 遍历得出 portal 下真正的节点结构 */

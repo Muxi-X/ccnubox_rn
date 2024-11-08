@@ -6,7 +6,7 @@ const { white, purple, black, lightGray, lightDark } = commonColors;
 const baseStyle: ThemeType = {
   dark: {
     text_style: {
-      color: white,
+      color: lightGray,
     },
     navbar_background_style: {
       backgroundColor: lightDark,
@@ -15,7 +15,7 @@ const baseStyle: ThemeType = {
       backgroundColor: lightDark,
     },
     header_text_style: {
-      color: white,
+      color: lightGray,
     },
     navbar_icon_active_style: {
       color: purple,
@@ -28,10 +28,9 @@ const baseStyle: ThemeType = {
     },
     button_style: {
       backgroundColor: purple,
-      color: black,
     },
     button_text_style: {
-      color: black,
+      color: lightGray,
     },
     background_style: {
       backgroundColor: black,

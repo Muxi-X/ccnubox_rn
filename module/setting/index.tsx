@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 
 import Button from '@/components/button';
 import Toast from '@/components/toast';
 import useVisualScheme from '@/store/visualScheme';
+import Picker, { basicColumns } from '@/components/picker';
 
 export default function SettingPage() {
   const { currentStyle, currentComponents, themeName, changeTheme } =
@@ -24,6 +25,15 @@ export default function SettingPage() {
       void Updates.reloadAsync();
     }
   }, [isUpdatePending]);
+  useEffect(() => {
+    // Modal.show({
+    //   title: '检测到更新',
+    //   children: '是否更新',
+    //   onConfirm: () => {
+    //     Updates.fetchUpdateAsync();
+    //   },
+    // });
+  }, [isUpdateAvailable]);
 
   return (
     <View style={[{ flex: 1 }, currentStyle?.background_style]}>
@@ -62,6 +72,9 @@ export default function SettingPage() {
         />
       ) : null}
       <StatusBar style="auto" />
+      <Picker>
+        <Text>345345</Text>
+      </Picker>
     </View>
   );
 }
