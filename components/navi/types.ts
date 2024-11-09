@@ -1,6 +1,6 @@
-import { SingleTabType } from '@/types/tabBarTypes';
+import { SinglePageType } from '@/types/tabBarTypes';
 
-export interface TabBarItemProps extends SingleTabType {
+export interface TabBarItemProps extends SinglePageType {
   /**
    * 是否为当前选中
    */

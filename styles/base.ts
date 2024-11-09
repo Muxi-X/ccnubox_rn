@@ -41,7 +41,7 @@ const baseStyle: ThemeType = {
       color: black,
     },
     header_background_style: {
-      backgroundColor: white,
+      backgroundColor: lightGray,
     },
     header_text_style: {
       color: black,

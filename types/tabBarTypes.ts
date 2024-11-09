@@ -1,7 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { ReactElement } from 'react';
 /** 下方导航栏元素类型 */
-export type SingleTabType = {
+export type SinglePageType = {
   /**
    * Tab别名
    */
