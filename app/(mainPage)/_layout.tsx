@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import React from 'react';
 import {
@@ -8,11 +9,11 @@ import {
   TouchableOpacity,
   TextStyle,
 } from 'react-native';
+
 import { mainPageApplications } from '@/constants/mainPageApplications';
-import { Ionicons } from '@expo/vector-icons';
-import { keyGenerator } from '@/utils/autoKey';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
+import { keyGenerator } from '@/utils/autoKey';
 
 export default function Layout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

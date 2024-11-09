@@ -1,12 +1,16 @@
-import { SinglePageType } from '@/types/tabBarTypes';
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
-export const mainPageApplications: Omit<
-  Omit<SinglePageType, 'iconName'>,
-  'headerLeft'
->[] = [
+export const mainPageApplications: MainPageGridDataType[] = [
   {
-    name: 'index',
-    title: '蹭课',
-    headerRight: () => <></>,
+    title: '我是',
+    name: 'test1',
+    imageUrl: require('../assets/images/mx-logo.png'),
+    key: 'grid-1',
+  },
+  {
+    title: '谁',
+    name: 'auth/login',
+    imageUrl: require('../assets/images/mx-logo.png'),
+    key: 'grid-2',
   },
 ];
