@@ -1,9 +1,11 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
+import ThemeChangeText from '@/components/text';
+import ThemeChangeView from '@/components/view';
 import {
   COURSE_HEADER_HEIGHT,
   COURSE_ITEM_HEIGHT,
@@ -36,9 +38,9 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           {daysOfWeek.map((day, index) => (
-            <View key={index} style={[styles.headerCell]}>
-              <Text style={styles.headerText}>{day}</Text>
-            </View>
+            <ThemeChangeView key={index} style={[styles.headerCell]}>
+              <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
+            </ThemeChangeView>
           ))}
         </View>
       </View>
@@ -63,9 +65,9 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
     return (
       <>
         {timeSlots.map((time, index) => (
-          <View key={index} style={styles.timeSlot}>
-            <Text style={styles.timeText}>{time}</Text>
-          </View>
+          <ThemeChangeView key={index} style={styles.timeSlot}>
+            <ThemeChangeText style={styles.timeText}>{time}</ThemeChangeText>
+          </ThemeChangeView>
         ))}
       </>
     );
@@ -103,7 +105,9 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                   },
                 ]}
               >
-                <Text style={styles.cellText}>{subject || ''}</Text>
+                <ThemeChangeText style={styles.cellText}>
+                  {subject || ''}
+                </ThemeChangeText>
               </View>
             ))}
           </View>

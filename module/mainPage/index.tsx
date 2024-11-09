@@ -1,12 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { FC, memo, useEffect, useState } from 'react';
 import {
-  Text,
-  View,
   StyleSheet,
   Image,
   ImageSourcePropType,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import ThemeChangeView from '@/components/view';
+
+import Text from '@/components/text';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -43,19 +46,24 @@ const IndexPage: FC = () => {
     },
   ]);
   const [loading, setLoading] = useState(true);
+  const handlePress = () => {
+    router.push('/(mainPage)');
+  };
   const render = ({ key, text, imageUrl }: MainPageGridDataType) => {
     return (
-      <View style={styles.item} key={key}>
-        <Skeleton style={styles.item} loading={loading}>
-          <Image
-            style={{ width: 60, height: 60, borderRadius: 30 }}
-            source={imageUrl}
-          ></Image>
-        </Skeleton>
-        <Skeleton loading={loading}>
-          <Text style={styles.itemText}>{text}</Text>
-        </Skeleton>
-      </View>
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.item} key={key}>
+          <Skeleton style={styles.item} loading={loading}>
+            <Image
+              style={{ width: 60, height: 60, borderRadius: 30 }}
+              source={imageUrl}
+            ></Image>
+          </Skeleton>
+          <Skeleton loading={loading}>
+            <Text style={styles.itemText}>{text}</Text>
+          </Skeleton>
+        </View>
+      </TouchableOpacity>
     );
   };
   useEffect(() => {
@@ -64,7 +72,8 @@ const IndexPage: FC = () => {
     }, 5000);
   }, []);
   return (
-    <View style={[styles.wrapper, currentStyle?.background_style]}>
+    <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
+      {/* carousel */}
       <Skeleton loading={loading}>
         <View style={styles.banner}>
           <Carousel
@@ -86,13 +95,14 @@ const IndexPage: FC = () => {
           ></Carousel>
         </View>
       </Skeleton>
+      {/* 功能列表 */}
       <DraggableGrid
         numColumns={4}
         renderItem={render}
         data={data}
         onDragRelease={setData}
       ></DraggableGrid>
-    </View>
+    </ThemeChangeView>
   );
 };
 

@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
 
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Picker from '@/components/picker';
+import Text from '@/components/text';
 import Toast from '@/components/toast';
+import View from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SettingPage() {
@@ -38,7 +39,7 @@ export default function SettingPage() {
   }, [isUpdateAvailable]);
 
   return (
-    <View style={[{ flex: 1 }, currentStyle?.background_style]}>
+    <View style={{ flex: 1 }}>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
@@ -47,6 +48,9 @@ export default function SettingPage() {
       >
         切换模式
       </Button>
+      <View
+        style={{ width: 200, height: 200, borderColor: 'red', borderWidth: 2 }}
+      ></View>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {

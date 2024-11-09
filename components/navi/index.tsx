@@ -1,6 +1,7 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
+import ColorTransitionView from '@/components/view';
 
 import { tabConfig } from '@/constants/tabBar';
 import useVisualScheme from '@/store/visualScheme';
@@ -13,7 +14,10 @@ const TabBar: FC<BottomTabBarProps> = props => {
     state => state.currentStyle?.navbar_background_style
   );
   return (
-    <View style={[styles.tabbar, navbarStyle]}>
+    <ColorTransitionView
+      configurableThemeName="navbar_background_style"
+      style={[styles.tabbar, navbarStyle]}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const iconName = tabConfig[index]?.iconName;
@@ -21,8 +25,8 @@ const TabBar: FC<BottomTabBarProps> = props => {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state?.index === index;
 
@@ -56,7 +60,7 @@ const TabBar: FC<BottomTabBarProps> = props => {
           />
         );
       })}
-    </View>
+    </ColorTransitionView>
   );
 };
 

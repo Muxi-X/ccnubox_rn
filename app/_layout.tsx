@@ -59,12 +59,21 @@ export default function RootLayout() {
             ref={ref as RefObject<WebView<{}> | null>}
             onMessage={handleMessage}
           ></Scraper>
-          <Stack>
+          <Stack
+            screenOptions={{
+              contentStyle:
+                useVisualScheme.getState().currentStyle?.background_style,
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="auth"
               options={{ headerShown: false }}
             ></Stack.Screen>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(mainPage)"
+              options={{ headerShown: false }}
+            ></Stack.Screen>
           </Stack>
           {/* portal */}
           <Portal ref={portalRef} />

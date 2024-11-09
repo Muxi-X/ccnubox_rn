@@ -1,4 +1,4 @@
-import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
+import { StyleProps } from 'react-native-reanimated';
 /** 布局类型 */
 export type LayoutName = 'android' | 'ios';
 export type ThemeName = 'dark' | 'light';
@@ -23,7 +23,7 @@ export type ThemeType = Record<ThemeName, SingleThemeType>;
 
 /** 单个 Theme 配置类型 */
 export type SingleThemeType = Partial<
-  Record<ConfigurableThemeNames, ViewStyle | TextStyle | ImageStyle>
+  Record<ConfigurableThemeNames, StyleProps>
 >;
 
 /** 颜色表 */

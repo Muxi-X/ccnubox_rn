@@ -3,7 +3,7 @@ import { Text } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
-import { SingleTabType } from '@/types/tabBarTypes';
+import { SinglePageType } from '@/types/tabBarTypes';
 
 /**
  * @enum tabBar颜色
@@ -13,7 +13,7 @@ export const TABBAR_COLOR = {
   PRIMARY: commonColors.darkGray,
 };
 /** 导航栏配置 */
-export const tabConfig: SingleTabType[] = [
+export const tabConfig: SinglePageType[] = [
   {
     name: 'index',
     title: '首页',

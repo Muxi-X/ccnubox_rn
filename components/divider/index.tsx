@@ -17,7 +17,16 @@ const Divider = ({
       {children && (
         <View style={styles.labelContainer}>
           <View style={styles.line} />
-          <Text style={[styles.label, { color: color }]}>{children}</Text>
+          <Text
+            style={[
+              styles.label,
+              {
+                color: color ?? commonColors.gray,
+              },
+            ]}
+          >
+            {children}
+          </Text>
           <View style={styles.line} />
         </View>
       )}

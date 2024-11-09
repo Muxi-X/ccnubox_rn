@@ -3,14 +3,14 @@ import { Text } from 'react-native';
 
 import { tabConfig } from '@/constants/tabBar';
 import useVisualScheme from '@/store/visualScheme';
-import { SingleTabType } from '@/types/tabBarTypes';
+import { SinglePageType } from '@/types/tabBarTypes';
 import { keyGenerator } from '@/utils/autoKey';
 
 import TabBar from '../../components/navi/index';
 
 export default function TabLayout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const render = (configs: SingleTabType[]) =>
+  const render = (configs: SinglePageType[]) =>
     configs.map(config => {
       const { name, title, headerTitle, headerRight, headerLeft } = config;
       return (
@@ -34,6 +34,8 @@ export default function TabLayout() {
       );
     });
   return (
-    <Tabs tabBar={props => <TabBar {...props} />}>{render(tabConfig)}</Tabs>
+    <Tabs initialRouteName="schedule" tabBar={props => <TabBar {...props} />}>
+      {render(tabConfig)}
+    </Tabs>
   );
 }
