@@ -7,23 +7,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import ThemeChangeView from '@/components/view';
-
-import Text from '@/components/text';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
 
 import Skeleton from '@/components/skeleton';
+import Text from '@/components/text';
+import ThemeChangeView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 import { percent2px } from '@/utils/percent2px';
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
+import { mainPageApplications } from '@/constants/mainPageApplications';
 
-type MainPageGridDataType = {
-  text: string;
-  imageUrl: ImageSourcePropType;
-  key: string;
-};
 const IndexPage: FC = () => {
   const router = useRouter();
   const [banners, setBanners] = useState<
@@ -33,25 +29,16 @@ const IndexPage: FC = () => {
     { bannerUrl: '', navUrl: '' },
   ]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [data, setData] = useState<MainPageGridDataType[]>([
-    {
-      text: '我是',
-      imageUrl: require('../../assets/images/mx-logo.png'),
-      key: 'grid-1',
-    },
-    {
-      text: '谁',
-      imageUrl: require('../../assets/images/mx-logo.png'),
-      key: 'grid-2',
-    },
-  ]);
+  const [data, setData] =
+    useState<MainPageGridDataType[]>(mainPageApplications);
   const [loading, setLoading] = useState(true);
-  const handlePress = () => {
-    router.push('/(mainPage)');
+  const handlePress = (name: string) => {
+    //@ts-ignore
+    router.navigate(`${name}`);
   };
-  const render = ({ key, text, imageUrl }: MainPageGridDataType) => {
+  const render = ({ key, title, name, imageUrl }: MainPageGridDataType) => {
     return (
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity onPress={() => handlePress(name)}>
         <View style={styles.item} key={key}>
           <Skeleton style={styles.item} loading={loading}>
             <Image
@@ -60,7 +47,7 @@ const IndexPage: FC = () => {
             ></Image>
           </Skeleton>
           <Skeleton loading={loading}>
-            <Text style={styles.itemText}>{text}</Text>
+            <Text style={styles.itemText}>{title}</Text>
           </Skeleton>
         </View>
       </TouchableOpacity>
