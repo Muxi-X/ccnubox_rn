@@ -15,7 +15,10 @@ export interface PortalBaseProps {
   portalType?: string;
 }
 
-const Portal = forwardRef<any, ModalPortalProps>(({ children }, ref) => {
+const PortalRoot = forwardRef<any, ModalPortalProps>(function PortalRoot(
+  { children },
+  ref
+) {
   const [modalChildren, setModalChildren] = useState<React.ReactNode>(children);
 
   useImperativeHandle(ref, () => ({
@@ -37,4 +40,4 @@ const Portal = forwardRef<any, ModalPortalProps>(({ children }, ref) => {
   );
 });
 
-export default Portal;
+export default PortalRoot;
