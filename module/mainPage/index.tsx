@@ -13,12 +13,12 @@ import Carousel from 'react-native-reanimated-carousel';
 import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
+import { mainPageApplications } from '@/constants/mainPageApplications';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 import { keyGenerator } from '@/utils/autoKey';
 import { percent2px } from '@/utils/percent2px';
-import { MainPageGridDataType } from '@/types/mainPageGridTypes';
-import { mainPageApplications } from '@/constants/mainPageApplications';
 
 const IndexPage: FC = () => {
   const router = useRouter();
@@ -32,13 +32,12 @@ const IndexPage: FC = () => {
   const [data, setData] =
     useState<MainPageGridDataType[]>(mainPageApplications);
   const [loading, setLoading] = useState(true);
-  const handlePress = (name: string) => {
-    //@ts-ignore
-    router.navigate(`${name}`);
-  };
-  const render = ({ key, title, name, imageUrl }: MainPageGridDataType) => {
+  const render = ({ key, title, href, imageUrl }: MainPageGridDataType) => {
+    const handlePress = () => {
+      router.navigate(href);
+    };
     return (
-      <TouchableOpacity onPress={() => handlePress(name)}>
+      <TouchableOpacity onPress={handlePress}>
         <View style={styles.item} key={key}>
           <Skeleton style={styles.item} loading={loading}>
             <Image

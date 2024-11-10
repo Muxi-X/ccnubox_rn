@@ -45,3 +45,9 @@ export const timeSlots = [
   '16:00',
   '18:00',
 ];
+/**
+ * 由于内容为 absolute定位，因此内容 padding 在这定义
+ */
+
+export const COURSE_HORIZONTAL_PADDING = 4;
+export const COURSE_VERTICAL_PADDING = 4;

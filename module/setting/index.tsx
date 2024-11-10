@@ -7,17 +7,18 @@ import Modal from '@/components/modal';
 import Picker from '@/components/picker';
 import Text from '@/components/text';
 import Toast from '@/components/toast';
-import View from '@/components/view';
+import ThemeBasedView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SettingPage() {
-  const { currentStyle, currentComponents, themeName, changeTheme } =
+  const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
     useVisualScheme(
-      ({ currentStyle, currentComponents, changeTheme, themeName }) => ({
+      ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
         currentStyle,
         changeTheme,
-        currentComponents,
         themeName,
+        layoutName,
+        changeLayout,
       })
     );
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
@@ -39,7 +40,7 @@ export default function SettingPage() {
   }, [isUpdateAvailable]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <ThemeBasedView style={{ flex: 1 }}>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
@@ -48,9 +49,14 @@ export default function SettingPage() {
       >
         切换模式
       </Button>
-      <View
-        style={{ width: 200, height: 200, borderColor: 'red', borderWidth: 2 }}
-      ></View>
+      <Button
+        onPress={() => {
+          changeLayout(layoutName === 'android' ? 'ios' : 'android');
+        }}
+        style={[currentStyle?.button_style, { width: '100%' }]}
+      >
+        {'切换主题,当前主题：' + layoutName}
+      </Button>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
@@ -71,17 +77,10 @@ export default function SettingPage() {
         isLoading={loading}
         children="检查更新"
       />
-      {isUpdateAvailable ? (
-        <Button
-          onPress={() => Updates.fetchUpdateAsync()}
-          children="下载并更新"
-        />
-      ) : null}
       <StatusBar style="auto" />
-      {currentComponents && <currentComponents.test1 />}
       <Picker>
         <Text style={currentStyle?.text_style}>345345</Text>
       </Picker>
-    </View>
+    </ThemeBasedView>
   );
 }
