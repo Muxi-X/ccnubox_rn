@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
-import { TouchableOpacity, TextStyle, View } from 'react-native';
+import { TouchableOpacity, TextStyle } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';

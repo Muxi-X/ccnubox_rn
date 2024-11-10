@@ -1,13 +1,5 @@
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextStyle,
-  StyleSheet,
-} from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';

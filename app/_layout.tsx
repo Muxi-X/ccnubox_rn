@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 
-import Portal from '@/components/portal';
+import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
 import { useJPush } from '@/hooks/useJPush';
 import { usePortalStore } from '@/store/portal';
@@ -76,7 +76,7 @@ export default function RootLayout() {
             ></Stack.Screen>
           </Stack>
           {/* portal */}
-          <Portal ref={portalRef} />
+          <PortalRoot ref={portalRef} />
         </GestureHandlerRootView>
       </Provider>
     </>
