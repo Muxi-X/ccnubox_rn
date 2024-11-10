@@ -2,8 +2,8 @@ import React from 'react';
 
 import Text from '@/components/text';
 
-const SamplePage: React.FC = () => {
+const SamplePage2: React.FC = () => {
   return <Text>这里是页面的内容区域</Text>;
 };
 
-export default SamplePage;
+export default SamplePage2;

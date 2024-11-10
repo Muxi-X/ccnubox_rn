@@ -15,10 +15,10 @@ export type visualSchemeType = {
   themeName: ThemeName;
   /** 布局类型 */
   layoutName: LayoutName;
-  /** 所有的可替换组件 */
-  themeBasedComponents: ThemeBasedComponentMap;
-  /** 目前的可替换组件 */
-  currentComponents: ThemeBasedComponentRecord | null;
+  // /** 所有的可替换组件 */
+  // themeBasedComponents: ThemeBasedComponentMap;
+  // /** 目前的可替换组件 */
+  // currentComponents: ThemeBasedComponentRecord | null;
   /** 所有注册的 layout */
   layouts: Map<LayoutName, LayoutType>;
   /** 当前样式表 */
@@ -39,6 +39,18 @@ export type scraperType = {
   injectJavaScript: (injected: string) => void;
   /* 设置 ref */
   setRef: (newRef: MutableRefObject<WebView<{}> | undefined> | null) => void;
+};
+
+/** theme based components */
+export type ThemeBasedComponentsType = {
+  /** 所有的可替换组件 */
+  themeBasedComponents: ThemeBasedComponentMap;
+  /** 目前的可替换组件 */
+  currentComponents: ThemeBasedComponentRecord | null;
+  /** 设置 components */
+  setComponents: (components: ThemeBasedComponentMap) => void;
+  /** 改变布局时，更改当前选择组件 */
+  changeComponents: (layoutName: LayoutName) => void;
 };
 
 /** portal */

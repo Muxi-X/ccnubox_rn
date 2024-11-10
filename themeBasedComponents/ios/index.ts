@@ -1,7 +1,9 @@
 import { ThemeBasedComponentRecord } from '@/store/types';
-import { Test1 } from '@/themeBasedComponents/ios/test1';
+import HeaderCenter from '@/themeBasedComponents/ios/headerCenter';
+import HeaderLeft from '@/themeBasedComponents/ios/headerLeft';
 
 /** ios 可替换组件 */
 export const defaultIOSComponents: ThemeBasedComponentRecord = {
-  test1: Test1,
+  header_left: HeaderLeft,
+  header_center: HeaderCenter,
 };

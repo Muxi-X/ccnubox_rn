@@ -1,25 +1,19 @@
-import { Ionicons } from '@expo/vector-icons';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  StyleProp,
-  TouchableOpacity,
-  TextStyle,
-} from 'react-native';
+import { View, StyleSheet, StyleProp } from 'react-native';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
+import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
-import { commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 
 export default function Layout() {
-  const currentStyle = useVisualScheme(state => state.currentStyle);
-  const handleNavBack = () => {
-    router.back();
-  };
+  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+    currentStyle,
+  }));
+  const currentComponents = useThemeBasedComponents(
+    state => state.currentComponents
+  );
   return (
     <View style={[styles.container]}>
       <Stack
@@ -34,27 +28,24 @@ export default function Layout() {
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
             options={{
-              headerLeft: () => (
-                <View style={styles.container}>
-                  <TouchableOpacity onPress={handleNavBack}>
-                    <Ionicons
-                      name="arrow-back-outline"
-                      size={commonStyles.fontLarge.fontSize}
-                      color={(currentStyle?.text_style as TextStyle).color}
-                    />
-                  </TouchableOpacity>
-                  <Text
-                    style={[
-                      currentStyle?.header_text_style,
-                      commonStyles.TabBarPadding,
-                      commonStyles.fontLarge,
-                    ]}
-                  >
-                    {config.title}
-                  </Text>
-                </View>
+              headerLeft: () => {
+                return (
+                  <>
+                    {currentComponents && (
+                      <currentComponents.header_left title={config.title} />
+                    )}
+                  </>
+                );
+              },
+              headerTitle: () => (
+                <>
+                  {currentComponents && (
+                    <currentComponents.header_center
+                      title={config.title}
+                    ></currentComponents.header_center>
+                  )}
+                </>
               ),
-              headerTitle: () => <></>,
               headerStyle: currentStyle?.header_background_style as StyleProp<{
                 backgroundColor: string | undefined;
               }>,
