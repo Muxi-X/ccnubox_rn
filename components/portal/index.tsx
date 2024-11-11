@@ -1,5 +1,14 @@
-import React, { forwardRef, useState, useImperativeHandle } from 'react';
+import React, {
+  forwardRef,
+  useState,
+  useImperativeHandle,
+  ReactElement,
+  useEffect,
+  useMemo,
+} from 'react';
 import { View } from 'react-native';
+
+import { usePortalStore } from '@/store/portal';
 
 interface ModalPortalProps {
   children?: React.ReactNode;
@@ -41,3 +50,18 @@ const PortalRoot = forwardRef<any, ModalPortalProps>(function PortalRoot(
 });
 
 export default PortalRoot;
+
+/**
+ * 挂载在 root 下的 Portal
+ * @param children 需要被 portal 的组件
+ * @constructor
+ */
+export const Portal: React.FC<{ children: ReactElement }> = ({ children }) => {
+  const key = useMemo(() => {
+    return usePortalStore.getState().appendChildren(children);
+  }, []);
+  useEffect(() => {
+    usePortalStore.getState().updateChildren(key, children.props);
+  }, [children]);
+  return <></>;
+};

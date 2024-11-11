@@ -4,6 +4,7 @@ import { ThemeBasedComponentsType } from '@/store/types';
 import { componentMap } from '@/themeBasedComponents';
 import eventBus from '@/utils/eventBus';
 
+/** 主题特定组件 */
 const useThemeBasedComponents = create<ThemeBasedComponentsType>(
   (set, get) => ({
     currentComponents: null,

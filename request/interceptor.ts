@@ -2,6 +2,8 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 
+import requestBus from '@/store/currentRequests';
+
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8080',
 });
@@ -18,6 +20,8 @@ function getStoredToken() {
 
 axiosInstance.interceptors.request.use(
   async config => {
+    // 注册请求
+    requestBus.requestRegister();
     try {
       const token = getStoredToken();
       if (token) {
@@ -48,7 +52,8 @@ axiosInstance.interceptors.response.use(
       default:
         console.error('服务器错误');
     }
-
+    // 标记请求已完成
+    requestBus.requestComplete();
     if (response.status === 200) {
       return response;
     } else {
@@ -58,6 +63,8 @@ axiosInstance.interceptors.response.use(
   },
   error => {
     console.error('Error response:', error);
+    // 标记请求已完成
+    requestBus.requestComplete();
     return Promise.reject(error);
   }
 );

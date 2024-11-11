@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
 import React, { FC, memo, useEffect, useState } from 'react';
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
 
+import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
