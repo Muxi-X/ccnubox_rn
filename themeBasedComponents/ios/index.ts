@@ -1,4 +1,5 @@
 import { ThemeBasedComponentRecord } from '@/store/types';
+
 import HeaderCenter from '@/themeBasedComponents/ios/headerCenter';
 import HeaderLeft from '@/themeBasedComponents/ios/headerLeft';
 

@@ -1,10 +1,12 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { FC } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import ColorTransitionView from '@/components/view';
-import { tabConfig } from '@/constants/tabBar';
+
 import useVisualScheme from '@/store/visualScheme';
+
+import { tabConfig } from '@/constants/tabBar';
 
 import TabBarItem from './TabBarItem';
 
@@ -25,8 +27,8 @@ const TabBar: FC<BottomTabBarProps> = props => {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state?.index === index;
 

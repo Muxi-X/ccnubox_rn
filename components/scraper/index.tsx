@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { ScraperProps } from '@/components/scraper/types';
+
 import { scrapeLogin } from '@/constants/scraper';
 
 /**

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet, ViewProps } from 'react-native';
+import { StyleSheet, Text, View, ViewProps } from 'react-native';
 
 import { commonColors } from '@/styles/common';
 /**

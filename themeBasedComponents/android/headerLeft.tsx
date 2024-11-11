@@ -2,14 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextStyle,
   StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
 import { commonStyles } from '@/styles/common';
 
 export const HeaderLeft: React.FC<{ title: string }> = ({ title }) => {

@@ -1,10 +1,11 @@
 import { Stack } from 'expo-router';
 import React from 'react';
-import { View, StyleSheet, StyleProp } from 'react-native';
+import { StyleProp, StyleSheet, View } from 'react-native';
 
-import { mainPageApplications } from '@/constants/mainPageApplications';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
+
+import { mainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils/autoKey';
 
 export default function Layout() {

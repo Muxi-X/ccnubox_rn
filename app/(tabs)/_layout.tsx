@@ -1,12 +1,14 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
 
-import { tabConfig } from '@/constants/tabBar';
 import useVisualScheme from '@/store/visualScheme';
-import { SinglePageType } from '@/types/tabBarTypes';
+
+import { tabConfig } from '@/constants/tabBar';
 import { keyGenerator } from '@/utils/autoKey';
 
 import TabBar from '../../components/navi/index';
+
+import { SinglePageType } from '@/types/tabBarTypes';
 
 export default function TabLayout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

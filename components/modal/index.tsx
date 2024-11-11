@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import {
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  View,
   ViewProps,
 } from 'react-native';
 
@@ -12,8 +12,10 @@ import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
 import { ModalProps, ModalTriggerProps } from '@/components/modal/types';
+
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
+
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils/percent2px';
 

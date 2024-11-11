@@ -1,14 +1,15 @@
 import { FC } from 'react';
 import {
-  Text,
-  ViewProps,
   Pressable,
   StyleSheet,
+  Text,
   TextStyle,
+  ViewProps,
 } from 'react-native';
 
-import { TABBAR_COLOR } from '@/constants/tabBar';
 import useVisualScheme from '@/store/visualScheme';
+
+import { TABBAR_COLOR } from '@/constants/tabBar';
 
 import { TabBarIcon } from './TabBarIcon';
 import { TabBarItemProps } from './types';

@@ -1,13 +1,16 @@
-import { Icon, Input, Checkbox, Toast } from '@ant-design/react-native';
+import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import { FC, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
+
+import { useKeyboardShow } from '@/hooks';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
-import { useKeyboardShow } from '@/hooks/useKeyboardShow';
+
 import useVisualScheme from '@/store/visualScheme';
+
 import { commonStyles } from '@/styles/common';
 
 const LoginPage: FC = () => {

@@ -1,10 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
 import PickerView from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
+
 import { commonColors, commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 import { percent2px } from '@/utils/percent2px';

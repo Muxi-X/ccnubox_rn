@@ -1,4 +1,4 @@
-import { Toast, Provider } from '@ant-design/react-native';
+import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
 import { Stack } from 'expo-router';
 import React, { RefObject, useCallback, useEffect, useRef } from 'react';
@@ -6,12 +6,15 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 
+import { useJPush } from '@/hooks';
+
 import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
-import { useJPush } from '@/hooks/useJPush';
+
 import { usePortalStore } from '@/store/portal';
 import useScraper from '@/store/scraper';
 import useVisualScheme from '@/store/visualScheme';
+
 import fetchUpdates from '@/utils/fetchUpdates';
 
 export default function RootLayout() {

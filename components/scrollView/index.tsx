@@ -1,20 +1,21 @@
 import { Toast } from '@ant-design/react-native';
 import React, { FC, memo, useEffect, useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  LayoutRectangle,
   LayoutChangeEvent,
+  LayoutRectangle,
+  StyleSheet,
+  View,
 } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
+
 import { commonColors } from '@/styles/common';
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {

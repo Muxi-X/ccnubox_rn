@@ -8,12 +8,15 @@ import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
-import { mainPageApplications } from '@/constants/mainPageApplications';
+
 import useVisualScheme from '@/store/visualScheme';
+
+import { mainPageApplications } from '@/constants/mainPageApplications';
 import { commonColors } from '@/styles/common';
-import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 import { keyGenerator } from '@/utils/autoKey';
 import { percent2px } from '@/utils/percent2px';
+
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 const IndexPage: FC = () => {
   const router = useRouter();
