@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { PortalStore } from '@/store/types';
 import { keyGenerator } from '@/utils/autoKey';
 
+/** portal 组件信息 */
 export const usePortalStore = create<PortalStore>((set, get) => ({
   portalRef: React.createRef(),
   elements: {},

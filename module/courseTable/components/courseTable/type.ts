@@ -2,7 +2,7 @@ export type courseType = {
   courseName: string;
   time: string;
   date: string;
-  timeSpan: number;
+  timeSpan?: number;
 };
 export interface CourseTableProps {
   data: courseType[];

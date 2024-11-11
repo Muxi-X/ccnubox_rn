@@ -6,6 +6,7 @@ import eventBus from '@/utils/eventBus';
 
 import { visualSchemeType } from './types';
 
+/** 配色、布局整体store类型 */
 const useVisualScheme = create<visualSchemeType>(set => ({
   themeName: 'light',
   layoutName: 'android',
@@ -33,7 +34,6 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       newLayouts.delete(name);
       return { ...state, layouts: newLayouts };
     }),
-  // 更改主题
   changeTheme: themeName =>
     set(state => {
       const { layouts, layoutName } = state;
@@ -49,7 +49,6 @@ const useVisualScheme = create<visualSchemeType>(set => ({
       }
       return state;
     }),
-  // 更改布局
   changeLayout: layoutName =>
     set(state => {
       const { themeName, layouts, currentStyle } = state;

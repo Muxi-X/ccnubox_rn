@@ -15,10 +15,6 @@ export type visualSchemeType = {
   themeName: ThemeName;
   /** 布局类型 */
   layoutName: LayoutName;
-  // /** 所有的可替换组件 */
-  // themeBasedComponents: ThemeBasedComponentMap;
-  // /** 目前的可替换组件 */
-  // currentComponents: ThemeBasedComponentRecord | null;
   /** 所有注册的 layout */
   layouts: Map<LayoutName, LayoutType>;
   /** 当前样式表 */
@@ -81,3 +77,14 @@ export type ThemeBasedComponentRecord = Record<
   ConfigurableComponentName,
   React.FC<any>
 >;
+
+/** 当前所有请求监听 */
+export type CurrentRequestsType = {
+  resolvedRequestNum: number;
+  /* 目前正在请求数量 */
+  totalRequestNum: number;
+  /* 单个请求完成 */
+  requestComplete: () => void;
+  /* 注册请求 */
+  requestRegister: () => void;
+};

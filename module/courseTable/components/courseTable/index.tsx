@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useDeferredValue, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -35,46 +35,48 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
     }
   }, [isFetching]);
   // 内容部分
-  const content = useMemo(() => {
-    // 时刻表
-    const timetableMatrix = timeSlots.map(() =>
-      Array(daysOfWeek.length).fill(null)
-    );
-    // 遍历传入的数据，根据时间和日期填充表格
-    data.forEach(({ courseName, time, date, timeSpan }) => {
-      const rowIndex = timeSlots.indexOf(time);
-      const colIndex = daysOfWeek.indexOf(date);
-      if (rowIndex !== -1 && colIndex !== -1) {
-        timetableMatrix[rowIndex][colIndex] = { courseName, timeSpan };
-      }
-    });
-    return (
-      <View style={styles.courseWrapperStyle}>
-        {timetableMatrix.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.row}>
-            {row.map((subject, colIndex) => (
-              <View
-                key={colIndex}
-                style={[
-                  styles.cell,
-                  {
-                    // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
-                    // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                    borderBottomColor:
-                      (rowIndex + 1) % courseCollapse
-                        ? 'transparent'
-                        : commonColors.gray,
-                  },
-                ]}
-              >
-                {subject && <Content subject={subject}></Content>}
-              </View>
-            ))}
-          </View>
-        ))}
-      </View>
-    );
-  }, [timeSlots, data, daysOfWeek]);
+  const content = useDeferredValue(
+    (() => {
+      // 时刻表
+      const timetableMatrix = timeSlots.map(() =>
+        Array(daysOfWeek.length).fill(null)
+      );
+      // 遍历传入的数据，根据时间和日期填充表格
+      data.forEach(({ courseName, time, date, timeSpan }) => {
+        const rowIndex = timeSlots.indexOf(time);
+        const colIndex = daysOfWeek.indexOf(date);
+        if (rowIndex !== -1 && colIndex !== -1) {
+          timetableMatrix[rowIndex][colIndex] = { courseName, timeSpan };
+        }
+      });
+      return (
+        <View style={styles.courseWrapperStyle}>
+          {timetableMatrix.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {row.map((subject, colIndex) => (
+                <View
+                  key={colIndex}
+                  style={[
+                    styles.cell,
+                    {
+                      // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
+                      // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
+                      borderBottomColor:
+                        (rowIndex + 1) % courseCollapse
+                          ? 'transparent'
+                          : commonColors.gray,
+                    },
+                  ]}
+                >
+                  {subject && <Content subject={subject}></Content>}
+                </View>
+              ))}
+            </View>
+          ))}
+        </View>
+      );
+    })()
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -94,7 +96,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
           stickyLeft={<StickyLeft />}
         >
           {/* 内容部分 (课程表) */}
-          {content}
+          {content ?? <ThemeChangeText>正在获取课表...</ThemeChangeText>}
         </ScrollableView>
       </View>
     </View>
