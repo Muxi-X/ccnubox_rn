@@ -1,7 +1,13 @@
 // https://docs.expo.dev/guides/using-eslint/
 module.exports = {
   extends: ['expo', 'prettier'],
-  plugins: ['prettier', 'import'],
+  plugins: [
+    'prettier',
+    'import',
+    '@typescript-eslint',
+    'simple-import-sort',
+    'unused-imports',
+  ],
   rules: {
     'prettier/prettier': 'error',
     'import/order': [
@@ -31,5 +37,56 @@ module.exports = {
     // 确保路径一致
     'import/no-useless-path-segments': 'error',
     'react-hooks/exhaustive-deps': 'off',
+    'no-unused-vars': 'off',
+    'no-console': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react/no-unescaped-entities': 'off',
+    'react/display-name': 'off',
+    'react/jsx-curly-brace-presence': [
+      'warn',
+      { props: 'never', children: 'never' },
+    ],
+    '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'warn',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
+    'simple-import-sort/exports': 'warn',
+    'simple-import-sort/imports': [
+      'warn',
+      {
+        groups: [
+          ['^@?\\w', '^\\u0000'],
+          ['^.+\\.s?css$'],
+          ['^@/libs', '^@/hooks'],
+          ['^@/data'],
+          ['^@/components', '^@/container'],
+          ['^@/store'],
+          ['^@/'],
+          [
+            '^\\./?$',
+            '^\\.(?!/?$)',
+            '^\\.\\./?$',
+            '^\\.\\.(?!/?$)',
+            '^\\.\\./\\.\\./?$',
+            '^\\.\\./\\.\\.(?!/?$)',
+            '^\\.\\./\\.\\./\\.\\./?$',
+            '^\\.\\./\\.\\./\\.\\.(?!/?$)',
+          ],
+          ['^@/types'],
+          ['^'],
+        ],
+      },
+    ],
+  },
+  globals: {
+    React: true,
+    JSX: true,
   },
 };
