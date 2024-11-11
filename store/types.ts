@@ -2,10 +2,10 @@ import React, { MutableRefObject, ReactElement } from 'react';
 import WebView from 'react-native-webview';
 
 import {
-  LayoutType,
   LayoutName,
-  ThemeName,
+  LayoutType,
   SingleThemeType,
+  ThemeName,
 } from '@/styles/types';
 import { ConfigurableComponentName } from '@/themeBasedComponents/type';
 

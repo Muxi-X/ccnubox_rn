@@ -1,6 +1,7 @@
 import { FC, memo, useMemo } from 'react';
 
 import View from '@/components/view';
+
 import useVisualScheme from '@/store/visualScheme';
 
 import CourseTable from './components/courseTable';

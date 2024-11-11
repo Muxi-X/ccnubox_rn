@@ -1,12 +1,12 @@
 import { memo, useEffect } from 'react';
 import Animated, {
+  Easing,
   interpolate,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withTiming,
-  Easing,
-  runOnJS,
 } from 'react-native-reanimated';
 
 import { FadeAnimationProps } from './types';

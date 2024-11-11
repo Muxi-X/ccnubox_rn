@@ -2,7 +2,9 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Text } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
 import { commonColors, commonStyles } from '@/styles/common';
+
 import { SinglePageType } from '@/types/tabBarTypes';
 
 /**

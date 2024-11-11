@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { PaginationType } from '@/components/pagination/types';
 

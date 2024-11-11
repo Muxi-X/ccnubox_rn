@@ -1,11 +1,11 @@
 import React, { memo, useEffect } from 'react';
 import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-  withDelay,
   Easing,
   runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
 } from 'react-native-reanimated';
 
 import { SlideInProps } from '@/components/animatedView/types';

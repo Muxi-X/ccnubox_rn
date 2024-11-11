@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import { ImageProps, Image as RNImage } from 'react-native';
+import { Image as RNImage, ImageProps } from 'react-native';
 
 import requestBus from '@/store/currentRequests';
 

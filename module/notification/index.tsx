@@ -3,6 +3,7 @@ import React, { FC, memo, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import Skeleton from '@/components/skeleton';
+
 import useVisualScheme from '@/store/visualScheme';
 
 const NotificationPage: FC = () => {

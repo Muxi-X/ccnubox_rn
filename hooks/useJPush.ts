@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 
 import { JPushSecrets } from '@/secret/JPush';
 
-export const useJPush = () => {
+const useJPush = () => {
   useEffect(() => {
     if (__DEV__) {
       alert('开发环境，禁用notification');
@@ -24,6 +24,9 @@ export const useJPush = () => {
     }
   }, []);
 };
+
+export default useJPush;
+
 /**
  * 获取通知权限
  */

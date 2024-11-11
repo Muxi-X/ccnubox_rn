@@ -1,10 +1,10 @@
 import React, {
   forwardRef,
-  useState,
-  useImperativeHandle,
   ReactElement,
   useEffect,
+  useImperativeHandle,
   useMemo,
+  useState,
 } from 'react';
 import { View } from 'react-native';
 

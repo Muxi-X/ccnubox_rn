@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { EmitterSubscription, Keyboard } from 'react-native';
 
-export const useKeyboardShow = () => {
+const useKeyboardShow = () => {
   const [isKeyboardShow, setKeyboardShow] = useState<boolean>(false);
   let keyboardShowListener: EmitterSubscription | null = null;
   let keyboardHideListener: EmitterSubscription | null = null;
+
   useEffect(() => {
     keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardShow(true);
@@ -17,5 +18,8 @@ export const useKeyboardShow = () => {
       keyboardHideListener && keyboardHideListener.remove();
     };
   }, []);
+
   return isKeyboardShow;
 };
+
+export default useKeyboardShow;

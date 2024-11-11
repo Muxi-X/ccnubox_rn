@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { memo, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { DraggableGrid as Grid } from 'react-native-draggable-grid';
 
 import {

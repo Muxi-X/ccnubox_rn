@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { ThemeBasedComponentsType } from '@/store/types';
+
 import { componentMap } from '@/themeBasedComponents';
 import eventBus from '@/utils/eventBus';
 

@@ -1,33 +1,9 @@
 // https://docs.expo.dev/guides/using-eslint/
 module.exports = {
   extends: ['expo', 'prettier'],
-  plugins: [
-    'prettier',
-    'import',
-    '@typescript-eslint',
-    'simple-import-sort',
-    'unused-imports',
-  ],
+  plugins: ['prettier', 'import', 'simple-import-sort'],
   rules: {
     'prettier/prettier': 'error',
-    'import/order': [
-      'error',
-      {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          ['parent', 'sibling', 'index'],
-          'object',
-          'type',
-        ],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
-      },
-    ],
     // 禁止重复引入模块
     'no-duplicate-imports': 'error',
     // 确保所有的导入都出现在文件的顶部
@@ -47,16 +23,6 @@ module.exports = {
       { props: 'never', children: 'never' },
     ],
     '@typescript-eslint/no-unused-vars': 'off',
-    'unused-imports/no-unused-imports': 'warn',
-    'unused-imports/no-unused-vars': [
-      'warn',
-      {
-        vars: 'all',
-        varsIgnorePattern: '^_',
-        args: 'after-used',
-        argsIgnorePattern: '^_',
-      },
-    ],
     'simple-import-sort/exports': 'warn',
     'simple-import-sort/imports': [
       'warn',

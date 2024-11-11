@@ -8,11 +8,13 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
+
 import useVisualScheme from '@/store/visualScheme';
+
 import { keyGenerator } from '@/utils/autoKey';
 import eventBus from '@/utils/eventBus';
 

@@ -9,9 +9,10 @@ import {
 } from 'react-native-reanimated';
 
 import useVisualScheme from '@/store/visualScheme';
+
 import { ConfigurableThemeNames } from '@/styles/types';
 
-export const useThemeChangeStyle = (
+const useThemeChangeStyle = (
   configurableThemeName: ConfigurableThemeNames,
   styleName: keyof StyleProps
 ) => {
@@ -56,3 +57,5 @@ export const useThemeChangeStyle = (
 
   return animatedStyle;
 };
+
+export default useThemeChangeStyle;

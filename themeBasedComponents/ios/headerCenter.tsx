@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
 import { commonStyles } from '@/styles/common';
 
 export const HeaderLeft: React.FC<{ title: string }> = ({ title }) => {

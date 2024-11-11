@@ -8,6 +8,7 @@ import Picker from '@/components/picker';
 import Text from '@/components/text';
 import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
+
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SettingPage() {
