@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
+import { FlatList } from 'react-native';
 
 import Button from '@/components/button';
 import Modal from '@/components/modal';
@@ -11,6 +12,45 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import SettingItem from '@/module/setting/components/settingItem';
+const ListItem = [
+  {
+    id: 1,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 2,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 3,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 4,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 5,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 6,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+];
 export default function SettingPage() {
   const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
     useVisualScheme(
@@ -42,6 +82,14 @@ export default function SettingPage() {
 
   return (
     <ThemeBasedView style={{ flex: 1 }}>
+      <FlatList
+        data={ListItem}
+        renderItem={({ item }) => (
+          <SettingItem icon={item.icon} text={item.text} url={item.url} />
+        )}
+        keyExtractor={item => item.id.toString()}
+        // contentContainerStyle={styles.listContainer}
+      />
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
