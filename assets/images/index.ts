@@ -1,0 +1,6 @@
+export {default as AboutIcon} from './about.png'
+export {default as CheckIcon} from './check-update.png'
+export {default as ExitIcon} from './exit.png'
+export {default as HelpIcon} from './help.png'
+export {default as PersonIcon} from './person.png'
+export {default as ShareIcon} from './share.png'
