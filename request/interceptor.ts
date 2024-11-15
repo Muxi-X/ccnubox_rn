@@ -5,7 +5,8 @@ import { getItem } from 'expo-secure-store';
 import requestBus from '@/store/currentRequests';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080',
+  // baseURL: 'http://localhost:8080',
+  baseURL: '121.43.151.190:8080',
 });
 
 function getStoredToken() {
