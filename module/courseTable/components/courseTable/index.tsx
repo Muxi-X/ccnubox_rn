@@ -6,7 +6,6 @@ import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 import ThemeChangeView from '@/components/view';
-
 import {
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
