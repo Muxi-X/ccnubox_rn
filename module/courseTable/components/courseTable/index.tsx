@@ -1,4 +1,10 @@
-import React, { memo, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import React, {
+  memo,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -70,7 +76,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       <>
         {timeSlots.map((time, index) => (
           <View key={index} style={styles.timeSlot}>
-            <Text style={styles.timeText}>{index+1}</Text>
+            <Text style={styles.timeText}>{index + 1}</Text>
             <Text style={styles.timeText}>{time}</Text>
           </View>
         ))}
@@ -121,31 +127,40 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   //   })()
   // );
   const content = useMemo(() => {
-
     const colorOptions = [
       'rgba(155, 134, 253, 1)',
       'rgba(184, 203, 255, 1)',
       'rgba(184, 166, 245, 1)',
       'rgba(255, 203, 184, 1)',
       'rgba(243, 159, 167, 1)',
-    ]
+    ];
 
     // 时刻表
     const timetableMatrix = timeSlots.map(() =>
-      Array(daysOfWeek.length).fill(null).map(() => ({
-        courseName: null as string | null,
-        teacher: null as string | null,
-        classroom: null as string | null,
-      }))
+      Array(daysOfWeek.length)
+        .fill(null)
+        .map(() => ({
+          courseName: null as string | null,
+          teacher: null as string | null,
+          classroom: null as string | null,
+        }))
     );
     // 遍历传入的数据，根据时间和日期填充表格
     data.forEach(({ courseName, time, date, teacher, classroom }) => {
       const rowIndex = timeSlots.indexOf(time);
       const colIndex = daysOfWeek.indexOf(date);
       if (rowIndex !== -1 && colIndex !== -1) {
-        timetableMatrix[rowIndex][colIndex] = { courseName, teacher:null, classroom:null };
+        timetableMatrix[rowIndex][colIndex] = {
+          courseName,
+          teacher: null,
+          classroom: null,
+        };
         if (rowIndex + 1 < timetableMatrix.length) {
-          timetableMatrix[rowIndex + 1][colIndex] = { courseName: null, teacher, classroom };
+          timetableMatrix[rowIndex + 1][colIndex] = {
+            courseName: null,
+            teacher,
+            classroom,
+          };
         }
       }
     });
@@ -165,31 +180,43 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                       (rowIndex + 1) % courseCollapse
                         ? 'transparent'
                         : commonColors.gray,
-                  }]}
+                  },
+                ]}
               >
                 <View
                   style={[
-                    subject.courseName || subject.teacher || subject.classroom ?{
-                    height: COURSE_ITEM_HEIGHT,
-                    width: COURSE_ITEM_WIDTH - 6,
-                    backgroundColor:colorOptions[colIndex],
-                    marginTop: (rowIndex + 1) % courseCollapse ? 5 : 0,
-                    marginBottom: (rowIndex + 1) % courseCollapse ? 0 : 5,
-                    borderTopLeftRadius: (rowIndex + 1) % courseCollapse ? 5 : 0,
-                    borderTopRightRadius: (rowIndex + 1) % courseCollapse ? 5 : 0,
-                    borderBottomLeftRadius: (rowIndex + 1) % courseCollapse ? 0 : 5,
-                    borderBottomRightRadius: (rowIndex + 1) % courseCollapse ? 0 : 5,
-                } : {}]}>
-                  {
-                    subject.courseName && <View style={[styles.cellText,styles.cellTextCourseName]}>
+                    subject.courseName || subject.teacher || subject.classroom
+                      ? {
+                          height: COURSE_ITEM_HEIGHT,
+                          width: COURSE_ITEM_WIDTH - 6,
+                          backgroundColor: colorOptions[colIndex],
+                          marginTop: (rowIndex + 1) % courseCollapse ? 5 : 0,
+                          marginBottom: (rowIndex + 1) % courseCollapse ? 0 : 5,
+                          borderTopLeftRadius:
+                            (rowIndex + 1) % courseCollapse ? 5 : 0,
+                          borderTopRightRadius:
+                            (rowIndex + 1) % courseCollapse ? 5 : 0,
+                          borderBottomLeftRadius:
+                            (rowIndex + 1) % courseCollapse ? 0 : 5,
+                          borderBottomRightRadius:
+                            (rowIndex + 1) % courseCollapse ? 0 : 5,
+                        }
+                      : {},
+                  ]}
+                >
+                  {subject.courseName && (
+                    <View style={[styles.cellText, styles.cellTextCourseName]}>
                       <Text>{subject.courseName}</Text>
                     </View>
-                  }{
-                    subject.teacher && <View style={styles.cellText}>
-                    <Text>{subject.classroom && `@${subject.classroom}`}</Text>
-                    <Text>{subject.teacher}</Text>
-                  </View>
-                  }
+                  )}
+                  {subject.teacher && (
+                    <View style={styles.cellText}>
+                      <Text>
+                        {subject.classroom && `@${subject.classroom}`}
+                      </Text>
+                      <Text>{subject.teacher}</Text>
+                    </View>
+                  )}
                 </View>
               </View>
             ))}
