@@ -1,14 +1,15 @@
 import { FC } from 'react';
 import {
-  Text,
-  ViewProps,
   Pressable,
   StyleSheet,
+  Text,
   TextStyle,
+  ViewProps,
 } from 'react-native';
 
-import { TABBAR_COLOR } from '@/constants/tabBar';
 import useVisualScheme from '@/store/visualScheme';
+
+import { TABBAR_COLOR } from '@/constants/tabBar';
 
 import { TabBarIcon } from './TabBarIcon';
 import { TabBarItemProps } from './types';
@@ -18,7 +19,7 @@ import AnimatedScale from '../animatedView/AnimatedScale';
 const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
   const { isFocused, onPress, onLongPress, label, iconName } = props;
   const iconStyle = useVisualScheme(
-    state => state.currentStyle?.navbar_icon_style
+    state => state.currentStyle?.navbar_icon_active_style
   ) as TextStyle;
   const color = isFocused ? iconStyle?.color : TABBAR_COLOR.PRIMARY;
   return (

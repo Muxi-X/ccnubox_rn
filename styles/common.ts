@@ -28,5 +28,6 @@ export const commonColors: Partial<ColorType> = {
   gray: '#ccc',
   darkGray: '#a0a0a0',
   purple: '#7B71F1',
-  black: '#000',
+  lightDark: '#444',
+  black: '#242424',
 };

@@ -15,8 +15,10 @@ import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Pagination from '@/components/pagination';
-import { preloginGuide } from '@/constants/prelogin';
+
 import useVisualScheme from '@/store/visualScheme';
+
+import { preloginGuide } from '@/constants/prelogin';
 import { commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils/percent2px';
 

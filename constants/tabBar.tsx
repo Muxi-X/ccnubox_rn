@@ -1,8 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Text } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { commonColors, commonStyles } from '@/styles/common';
-import { SingleTabType } from '@/types/tabBarTypes';
+
+import { SinglePageType } from '@/types/tabBarTypes';
 
 /**
  * @enum tabBar颜色
@@ -12,21 +15,31 @@ export const TABBAR_COLOR = {
   PRIMARY: commonColors.darkGray,
 };
 /** 导航栏配置 */
-export const tabConfig: SingleTabType[] = [
+export const tabConfig: SinglePageType[] = [
   {
     name: 'index',
     title: '首页',
     iconName: 'home',
     headerTitle: () => <></>,
     headerLeft: () => (
-      <Text style={[commonStyles.TabBarPadding, commonStyles.fontLarge]}>
+      <Text
+        style={[
+          commonStyles.TabBarPadding,
+          commonStyles.fontLarge,
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
         华师匣子
       </Text>
     ),
     headerRight: () => (
       <MaterialIcons
         name="menu"
-        style={commonStyles.TabBarPadding}
+        size={24}
+        style={[
+          commonStyles.TabBarPadding,
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
       ></MaterialIcons>
     ),
   },

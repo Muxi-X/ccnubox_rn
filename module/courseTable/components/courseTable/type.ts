@@ -4,6 +4,7 @@ export type courseType = {
   date: string;
   teacher: string;
   classroom: string;
+  timeSpan?: number;
 };
 export interface CourseTableProps {
   data: courseType[];

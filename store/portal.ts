@@ -1,21 +1,14 @@
 import React, { ReactElement } from 'react';
 import { create } from 'zustand';
 
+import { PortalStore } from '@/store/types';
+
 import { keyGenerator } from '@/utils/autoKey';
 
-interface ModalStore {
-  portalRef: React.RefObject<any>;
-  elements: Record<number, ReactElement>;
-  setPortalRef: (ref: React.RefObject<any>) => void;
-  updateChildren: (newChildren: ReactElement, portalType?: string) => void;
-  deleteChildren: (key: number) => void;
-  updateFromElements: () => void;
-}
-
-export const usePortalStore = create<ModalStore>((set, get) => ({
+/** portal 组件信息 */
+export const usePortalStore = create<PortalStore>((set, get) => ({
   portalRef: React.createRef(),
   elements: {},
-  elementTypeMap: {},
   setPortalRef: ref => set({ portalRef: ref }),
   updateFromElements: () => {
     const { elements, portalRef } = get();
@@ -25,11 +18,22 @@ export const usePortalStore = create<ModalStore>((set, get) => ({
         ...Object.entries(elements).map(element => element[1] as ReactElement),
       ]);
   },
-  updateChildren: (newChildren, portalType = 'common') => {
+  updateChildren: (key, props) => {
+    const tmpMap = get().elements;
+    const currentElement = tmpMap[key];
+    if (currentElement) {
+      tmpMap[key] = React.cloneElement(currentElement, props);
+    }
+    set({
+      elements: tmpMap,
+    });
+    get().updateFromElements();
+  },
+  appendChildren: (newChildren, portalType = 'common') => {
     let tmpMap: Record<number, ReactElement> = get().elements;
     const { updateFromElements } = get();
+    const key = keyGenerator.next().value as unknown as number;
     if (newChildren) {
-      const key = keyGenerator.next().value as unknown as number;
       tmpMap[key] = React.cloneElement(newChildren, {
         key,
         portalType,
@@ -40,6 +44,7 @@ export const usePortalStore = create<ModalStore>((set, get) => ({
       elements: tmpMap,
     });
     updateFromElements();
+    return newChildren ? key : -1;
   },
   deleteChildren: key => {
     const { elements, updateFromElements } = get();

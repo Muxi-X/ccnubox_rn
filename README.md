@@ -1,12 +1,17 @@
 # ccnubox_rn
+
 华师匣子rn版
 
 # 项目简述
+
 - `react-native` + `expo` 重构华师匣子
 - 状态管理采用`zustand`及其中间件
-- 消息推送目前采用插件注入的方式集成，`JPush`，插件地址：[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)
+- 消息推送目前采用插件注入的方式集成，`JPush`，插件地
+  址：[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)
 - 采用`eas`进行远程包管理和更新发布
+
 # 项目结构
+
 ```text
 .
 ├── README.md
@@ -56,19 +61,26 @@
 └── utils               # 工具函数/垃圾桶，不知道放哪就放这
 
 ```
+
 # 推荐开发调试方法
+
 - [集成 android studio(android调试)](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [集成 expo-orbit(ios调试)](https://docs.expo.dev/workflow/ios-simulator/)
-- 若要测试`mx-jpush-expo`等消息通知内容，请参考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
+- 若要测试`mx-jpush-expo`等消息通知内容，请参
+  考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
 
 # 项目基建以及代码规范
-本仓库并未严格限制`eslint`，请先熟悉现有基建，再着手开发
-***保证代码质量***
+
+本仓库并未严格限制`eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
 
 ## 颜色主题自定义
+
 样式注册在`styles`文件夹中进行，采用全局`store`设计
+
 #### styles结构
+
 - 与主题无关的通用样式存于`common.ts`中
+
 ```ts
 /** 与主题无关通用样式 */
 export const commonStyles = StyleSheet.create({
@@ -78,7 +90,7 @@ export const commonStyles = StyleSheet.create({
   fontLarge: {
     fontSize: 20,
   },
- // ...
+  // ...
 });
 export const commonColors: Partial<ColorType> = {
   gray: '#ccc',
@@ -86,9 +98,10 @@ export const commonColors: Partial<ColorType> = {
 ```
 
 #### 样式注册
-其余主题新开文件，并在`index`注册
-主题通过`geneStyleSheet`方法生成， 分为两部分：`样式`和`布局`
-目前布局只有`android`和`ios`两套，后续有增加再做适配
+
+其余主题新开文件，并在`index`注册主题通过`geneStyleSheet`方法生成， 分为两部
+分：`样式`和`布局` 目前布局只有`android`和`ios`两套，后续有增加再做适配
+
 ```ts
 // default.ts
 import { SubThemeType } from '@/styles/types';
@@ -106,16 +119,20 @@ export const defaultStyles = geneStyleSheet({
   },
 });
 ```
+
 `subThemeType`负责特定领域样式，示例定义目前如下,有需要可以增加：
+
 ```ts
 export type ConfigurableThemeNames =
   | 'text_style'
   | 'border_style'
   | 'button_style'
   | 'navbar_style'
-  | 'navbar_icon_style';
+  | 'navbar_icon_active_style';
 ```
+
 #### 样式使用：
+
 ```ts
 const currentStyle = useVisualScheme(state => state.currentStyle);
 // ...
@@ -123,6 +140,7 @@ return <Button style={currentStyle?.button_style} />
 ```
 
 ### 样式切换
+
 ```ts
 const { currentStyle, changeTheme, changeLayoutStyle } = useVisualScheme(
   ({ currentStyle, changeTheme, changeLayoutStyle }) => ({
@@ -132,9 +150,12 @@ const { currentStyle, changeTheme, changeLayoutStyle } = useVisualScheme(
   })
 );
 ```
+
 ## 简单动画效果封装
-基础动画效果封装，若有复杂效果请自行设计
-位于`animatedView`中，用法基本相同，均继承于类型`BaseAnimatedProps`：
+
+基础动画效果封装，若有复杂效果请自行设计位于`animatedView`中，用法基本相同，均继
+承于类型`BaseAnimatedProps`：
+
 ```ts
 export interface BaseAnimatedProps extends ViewProps {
   /**
@@ -159,11 +180,13 @@ export interface BaseAnimatedProps extends ViewProps {
   onAnimationEnd?: () => void;
 }
 ```
+
 - `AnimatedOpacity`以及`AnimatedFade`拥有`toVisible`属性，代表渐入/渐出
 - `AnimatedFade`具有`direction`属性，可选`horizontal`或`vertical`，代表动画方向
-基础用法：
+  基础用法：
+
 ```tsx
- <AnimatedFade
+<AnimatedFade
   direction="vertical"
   distance={10}
   duration={450}
@@ -177,12 +200,18 @@ export interface BaseAnimatedProps extends ViewProps {
   </Button>
 </AnimatedFade>
 ```
+
 ## Button组件
-由于`antd`的`Button`的`active`颜色配置要通过配置他自身的`config`进行，这样再加一层`config`会略显臃肿，因此干脆实现了简单的`Button`组件
-带有`loading`和`ripple(在android中的点击特效)`效果
+
+由于`antd`的`Button`的`active`颜色配置要通过配置他自身的`config`进行，这样再加一
+层`config`会略显臃肿，因此干脆实现了简单的`Button`组件带
+有`loading`和`ripple(在android中的点击特效)`效果
 
 ## ScrollView组件
-由于安卓`ScrollView`不支持双向同时滚动，因此通过`gesture-handler`自行实现了`ScrollView`，未来可能单独拉成外部包，定义如下：
+
+由于安卓`ScrollView`不支持双向同时滚动，因此通过`gesture-handler`自行实现
+了`ScrollView`，未来可能单独拉成外部包，定义如下：
+
 ```tsx
 export interface ScrollableViewProps {
   /**
@@ -216,12 +245,17 @@ export interface ScrollableViewProps {
   stickyTop?: ReactNode;
 }
 ```
+
 ## CourseTable组件
-基于`scrollView`组件搭建的课表组件，由于约定式路由不允许`component`在`app`中出现，因此移动到外部，之后可能会移动
+
+基于`scrollView`组件搭建的课表组件，由于约定式路由不允许`component`在`app`中出
+现，因此移动到外部，之后可能会移动
+
 > - 目前没有具体样式，需要自行修改
 
-刷新函数含有两个参数：`handleSuccess`，`handleFail`
-刷新成功时调用 success，失败则是 fail，fail 相比于 success 会有失败的 toast 提示
+刷新函数含有两个参数：`handleSuccess`，`handleFail` 刷新成功时调用 success，失败
+则是 fail，fail 相比于 success 会有失败的 toast 提示
+
 ```text
  onRefresh={(handleSuccess, handleFail) => {
    setTimeout(() => {
@@ -230,41 +264,45 @@ export interface ScrollableViewProps {
      }, 7000);
  }}
 ```
+
 ## Modal 组件
-建议使用`ModalTrigger`组件，通过`triggerComponent`定义触发弹窗元素
-或者直接使用 `Modal.show()`方法调用
-> Modal.show 
-> 会在全局 portal 建立新对象
-> 用完即删除
-> 若要满足关闭 modal 仍能记住之前的状态，则需要通过 ModalTrigger 等其他方法
-`mode`分为两种模式: 
+
+建议使用`ModalTrigger`组件，通过`triggerComponent`定义触发弹窗元素或者直接使用
+`Modal.show()`方法调用
+
+> Modal.show 会在全局 portal 建立新对象用完即删除若要满足关闭 modal 仍能记住之前
+> 的状态，则需要通过 ModalTrigger 等其他方法 `mode`分为两种模式:
+
 - 底部：有渐变、动画为滑入
 - 中部：无渐变、动画为放大
 
 ```tsx
-  <ModalTrigger
-      title={title}
-      onConfirm={handleConfirm}
-      onClose={onClose}
-      onCancel={onCancel}
-      mode={mode}
-      triggerComponent={children}
-      style={style}
-    >
-  </ModalTrigger>
+<ModalTrigger
+  title={title}
+  onConfirm={handleConfirm}
+  onClose={onClose}
+  onCancel={onCancel}
+  mode={mode}
+  triggerComponent={children}
+  style={style}
+></ModalTrigger>
 ```
 
 # 常用指令
 
 ## build（打包->注入极光推送sdk->部署到expo）
+
 ```bash
   pnpm run build
 ```
 
 ## update（热更新）
+
 ```bash
  eas update --branch production --message "wdigets test_1"
 ```
 
 # 更新须知
-- 热更新更新通知位于 `assets/data/updateInfo.json`中，每次热更新手动更新其中的版本号以及更新内容
+
+- 热更新更新通知位于 `assets/data/updateInfo.json`中，每次热更新手动更新其中的版
+  本号以及更新内容

@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 /**
  * 消息通知
@@ -23,7 +23,7 @@ import { Platform } from 'react-native';
   }
     @returns [ notificationInfo, registerNotification ]
  */
-export default function useNotification(
+const useNotification = (
   behavior: Notifications.NotificationBehavior = {
     shouldPlaySound: true,
     shouldSetBadge: true,
@@ -39,7 +39,7 @@ export default function useNotification(
       seconds: 5, // Trigger the notification in 24 hours
     },
   }
-) {
+) => {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
     []
@@ -92,14 +92,16 @@ export default function useNotification(
       channels: typeof channels;
       notification: typeof notification;
     },
-    typeof registerNotification
+    typeof registerNotification,
   ];
-}
+};
+
+export default useNotification;
 
 /**
  * @deprecated 国内安卓 fcm 用不了，此 hook 目前只能用于个性化定制
  */
-export async function registerForPushNotificationsAsync() {
+export const registerForPushNotificationsAsync = async () => {
   let token;
 
   if (Platform.OS === 'android') {
@@ -147,4 +149,4 @@ export async function registerForPushNotificationsAsync() {
   }
 
   return token;
-}
+};

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 import { scraperType } from '@/store/types';
 
+/** 研究生信息爬虫 */
 const useScraper = create<scraperType>((set, get) => ({
   ref: null,
   setRef: newRef => set(() => ({ ref: newRef ?? null })),

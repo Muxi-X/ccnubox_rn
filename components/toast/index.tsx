@@ -1,13 +1,15 @@
 import { View } from '@ant-design/react-native';
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import { ModalBack } from '@/components/modal';
 import { ToastProps } from '@/components/toast/type';
-import { statusImage } from '@/constants/toast';
+
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
+
+import { statusImage } from '@/constants/toast';
 import { commonColors, commonStyles } from '@/styles/common';
 
 const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
@@ -81,8 +83,8 @@ const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
   );
 };
 Toast.show = (props: ToastProps) => {
-  const updateChildren = usePortalStore.getState().updateChildren;
-  updateChildren(<Toast visible={true} {...props}></Toast>);
+  const appendChildren = usePortalStore.getState().appendChildren;
+  appendChildren(<Toast visible={true} {...props}></Toast>);
 };
 export default Toast;
 

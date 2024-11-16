@@ -2,16 +2,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Slot } from 'expo-router';
 import { FC } from 'react';
 import {
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   View,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
+
+import { useKeyboardShow } from '@/hooks';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Divider from '@/components/divider';
-import { useKeyboardShow } from '@/hooks/useKeyboardShow';
+
 import { commonStyles } from '@/styles/common';
 
 const Login: FC = () => {

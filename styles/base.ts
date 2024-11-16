@@ -1,28 +1,73 @@
 import { commonColors } from '@/styles/common';
-import { SubThemeType } from '@/styles/types';
+import { ThemeType } from '@/styles/types';
 
-const { white, purple } = commonColors;
+const { white, purple, black, lightGray, lightDark } = commonColors;
 /** 基础样式 */
-const baseStyle: SubThemeType = {
-  border_style: {},
-  text_style: {
-    color: commonColors.black,
+const baseStyle: ThemeType = {
+  dark: {
+    text_style: {
+      color: lightGray,
+    },
+    navbar_background_style: {
+      backgroundColor: lightDark,
+    },
+    header_background_style: {
+      backgroundColor: lightDark,
+    },
+    header_text_style: {
+      color: lightGray,
+    },
+    navbar_icon_active_style: {
+      color: purple,
+    },
+    skeleton_background_style: {
+      backgroundColor: lightDark,
+    },
+    modal_background_style: {
+      backgroundColor: black,
+    },
+    button_style: {
+      backgroundColor: purple,
+    },
+    button_text_style: {
+      color: lightGray,
+    },
+    background_style: {
+      backgroundColor: black,
+    },
   },
-  navbar_style: {
-    backgroundColor: white,
-  },
-  navbar_icon_style: {
-    color: purple,
-  },
-  modal_background_style: {
-    backgroundColor: white,
-  },
-  button_style: {
-    backgroundColor: purple,
-    color: white,
-  },
-  button_text_style: {
-    color: white,
+  light: {
+    text_style: {
+      color: black,
+    },
+    header_background_style: {
+      backgroundColor: lightGray,
+    },
+    header_text_style: {
+      color: black,
+    },
+    navbar_background_style: {
+      backgroundColor: white,
+    },
+    navbar_icon_active_style: {
+      color: purple,
+    },
+    modal_background_style: {
+      backgroundColor: white,
+    },
+    button_style: {
+      backgroundColor: purple,
+      color: white,
+    },
+    button_text_style: {
+      color: white,
+    },
+    skeleton_background_style: {
+      backgroundColor: lightGray,
+    },
+    background_style: {
+      backgroundColor: white,
+    },
   },
 };
 

@@ -1,51 +1,63 @@
 import { create } from 'zustand';
 
-import { styleMap } from '@/styles';
-import { SubThemeType } from '@/styles/types';
+import { layoutMap } from '@/styles';
+import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
+import eventBus from '@/utils/eventBus';
 
 import { visualSchemeType } from './types';
 
+/** 配色、布局整体store类型 */
 const useVisualScheme = create<visualSchemeType>(set => ({
-  name: 'default',
-  type: 'android',
+  themeName: 'light',
+  layoutName: 'android',
   currentStyle: null,
-  styles: new Map(),
-  initStyles: () =>
+  layouts: new Map(),
+  init: () =>
     set(state => {
-      const newStyles = new Map(Object.entries(styleMap));
+      const newLayouts = new Map(Object.entries(layoutMap)) as Map<
+        LayoutName,
+        LayoutType
+      >;
+      eventBus.emit('layoutSet');
+      eventBus.emit('layoutChange', state.layoutName);
       return {
         ...state,
-        currentStyle: styleMap[state.name][state.type] as SubThemeType,
-        styles: newStyles,
+        currentStyle: layoutMap[state.layoutName][
+          state.themeName
+        ] as SingleThemeType,
+        layouts: newLayouts,
       };
     }),
-  removeStyles: name =>
+  removeLayouts: name =>
     set(state => {
-      const newStyles = new Map(state.styles);
-      newStyles.delete(name);
-      return { ...state, styles: newStyles };
+      const newLayouts = new Map(state.layouts);
+      newLayouts.delete(name);
+      return { ...state, layouts: newLayouts };
     }),
-  // 更改主题
-  changeTheme: styleName =>
+  changeTheme: themeName =>
     set(state => {
-      const { styles, type, currentStyle } = state;
-      const currentTheme = styles.get(styleName);
+      const { layouts, layoutName } = state;
+      const currentTheme = layouts.get(layoutName)![
+        themeName
+      ] as SingleThemeType;
+      if (currentTheme) {
+        return {
+          ...state,
+          currentStyle: currentTheme,
+          themeName,
+        };
+      }
+      return state;
+    }),
+  changeLayout: layoutName =>
+    set(state => {
+      const { themeName, layouts, currentStyle } = state;
+      const newStyle = layouts.get(layoutName)![themeName] as SingleThemeType;
+      eventBus.emit('layoutChange', layoutName);
       return {
         ...state,
-        currentStyle: (currentTheme
-          ? currentTheme[type]
-          : currentStyle) as SubThemeType,
-      };
-    }),
-  // 更改布局
-  changeLayoutStyle: type =>
-    set(state => {
-      const { name, styles, currentStyle } = state;
-      const newStyle = styles.get(name)![type];
-      return {
-        ...state,
-        currentStyle: (newStyle ?? currentStyle) as SubThemeType,
-        type,
+        currentStyle: newStyle ?? currentStyle,
+        layoutName,
       };
     }),
 }));
