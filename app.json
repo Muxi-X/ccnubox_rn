@@ -7,11 +7,7 @@
     "icon": "./assets/images/mx-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "assetBundlePatterns": [
-      "assets/images/",
-      "assets/data/",
-      "assets/fonts"
-    ],
+    "assetBundlePatterns": ["assets/images/", "assets/data/", "assets/fonts"],
     "splash": {
       "image": "./assets/images/mx-logo.png",
       "resizeMode": "contain",

@@ -1,16 +1,67 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { FlatList } from 'react-native';
 
 import Button from '@/components/button';
+import Modal from '@/components/modal';
+import Picker from '@/components/picker';
+import Text from '@/components/text';
 import Toast from '@/components/toast';
+import ThemeBasedView from '@/components/view';
+
 import useVisualScheme from '@/store/visualScheme';
 
+import SettingItem from '@/module/setting/components/settingItem';
+const ListItem = [
+  {
+    id: 1,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 2,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 3,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 4,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 5,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+  {
+    id: 6,
+    icon: '111',
+    text: '个性化',
+    url: '',
+  },
+];
 export default function SettingPage() {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
+    useVisualScheme(
+      ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
+        currentStyle,
+        changeTheme,
+        themeName,
+        layoutName,
+        changeLayout,
+      })
+    );
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -18,9 +69,43 @@ export default function SettingPage() {
       void Updates.reloadAsync();
     }
   }, [isUpdatePending]);
+  useEffect(() => {
+    isUpdateAvailable &&
+      Modal.show({
+        title: '检测到更新',
+        children: '是否更新',
+        onConfirm: () => {
+          Updates.fetchUpdateAsync();
+        },
+      });
+  }, [isUpdateAvailable]);
 
   return (
-    <View>
+    <ThemeBasedView style={{ flex: 1 }}>
+      <FlatList
+        data={ListItem}
+        renderItem={({ item }) => (
+          <SettingItem icon={item.icon} text={item.text} url={item.url} />
+        )}
+        keyExtractor={item => item.id.toString()}
+        // contentContainerStyle={styles.listContainer}
+      />
+      <Button
+        style={[currentStyle?.button_style, { width: '100%' }]}
+        onPress={() => {
+          changeTheme(themeName === 'dark' ? 'light' : 'dark');
+        }}
+      >
+        切换模式
+      </Button>
+      <Button
+        onPress={() => {
+          changeLayout(layoutName === 'android' ? 'ios' : 'android');
+        }}
+        style={[currentStyle?.button_style, { width: '100%' }]}
+      >
+        {'切换主题,当前主题：' + layoutName}
+      </Button>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
@@ -41,13 +126,10 @@ export default function SettingPage() {
         isLoading={loading}
         children="检查更新"
       />
-      {isUpdateAvailable ? (
-        <Button
-          onPress={() => Updates.fetchUpdateAsync()}
-          children="下载并更新"
-        />
-      ) : null}
       <StatusBar style="auto" />
-    </View>
+      <Picker>
+        <Text style={currentStyle?.text_style}>345345</Text>
+      </Picker>
+    </ThemeBasedView>
   );
 }

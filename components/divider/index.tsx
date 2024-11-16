@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet, ViewProps } from 'react-native';
+import { StyleSheet, Text, View, ViewProps } from 'react-native';
 
 import { commonColors } from '@/styles/common';
 /**
@@ -17,7 +17,16 @@ const Divider = ({
       {children && (
         <View style={styles.labelContainer}>
           <View style={styles.line} />
-          <Text style={[styles.label, { color: color }]}>{children}</Text>
+          <Text
+            style={[
+              styles.label,
+              {
+                color: color ?? commonColors.gray,
+              },
+            ]}
+          >
+            {children}
+          </Text>
           <View style={styles.line} />
         </View>
       )}

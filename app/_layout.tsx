@@ -1,4 +1,4 @@
-import { Toast, Provider } from '@ant-design/react-native';
+import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
 import { Stack } from 'expo-router';
 import React, { RefObject, useCallback, useEffect, useRef } from 'react';
@@ -6,16 +6,19 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 
-import Portal from '@/components/portal';
+import { useJPush } from '@/hooks';
+
+import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
-import { useJPush } from '@/hooks/useJPush';
+
 import { usePortalStore } from '@/store/portal';
 import useScraper from '@/store/scraper';
 import useVisualScheme from '@/store/visualScheme';
+
 import fetchUpdates from '@/utils/fetchUpdates';
 
 export default function RootLayout() {
-  const initStyles = useVisualScheme(state => state.initStyles);
+  const initVisualScheme = useVisualScheme(state => state.init);
   const scraperRef = useRef<WebView>();
   const portalRef = useRef<View>();
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
@@ -31,8 +34,8 @@ export default function RootLayout() {
     alert(JSON.stringify(err));
   }
   useEffect(() => {
-    // 引入所有样式
-    initStyles();
+    // 引入所有样式以及基于 theme 的组件
+    initVisualScheme();
     // 加载字体
     loadAsync({
       antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
@@ -47,7 +50,7 @@ export default function RootLayout() {
     setRef(scraperRef);
     // 在 store 中配置 portal ref
     setPortalRef(portalRef);
-  }, [initStyles]);
+  }, [initVisualScheme]);
   return (
     <>
       {/* Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删  */}
@@ -59,15 +62,24 @@ export default function RootLayout() {
             ref={ref as RefObject<WebView<{}> | null>}
             onMessage={handleMessage}
           ></Scraper>
-          <Stack>
+          <Stack
+            screenOptions={{
+              contentStyle:
+                useVisualScheme.getState().currentStyle?.background_style,
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="auth"
               options={{ headerShown: false }}
             ></Stack.Screen>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(mainPage)"
+              options={{ headerShown: false }}
+            ></Stack.Screen>
           </Stack>
           {/* portal */}
-          <Portal ref={portalRef} />
+          <PortalRoot ref={portalRef} />
         </GestureHandlerRootView>
       </Provider>
     </>

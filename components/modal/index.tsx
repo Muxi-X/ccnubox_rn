@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import {
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  View,
   ViewProps,
 } from 'react-native';
 
@@ -12,17 +12,19 @@ import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
 import { ModalProps, ModalTriggerProps } from '@/components/modal/types';
+
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
+
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils/percent2px';
 
-const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
+const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   visible: initVisible = true,
   currentKey,
   onClose,
   children,
-  title = '123123',
+  title,
   onCancel,
   onConfirm,
   showCancel = true,
@@ -71,10 +73,26 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
         )}
         {title && (
           <View style={[styles.title]}>
-            <Text style={commonStyles.fontExtraLarge}>{title}</Text>
+            {typeof title === 'string' ? (
+              <Text
+                style={[commonStyles.fontExtraLarge, currentStyle?.text_style]}
+              >
+                {title}
+              </Text>
+            ) : (
+              title
+            )}
           </View>
         )}
-        <View style={styles.modalChildren}>{children}</View>
+        <View style={styles.modalChildren}>
+          {typeof children === 'string' ? (
+            <Text style={[currentStyle?.text_style, commonStyles.fontLarge]}>
+              {children}
+            </Text>
+          ) : (
+            children
+          )}
+        </View>
         <View style={styles.bottomChoice}>
           <TouchableOpacity onPress={handleConfirm}>
             <View
@@ -174,11 +192,8 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => void } = ({
  * Modal.show({title: '123'})
  */
 Modal.show = props => {
-  const { updateChildren } = usePortalStore.getState();
-  updateChildren(
-    <Modal {...props} visible={true} mode="bottom"></Modal>,
-    'modal'
-  );
+  const { appendChildren } = usePortalStore.getState();
+  return appendChildren(<Modal {...props}></Modal>, 'modal');
 };
 /**
  * 带有触发按钮的 trigger
@@ -192,24 +207,20 @@ Modal.show = props => {
  *  </ModalTrigger>
  */
 export const ModalTrigger: React.FC<ModalTriggerProps> = props => {
-  const [modalShow, setModalShow] = useState<boolean>(false);
-  const { onPress, children, triggerComponent, onClose, ...restProps } = props;
+  const { triggerComponent, ...restProps } = props;
+  const [key, setKey] = useState<number>(-1);
   const handlePress = () => {
-    setModalShow(true);
-    onPress && onPress();
+    setKey(Modal.show(restProps));
   };
-  const handleClose = () => {
-    setModalShow(false);
-    onClose && onClose();
-  };
+  useEffect(() => {
+    key !== -1 && usePortalStore.getState().updateChildren(key, restProps);
+  }, [props, key]);
   return (
     <>
       <TouchableOpacity onPress={handlePress}>
         {triggerComponent ?? <Text>触发弹窗</Text>}
       </TouchableOpacity>
-      <Modal {...restProps} onClose={handleClose} visible={modalShow}>
-        {children}
-      </Modal>
+      {/*<Modal {...restProps} visible={true}></Modal>*/}
     </>
   );
 };
@@ -279,6 +290,8 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 24,
     paddingHorizontal: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   confirmViewStyle: {
     backgroundColor: commonColors.purple,
