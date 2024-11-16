@@ -17,7 +17,7 @@ export const TIME_WIDTH = 60;
 /**
  * 一周天数
  */
-export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sta', 'Sun'];
+export const daysOfWeek = ['一', '二', '三', '四', '五', '六', '日'];
 /**
  * 每隔几个时间格出现下划线
  */
