@@ -48,13 +48,16 @@ export const tabConfig: SinglePageType[] = [
     title: '日程',
     iconName: 'calendar',
     headerTitle: () => (
-      <Text style={[commonStyles.TabBarPadding, commonStyles.fontLarge]}> 日程 </Text>
+      <Text style={[commonStyles.TabBarPadding, commonStyles.fontLarge]}>
+        {' '}
+        日程{' '}
+      </Text>
     ),
     headerRight: () => (
       <MaterialIcons
         name="menu"
         style={commonStyles.TabBarPadding}
-        ></MaterialIcons>
+      ></MaterialIcons>
     ),
   },
   {
