@@ -1,9 +1,10 @@
 import { FC, memo, useMemo } from 'react';
-import { courseType } from './components/courseTable/type';
+
 import View from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 import CourseTable from './components/courseTable';
+import { courseType } from './components/courseTable/type';
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
