@@ -5,10 +5,10 @@
 # 项目简述
 
 - `react-native` + `expo` 重构华师匣子
-- 状态管理采用`zustand`及其中间件
+- 状态管理采用 `zustand`及其中间件
 - 消息推送目前采用插件注入的方式集成，`JPush`，插件地
   址：[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)
-- 采用`eas`进行远程包管理和更新发布
+- 采用 `eas`进行远程包管理和更新发布
 
 # 项目结构
 
@@ -66,20 +66,20 @@
 
 - [集成 android studio(android调试)](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [集成 expo-orbit(ios调试)](https://docs.expo.dev/workflow/ios-simulator/)
-- 若要测试`mx-jpush-expo`等消息通知内容，请参
+- 若要测试 `mx-jpush-expo`等消息通知内容，请参
   考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
 
 # 项目基建以及代码规范
 
-本仓库并未严格限制`eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
+本仓库并未严格限制 `eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
 
 ## 颜色主题自定义
 
-样式注册在`styles`文件夹中进行，采用全局`store`设计
+样式注册在 `styles`文件夹中进行，采用全局 `store`设计
 
 #### styles结构
 
-- 与主题无关的通用样式存于`common.ts`中
+- 与主题无关的通用样式存于 `common.ts`中
 
 ```ts
 /** 与主题无关通用样式 */
@@ -99,8 +99,8 @@ export const commonColors: Partial<ColorType> = {
 
 #### 样式注册
 
-其余主题新开文件，并在`index`注册主题通过`geneStyleSheet`方法生成， 分为两部
-分：`样式`和`布局` 目前布局只有`android`和`ios`两套，后续有增加再做适配
+其余主题新开文件，并在 `index`注册主题通过 `geneStyleSheet`方法生成， 分为两部
+分：`样式`和 `布局` 目前布局只有 `android`和 `ios`两套，后续有增加再做适配
 
 ```ts
 // default.ts
@@ -153,8 +153,8 @@ const { currentStyle, changeTheme, changeLayoutStyle } = useVisualScheme(
 
 ## 简单动画效果封装
 
-基础动画效果封装，若有复杂效果请自行设计位于`animatedView`中，用法基本相同，均继
-承于类型`BaseAnimatedProps`：
+基础动画效果封装，若有复杂效果请自行设计位于 `animatedView`中，用法基本相同，均
+继承于类型 `BaseAnimatedProps`：
 
 ```ts
 export interface BaseAnimatedProps extends ViewProps {
@@ -181,9 +181,9 @@ export interface BaseAnimatedProps extends ViewProps {
 }
 ```
 
-- `AnimatedOpacity`以及`AnimatedFade`拥有`toVisible`属性，代表渐入/渐出
-- `AnimatedFade`具有`direction`属性，可选`horizontal`或`vertical`，代表动画方向
-  基础用法：
+- `AnimatedOpacity`以及 `AnimatedFade`拥有 `toVisible`属性，代表渐入/渐出
+- `AnimatedFade`具有 `direction`属性，可选 `horizontal`或 `vertical`，代表动画方
+  向基础用法：
 
 ```tsx
 <AnimatedFade
@@ -203,14 +203,14 @@ export interface BaseAnimatedProps extends ViewProps {
 
 ## Button组件
 
-由于`antd`的`Button`的`active`颜色配置要通过配置他自身的`config`进行，这样再加一
-层`config`会略显臃肿，因此干脆实现了简单的`Button`组件带
-有`loading`和`ripple(在android中的点击特效)`效果
+由于 `antd`的 `Button`的 `active`颜色配置要通过配置他自身的 `config`进行，这样再
+加一层 `config`会略显臃肿，因此干脆实现了简单的 `Button`组件带有 `loading`和
+`ripple(在android中的点击特效)`效果
 
 ## ScrollView组件
 
-由于安卓`ScrollView`不支持双向同时滚动，因此通过`gesture-handler`自行实现
-了`ScrollView`，未来可能单独拉成外部包，定义如下：
+由于安卓 `ScrollView`不支持双向同时滚动，因此通过 `gesture-handler`自行实现了
+`ScrollView`，未来可能单独拉成外部包，定义如下：
 
 ```tsx
 export interface ScrollableViewProps {
@@ -248,8 +248,8 @@ export interface ScrollableViewProps {
 
 ## CourseTable组件
 
-基于`scrollView`组件搭建的课表组件，由于约定式路由不允许`component`在`app`中出
-现，因此移动到外部，之后可能会移动
+基于 `scrollView`组件搭建的课表组件，由于约定式路由不允许 `component`在 `app`中
+出现，因此移动到外部，之后可能会移动
 
 > - 目前没有具体样式，需要自行修改
 
@@ -267,7 +267,7 @@ export interface ScrollableViewProps {
 
 ## Modal 组件
 
-建议使用`ModalTrigger`组件，通过`triggerComponent`定义触发弹窗元素或者直接使用
+建议使用 `ModalTrigger`组件，通过 `triggerComponent`定义触发弹窗元素或者直接使用
 `Modal.show()`方法调用
 
 > Modal.show 会在全局 portal 建立新对象用完即删除若要满足关闭 modal 仍能记住之前

@@ -2,7 +2,7 @@ import { router, useNavigation } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface ItemProps {
-  icon: string;
+  icon: number | { uri: string };
   text: string;
   url: string;
 }
@@ -12,12 +12,11 @@ function SettingItem({ icon, text, url }: ItemProps) {
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => {
-        // 或者，如果使用 `navigation.navigate` 方法
         navigation.navigate(url as never);
       }}
     >
       <View style={styles.iconContainer}>
-        <Image source={require(icon)} style={styles.icon} />
+        <Image source={icon} style={styles.icon} />
       </View>
       <Text style={styles.title}>{text}</Text>
       <Text style={styles.arrow}>➔</Text>
