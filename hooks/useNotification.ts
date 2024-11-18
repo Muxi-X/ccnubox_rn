@@ -68,9 +68,7 @@ const useNotification = (
       });
 
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener(response => {
-        console.log(response);
-      });
+      Notifications.addNotificationResponseReceivedListener(() => {});
 
     return () => {
       notificationListener.current &&
@@ -140,7 +138,6 @@ export const registerForPushNotificationsAsync = async () => {
           projectId,
         })
       ).data;
-      console.log(token);
     } catch (e) {
       token = `${e}`;
     }
