@@ -79,7 +79,8 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                       borderBottomColor:
                         (rowIndex + 1) % courseCollapse
                           ? 'transparent'
-                          : useVisualScheme.getState().currentStyle?.schedule_border_style?.borderColor,
+                          : useVisualScheme.getState().currentStyle
+                              ?.schedule_border_style?.borderColor,
                     },
                   ]}
                 ></View>
@@ -134,32 +135,66 @@ export const Content: React.FC<CourseTransferType> = ({
 }) => {
   return (
     <>
-    {/* ios */}
-    <Pressable
-    style={{
-      position: 'absolute',
-      width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-      zIndex: 99,
-      height:'auto',
-      top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex + 15,
-      left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
-    }}
-    onPress={() => {
-      console.log('点击了课程');
-    }}
-  >
-    <View style={[ {paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 6,
-      backgroundColor: colorOptions[(rowIndex + colIndex) % colorOptions.length].color,
-      borderRadius: 5,}]}>
-      <Text style={styles.cellText}>{courseName || ''}</Text>
-    </View>
-    <View style={[{alignItems: 'center', paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10,}]}>
-      <Text style={[styles.cellText,{color: '#0D0D0D', fontSize: 11, fontWeight: 'bold'}]}>{teacher || ''}</Text>
-      <Text style={[styles.cellText,{color: '#75757B', fontSize: 11, fontWeight: 'bold'}]}>{classroom ? `@${classroom}` : ''}</Text>
-    </View>
-  </Pressable>
-  </>
-  //android
+      {/* ios */}
+      <Pressable
+        style={{
+          position: 'absolute',
+          width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
+          zIndex: 99,
+          height: 'auto',
+          top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex + 15,
+          left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
+        }}
+        onPress={() => {
+          console.log('点击了课程');
+        }}
+      >
+        <View
+          style={[
+            {
+              paddingTop: 10,
+              paddingBottom: 10,
+              paddingLeft: 10,
+              paddingRight: 6,
+              backgroundColor:
+                colorOptions[(rowIndex + colIndex) % colorOptions.length].color,
+              borderRadius: 5,
+            },
+          ]}
+        >
+          <Text style={styles.cellText}>{courseName || ''}</Text>
+        </View>
+        <View
+          style={[
+            {
+              alignItems: 'center',
+              paddingTop: 5,
+              paddingBottom: 5,
+              paddingLeft: 10,
+              paddingRight: 10,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.cellText,
+              { color: '#0D0D0D', fontSize: 11, fontWeight: 'bold' },
+            ]}
+          >
+            {teacher || ''}
+          </Text>
+          <Text
+            style={[
+              styles.cellText,
+              { color: '#75757B', fontSize: 11, fontWeight: 'bold' },
+            ]}
+          >
+            {classroom ? `@${classroom}` : ''}
+          </Text>
+        </View>
+      </Pressable>
+    </>
+    //android
     // <Pressable
     //   style={{
     //     position: 'absolute',
@@ -192,10 +227,15 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     <View style={styles.header}>
       <View style={styles.headerRow}>
         {daysOfWeek.map((day, index) => (
-          <View key={index} style={[
-            styles.headerCell,
-            useVisualScheme.getState().currentStyle?.schedule_item_background_style,
-            useVisualScheme.getState().currentStyle?.schedule_border_style,]}>
+          <View
+            key={index}
+            style={[
+              styles.headerCell,
+              useVisualScheme.getState().currentStyle
+                ?.schedule_item_background_style,
+              useVisualScheme.getState().currentStyle?.schedule_border_style,
+            ]}
+          >
             <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
             <Text style={styles.dayText}>09/0{index + 1}</Text>
           </View>
@@ -209,10 +249,15 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
   return (
     <>
       {timeSlots.map((time, index) => (
-        <View key={index} style={[
-          styles.timeSlot,
-          useVisualScheme.getState().currentStyle?.schedule_item_background_style,
-          useVisualScheme.getState().currentStyle?.schedule_border_style,]}>
+        <View
+          key={index}
+          style={[
+            styles.timeSlot,
+            useVisualScheme.getState().currentStyle
+              ?.schedule_item_background_style,
+            useVisualScheme.getState().currentStyle?.schedule_border_style,
+          ]}
+        >
           <ThemeChangeText style={styles.countText}>
             {index + 1}
           </ThemeChangeText>
@@ -325,7 +370,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderRightColor: useVisualScheme.getState().currentStyle?.schedule_border_style?.borderColor || '#E1E2F1',
+    borderRightColor:
+      useVisualScheme.getState().currentStyle?.schedule_border_style
+        ?.borderColor || '#E1E2F1',
     zIndex: 0,
   },
   cellText: {
