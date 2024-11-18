@@ -6,3 +6,5 @@ node_modules/
 
 metro.config.js
 expo-env.d.ts
+scripts
+plugin.js
