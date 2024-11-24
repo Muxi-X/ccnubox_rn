@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Picker from '@/components/picker';
 import Toast from '@/components/toast';
+import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -40,7 +41,7 @@ function Theme() {
   }, [isUpdateAvailable]);
 
   return (
-    <View>
+    <ThemeBasedView style={{ flex: 1 }}>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {
@@ -81,7 +82,7 @@ function Theme() {
       <Picker>
         <Text style={currentStyle?.text_style}>345345</Text>
       </Picker>
-    </View>
+    </ThemeBasedView>
   );
 }
 export default Theme;
