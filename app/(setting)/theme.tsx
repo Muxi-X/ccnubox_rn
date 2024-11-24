@@ -1,9 +1,86 @@
+import { StatusBar } from 'expo-status-bar';
+import * as Updates from 'expo-updates';
+import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
+import Button from '@/components/button';
+import Modal from '@/components/modal';
+import Picker from '@/components/picker';
+import Toast from '@/components/toast';
+
+import useVisualScheme from '@/store/visualScheme';
+
 function Theme() {
+  const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
+    useVisualScheme(
+      ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
+        currentStyle,
+        changeTheme,
+        themeName,
+        layoutName,
+        changeLayout,
+      })
+    );
+  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    if (isUpdatePending) {
+      void Updates.reloadAsync();
+    }
+  }, [isUpdatePending]);
+  useEffect(() => {
+    isUpdateAvailable &&
+      Modal.show({
+        title: '检测到更新',
+        children: '是否更新',
+        onConfirm: () => {
+          Updates.fetchUpdateAsync();
+        },
+      });
+  }, [isUpdateAvailable]);
+
   return (
     <View>
-      <Text>111</Text>
+      <Button
+        style={[currentStyle?.button_style, { width: '100%' }]}
+        onPress={() => {
+          changeTheme(themeName === 'dark' ? 'light' : 'dark');
+        }}
+      >
+        切换模式
+      </Button>
+      <Button
+        onPress={() => {
+          changeLayout(layoutName === 'android' ? 'ios' : 'android');
+        }}
+        style={[currentStyle?.button_style, { width: '100%' }]}
+      >
+        {'切换主题,当前主题：' + layoutName}
+      </Button>
+      <Button
+        style={[currentStyle?.button_style, { width: '100%' }]}
+        onPress={() => {
+          setLoading(true);
+          Updates.checkForUpdateAsync()
+            .then(res => {
+              if (!res.isAvailable) {
+                Toast.show({ text: '已是最新版', icon: 'success' });
+              }
+            })
+            .catch(err => {
+              Toast.show({ text: '我是谁' });
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }}
+        isLoading={loading}
+        children="检查更新"
+      />
+      <StatusBar style="auto" />
+      <Picker>
+        <Text style={currentStyle?.text_style}>345345</Text>
+      </Picker>
     </View>
   );
 }
