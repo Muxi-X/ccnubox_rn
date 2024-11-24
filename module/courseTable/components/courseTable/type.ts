@@ -9,3 +9,10 @@ export type courseType = {
 export interface CourseTableProps {
   data: courseType[];
 }
+
+export interface CourseTransferType {
+  courseName: string;
+  timeSpan: number;
+  rowIndex: number;
+  colIndex: number;
+}
