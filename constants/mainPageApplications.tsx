@@ -15,18 +15,4 @@ export const mainPageApplications: MainPageGridDataType[] = [
     imageUrl: require('../assets/images/mx-logo.png'),
     key: 'grid-2',
   },
-  {
-    title: '电费查询',
-    name: 'electricityBillinQuiry',
-    href: '/electricityBillinQuiry',
-    imageUrl: require('../assets/images/mx-logo.png'),
-    key: 'grid-3',
-  },
-  {
-    title: '成绩查询',
-    name: 'scoreInquiry',
-    imageUrl: require('../assets/images/mx-logo.png'),
-    key: 'grid-4',
-    href: '/scoreInquiry',
-  },
 ];
