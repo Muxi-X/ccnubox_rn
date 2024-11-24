@@ -24,3 +24,32 @@ export async function get<T>(url: string, isToken: boolean): Promise<T> {
   }
   return response.json();
 }
+export async function post<T>(
+  url: string,
+  params: any,
+  isToken: boolean
+): Promise<T> {
+  const headers = new Headers();
+  if (isToken) {
+    const token = getItem('shortToken');
+    console.log(token);
+    if (token) headers.append('Authorization', token);
+  }
+  const response = await fetch(`${preUrl}${url}`, {
+    method: 'POST',
+    headers,
+    body: params,
+  });
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('401');
+    } else if (response.status === 400) {
+      const errorData = (await response.json()) as {
+        code: number;
+        msg: string;
+      };
+      throw new Error(`${errorData.code}`);
+    }
+  }
+  return response.json();
+}

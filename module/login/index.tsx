@@ -12,6 +12,7 @@ import Button from '@/components/button';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonStyles } from '@/styles/common';
+import { post } from '@/request/fetch';
 
 const LoginPage: FC = () => {
   // 监听键盘弹起，避免元素遮挡
@@ -20,6 +21,10 @@ const LoginPage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);
   const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState({
+    password: '',
+    student_id: '',
+  });
   const handleViewPassword = () => {
     setPasswordVisibility(!isPasswordShow);
   };
@@ -28,6 +33,8 @@ const LoginPage: FC = () => {
       Toast.fail('请先阅读隐私条例');
       return;
     }
+    console.log(userInfo);
+    post('/users/login_ccnu', userInfo, false).then();
     setLoginTriggered(true);
     setTimeout(() => {
       setLoginTriggered(false);
@@ -59,6 +66,10 @@ const LoginPage: FC = () => {
         prefix={<View style={styles.suffixStyle}></View>}
         suffix={<View style={styles.suffixStyle}></View>}
         placeholder="请输入学号"
+        value={userInfo.student_id}
+        onChangeText={text =>
+          setUserInfo(prev => ({ ...prev, student_id: text }))
+        }
         placeholderTextColor={styles.textColor.color}
         textAlign="center"
       ></Input>
@@ -68,6 +79,10 @@ const LoginPage: FC = () => {
         textAlign="center"
         /* 前后缀都要有，不然对不齐 */
         prefix={<View style={styles.suffixStyle}></View>}
+        value={userInfo.password}
+        onChangeText={text =>
+          setUserInfo(prev => ({ ...prev, password: text }))
+        }
         type={isPasswordShow ? 'text' : 'password'}
         suffix={
           <Icon
