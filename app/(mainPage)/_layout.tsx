@@ -29,49 +29,30 @@ export default function Layout() {
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
             options={{
-              // headerLeft: () => {
-              //   return (
-              //     <>
-              //       {currentComponents && (
-              //         <currentComponents.header_left title={config.title} />
-              //       )}
-              //     </>
-              //   );
-              // },
-              // headerTitle: () => (
-              //   <>
-              //     {currentComponents && (
-              //       <currentComponents.header_center
-              //         title={config.title}
-              //       ></currentComponents.header_center>
-              //     )}
-              //   </>
-              // ),
+              headerLeft: () => {
+                return (
+                  <>
+                    {currentComponents && (
+                      <currentComponents.header_left title={config.title} />
+                    )}
+                  </>
+                );
+              },
+              headerTitle: () => (
+                <>
+                  {currentComponents && (
+                    <currentComponents.header_center
+                      title={config.title}
+                    ></currentComponents.header_center>
+                  )}
+                </>
+              ),
               headerStyle: currentStyle?.header_background_style as StyleProp<{
                 backgroundColor: string | undefined;
               }>,
-              title: config.title,
             }}
           ></Stack.Screen>
         ))}
-        <Stack.Screen
-          name="electricityBillBalance"
-          options={{
-            title: '电费余额',
-            headerStyle: {
-              backgroundColor: '#F7F7F7',
-            },
-          }}
-        />
-        <Stack.Screen
-          name="scoreCalculation"
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: '#F7F7F7',
-            },
-          }}
-        />
       </Stack>
     </View>
   );
