@@ -11,9 +11,9 @@ const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const data: courseType[] = useMemo(() => {
     return [
-      { courseName: 'Math', time: '12:00', date: 'Mon', timeSpan: 9 },
-      { courseName: 'English', time: '18:00', date: 'Tue', timeSpan: 3 },
-      { courseName: 'Physics', time: '14:00', date: 'Wed', timeSpan: 2 },
+      { courseName: 'Math', time: '08:00', date: '一', timeSpan: 9 },
+      { courseName: 'English', time: '10:10', date: '二', timeSpan: 3 },
+      { courseName: 'Physics', time: '14:00', date: '四', timeSpan: 2 },
     ] as unknown as courseType[];
   }, []);
   return (
