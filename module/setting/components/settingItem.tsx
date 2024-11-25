@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface ItemProps {
   icon: number | { uri: string };
   text: string;
-  url?: Href<string | object>;
+  url: Href<string>;
 }
 function SettingItem({ icon, text, url }: ItemProps) {
   const navigation = useRouter();
@@ -12,7 +12,7 @@ function SettingItem({ icon, text, url }: ItemProps) {
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => {
-        navigation.navigate('/(setting)/theme');
+        navigation.navigate(url);
       }}
     >
       <View style={styles.iconContainer}>
