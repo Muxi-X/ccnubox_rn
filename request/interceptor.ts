@@ -2,8 +2,9 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 
-import requestBus from '@/store/currentRequests';
 import Toast from '@/components/toast';
+
+import requestBus from '@/store/currentRequests';
 
 const axiosInstance = axios.create({
   baseURL: 'http://121.43.151.190:8080',
@@ -11,7 +12,7 @@ const axiosInstance = axios.create({
 
 async function getStoredToken() {
   try {
-    const token = await getItem('token'); // 添加 await，因为 getItem 是异步的
+    const token = getItem('shortToken');
     if (token) return token;
   } catch (error) {
     console.error('获取 token 失败:', error);
@@ -21,14 +22,11 @@ async function getStoredToken() {
 
 axiosInstance.interceptors.request.use(
   async config => {
-    // 注册请求
     requestBus.requestRegister();
 
-    // 检查是否需要添加 token
     if (config.isToken !== false) {
-      // 默认添加 token，除非明确指定 isToken: false
       try {
-        const token = await getStoredToken(); // 确保异步调用的正确性
+        const token = await getStoredToken();
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }

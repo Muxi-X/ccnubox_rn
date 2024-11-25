@@ -40,17 +40,12 @@ const LoginPage: FC = () => {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        const token = response.data.token; // 假设返回的 token 在 response.data.token
-        console.log('注册成功，Token:', token);
-
-        // 将 token 存储在安全存储中
-        setItem('token', token);
-        console.log('Token 已存储');
-      } else {
-        console.error('注册失败，状态码:', response.status);
+        console.log(response.headers);
+        setItem('shortToken', response.headers['x-jwt-token']);
+        setItem('longToken', response.headers['x-refresh-token']);
       }
     } catch (error) {
-      console.error('注册请求失败:', error);
+      console.error('注册请求失败:1111111', error);
     }
     setLoginTriggered(true);
     setTimeout(() => {
