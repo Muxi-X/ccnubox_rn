@@ -1,5 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
@@ -11,8 +12,8 @@ import Button from '@/components/button';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import axiosInstance from '@/request/interceptor';
 import { commonStyles } from '@/styles/common';
-import { post } from '@/request/fetch';
 
 const LoginPage: FC = () => {
   // 监听键盘弹起，避免元素遮挡
@@ -28,13 +29,29 @@ const LoginPage: FC = () => {
   const handleViewPassword = () => {
     setPasswordVisibility(!isPasswordShow);
   };
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例');
       return;
     }
     console.log(userInfo);
-    post('/users/login_ccnu', userInfo, false).then();
+    try {
+      const response = await axiosInstance.post('/users/login_ccnu', userInfo, {
+        isToken: false,
+      });
+      if (response.status === 200 || response.status === 201) {
+        const token = response.data.token; // 假设返回的 token 在 response.data.token
+        console.log('注册成功，Token:', token);
+
+        // 将 token 存储在安全存储中
+        setItem('token', token);
+        console.log('Token 已存储');
+      } else {
+        console.error('注册失败，状态码:', response.status);
+      }
+    } catch (error) {
+      console.error('注册请求失败:', error);
+    }
     setLoginTriggered(true);
     setTimeout(() => {
       setLoginTriggered(false);
@@ -68,7 +85,7 @@ const LoginPage: FC = () => {
         placeholder="请输入学号"
         value={userInfo.student_id}
         onChangeText={text =>
-          setUserInfo(prev => ({ ...prev, student_id: text }))
+          setUserInfo(prev => ({ ...prev, student_id: text.toString() }))
         }
         placeholderTextColor={styles.textColor.color}
         textAlign="center"
@@ -81,7 +98,7 @@ const LoginPage: FC = () => {
         prefix={<View style={styles.suffixStyle}></View>}
         value={userInfo.password}
         onChangeText={text =>
-          setUserInfo(prev => ({ ...prev, password: text }))
+          setUserInfo(prev => ({ ...prev, password: text.toString() }))
         }
         type={isPasswordShow ? 'text' : 'password'}
         suffix={

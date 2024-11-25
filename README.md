@@ -76,7 +76,7 @@
 ## 接口
 
 项目采用长短token方式登录时 缓存了 shortToken 和 longToken 请求已经都封装好了都
-在 `request/fetch.ts` 里面默认请求头添加的都是shortToken去发送请求
+在 `request/interceptor.ts` 里面默认请求头添加的都是shortToken去发送请求
 
 ## 颜色主题自定义
 
