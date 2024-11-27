@@ -13,6 +13,9 @@ export const commonStyles = StyleSheet.create({
   fontMedium: {
     fontSize: 16,
   },
+  fontSmall: {
+    fontSize: 12,
+  },
   fontBold: {
     fontWeight: 'bold',
   },
@@ -25,7 +28,7 @@ export const commonStyles = StyleSheet.create({
 export const commonColors: Partial<ColorType> = {
   white: '#fff',
   lightGray: '#F5F5F5',
-  gray: '#ccc',
+  gray: '#E1E2F1',
   darkGray: '#a0a0a0',
   purple: '#7B71F1',
   lightDark: '#444',

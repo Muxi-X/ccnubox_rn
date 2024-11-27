@@ -37,10 +37,8 @@ export default function RootLayout() {
     // 引入所有样式以及基于 theme 的组件
     initVisualScheme();
     // 加载字体
-    loadAsync({
+    void loadAsync({
       antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
-    }).then(() => {
-      console.log('icon loaded');
     });
     // 配置Toast
     Toast.config({ mask: false, stackable: true });

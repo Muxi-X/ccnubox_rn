@@ -12,45 +12,9 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import { ListItem } from '@/constants/settingItem';
 import SettingItem from '@/module/setting/components/settingItem';
-const ListItem = [
-  {
-    id: 1,
-    icon: require('@/assets/images/person.png'),
-    text: '个性化',
-    url: 'test1',
-  },
-  {
-    id: 2,
-    icon: require('@/assets/images/share.png'),
-    text: '分享',
-    url: '@/assets/images/png',
-  },
-  {
-    id: 3,
-    icon: require('@/assets/images/help.png'),
-    text: '帮助与反馈',
-    url: '@/assets/images/share.png',
-  },
-  {
-    id: 4,
-    icon: require('@/assets/images/check-update.png'),
-    text: '检查更新',
-    url: '@/assets/images/share.png',
-  },
-  {
-    id: 5,
-    icon: require('@/assets/images/about.png'),
-    text: '关于',
-    url: '@/assets/images/share.png',
-  },
-  {
-    id: 6,
-    icon: require('@/assets/images/exit.png'),
-    text: '退出',
-    url: '@/assets/images/share.png',
-  },
-];
+
 export default function SettingPage() {
   const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
     useVisualScheme(
@@ -85,10 +49,9 @@ export default function SettingPage() {
       <FlatList
         data={ListItem}
         renderItem={({ item }) => (
-          <SettingItem icon={item.icon} text={item.text} url={item.url} />
+          <SettingItem icon={item.icon} text={item.text} />
         )}
         keyExtractor={item => item.id.toString()}
-        // contentContainerStyle={styles.listContainer}
       />
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
