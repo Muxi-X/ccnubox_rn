@@ -5,7 +5,6 @@ import { useSharedValue, withSpring } from 'react-native-reanimated';
 import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
-import ThemeChangeView from '@/components/view';
 
 import {
   colorOptions,
@@ -23,6 +22,7 @@ import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 
 import { CourseTableProps, CourseTransferType } from './type';
+import useVisualScheme from '@/store/visualScheme';
 
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
@@ -79,7 +79,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                       borderBottomColor:
                         (rowIndex + 1) % courseCollapse
                           ? 'transparent'
-                          : '#E1E2F1',
+                          : useVisualScheme.getState().currentStyle?.schedule_border_style?.borderColor,
                     },
                   ]}
                 ></View>
@@ -133,30 +133,57 @@ export const Content: React.FC<CourseTransferType> = ({
   timeSpan,
 }) => {
   return (
+    <>
+    {/* ios */}
     <Pressable
-      style={{
-        position: 'absolute',
-        width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-        zIndex: 99,
-        height:
-          styles.cell.height * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2,
-        borderRadius: 5,
-        backgroundColor: colorOptions.find(item => item.label === date)?.color,
-        top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex,
-        left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
-      }}
-      onPress={() => {
-        console.log('点击了课程');
-      }}
-    >
-      <View style={[styles.cellView, { marginTop: 20 }]}>
-        <Text style={styles.cellText}>{courseName || ''}</Text>
-      </View>
-      <View style={styles.cellView}>
-        <Text style={styles.cellText}>{teacher || ''}</Text>
-        <Text style={styles.cellText}>{classroom ? `@${classroom}` : ''}</Text>
-      </View>
-    </Pressable>
+    style={{
+      position: 'absolute',
+      width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
+      zIndex: 99,
+      height:'auto',
+      top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex + 15,
+      left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
+    }}
+    onPress={() => {
+      console.log('点击了课程');
+    }}
+  >
+    <View style={[ {paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 6,
+      backgroundColor: colorOptions[(rowIndex + colIndex) % colorOptions.length].color,
+      borderRadius: 5,}]}>
+      <Text style={styles.cellText}>{courseName || ''}</Text>
+    </View>
+    <View style={[{alignItems: 'center', paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10,}]}>
+      <Text style={[styles.cellText,{color: '#0D0D0D', fontSize: 11, fontWeight: 'bold'}]}>{teacher || ''}</Text>
+      <Text style={[styles.cellText,{color: '#75757B', fontSize: 11, fontWeight: 'bold'}]}>{classroom ? `@${classroom}` : ''}</Text>
+    </View>
+  </Pressable>
+  </>
+  //android
+    // <Pressable
+    //   style={{
+    //     position: 'absolute',
+    //     width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
+    //     zIndex: 99,
+    //     height:
+    //       styles.cell.height * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2,
+    //     borderRadius: 5,
+    //     backgroundColor: colorOptions.find(item => item.label === date)?.color,
+    //     top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex,
+    //     left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
+    //   }}
+    //   onPress={() => {
+    //     console.log('点击了课程');
+    //   }}
+    // >
+    //   <View style={[styles.cellView, { marginTop: 20 }]}>
+    //     <Text style={styles.cellText}>{courseName || ''}</Text>
+    //   </View>
+    //   <View style={styles.cellView}>
+    //     <Text style={styles.cellText}>{teacher || ''}</Text>
+    //     <Text style={styles.cellText}>{classroom ? `@${classroom}` : ''}</Text>
+    //   </View>
+    // </Pressable>
   );
 };
 
@@ -165,7 +192,10 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     <View style={styles.header}>
       <View style={styles.headerRow}>
         {daysOfWeek.map((day, index) => (
-          <View key={index} style={[styles.headerCell]}>
+          <View key={index} style={[
+            styles.headerCell,
+            useVisualScheme.getState().currentStyle?.schedule_item_background_style,
+            useVisualScheme.getState().currentStyle?.schedule_border_style,]}>
             <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
             <Text style={styles.dayText}>09/0{index + 1}</Text>
           </View>
@@ -179,7 +209,10 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
   return (
     <>
       {timeSlots.map((time, index) => (
-        <View key={index} style={styles.timeSlot}>
+        <View key={index} style={[
+          styles.timeSlot,
+          useVisualScheme.getState().currentStyle?.schedule_item_background_style,
+          useVisualScheme.getState().currentStyle?.schedule_border_style,]}>
           <ThemeChangeText style={styles.countText}>
             {index + 1}
           </ThemeChangeText>
@@ -221,21 +254,18 @@ const styles = StyleSheet.create({
     width: TIME_WIDTH,
     flexGrow: 0,
     flexShrink: 0,
-    backgroundColor: '#F7F5FD',
   },
   weekBlock: {
     width: TIME_WIDTH,
     height: COURSE_HEADER_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F7F5FD',
-    borderColor: '#E1E2F1',
+    // borderColor: '#E1E2F1',
     borderWidth: 1,
   },
   header: {
     flexDirection: 'row',
     zIndex: 1,
-    backgroundColor: '#F7F5FD',
     marginLeft: -1,
   },
   headerRow: {
@@ -247,8 +277,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#F7F5FD',
-    borderColor: '#E1E2F1',
     borderLeftWidth: 1,
     borderBottomWidth: 1,
   },
@@ -269,10 +297,8 @@ const styles = StyleSheet.create({
     width: TIME_WIDTH,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F7F5FD',
     borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderColor: '#E1E2F1',
   },
   countText: {
     fontSize: 14,
@@ -299,131 +325,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderRightColor: '#E1E2F1',
+    borderRightColor: useVisualScheme.getState().currentStyle?.schedule_border_style?.borderColor || '#E1E2F1',
     zIndex: 0,
   },
   cellText: {
-    fontSize: 10,
+    fontSize: 11,
     color: 'white',
     textAlign: 'left',
   },
+  //for android
   cellView: {
     height: COURSE_HEADER_HEIGHT + 10,
     paddingLeft: 8,
     paddingRight: 8,
   },
 });
-
-// const styles = StyleSheet.create({
-//   container: {
-//     display: 'flex',
-//     flexDirection: 'row',
-//     marginBottom: 20,
-//     flex: 1,
-//     overflow: 'scroll',
-//   },
-//   courseWrapperStyle: {
-//     position: 'relative',
-//     width: COURSE_ITEM_WIDTH * daysOfWeek.length,
-//     height: COURSE_ITEM_HEIGHT * timeSlots.length + COURSE_HEADER_HEIGHT,
-//     overflow: 'scroll',
-//     zIndex: -1,
-//   },
-//   timeSideBar: {
-//     width: TIME_WIDTH,
-//     flexGrow: 0,
-//     flexShrink: 0,
-//     backgroundColor: '#F7F5FD',
-//   },
-//   weekBlock: {
-//     width: TIME_WIDTH,
-//     height: COURSE_HEADER_HEIGHT,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F7F5FD',
-//     borderColor: '#E1E2F1',
-//     borderWidth: 1,
-//   },
-//   header: {
-//     flexDirection: 'row',
-//     zIndex: 1,
-//     backgroundColor: '#F7F5FD',
-//     marginLeft: -1,
-//   },
-//   headerRow: {
-//     flexDirection: 'row',
-//   },
-//   headerCell: {
-//     width: COURSE_ITEM_WIDTH,
-//     height: COURSE_HEADER_HEIGHT,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 10,
-//     backgroundColor: '#F7F5FD',
-//     borderColor: '#E1E2F1',
-//     borderLeftWidth: 1,
-//     borderBottomWidth: 1,
-//   },
-//   headerText: {
-//     fontWeight: 'bold',
-//   },
-//   dayText: {
-//     fontWeight: 'light',
-//     fontSize: 10,
-//     color: '#75757B',
-//     textAlign: 'center',
-//   },
-//   content: {
-//     flexDirection: 'row',
-//   },
-//   timeSlot: {
-//     height: COURSE_ITEM_HEIGHT, // 每个时间槽的高度
-//     width: TIME_WIDTH,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F7F5FD',
-//     borderBottomWidth: 1,
-//     borderRightWidth: 1,
-//     borderColor: '#E1E2F1',
-//   },
-//   countText: {
-//     fontSize: 14,
-//     color: 'black',
-//     textAlign: 'center',
-//   },
-//   timeText: {
-//     fontWeight: 'light',
-//     fontSize: 10,
-//     paddingTop: 2,
-//     color: '#75757B',
-//     textAlign: 'center',
-//   },
-//   row: {
-//     flexDirection: 'row',
-//     zIndex: -1,
-//   },
-//   cell: {
-//     position: 'relative',
-//     width: COURSE_ITEM_WIDTH, // 必须与 headerCell 的宽度保持一致
-//     height: COURSE_ITEM_HEIGHT,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 10,
-//     borderBottomWidth: 1,
-//     borderRightWidth: 1,
-//     borderRightColor: '#E1E2F1',
-//     zIndex: 0,
-//   },
-//   cellText: {
-//     fontSize: 10,
-//     color: 'white',
-//     textAlign: 'left',
-//   },
-//   cellView: {
-//     height: COURSE_HEADER_HEIGHT + 10,
-//     paddingLeft: 8,
-//     paddingRight: 8,
-//   },
-// });
 
 export default memo(Timetable);

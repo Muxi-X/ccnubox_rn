@@ -11,6 +11,13 @@ export type ConfigurableThemeNames =
   | 'modal_background_style'
   | 'header_background_style'
   | 'header_text_style'
+  | 'header_view_style'
+  | 'schedule_background_style'
+  | 'schedule_text_style'
+  | 'schedule_week_text_style'
+  | 'schedule_item_background_style'
+  | 'schedule_border_style'
+  | 'schedule_item_text_style'
   | 'background_style'
   | 'skeleton_background_style'
   | 'navbar_icon_active_style';
