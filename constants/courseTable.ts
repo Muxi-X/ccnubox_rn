@@ -45,15 +45,15 @@ export const timeSlots = [
  */
 export const colorOptions = [
   {
-    color: 'rgba(155, 134, 253, 1)',
+    color: '#9B86FD',
     label: '一',
   },
   {
-    color: 'rgba(184, 203, 255, 1)',
+    color: '#B8CBFF',
     label: '二',
   },
   {
-    color: 'rgba(184, 166, 245, 1)',
+    color: '#B8A6F5',
     label: '三',
   },
   {
@@ -72,3 +72,26 @@ export const colorOptions = [
 
 export const COURSE_HORIZONTAL_PADDING = 4;
 export const COURSE_VERTICAL_PADDING = 4;
+
+export const addItem = [{
+  id: 1,
+  icon: require('@/assets/images/add-course.png'),
+  text: "添加新课程",
+  url: "addCourse",
+},{
+  id: 2,
+  icon: require('@/assets/images/add-test.png'),
+  text: "添加考试安排",
+  url: "addTest",
+},{
+  id: 3,
+  icon: require('@/assets/images/change-week.png'),
+  text: "切换当前周",
+  url: "changeWeek",
+},{
+  id: 4,
+  icon: require('@/assets/images/change-year.png'),
+  text: "切换学年",
+  url: "changeYear",
+},
+];

@@ -48,23 +48,72 @@ export const tabConfig: SinglePageType[] = [
     title: '日程',
     iconName: 'calendar',
     headerTitle: () => (
-      <View style={styles.headerContainer}>
-        <View style={styles.centerAlign}>
-          {/* 主标题 */}
-          <View style={styles.titleWithAfter}>
-            <Text style={[commonStyles.fontLarge, styles.boldText]}>第1周</Text>
-            <Text style={styles.afterText}>{'>'}</Text>
-          </View>
-          {/* 副标题 */}
-          <Text style={commonStyles.fontSmall}>当前周设置为1</Text>
+      <>
+        <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={[
+              commonStyles.fontLarge,
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                textAlign: 'center',
+              }
+            ]}
+          >
+            第1周
+          </Text>
+          <MaterialIcons
+            name="arrow-forward-ios"
+            size={20}
+            style={[
+            useVisualScheme.getState().currentStyle?.header_text_style,
+            {
+              transform: [{ rotate: '90deg' }],
+              marginLeft: 4,
+            }
+          ]}
+          />
         </View>
-      </View>
+        <Text
+          style={[
+            commonStyles.fontLight,
+            commonStyles.fontSmall,
+            useVisualScheme.getState().currentStyle?.schedule_week_text_style,
+          ]}
+        >
+          当前周设置为1
+        </Text>
+      </>
     ),
     headerRight: () => (
-      <MaterialIcons
-        name="menu"
-        style={commonStyles.TabBarPadding}
-      ></MaterialIcons>
+      <>
+      <View style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',}}>
+        <MaterialIcons
+          name="delete-sweep"
+          size={24}
+          style={[
+            useVisualScheme.getState().currentStyle?.header_text_style,{
+              paddingRight: 10,
+            }
+          ]}
+        ></MaterialIcons>
+        <MaterialIcons
+          name="add"
+          size={24}
+          style={[
+            useVisualScheme.getState().currentStyle?.header_text_style,
+            {
+              paddingRight: 20,
+            }
+          ]}
+          onPress={() => {
+            console.log('下拉菜单');
+          }}
+        />
+      </View>
+      </>
     ),
   },
   {
