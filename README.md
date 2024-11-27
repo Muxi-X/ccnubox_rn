@@ -73,11 +73,12 @@
 
 本仓库并未严格限制 `eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
 
+## 接口
+
+项目采用长短token方式登录时 缓存了 shortToken 和 longToken 请求已经都封装好了都
+在 `request/fetch.ts` 里面默认请求头添加的都是shortToken去发送请求
+
 ## 颜色主题自定义
-
-样式注册在 `styles`文件夹中进行，采用全局 `store`设计
-
-#### styles结构
 
 - 与主题无关的通用样式存于 `common.ts`中
 

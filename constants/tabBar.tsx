@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -48,10 +48,17 @@ export const tabConfig: SinglePageType[] = [
     title: '日程',
     iconName: 'calendar',
     headerTitle: () => (
-      <Text style={[commonStyles.TabBarPadding, commonStyles.fontLarge]}>
-        {' '}
-        日程{' '}
-      </Text>
+      <View style={styles.headerContainer}>
+        <View style={styles.centerAlign}>
+          {/* 主标题 */}
+          <View style={styles.titleWithAfter}>
+            <Text style={[commonStyles.fontLarge, styles.boldText]}>第1周</Text>
+            <Text style={styles.afterText}>{'>'}</Text>
+          </View>
+          {/* 副标题 */}
+          <Text style={commonStyles.fontSmall}>当前周设置为1</Text>
+        </View>
+      </View>
     ),
     headerRight: () => (
       <MaterialIcons
@@ -71,3 +78,28 @@ export const tabConfig: SinglePageType[] = [
     iconName: 'setting',
   },
 ];
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    position: 'relative',
+    left: '50%',
+  },
+  centerAlign: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  titleWithAfter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  afterText: {
+    transform: [{ rotate: '90deg' }],
+    width: 10,
+    fontSize: 14,
+    marginLeft: 4,
+  },
+});

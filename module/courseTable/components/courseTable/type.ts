@@ -12,7 +12,10 @@ export interface CourseTableProps {
 
 export interface CourseTransferType {
   courseName: string;
+  teacher: string;
+  classroom: string;
   timeSpan: number;
   rowIndex: number;
   colIndex: number;
+  date: string;
 }

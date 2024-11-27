@@ -2,10 +2,12 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 
+import Toast from '@/components/toast';
+
 import requestBus from '@/store/currentRequests';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://121.43.151.190:8080',
 });
 
 function getStoredToken() {
@@ -47,10 +49,10 @@ axiosInstance.interceptors.response.use(
         router.navigate('/auth/login');
         break;
       case 403:
-        console.error('无权限');
+        Toast.show({ text: '无权限' });
         break;
       default:
-        console.error('服务器错误');
+        Toast.show({ text: '服务器错误' });
     }
     // 标记请求已完成
     requestBus.requestComplete();
