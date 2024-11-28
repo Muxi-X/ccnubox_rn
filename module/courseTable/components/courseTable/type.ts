@@ -10,6 +10,7 @@ export interface CourseTableProps {
   data: courseType[];
 }
 
+// 课程中间类型,比 courseType 增加 rowIndex 和 colIndex
 export interface CourseTransferType {
   courseName: string;
   teacher: string;

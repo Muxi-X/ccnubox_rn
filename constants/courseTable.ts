@@ -73,25 +73,29 @@ export const colorOptions = [
 export const COURSE_HORIZONTAL_PADDING = 4;
 export const COURSE_VERTICAL_PADDING = 4;
 
-export const addItem = [{
-  id: 1,
-  icon: require('@/assets/images/add-course.png'),
-  text: "添加新课程",
-  url: "addCourse",
-},{
-  id: 2,
-  icon: require('@/assets/images/add-test.png'),
-  text: "添加考试安排",
-  url: "addTest",
-},{
-  id: 3,
-  icon: require('@/assets/images/change-week.png'),
-  text: "切换当前周",
-  url: "changeWeek",
-},{
-  id: 4,
-  icon: require('@/assets/images/change-year.png'),
-  text: "切换学年",
-  url: "changeYear",
-},
+export const addItem = [
+  {
+    id: 1,
+    icon: require('@/assets/images/add-course.png'),
+    text: '添加新课程',
+    url: 'addCourse',
+  },
+  {
+    id: 2,
+    icon: require('@/assets/images/add-test.png'),
+    text: '添加考试安排',
+    url: 'addTest',
+  },
+  {
+    id: 3,
+    icon: require('@/assets/images/change-week.png'),
+    text: '切换当前周',
+    url: 'changeWeek',
+  },
+  {
+    id: 4,
+    icon: require('@/assets/images/change-year.png'),
+    text: '切换学年',
+    url: 'changeYear',
+  },
 ];
