@@ -16,7 +16,7 @@ export default function Layout() {
     state => state.currentComponents
   );
   return (
-    <View>
+    <View style={[styles.container]}>
       <Stack
         screenOptions={{
           contentStyle:
@@ -57,3 +57,11 @@ export default function Layout() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
