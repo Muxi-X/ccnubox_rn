@@ -49,14 +49,21 @@ export const tabConfig: SinglePageType[] = [
     iconName: 'calendar',
     headerTitle: () => (
       <>
-        <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Text
             style={[
               commonStyles.fontLarge,
               useVisualScheme.getState().currentStyle?.header_text_style,
               {
                 textAlign: 'center',
-              }
+              },
             ]}
           >
             第1周
@@ -65,12 +72,12 @@ export const tabConfig: SinglePageType[] = [
             name="arrow-forward-ios"
             size={20}
             style={[
-            useVisualScheme.getState().currentStyle?.header_text_style,
-            {
-              transform: [{ rotate: '90deg' }],
-              marginLeft: 4,
-            }
-          ]}
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                transform: [{ rotate: '90deg' }],
+                marginLeft: 4,
+              },
+            ]}
           />
         </View>
         <Text
@@ -86,33 +93,37 @@ export const tabConfig: SinglePageType[] = [
     ),
     headerRight: () => (
       <>
-      <View style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',}}>
-        <MaterialIcons
-          name="delete-sweep"
-          size={24}
-          style={[
-            useVisualScheme.getState().currentStyle?.header_text_style,{
-              paddingRight: 10,
-            }
-          ]}
-        ></MaterialIcons>
-        <MaterialIcons
-          name="add"
-          size={24}
-          style={[
-            useVisualScheme.getState().currentStyle?.header_text_style,
-            {
-              paddingRight: 20,
-            }
-          ]}
-          onPress={() => {
-            console.log('下拉菜单');
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           }}
-        />
-      </View>
+        >
+          <MaterialIcons
+            name="delete-sweep"
+            size={24}
+            style={[
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                paddingRight: 10,
+              },
+            ]}
+          ></MaterialIcons>
+          <MaterialIcons
+            name="add"
+            size={24}
+            style={[
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                paddingRight: 20,
+              },
+            ]}
+            onPress={() => {
+              console.log('下拉菜单');
+            }}
+          />
+        </View>
       </>
     ),
   },

@@ -23,10 +23,12 @@ import { keyGenerator } from '@/utils/autoKey';
 
 import { CourseTableProps, CourseTransferType } from './type';
 import useVisualScheme from '@/store/visualScheme';
+import useThemeBasedComponents from '@/store/themeBasedComponents';
 
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const translateY = useSharedValue(0);
   useEffect(() => {
     if (isFetching) {
@@ -73,14 +75,14 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                   key={colIndex}
                   style={[
                     styles.cell,
+                    currentStyle?.schedule_border_style,
                     {
                       // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
                       // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
                       borderBottomColor:
                         (rowIndex + 1) % courseCollapse
                           ? 'transparent'
-                          : useVisualScheme.getState().currentStyle
-                              ?.schedule_border_style?.borderColor,
+                          : currentStyle?.schedule_border_style?.borderColor,
                     },
                   ]}
                 ></View>
@@ -124,105 +126,34 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   );
 };
 
-export const Content: React.FC<CourseTransferType> = ({
-  courseName,
-  teacher,
-  classroom,
-  colIndex,
-  date,
-  rowIndex,
-  timeSpan,
-}) => {
+export const Content: React.FC<CourseTransferType> = props => {
+  const CourseItem = useThemeBasedComponents(
+    state => state.currentComponents?.course_item
+  );
   return (
     <>
-      {/* ios */}
       <Pressable
         style={{
           position: 'absolute',
           width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
           zIndex: 99,
           height: 'auto',
-          top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex + 15,
-          left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
+          top:
+            COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex + 15,
+          left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
         }}
         onPress={() => {
           console.log('点击了课程');
         }}
       >
-        <View
-          style={[
-            {
-              paddingTop: 10,
-              paddingBottom: 10,
-              paddingLeft: 10,
-              paddingRight: 6,
-              backgroundColor:
-                colorOptions[(rowIndex + colIndex) % colorOptions.length].color,
-              borderRadius: 5,
-            },
-          ]}
-        >
-          <Text style={styles.cellText}>{courseName || ''}</Text>
-        </View>
-        <View
-          style={[
-            {
-              alignItems: 'center',
-              paddingTop: 5,
-              paddingBottom: 5,
-              paddingLeft: 10,
-              paddingRight: 10,
-            },
-          ]}
-        >
-          <Text
-            style={[
-              styles.cellText,
-              { color: '#0D0D0D', fontSize: 11, fontWeight: 'bold' },
-            ]}
-          >
-            {teacher || ''}
-          </Text>
-          <Text
-            style={[
-              styles.cellText,
-              { color: '#75757B', fontSize: 11, fontWeight: 'bold' },
-            ]}
-          >
-            {classroom ? `@${classroom}` : ''}
-          </Text>
-        </View>
+        {CourseItem && <CourseItem {...props}></CourseItem>}
       </Pressable>
     </>
-    //android
-    // <Pressable
-    //   style={{
-    //     position: 'absolute',
-    //     width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-    //     zIndex: 99,
-    //     height:
-    //       styles.cell.height * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2,
-    //     borderRadius: 5,
-    //     backgroundColor: colorOptions.find(item => item.label === date)?.color,
-    //     top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex,
-    //     left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
-    //   }}
-    //   onPress={() => {
-    //     console.log('点击了课程');
-    //   }}
-    // >
-    //   <View style={[styles.cellView, { marginTop: 20 }]}>
-    //     <Text style={styles.cellText}>{courseName || ''}</Text>
-    //   </View>
-    //   <View style={styles.cellView}>
-    //     <Text style={styles.cellText}>{teacher || ''}</Text>
-    //     <Text style={styles.cellText}>{classroom ? `@${classroom}` : ''}</Text>
-    //   </View>
-    // </Pressable>
   );
 };
 
 export const StickyTop: React.FC = memo(function StickyTop() {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <View style={styles.header}>
       <View style={styles.headerRow}>
@@ -231,9 +162,8 @@ export const StickyTop: React.FC = memo(function StickyTop() {
             key={index}
             style={[
               styles.headerCell,
-              useVisualScheme.getState().currentStyle
-                ?.schedule_item_background_style,
-              useVisualScheme.getState().currentStyle?.schedule_border_style,
+              currentStyle?.schedule_item_background_style,
+              currentStyle?.schedule_border_style,
             ]}
           >
             <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
@@ -246,6 +176,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
 });
 
 export const StickyLeft: React.FC = memo(function StickyLeft() {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <>
       {timeSlots.map((time, index) => (
@@ -253,9 +184,8 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
           key={index}
           style={[
             styles.timeSlot,
-            useVisualScheme.getState().currentStyle
-              ?.schedule_item_background_style,
-            useVisualScheme.getState().currentStyle?.schedule_border_style,
+            currentStyle?.schedule_item_background_style,
+            currentStyle?.schedule_border_style,
           ]}
         >
           <ThemeChangeText style={styles.countText}>
@@ -370,21 +300,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderRightColor:
-      useVisualScheme.getState().currentStyle?.schedule_border_style
-        ?.borderColor || '#E1E2F1',
     zIndex: 0,
-  },
-  cellText: {
-    fontSize: 11,
-    color: 'white',
-    textAlign: 'left',
-  },
-  //for android
-  cellView: {
-    height: COURSE_HEADER_HEIGHT + 10,
-    paddingLeft: 8,
-    paddingRight: 8,
   },
 });
 
