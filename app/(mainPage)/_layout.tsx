@@ -16,7 +16,7 @@ export default function Layout() {
     state => state.currentComponents
   );
   return (
-    <View style={[styles.container]}>
+    <View>
       <Stack
         screenOptions={{
           contentStyle:
@@ -50,32 +50,12 @@ export default function Layout() {
               headerStyle: currentStyle?.header_background_style as StyleProp<{
                 backgroundColor: string | undefined;
               }>,
-              title: config.title,
             }}
           ></Stack.Screen>
         ))}
-        <Stack.Screen
-          name="electricityBillBalance"
-          options={{
-            title: '电费余额',
-            headerStyle: currentStyle?.header_background_style as any,
-          }}
-        />
-        <Stack.Screen
-          name="scoreCalculation"
-          options={{
-            headerShown: false,
-          }}
-        />
+        
       </Stack>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});

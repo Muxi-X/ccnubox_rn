@@ -29,6 +29,7 @@ const LoginPage: FC = () => {
       return;
     }
     setLoginTriggered(true);
+    //模拟登陆
     setTimeout(() => {
       setLoginTriggered(false);
     }, 3000);
