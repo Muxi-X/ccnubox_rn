@@ -53,9 +53,7 @@ export default function Layout() {
             }}
           ></Stack.Screen>
         ))}
-        
       </Stack>
     </View>
   );
 }
-
