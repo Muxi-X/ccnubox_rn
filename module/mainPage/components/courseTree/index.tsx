@@ -4,6 +4,8 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Image from '@/components/image';
 
+import useVisualScheme from '@/store/visualScheme';
+
 const data = [
   {
     title: '专业主干课程',
@@ -42,7 +44,7 @@ const data = [
 
 const CourseTree = () => {
   const [activeKey, setActiveKey] = useState<string[]>([]); // 默认使用空数组
-
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const handlePanelChange = (key: string) => {
     setActiveKey(prev =>
       prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
@@ -55,7 +57,7 @@ const CourseTree = () => {
 
     return (
       <View key={index}>
-        <View style={styles.node}>
+        <View style={[styles.node, currentStyle?.background_style]}>
           <View style={styles.nodeLeft}>
             {hasChildren && (
               <Icon
@@ -65,12 +67,24 @@ const CourseTree = () => {
                 onPress={() => handlePanelChange(item.title)}
               />
             )}
-            <Text style={hasChildren ? styles.nodeText : styles.subNodeText}>
+            <Text
+              style={
+                hasChildren
+                  ? [styles.nodeText, currentStyle?.text_style]
+                  : styles.subNodeText
+              }
+            >
               {item.title}
             </Text>
           </View>
           <View style={styles.nodeRight}>
-            <Text style={hasChildren ? styles.nodeScore : styles.nodeSubScore}>
+            <Text
+              style={
+                hasChildren
+                  ? [styles.nodeScore, currentStyle?.text_style]
+                  : styles.nodeSubScore
+              }
+            >
               {item.score}
             </Text>
           </View>
@@ -90,18 +104,36 @@ const CourseTree = () => {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
-      style={{ backgroundColor: '#fff' }}
+      style={{
+        backgroundColor: currentStyle?.background_style?.backgroundColor,
+      }}
     >
       <View style={[styles.node, styles.titleBorder]}>
         <View style={styles.nodeLeft}>
           <Image
             style={{ width: 35, height: 35 }}
-            source={require('../../../../assets/images/mx-logo.png')}
+            source={require('../../../../assets/images/flag.png')}
           />
-          <Text style={[styles.nodeText, styles.titleText]}>全部已修学分</Text>
+          <Text
+            style={[
+              styles.nodeText,
+              styles.titleText,
+              currentStyle?.text_style,
+            ]}
+          >
+            全部已修学分
+          </Text>
         </View>
-        <View style={[styles.nodeRight]}>
-          <Text style={[styles.nodeScore, styles.titleText]}>{590}</Text>
+        <View style={[styles.nodeRight, currentStyle?.background_style]}>
+          <Text
+            style={[
+              styles.nodeScore,
+              styles.titleText,
+              currentStyle?.text_style,
+            ]}
+          >
+            {590}
+          </Text>
         </View>
       </View>
       {data.map((item, index) => renderNode(item, index))}

@@ -2,6 +2,8 @@ import { Picker } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import useVisualScheme from '@/store/visualScheme';
 const data1 = [
   {
     value: '2023-2024',
@@ -37,6 +39,7 @@ const data3 = [
   },
 ];
 const CheckGrades = () => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const [value1, setValue1] = useState(['2023-2024']);
   const [value2, setValue2] = useState(['第一学期']);
   const [value3, setValue3] = useState(['全部']);
@@ -51,10 +54,18 @@ const CheckGrades = () => {
       >
         <Image
           style={{ width: 35, height: 35, marginRight: 34 }}
-          source={require('../../../../assets/images/mx-logo.png')}
+          source={require('../../../../assets/images/xuenian.png')}
         />
         <View>
-          <Text style={{ marginBottom: 1, fontSize: 14 }}>选择学年</Text>
+          <Text
+            style={{
+              marginBottom: 1,
+              fontSize: 14,
+              color: currentStyle?.text_style?.color,
+            }}
+          >
+            选择学年
+          </Text>
           <Text style={{ color: '#969696', fontSize: 12 }}>{value1[0]}</Text>
         </View>
       </TouchableOpacity>
@@ -64,20 +75,38 @@ const CheckGrades = () => {
       >
         <Image
           style={{ width: 35, height: 35, marginRight: 34 }}
-          source={require('../../../../assets/images/mx-logo.png')}
+          source={require('../../../../assets/images/xueqi.png')}
         />
         <View>
-          <Text style={{ marginBottom: 1, fontSize: 14 }}>选择学期</Text>
+          <Text
+            style={[
+              {
+                marginBottom: 1,
+                fontSize: 14,
+                color: currentStyle?.text_style?.color,
+              },
+            ]}
+          >
+            选择学期
+          </Text>
           <Text style={{ color: '#969696', fontSize: 12 }}>{value2[0]}</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.item} onPress={() => setVisible3(true)}>
         <Image
           style={{ width: 35, height: 35, marginRight: 34 }}
-          source={require('../../../../assets/images/mx-logo.png')}
+          source={require('../../../../assets/images/zhonglei.png')}
         />
         <View>
-          <Text style={{ marginBottom: 1, fontSize: 14 }}>选择课程种类</Text>
+          <Text
+            style={{
+              marginBottom: 1,
+              fontSize: 14,
+              color: currentStyle?.text_style?.color,
+            }}
+          >
+            选择课程种类
+          </Text>
           <Text style={{ color: '#969696', fontSize: 12 }}> {value3[0]}</Text>
         </View>
       </TouchableOpacity>

@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
+import useVisualScheme from '@/store/visualScheme';
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
 const data = [
   {
@@ -71,7 +73,7 @@ const data = [
 ];
 const ScoreCalculation = () => {
   const local = useLocalSearchParams();
-  console.log(local, 'local');
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const [checkedList, setCheckedList] = useState<any>(
     new Set(defaultCheckedList)
   ); // 初始选中项
@@ -112,15 +114,20 @@ const ScoreCalculation = () => {
   };
   return (
     <View
-      style={{
-        flex: 1,
-        backgroundColor: '#FFF',
-        position: 'absolute',
-        height: '100%',
-      }}
+      style={[
+        {
+          flex: 1,
+          backgroundColor: '#FFF',
+          position: 'absolute',
+          height: '100%',
+        },
+        currentStyle?.background_style,
+      ]}
     >
-      <StatusBar backgroundColor="#F7F7F7" />
-      <View style={[styles.head]}>
+      <StatusBar
+        backgroundColor={currentStyle?.navbar_background_style as any}
+      />
+      <View style={[styles.head, currentStyle?.navbar_background_style]}>
         <View style={[styles.headerLeft]}>
           <TouchableOpacity onPress={() => router.back()}>
             <Image
@@ -128,7 +135,9 @@ const ScoreCalculation = () => {
               source={require('../../assets/images/arrow-left.png')}
             />
           </TouchableOpacity>
-          <Text style={styles.headText}>{local?.year}学年</Text>
+          <Text style={[styles.headText, currentStyle?.text_style]}>
+            {local?.year}学年
+          </Text>
         </View>
         <View
           style={{
@@ -137,7 +146,7 @@ const ScoreCalculation = () => {
             paddingRight: 18,
           }}
         >
-          <Text>全选：</Text>
+          <Text style={currentStyle?.text_style}>全选：</Text>
           {/* 自定义全选复选框 */}
           <TouchableOpacity
             onPress={() => onCheckAllChange({ target: { checked: !checkAll } })}
@@ -180,10 +189,16 @@ const ScoreCalculation = () => {
               <View>
                 <View style={styles.itemLeft}>
                   <View style={styles.circle} />
-                  <Text style={{ color: '#3D3D3D' }}>{i.title}</Text>
+                  <Text
+                    style={[{ color: '#3D3D3D' }, currentStyle?.text_style]}
+                  >
+                    {i.title}
+                  </Text>
                 </View>
                 <View style={styles.itemRight}>
-                  <Text style={styles.credit}>学分：{i.credit}</Text>
+                  <Text style={[styles.credit, currentStyle?.text_style]}>
+                    学分：{i.credit}
+                  </Text>
                   <Text style={{ color: '#969696' }}>成绩：{i.score}</Text>
                 </View>
               </View>

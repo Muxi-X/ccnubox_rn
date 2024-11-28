@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
+import useVisualScheme from '@/store/visualScheme';
 const addressData = [
   {
     label: '东区',
@@ -122,6 +124,7 @@ const addressList = [
   },
 ];
 const ElectricityBillinQuiry = () => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const [address, setAddress] = useState(1);
   const [pickerValue, setPickerValue] = useState(undefined);
   const [pickerValue2, setPickerValue2] = useState<any>(undefined);
@@ -153,10 +156,10 @@ const ElectricityBillinQuiry = () => {
     );
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, currentStyle?.background_style]}>
       <View>
         <View style={styles.title1}>
-          <Text style={styles.text1}>选择区域</Text>
+          <Text style={[styles.text1, currentStyle?.text_style]}>选择区域</Text>
           <Image
             style={{ width: 17, height: 21 }}
             source={require('../../assets/images/mx-logo.png')}
@@ -170,7 +173,7 @@ const ElectricityBillinQuiry = () => {
       </View>
       <View>
         <View style={styles.title1}>
-          <Text style={styles.text1}>选择楼栋</Text>
+          <Text style={[styles.text1, currentStyle?.text_style]}>选择楼栋</Text>
           <Image
             style={{ width: 17, height: 21 }}
             source={require('../../assets/images/mx-logo.png')}
@@ -194,7 +197,7 @@ const ElectricityBillinQuiry = () => {
       </View>
       <View>
         <View style={styles.title1}>
-          <Text style={styles.text1}>选择寝室</Text>
+          <Text style={[styles.text1, currentStyle?.text_style]}>选择寝室</Text>
           <Image
             style={{ width: 17, height: 21 }}
             source={require('../../assets/images/mx-logo.png')}
@@ -217,21 +220,24 @@ const ElectricityBillinQuiry = () => {
         </View>
       </View>
       <TouchableOpacity
-        style={{
-          width: 309,
-          height: 46,
-          backgroundColor: '#7878F8',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: 'auto',
-          borderRadius: 10,
-        }}
+        style={[
+          {
+            width: 309,
+            height: 46,
+            backgroundColor: '#7878F8',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 'auto',
+            borderRadius: 10,
+          },
+          currentStyle?.button_style,
+        ]}
         onPress={() => {
           router.push('/electricityBillBalance');
         }}
       >
-        <Text style={{ color: '#FFFFFF' }}>查询</Text>
+        <Text style={currentStyle?.button_text_style}>查询</Text>
       </TouchableOpacity>
     </View>
   );

@@ -8,9 +8,12 @@ import {
   View,
 } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { queryElectricityPrice, setElectricityPrice } from './api';
 
 const ElectricityBillBalance = () => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const [electricityRate, setElectricityRate] = useState('');
   useEffect(() => {
     queryElectricityPrice({
@@ -49,13 +52,18 @@ const ElectricityBillBalance = () => {
       });
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, currentStyle?.background_style]}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>南湖 1栋 105</Text>
+          <Text style={[styles.title, currentStyle?.text_style]}>
+            南湖 1栋 105
+          </Text>
         </View>
-        <TouchableOpacity style={styles.btn} onPress={() => {}}>
-          <Text style={{ color: '#FFFFFF' }}>更换宿舍</Text>
+        <TouchableOpacity
+          style={[styles.btn, currentStyle?.button_style]}
+          onPress={() => {}}
+        >
+          <Text style={currentStyle?.button_text_style}>更换宿舍</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
@@ -64,19 +72,21 @@ const ElectricityBillBalance = () => {
             <View style={styles.topLeft}>
               <Image
                 style={{ width: 35, height: 42, marginRight: 11 }}
-                source={require('../../assets/images/mx-logo.png')}
+                source={require('../../assets/images/zhaoming.png')}
               />
-              <Text style={styles.text1}>照明</Text>
+              <Text style={[styles.text1, currentStyle?.text_style]}>照明</Text>
             </View>
             <View style={styles.topRight}>
-              <Text style={styles.text2}>￥25.12</Text>
+              <Text style={[styles.text2, currentStyle?.text_style]}>
+                ￥25.12
+              </Text>
             </View>
           </View>
           <View style={styles.cardBottom}>
             <View>
-              <Text>昨日用电：6.07度</Text>
+              <Text style={currentStyle?.text_style}>昨日用电：6.07度</Text>
             </View>
-            <Text>昨日电费：10.07元</Text>
+            <Text style={currentStyle?.text_style}>昨日电费：10.07元</Text>
             <View></View>
           </View>
         </View>
@@ -85,19 +95,21 @@ const ElectricityBillBalance = () => {
             <View style={styles.topLeft}>
               <Image
                 style={{ width: 35, height: 42, marginRight: 11 }}
-                source={require('../../assets/images/mx-logo.png')}
+                source={require('../../assets/images/kongtiao.png')}
               />
-              <Text style={styles.text1}>空调</Text>
+              <Text style={[styles.text1, currentStyle?.text_style]}>空调</Text>
             </View>
             <View style={styles.topRight}>
-              <Text style={styles.text2}>￥25.12</Text>
+              <Text style={[styles.text2, currentStyle?.text_style]}>
+                ￥25.12
+              </Text>
             </View>
           </View>
           <View style={styles.cardBottom}>
             <View>
-              <Text>昨日用电：6.07度</Text>
+              <Text style={currentStyle?.text_style}>昨日用电：6.07度</Text>
             </View>
-            <Text>昨日电费：10.07元</Text>
+            <Text style={currentStyle?.text_style}>昨日电费：10.07元</Text>
             <View></View>
           </View>
         </View>
@@ -105,21 +117,25 @@ const ElectricityBillBalance = () => {
           <View style={[styles.cardTop]}>
             <Image
               style={{ width: 35, height: 42, marginRight: 28 }}
-              source={require('../../assets/images/mx-logo.png')}
+              source={require('../../assets/images/tishi.png')}
             />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 18 }}>电费标准设置：</Text>
+              <Text style={[{ fontSize: 18 }, currentStyle?.text_style]}>
+                电费标准设置：
+              </Text>
               <TextInput
                 style={styles.input}
                 value={electricityRate}
                 onChangeText={text => setElectricityRate(text)}
                 keyboardType="numeric"
               />
-              <Text style={{ fontSize: 18 }}>元</Text>
+              <Text style={[{ fontSize: 18 }, currentStyle?.text_style]}>
+                元
+              </Text>
             </View>
           </View>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <Text style={{ fontSize: 12 }}>
+            <Text style={[{ fontSize: 12 }, currentStyle?.text_style]}>
               一旦低于电费低于此标准，将推送电费告急提醒喔~
             </Text>
           </View>

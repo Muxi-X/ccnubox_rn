@@ -17,7 +17,7 @@ function SettingItem({ icon, text, url }: ItemProps) {
       }}
     >
       <View style={styles.iconContainer}>
-        <Image source={require(icon)} style={styles.icon} />
+        {/* <Image source={require(icon)} style={styles.icon} /> */}
       </View>
       <Text style={styles.title}>{text}</Text>
       <Text style={styles.arrow}>➔</Text>
