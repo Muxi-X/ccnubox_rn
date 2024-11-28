@@ -6,6 +6,9 @@ import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 
+import useThemeBasedComponents from '@/store/themeBasedComponents';
+import useVisualScheme from '@/store/visualScheme';
+
 import {
   colorOptions,
   COURSE_HEADER_HEIGHT,
@@ -22,8 +25,6 @@ import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 
 import { CourseTableProps, CourseTransferType } from './type';
-import useVisualScheme from '@/store/visualScheme';
-import useThemeBasedComponents from '@/store/themeBasedComponents';
 
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
