@@ -1,6 +1,7 @@
 import React from 'react';
-import ThemeBasedView from '@/components/view';
 import { Text, View } from 'react-native';
+
+import ThemeBasedView from '@/components/view';
 function About() {
   return (
     <ThemeBasedView>
