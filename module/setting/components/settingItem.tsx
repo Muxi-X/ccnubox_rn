@@ -1,18 +1,18 @@
-import { router, useNavigation } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface ItemProps {
   icon: number | { uri: string };
   text: string;
-  url: string;
+  url: Href<string>;
 }
 function SettingItem({ icon, text, url }: ItemProps) {
-  const navigation = useNavigation();
+  const navigation = useRouter();
   return (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => {
-        navigation.navigate(url as never);
+        navigation.navigate(url);
       }}
     >
       <View style={styles.iconContainer}>
