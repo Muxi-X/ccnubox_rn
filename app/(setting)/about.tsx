@@ -1,32 +1,27 @@
+import * as Clipboard from 'expo-clipboard';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
-
 function About() {
   const handleCopy = (text: string) => {
-    // 实现点击复制逻辑，可用 Clipboard API
-    console.log(`Copied: ${text}`);
+    Clipboard.setStringAsync(text).then(r => console.log(r));
+    console.log('复制文本为：' + text);
   };
 
   return (
     <ThemeBasedView style={styles.container}>
-      {/* 顶部标题 */}
       <View style={styles.header}>
         <Text style={styles.headerText}>关于</Text>
       </View>
-
-      {/* 应用信息 */}
       <View style={styles.infoContainer}>
         <Image
-          source={require('../../assets/images/mx-logo.png')} // 替换为实际图片路径
+          source={require('../../assets/images/mx-logo.png')}
           style={styles.icon}
         />
         <Text style={styles.appName}>华师匣子</Text>
         <Text style={styles.version}>版本 2.5.14</Text>
       </View>
-
-      {/* 群组信息 */}
       <View style={styles.groupContainer}>
         <View style={styles.groupRow}>
           <Text style={styles.groupText}>匣子交流群：</Text>
@@ -43,8 +38,6 @@ function About() {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* 进入官网按钮 */}
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>进入华师匣子官网</Text>
       </TouchableOpacity>
