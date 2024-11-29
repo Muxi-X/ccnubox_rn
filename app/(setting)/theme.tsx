@@ -1,7 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import Button from '@/components/button';
 import Modal from '@/components/modal';
@@ -11,7 +10,7 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-function Theme() {
+export default function Theme() {
   const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
     useVisualScheme(
       ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
@@ -22,13 +21,14 @@ function Theme() {
         changeLayout,
       })
     );
+  const [loading, setLoading] = useState(false);
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
-  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     if (isUpdatePending) {
       void Updates.reloadAsync();
     }
   }, [isUpdatePending]);
+
   useEffect(() => {
     isUpdateAvailable &&
       Modal.show({
@@ -76,13 +76,12 @@ function Theme() {
             });
         }}
         isLoading={loading}
-        children="检查更新"
-      />
-      <StatusBar style="auto" />
+      >
+        检查更新
+      </Button>
       <Picker>
         <Text style={currentStyle?.text_style}>345345</Text>
       </Picker>
     </ThemeBasedView>
   );
 }
-export default Theme;
