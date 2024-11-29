@@ -2,7 +2,7 @@ import { Href, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface ItemProps {
-  icon: number | { uri: string };
+  icon: { uri: string };
   text: string;
   url: Href<string>;
 }
