@@ -9,6 +9,7 @@ import ThemeChangeText from '@/components/text';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
+
 import {
   colorOptions,
   COURSE_HEADER_HEIGHT,

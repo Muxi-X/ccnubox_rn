@@ -10,9 +10,9 @@ const axiosInstance = axios.create({
   baseURL: 'http://121.43.151.190:8080',
 });
 
-function getStoredToken() {
+async function getStoredToken() {
   try {
-    const token = getItem('token');
+    const token = getItem('shortToken');
     if (token) return token;
   } catch (error) {
     console.error('获取 token 失败:', error);
@@ -22,16 +22,19 @@ function getStoredToken() {
 
 axiosInstance.interceptors.request.use(
   async config => {
-    // 注册请求
     requestBus.requestRegister();
-    try {
-      const token = getStoredToken();
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+
+    if (config.isToken !== false) {
+      try {
+        const token = await getStoredToken();
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error('token 缺失:', error);
       }
-    } catch (error) {
-      console.error('token 缺失:', error);
     }
+
     return config;
   },
   error => {

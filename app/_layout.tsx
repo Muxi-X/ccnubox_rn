@@ -75,6 +75,10 @@ export default function RootLayout() {
               name="(mainPage)"
               options={{ headerShown: false }}
             ></Stack.Screen>
+            <Stack.Screen
+              name="(setting)"
+              options={{ headerShown: false }}
+            ></Stack.Screen>
           </Stack>
           {/* portal */}
           <PortalRoot ref={portalRef} />
