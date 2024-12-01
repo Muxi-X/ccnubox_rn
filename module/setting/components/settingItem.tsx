@@ -4,16 +4,15 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface ItemProps {
   icon: { uri: string };
   text: string;
-  url?: Href<Href<string | object>>;
+  url: Href<string>;
 }
 function SettingItem({ icon, text, url }: ItemProps) {
-  const navigation = useRouter();
   const navigation = useRouter();
   return (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => {
-        navigation.navigate('/(setting)/theme');
+        navigation.navigate(url);
       }}
     >
       <View style={styles.iconContainer}>

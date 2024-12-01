@@ -81,10 +81,10 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                     {
                       // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
                       // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                      borderBottomColor:
+                      borderBottomWidth:
                         (rowIndex + 1) % courseCollapse
-                          ? 'transparent'
-                          : currentStyle?.schedule_border_style?.borderColor,
+                          ? 0
+                          : 1,
                     },
                   ]}
                 ></View>
@@ -141,7 +141,7 @@ export const Content: React.FC<CourseTransferType> = props => {
           zIndex: 99,
           height: 'auto',
           top:
-            COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex + 15,
+            COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
           left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
         }}
         onPress={() => {
@@ -300,7 +300,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    borderBottomWidth: 1,
     borderRightWidth: 1,
     zIndex: 0,
   },
