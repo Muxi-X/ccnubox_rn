@@ -1,5 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
@@ -11,6 +12,7 @@ import Button from '@/components/button';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import axiosInstance from '@/request/interceptor';
 import { commonStyles } from '@/styles/common';
 
 const LoginPage: FC = () => {
@@ -20,13 +22,30 @@ const LoginPage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);
   const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState({
+    password: '',
+    student_id: '',
+  });
   const handleViewPassword = () => {
     setPasswordVisibility(!isPasswordShow);
   };
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例');
       return;
+    }
+    console.log(userInfo);
+    try {
+      const response = await axiosInstance.post('/users/login_ccnu', userInfo, {
+        isToken: false,
+      });
+      if (response.status === 200 || response.status === 201) {
+        console.log(response.headers);
+        setItem('shortToken', response.headers['x-jwt-token']);
+        setItem('longToken', response.headers['x-refresh-token']);
+      }
+    } catch (error) {
+      console.error('注册请求失败:1111111', error);
     }
     setLoginTriggered(true);
     setTimeout(() => {
@@ -59,6 +78,10 @@ const LoginPage: FC = () => {
         prefix={<View style={styles.suffixStyle}></View>}
         suffix={<View style={styles.suffixStyle}></View>}
         placeholder="请输入学号"
+        value={userInfo.student_id}
+        onChangeText={text =>
+          setUserInfo(prev => ({ ...prev, student_id: text.toString() }))
+        }
         placeholderTextColor={styles.textColor.color}
         textAlign="center"
       ></Input>
@@ -68,6 +91,10 @@ const LoginPage: FC = () => {
         textAlign="center"
         /* 前后缀都要有，不然对不齐 */
         prefix={<View style={styles.suffixStyle}></View>}
+        value={userInfo.password}
+        onChangeText={text =>
+          setUserInfo(prev => ({ ...prev, password: text.toString() }))
+        }
         type={isPasswordShow ? 'text' : 'password'}
         suffix={
           <Icon

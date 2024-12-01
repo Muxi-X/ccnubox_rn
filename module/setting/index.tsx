@@ -1,49 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import * as Updates from 'expo-updates';
-import { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 
-import Button from '@/components/button';
-import Modal from '@/components/modal';
-import Picker from '@/components/picker';
-import Text from '@/components/text';
-import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
 
-import useVisualScheme from '@/store/visualScheme';
-
+import { SettingItems } from '@/constants/settingItem';
 import { ListItem } from '@/constants/settingItem';
 import SettingItem from '@/module/setting/components/settingItem';
 
-export default function SettingPage() {
-  const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
-    useVisualScheme(
-      ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
-        currentStyle,
-        changeTheme,
-        themeName,
-        layoutName,
-        changeLayout,
-      })
-    );
-  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
-  const [loading, setLoading] = useState<boolean>(false);
-  useEffect(() => {
-    if (isUpdatePending) {
-      void Updates.reloadAsync();
-    }
-  }, [isUpdatePending]);
-  useEffect(() => {
-    isUpdateAvailable &&
-      Modal.show({
-        title: '检测到更新',
-        children: '是否更新',
-        onConfirm: () => {
-          Updates.fetchUpdateAsync();
-        },
-      });
-  }, [isUpdateAvailable]);
 
+export default function SettingPage() {
   return (
     <ThemeBasedView style={{ flex: 1 }}>
       <FlatList
