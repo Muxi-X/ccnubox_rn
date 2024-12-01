@@ -3,7 +3,11 @@ import axiosInstance from '@/request/interceptor';
 // 查询电费接口封装函数
 export const queryElectricityPrice = async (queryParams: any) => {
   try {
-    const response = await axiosInstance.post('/elecprice/check', queryParams);
+    const queryString = Object.keys(queryParams)
+      .map(key => `${key}=${queryParams[key]}`)
+      .join('&');
+    console.log(queryString, 'queryString');
+    const response = await axiosInstance.get(`/elecprice/check?${queryString}`);
     return response.data;
   } catch (error) {
     console.error('查询电费接口出错:', error);

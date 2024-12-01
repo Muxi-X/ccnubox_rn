@@ -15,6 +15,14 @@ import { queryElectricityPrice, setElectricityPrice } from './api';
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [electricityRate, setElectricityRate] = useState('');
+  const [elecInfo, setElecInfo] = useState({
+    lighting_price: 0,
+    lighting_garde: 0,
+    air_price: 0,
+    air_garde: 0,
+    lighting_rest: 0,
+    air_rest: 0,
+  });
   useEffect(() => {
     queryElectricityPrice({
       building: '南湖05栋',
@@ -23,13 +31,14 @@ const ElectricityBillBalance = () => {
       area: '南湖学生宿舍',
       student_id: '2023215228',
     })
-      .then(response => {
-        if (response.status === 200) {
-          console.log('查询成功，电费信息：' + JSON.stringify(response.data));
+      .then(res => {
+        if (res.code === 10000) {
+          console.log('查询成功，电费信息：' + JSON.stringify(res.data));
+          setElecInfo(res.data);
         }
       })
       .catch(error => {
-        console.log('设置失败：' + error.message);
+        console.log('查询失败：' + error.message);
       });
   }, []);
   //设置电费
@@ -43,9 +52,7 @@ const ElectricityBillBalance = () => {
       money: electricityRate,
     })
       .then(response => {
-        if (response.status === 200) {
-          console.log('设置成功');
-        }
+        console.log('设置成功', response);
       })
       .catch(error => {
         console.log('设置失败：' + error.message);
@@ -78,15 +85,19 @@ const ElectricityBillBalance = () => {
             </View>
             <View style={styles.topRight}>
               <Text style={[styles.text2, currentStyle?.text_style]}>
-                ￥25.12
+                ￥{elecInfo.lighting_rest}
               </Text>
             </View>
           </View>
           <View style={styles.cardBottom}>
             <View>
-              <Text style={currentStyle?.text_style}>昨日用电：6.07度</Text>
+              <Text style={currentStyle?.text_style}>
+                昨日用电：{elecInfo.lighting_garde}度
+              </Text>
             </View>
-            <Text style={currentStyle?.text_style}>昨日电费：10.07元</Text>
+            <Text style={currentStyle?.text_style}>
+              昨日电费：{elecInfo.lighting_price}元
+            </Text>
             <View></View>
           </View>
         </View>
@@ -101,15 +112,19 @@ const ElectricityBillBalance = () => {
             </View>
             <View style={styles.topRight}>
               <Text style={[styles.text2, currentStyle?.text_style]}>
-                ￥25.12
+                ￥{elecInfo.air_rest}
               </Text>
             </View>
           </View>
           <View style={styles.cardBottom}>
             <View>
-              <Text style={currentStyle?.text_style}>昨日用电：6.07度</Text>
+              <Text style={currentStyle?.text_style}>
+                昨日用电：{elecInfo.air_garde}度
+              </Text>
             </View>
-            <Text style={currentStyle?.text_style}>昨日电费：10.07元</Text>
+            <Text style={currentStyle?.text_style}>
+              昨日电费：{elecInfo.air_price}元
+            </Text>
             <View></View>
           </View>
         </View>
@@ -128,6 +143,13 @@ const ElectricityBillBalance = () => {
                 value={electricityRate}
                 onChangeText={text => setElectricityRate(text)}
                 keyboardType="numeric"
+                onBlur={() => handleSetElectricityPrice()} // 失去焦点时触发设置电费操作
+                onKeyPress={event => {
+                  if (event.nativeEvent.key === 'Enter') {
+                    // 判断是否按下回车键
+                    handleSetElectricityPrice();
+                  }
+                }}
               />
               <Text style={[{ fontSize: 18 }, currentStyle?.text_style]}>
                 元
