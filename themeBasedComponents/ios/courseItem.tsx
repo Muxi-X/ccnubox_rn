@@ -8,7 +8,10 @@ const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, colIndex, rowIndex, courseName, classroom, timeSpan } =
     props;
   return (
-    <>
+    <View
+      style={{
+        top: 15,
+      }}>
       <View
         style={[
           {
@@ -52,7 +55,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           {classroom ? `@${classroom}` : ''}
         </Text>
       </View>
-    </>
+    </View>
   );
 };
 

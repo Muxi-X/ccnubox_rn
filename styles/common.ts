@@ -14,7 +14,7 @@ export const commonStyles = StyleSheet.create({
     fontSize: 16,
   },
   fontSmall: {
-    fontSize: 12,
+    fontSize: 10,
   },
   fontBold: {
     fontWeight: 'bold',

@@ -1,11 +1,14 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';
+import { TooltipContent } from '@/module/courseTable/TooltipContent';
+import { Tooltip } from '@ant-design/react-native';
+import SelectWeek from '@/module/courseTable/SelectWeek';
 
 /**
  * @enum tabBar颜色
@@ -49,12 +52,15 @@ export const tabConfig: SinglePageType[] = [
     iconName: 'calendar',
     headerTitle: () => (
       <>
-        <View
+        <TouchableOpacity
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+          }}
+          onPress={() => {
+            console.log('选择周次');
           }}
         >
           <Text
@@ -79,7 +85,7 @@ export const tabConfig: SinglePageType[] = [
               },
             ]}
           />
-        </View>
+        </TouchableOpacity>
         <Text
           style={[
             commonStyles.fontLight,
@@ -110,19 +116,26 @@ export const tabConfig: SinglePageType[] = [
               },
             ]}
           ></MaterialIcons>
-          <MaterialIcons
-            name="add"
-            size={24}
-            style={[
-              useVisualScheme.getState().currentStyle?.header_text_style,
-              {
-                paddingRight: 20,
-              },
-            ]}
-            onPress={() => {
-              console.log('下拉菜单');
-            }}
-          />
+          <View>
+          <Tooltip
+            content={<TooltipContent/>}
+            placement="bottom-start"
+            trigger="onPress"
+          >
+            <TouchableOpacity>
+              <MaterialIcons
+              name="add"
+              size={24}
+              style={[
+                useVisualScheme.getState().currentStyle?.header_text_style,
+                {
+                  paddingRight: 10,
+                },
+              ]}
+          ></MaterialIcons>
+            </TouchableOpacity>
+          </Tooltip>
+          </View>
         </View>
       </>
     ),
