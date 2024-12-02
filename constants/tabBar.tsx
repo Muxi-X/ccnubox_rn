@@ -1,11 +1,14 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Text } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';
+import { TooltipContent } from '@/module/courseTable/TooltipContent';
+import { Tooltip } from '@ant-design/react-native';
+import SelectWeek from '@/module/courseTable/SelectWeek';
 
 /**
  * @enum tabBar颜色
@@ -48,16 +51,93 @@ export const tabConfig: SinglePageType[] = [
     title: '日程',
     iconName: 'calendar',
     headerTitle: () => (
-      <Text style={[commonStyles.TabBarPadding, commonStyles.fontLarge]}>
-        {' '}
-        日程{' '}
-      </Text>
+      <>
+        <TouchableOpacity
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            console.log('选择周次');
+          }}
+        >
+          <Text
+            style={[
+              commonStyles.fontLarge,
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                textAlign: 'center',
+              },
+            ]}
+          >
+            第1周
+          </Text>
+          <MaterialIcons
+            name="arrow-forward-ios"
+            size={20}
+            style={[
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                transform: [{ rotate: '90deg' }],
+                marginLeft: 4,
+              },
+            ]}
+          />
+        </TouchableOpacity>
+        <Text
+          style={[
+            commonStyles.fontLight,
+            commonStyles.fontSmall,
+            useVisualScheme.getState().currentStyle?.schedule_week_text_style,
+          ]}
+        >
+          当前周设置为1
+        </Text>
+      </>
     ),
     headerRight: () => (
-      <MaterialIcons
-        name="menu"
-        style={commonStyles.TabBarPadding}
-      ></MaterialIcons>
+      <>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <MaterialIcons
+            name="delete-sweep"
+            size={24}
+            style={[
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                paddingRight: 10,
+              },
+            ]}
+          ></MaterialIcons>
+          <View>
+          <Tooltip
+            content={<TooltipContent/>}
+            placement="bottom-start"
+            trigger="onPress"
+          >
+            <TouchableOpacity>
+              <MaterialIcons
+              name="add"
+              size={24}
+              style={[
+                useVisualScheme.getState().currentStyle?.header_text_style,
+                {
+                  paddingRight: 10,
+                },
+              ]}
+          ></MaterialIcons>
+            </TouchableOpacity>
+          </Tooltip>
+          </View>
+        </View>
+      </>
     ),
   },
   {
@@ -71,3 +151,28 @@ export const tabConfig: SinglePageType[] = [
     iconName: 'setting',
   },
 ];
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    position: 'relative',
+    left: '50%',
+  },
+  centerAlign: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  titleWithAfter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  afterText: {
+    transform: [{ rotate: '90deg' }],
+    width: 10,
+    fontSize: 14,
+    marginLeft: 4,
+  },
+});

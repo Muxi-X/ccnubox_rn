@@ -18,6 +18,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@0no-co/graphql.web": "^1.0.11",
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.2.3",
     "@expo/vector-icons": "^14.0.4",
