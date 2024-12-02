@@ -26,11 +26,11 @@ export default function TabLayout() {
               (() => (
                 <Text style={currentStyle?.header_text_style}>{title}</Text>
               )),
-            // eslint-disable-next-line react/jsx-no-undef
             headerRight: headerRight,
             headerLeft: headerLeft,
-            tabBarStyle: currentStyle?.navbar_background_style,
-            headerStyle: currentStyle?.header_background_style,
+            headerTitleAlign: 'center',
+            tabBarStyle: currentStyle?.schedule_background_style,
+            headerStyle: currentStyle?.schedule_background_style,
           }}
         />
       );
