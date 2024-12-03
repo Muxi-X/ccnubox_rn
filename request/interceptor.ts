@@ -22,14 +22,17 @@ axiosInstance.interceptors.request.use(
   async config => {
     // 注册请求
     requestBus.requestRegister();
-    try {
-      const token = getStoredToken();
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+
+    if (config.isToken !== false) {
+      try {
+        const token = await getStoredToken();
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error('token 缺失:', error);
       }
-    } catch (error) {
-      console.error('token 缺失:', error);
-    }
+    } 
     return config;
   },
   error => {
