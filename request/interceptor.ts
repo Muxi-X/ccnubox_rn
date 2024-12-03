@@ -27,7 +27,6 @@ axiosInstance.interceptors.request.use(
     if (config.isToken !== false) {
       try {
         const token = await getStoredToken();
-        console.log(token);
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }

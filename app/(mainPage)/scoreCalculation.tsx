@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderWidth: 2,
-    borderRadius: 4, // 正方形边框，边角微微圆润
+    borderRadius: 4, 
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
