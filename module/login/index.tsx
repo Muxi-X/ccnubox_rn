@@ -48,6 +48,7 @@ const LoginPage: FC = () => {
       console.error('注册请求失败:1111111', error);
     }
     setLoginTriggered(true);
+    //模拟登陆
     setTimeout(() => {
       setLoginTriggered(false);
     }, 3000);
