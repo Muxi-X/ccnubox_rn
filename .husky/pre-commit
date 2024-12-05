@@ -3,7 +3,7 @@
 printf "正在执行 Eslint 检查... "
 start_time=$(date +%s)
 
-eslint --fix . || echo -e "\r\033[31m❌ Eslint检查失败\033[0m"
+eslint --fix . || (echo -e "\r\033[31m❌ Eslint检查失败\033[0m" && exit 1)
 
 eslint_end_time=$(date +%s)
 echo -e "\r\033[32m✅ Eslint 检查通过 (耗时 $((eslint_end_time - start_time)) 秒)\033[0m"
@@ -11,7 +11,7 @@ echo -e "\r\033[32m✅ Eslint 检查通过 (耗时 $((eslint_end_time - start_ti
 printf "正在执行 Prettier 格式化... "
 prettier_start_time=$(date +%s)
 
-prettier --write "**/*.{ts,tsx,js,jsx}" --loglevel error || echo -e "\r\033[31m❌ Prettier格式化失败\033[0m"
+prettier --write "**/*.{ts,tsx,js,jsx}" --log-level error || (echo -e "\r\033[31m❌ Prettier格式化失败\033[0m" && exit 1)
 
 prettier_end_time=$(date +%s)
 echo -e "\r\033[32m✅ Prettier 格式化完成 (耗时 $((prettier_end_time - prettier_start_time)) 秒)\033[0m"
