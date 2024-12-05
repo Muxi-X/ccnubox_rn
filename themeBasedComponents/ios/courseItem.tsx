@@ -11,7 +11,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
     <View
       style={{
         top: 15,
-      }}>
+      }}
+    >
       <View
         style={[
           {
