@@ -2,15 +2,17 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 
+import Toast from '@/components/toast';
+
 import requestBus from '@/store/currentRequests';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://121.43.151.190:8080',
 });
 
-function getStoredToken() {
+async function getStoredToken() {
   try {
-    const token = getItem('token');
+    const token = getItem('shortToken');
     if (token) return token;
   } catch (error) {
     console.error('获取 token 失败:', error);
@@ -20,7 +22,6 @@ function getStoredToken() {
 
 axiosInstance.interceptors.request.use(
   async config => {
-    // 注册请求
     requestBus.requestRegister();
 
     if (config.isToken !== false) {
@@ -33,6 +34,7 @@ axiosInstance.interceptors.request.use(
         console.error('token 缺失:', error);
       }
     } 
+
     return config;
   },
   error => {
@@ -50,10 +52,10 @@ axiosInstance.interceptors.response.use(
         router.navigate('/auth/login');
         break;
       case 403:
-        console.error('无权限');
+        Toast.show({ text: '无权限' });
         break;
       default:
-        console.error('服务器错误');
+        Toast.show({ text: '服务器错误' });
     }
     // 标记请求已完成
     requestBus.requestComplete();

@@ -100,8 +100,9 @@ export const commonColors: Partial<ColorType> = {
 
 #### 样式注册
 
-其余主题新开文件，并在 `index`注册主题通过 `geneStyleSheet`方法生成， 分为两部
-分：`样式`和 `布局` 目前布局只有 `android`和 `ios`两套，后续有增加再做适配
+其余主题新开文件，并在 `index`注册主题通过 `geneStyleSheet`方法生成， 分为两部分：`布局`和 `样式` 目前布局有 `android`和 `ios`两套，样式分为`dark`和`light`
+后续有增加再做适配
+
 
 ```ts
 // default.ts
@@ -112,10 +113,10 @@ const defaultCommonStyles: Partial<SubThemeType> = {};
 
 /** 默认样式 */
 export const defaultStyles = geneStyleSheet({
-  android: {
+  dark: {
     ...defaultCommonStyles,
   },
-  ios: {
+  light: {
     ...defaultCommonStyles,
   },
 });
@@ -265,11 +266,24 @@ export interface ScrollableViewProps {
      }, 7000);
  }}
 ```
+## Portal 组件
+类似于`ReactDom-Portal`的简化版,用于将某组件提升至root层
+```tsx
+<Portal>
+  <View></View>
+</Portal>
+```
+
+## Picker 组件
+封装的选择器,分为 PickerView 与 Picker 两部分
+- PickerView 不带 Modal
+- Picker 为 Portal 与 PickerView 的结合
+目前黑夜样式待修改
 
 ## Modal 组件
 
-建议使用 `ModalTrigger`组件，通过 `triggerComponent`定义触发弹窗元素或者直接使用
-`Modal.show()`方法调用
+建议直接使用`Modal.show()`方法调用
+或者使用 `ModalTrigger`组件，通过 `triggerComponent`定义触发弹窗元素
 
 > Modal.show 会在全局 portal 建立新对象用完即删除若要满足关闭 modal 仍能记住之前
 > 的状态，则需要通过 ModalTrigger 等其他方法 `mode`分为两种模式:

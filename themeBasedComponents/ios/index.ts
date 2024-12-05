@@ -1,5 +1,6 @@
 import { ThemeBasedComponentRecord } from '@/store/types';
 
+import CourseItem from '@/themeBasedComponents/ios/courseItem';
 import HeaderCenter from '@/themeBasedComponents/ios/headerCenter';
 import HeaderLeft from '@/themeBasedComponents/ios/headerLeft';
 
@@ -7,4 +8,5 @@ import HeaderLeft from '@/themeBasedComponents/ios/headerLeft';
 export const defaultIOSComponents: ThemeBasedComponentRecord = {
   header_left: HeaderLeft,
   header_center: HeaderCenter,
+  course_item: CourseItem,
 };
