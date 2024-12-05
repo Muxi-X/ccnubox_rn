@@ -1,14 +1,14 @@
 import { Drawer, Grid, WhiteSpace } from '@ant-design/react-native';
 import { Href, useRouter } from 'expo-router';
 import React from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface addItemType {
   id: number;
   icon: any;
   text: string;
-  // url: Href<string>;
-  url: string;
+  url: Href<string>;
+  // url: string;
 }
 
 export const addItem: addItemType[] = [
@@ -43,13 +43,14 @@ export const TooltipContent = () => {
 
   return (
     <View>
-      {addItem.map((item) => (
+      {addItem.map(item => (
         <TouchableOpacity
           key={item.id}
           style={styles.tooltipItem}
-          // onPress={() => navigation.navigate(item.url)}
-          onPress={() => {console.log(item.url);}
-          }
+          onPress={() => navigation.navigate(item.url)}
+          // onPress={() => {
+          //   console.log(item.url);
+          // }}
         >
           <Image source={item.icon} style={styles.tooltipImage} />
           <Text style={styles.tooltipText}>{item.text}</Text>
@@ -58,7 +59,6 @@ export const TooltipContent = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   tooltipImage: {
