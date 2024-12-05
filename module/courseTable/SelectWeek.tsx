@@ -1,12 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  View,
+  Animated,
+  Dimensions,
+  PanResponder,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Animated,
-  PanResponder,
-  Dimensions,
+  View,
 } from 'react-native';
 
 // 获取屏幕高度
