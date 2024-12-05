@@ -9,7 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-
+pnpm-lock.yaml
 # macOS
 .DS_Store
 

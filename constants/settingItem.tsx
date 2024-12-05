@@ -2,7 +2,7 @@ import { SettingItem } from '@/types/settingItem';
 
 export const SettingItems: SettingItem[] = [
   {
-    title: 'theme',
+    title: '个性化',
     name: 'theme',
     id: 1,
     icon: require('@/assets/images/person.png'),
@@ -10,7 +10,7 @@ export const SettingItems: SettingItem[] = [
     url: '/(setting)/theme',
   },
   {
-    title: 'share',
+    title: '分享',
     name: 'share',
     id: 2,
     icon: require('@/assets/images/share.png'),
@@ -18,7 +18,7 @@ export const SettingItems: SettingItem[] = [
     url: '/(setting)/share',
   },
   {
-    title: 'help',
+    title: '帮助',
     name: 'help',
     id: 3,
     icon: require('@/assets/images/help.png'),
@@ -26,7 +26,7 @@ export const SettingItems: SettingItem[] = [
     url: '/(setting)/help',
   },
   {
-    title: 'checkUpdate',
+    title: '检查更新',
     name: 'checkUpdate',
     id: 4,
     icon: require('@/assets/images/check-update.png'),
@@ -34,7 +34,7 @@ export const SettingItems: SettingItem[] = [
     url: '/(setting)/checkUpdate',
   },
   {
-    title: 'about',
+    title: '关于',
     name: 'about',
     id: 5,
     icon: require('@/assets/images/about.png'),
@@ -42,7 +42,7 @@ export const SettingItems: SettingItem[] = [
     url: '/(setting)/about',
   },
   {
-    title: 'exit',
+    title: '退出',
     name: 'exit',
     id: 6,
     icon: require('@/assets/images/exit.png'),
