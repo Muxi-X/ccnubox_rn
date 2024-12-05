@@ -56,12 +56,9 @@ const initJPush = () => {
     production: 1,
   });
   //连接状态
-  console.log('init');
   const connectListener = (result: any) => {
-    console.log('connectListener:' + JSON.stringify(result));
     // 获取registerID
     JPush.getRegistrationID(result => {
-      console.log('registerID:' + JSON.stringify(result));
       setItem('pushToken', result.registerID);
     });
   };
@@ -90,13 +87,9 @@ const initJPush = () => {
   };
   JPush.addInappMessageListener(inappMessageListener);
   //tag alias事件回调
-  const tagAliasListener = (result: any) => {
-    console.log('tagAliasListener:' + JSON.stringify(result));
-  };
+  const tagAliasListener = (result: any) => {};
   JPush.addTagAliasListener(tagAliasListener);
   //手机号码事件回调
-  const mobileNumberListener = (result: any) => {
-    console.log('mobileNumberListener:' + JSON.stringify(result));
-  };
+  const mobileNumberListener = (result: any) => {};
   JPush.addMobileNumberListener(mobileNumberListener);
 };
