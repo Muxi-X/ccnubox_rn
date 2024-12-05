@@ -117,24 +117,24 @@ export const tabConfig: SinglePageType[] = [
             ]}
           ></MaterialIcons>
           <View>
-          <Tooltip
-            content={<TooltipContent/>}
-            placement="bottom-start"
-            trigger="onPress"
-          >
-            <TouchableOpacity>
-              <MaterialIcons
-              name="add"
-              size={24}
-              style={[
-                useVisualScheme.getState().currentStyle?.header_text_style,
-                {
-                  paddingRight: 10,
-                },
-              ]}
-          ></MaterialIcons>
-            </TouchableOpacity>
-          </Tooltip>
+            <Tooltip
+              content={<TooltipContent />}
+              placement="bottom-start"
+              trigger="onPress"
+            >
+              <TouchableOpacity>
+                <MaterialIcons
+                  name="add"
+                  size={24}
+                  style={[
+                    useVisualScheme.getState().currentStyle?.header_text_style,
+                    {
+                      paddingRight: 10,
+                    },
+                  ]}
+                ></MaterialIcons>
+              </TouchableOpacity>
+            </Tooltip>
           </View>
         </View>
       </>

@@ -43,13 +43,14 @@ export const TooltipContent = () => {
 
   return (
     <View>
-      {addItem.map((item) => (
+      {addItem.map(item => (
         <TouchableOpacity
           key={item.id}
           style={styles.tooltipItem}
           // onPress={() => navigation.navigate(item.url)}
-          onPress={() => {console.log(item.url);}
-          }
+          onPress={() => {
+            console.log(item.url);
+          }}
         >
           <Image source={item.icon} style={styles.tooltipImage} />
           <Text style={styles.tooltipText}>{item.text}</Text>
@@ -58,7 +59,6 @@ export const TooltipContent = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   tooltipImage: {
