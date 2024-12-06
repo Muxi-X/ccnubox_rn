@@ -13,7 +13,10 @@ module.exports = {
     // 确保路径一致
     'import/no-useless-path-segments': 'error',
     'react-hooks/exhaustive-deps': 'off',
-    'no-unused-vars': 'off',
+    'no-unused-vars': [
+      'error',
+      { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+    ],
     'no-console': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'react/no-unescaped-entities': 'off',
@@ -22,7 +25,10 @@ module.exports = {
       'warn',
       { props: 'never', children: 'never' },
     ],
-    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+    ],
     'simple-import-sort/exports': 'warn',
     'simple-import-sort/imports': [
       'warn',
