@@ -47,7 +47,11 @@ export const TooltipContent = () => {
         <TouchableOpacity
           key={item.id}
           style={styles.tooltipItem}
-          onPress={() => navigation.navigate(item.url)}
+          onPress={() => {
+            if(item.id === 1){
+              navigation.navigate(item.url);
+            }
+          }}
           // onPress={() => {
           //   console.log(item.url);
           // }}

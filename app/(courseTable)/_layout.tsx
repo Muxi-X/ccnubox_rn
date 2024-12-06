@@ -5,8 +5,8 @@ import { StyleProp, StyleSheet, View } from 'react-native';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
+import { mainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils/autoKey';
-import { addItem } from '@/module/courseTable/TooltipContent';
 
 export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
@@ -24,16 +24,16 @@ export default function Layout() {
           headerBackButtonMenuEnabled: true,
         }}
       >
-        {addItem.map(config => (
+        {mainPageApplications.map(config => (
           <Stack.Screen
             key={keyGenerator.next().value as unknown as number}
-            name={config.text}
+            name={config.name}
             options={{
               headerLeft: () => {
                 return (
                   <>
                     {currentComponents && (
-                      <currentComponents.header_left title={config.text} />
+                      <currentComponents.header_left title={config.title} />
                     )}
                   </>
                 );
@@ -42,7 +42,7 @@ export default function Layout() {
                 <>
                   {currentComponents && (
                     <currentComponents.header_center
-                      title={config.text}
+                      title={config.title}
                     ></currentComponents.header_center>
                   )}
                 </>

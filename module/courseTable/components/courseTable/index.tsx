@@ -1,5 +1,5 @@
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
@@ -25,6 +25,7 @@ import { commonColors } from '@/styles/common';
 import { keyGenerator } from '@/utils/autoKey';
 
 import { CourseTableProps, CourseTransferType } from './type';
+import { useRouter } from 'expo-router';
 
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
@@ -90,10 +91,10 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
           ))}
           {/* 课程内容 */}
           {courses.map((item, index) => (
-            <Content
-              key={keyGenerator.next().value as unknown as number}
-              {...item}
-            ></Content>
+              <Content
+                key={keyGenerator.next().value as unknown as number}
+                {...item}
+              ></Content>
           ))}
         </View>
       );
@@ -126,8 +127,9 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
 };
 
 export const Content: React.FC<CourseTransferType> = props => {
+  const navigation = useRouter()
   const CourseItem = useThemeBasedComponents(
-    state => state.currentComponents?.course_item
+    (state) => state.currentComponents?.course_item
   );
   return (
     <>
@@ -141,7 +143,7 @@ export const Content: React.FC<CourseTransferType> = props => {
           left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
         }}
         onPress={() => {
-          console.log('点击了课程');
+          navigation.navigate('/(courseTable)/editCourse')
         }}
       >
         {CourseItem && <CourseItem {...props}></CourseItem>}
