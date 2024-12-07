@@ -48,13 +48,14 @@ export const TooltipContent = () => {
           key={item.id}
           style={styles.tooltipItem}
           onPress={() => {
-            if(item.id === 1){
-              navigation.navigate(item.url);
-            }
-          }}
-          // onPress={() => {
-          //   console.log(item.url);
-          // }}
+            switch (item.id) {
+              case 1:
+              case 2: {
+                navigation.navigate(item.url);
+                console.log(item.url);
+                break;
+              };
+          }}}
         >
           <Image source={item.icon} style={styles.tooltipImage} />
           <Text style={styles.tooltipText}>{item.text}</Text>
