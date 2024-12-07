@@ -65,7 +65,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
     onScrollToTop && onScrollToTop();
     const handleHideRefreshing = () => {
       backHeight.value = withTiming(0);
-      isAtTop.value = false;
     };
     const success = () => {
       handleHideRefreshing();
@@ -89,12 +88,10 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
     })
     .onUpdate(event => {
       if (isAtTop.value) {
-        if (event.translationY > 100) {
+        if (event.translationY > 20) {
           backHeight.value = withSpring(100);
         }
-        if (event.translationY < 0) {
-          isAtTop.value = false;
-        }
+        isAtTop.value = false;
       }
       if (isAtBottom.value) {
         overScrollHeight.value = -Math.min(event.translationY, 100);
@@ -119,7 +116,8 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       );
       // 记录滑动距离
       if (isAtBottom.value) {
-        overScrollHeight.value = Math.min(-event.translationY, 100);
+        overScrollHeight.value =
+          event.translationY < 0 ? Math.min(-event.translationY, 100) : 0;
       }
     })
     .onEnd(event => {
@@ -147,7 +145,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         isAtTop.value = true;
       }
       // 若在底部滚动到底，触发彩蛋
-      if (isAtBottom.value) {
+      if (isAtBottom.value && event.translationY < 0) {
         translateY.value = withSpring(
           Math.max(
             wrapperSize.height - containerSize.height + overScrollHeight.value,
