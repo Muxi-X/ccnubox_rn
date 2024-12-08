@@ -1,13 +1,16 @@
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
-import ThemeChangeView from '@/components/view';
+
+import useThemeBasedComponents from '@/store/themeBasedComponents';
+import useVisualScheme from '@/store/visualScheme';
 
 import {
+  colorOptions,
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
@@ -26,6 +29,7 @@ import { CourseTableProps, CourseTransferType } from './type';
 const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const translateY = useSharedValue(0);
   useEffect(() => {
     if (isFetching) {
@@ -45,14 +49,24 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       );
       const courses: CourseTransferType[] = [];
       // 遍历传入的数据，根据时间和日期填充表格
-      data.forEach(({ courseName, time, date, timeSpan = 1 }) => {
-        const rowIndex = timeSlots.indexOf(time);
-        const colIndex = daysOfWeek.indexOf(date);
-        if (rowIndex !== -1 && colIndex !== -1) {
-          timetableMatrix[rowIndex][colIndex] = { courseName, timeSpan };
-          courses.push({ courseName, timeSpan, rowIndex, colIndex });
+      data.forEach(
+        ({ courseName, teacher, classroom, time, date, timeSpan = 2 }) => {
+          const rowIndex = timeSlots.indexOf(time);
+          const colIndex = daysOfWeek.indexOf(date);
+          if (rowIndex !== -1 && colIndex !== -1) {
+            timetableMatrix[rowIndex][colIndex] = { courseName, timeSpan };
+            courses.push({
+              courseName,
+              timeSpan,
+              teacher,
+              date,
+              classroom,
+              rowIndex,
+              colIndex,
+            });
+          }
         }
-      });
+      );
       return (
         <View style={styles.courseWrapperStyle}>
           {timetableMatrix.map((row, rowIndex) => (
@@ -62,13 +76,12 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                   key={colIndex}
                   style={[
                     styles.cell,
+                    currentStyle?.schedule_border_style,
                     {
                       // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
                       // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                      borderBottomColor:
-                        (rowIndex + 1) % courseCollapse
-                          ? 'transparent'
-                          : commonColors.gray,
+                      borderBottomWidth:
+                        (rowIndex + 1) % courseCollapse ? 0 : 1,
                     },
                   ]}
                 ></View>
@@ -76,7 +89,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
             </View>
           ))}
           {/* 课程内容 */}
-          {courses.map(item => (
+          {courses.map((item, index) => (
             <Content
               key={keyGenerator.next().value as unknown as number}
               {...item}
@@ -112,42 +125,48 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
   );
 };
 
-export const Content: React.FC<CourseTransferType> = ({
-  courseName,
-  colIndex,
-  rowIndex,
-  timeSpan,
-}) => {
+export const Content: React.FC<CourseTransferType> = props => {
+  const CourseItem = useThemeBasedComponents(
+    state => state.currentComponents?.course_item
+  );
   return (
-    <View
-      style={{
-        position: 'absolute',
-        width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-        zIndex: 99,
-        height:
-          styles.cell.height * (timeSpan ?? 1) - COURSE_HORIZONTAL_PADDING * 2,
-        borderRadius: 5,
-        backgroundColor: 'red',
-        top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * rowIndex,
-        left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * colIndex,
-        justifyContent: 'center',
-      }}
-    >
-      <ThemeChangeText style={styles.cellText}>
-        {courseName || ''}
-      </ThemeChangeText>
-    </View>
+    <>
+      <Pressable
+        style={{
+          position: 'absolute',
+          width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
+          zIndex: 99,
+          height: 'auto',
+          top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
+          left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
+        }}
+        onPress={() => {
+          console.log('点击了课程');
+        }}
+      >
+        {CourseItem && <CourseItem {...props}></CourseItem>}
+      </Pressable>
+    </>
   );
 };
 
 export const StickyTop: React.FC = memo(function StickyTop() {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <View style={styles.header}>
       <View style={styles.headerRow}>
         {daysOfWeek.map((day, index) => (
-          <ThemeChangeView key={index} style={[styles.headerCell]}>
+          <View
+            key={index}
+            style={[
+              styles.headerCell,
+              currentStyle?.schedule_item_background_style,
+              currentStyle?.schedule_border_style,
+            ]}
+          >
             <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
-          </ThemeChangeView>
+            <Text style={styles.dayText}>09/0{index + 1}</Text>
+          </View>
         ))}
       </View>
     </View>
@@ -155,12 +174,23 @@ export const StickyTop: React.FC = memo(function StickyTop() {
 });
 
 export const StickyLeft: React.FC = memo(function StickyLeft() {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <>
       {timeSlots.map((time, index) => (
-        <ThemeChangeView key={index} style={styles.timeSlot}>
-          <ThemeChangeText style={styles.timeText}>{time}</ThemeChangeText>
-        </ThemeChangeView>
+        <View
+          key={index}
+          style={[
+            styles.timeSlot,
+            currentStyle?.schedule_item_background_style,
+            currentStyle?.schedule_border_style,
+          ]}
+        >
+          <ThemeChangeText style={styles.countText}>
+            {index + 1}
+          </ThemeChangeText>
+          <Text style={styles.timeText}>{time}</Text>
+        </View>
       ))}
     </>
   );
@@ -203,14 +233,12 @@ const styles = StyleSheet.create({
     height: COURSE_HEADER_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eee',
-    borderColor: commonColors.gray,
+    // borderColor: '#E1E2F1',
     borderWidth: 1,
   },
   header: {
     flexDirection: 'row',
     zIndex: 1,
-    backgroundColor: '#fff',
     marginLeft: -1,
   },
   headerRow: {
@@ -222,13 +250,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#eee',
-    borderColor: commonColors.gray,
     borderLeftWidth: 1,
     borderBottomWidth: 1,
   },
   headerText: {
     fontWeight: 'bold',
+  },
+  dayText: {
+    fontWeight: 'light',
+    fontSize: 10,
+    color: '#75757B',
+    textAlign: 'center',
   },
   content: {
     flexDirection: 'row',
@@ -238,13 +270,19 @@ const styles = StyleSheet.create({
     width: TIME_WIDTH,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eee',
     borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderColor: commonColors.gray,
+  },
+  countText: {
+    fontSize: 14,
+    color: 'black',
+    textAlign: 'center',
   },
   timeText: {
-    fontWeight: 'bold',
+    fontWeight: 'light',
+    fontSize: 10,
+    paddingTop: 2,
+    color: '#75757B',
     textAlign: 'center',
   },
   row: {
@@ -258,13 +296,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    borderBottomWidth: 1,
     borderRightWidth: 1,
-    borderRightColor: commonColors.gray,
     zIndex: 0,
-  },
-  cellText: {
-    textAlign: 'center',
   },
 });
 

@@ -7,7 +7,7 @@ import Toast from '@/components/toast';
 import requestBus from '@/store/currentRequests';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://121.43.151.190:8080',
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
 async function getStoredToken() {
