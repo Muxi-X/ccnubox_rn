@@ -1,13 +1,13 @@
-import * as Updates from 'expo-updates';
-import React, { useEffect } from 'react';
+//import * as Updates from 'expo-updates';
+import React, { useState } from 'react';
 import { Text } from 'react-native';
 
 import Button from '@/components/button';
-import Modal from '@/components/modal';
 import Picker from '@/components/picker';
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
+import View from '@/components/view';
 
 export default function Theme() {
   const { currentStyle, layoutName, themeName, changeLayout, changeTheme } =
@@ -20,26 +20,22 @@ export default function Theme() {
         changeLayout,
       })
     );
-  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
-  useEffect(() => {
-    if (isUpdatePending) {
-      void Updates.reloadAsync();
-    }
-  }, [isUpdatePending]);
-
-  useEffect(() => {
-    isUpdateAvailable &&
-      Modal.show({
-        title: '检测到更新',
-        children: '是否更新',
-        onConfirm: () => {
-          Updates.fetchUpdateAsync().then(r => console.log(r));
-        },
-      });
-  }, [isUpdateAvailable]);
-
+  const [Layout, setLayout] = useState(layoutName);
+  const isApplied = (layout: string) => layout === layoutName;
   return (
     <ThemeBasedView style={{ flex: 1 }}>
+      <View>
+        <Text style={currentStyle?.text_style}>原版</Text>
+        <Button style={[currentStyle?.button_style, { width: '50%' }]}>
+          {isApplied('android') ? '已应用' : '应用'}
+        </Button>
+      </View>
+      <View>
+        <Text style={currentStyle?.text_style}>IOS版</Text>
+        <Button style={[currentStyle?.button_style, { width: '50%' }]}>
+          {isApplied('ios') ? '已应用' : '应用'}
+        </Button>
+      </View>
       <Button
         style={[currentStyle?.button_style, { width: '100%' }]}
         onPress={() => {

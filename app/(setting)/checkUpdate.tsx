@@ -1,8 +1,9 @@
 import * as Updates from 'expo-updates';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '@/components/button';
+import Modal from '@/components/modal';
 import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
 
@@ -18,6 +19,23 @@ function CheckUpdate(): React.ReactNode {
       changeLayout,
     })
   );
+  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+  useEffect(() => {
+    if (isUpdatePending) {
+      void Updates.reloadAsync();
+    }
+  }, [isUpdatePending]);
+
+  useEffect(() => {
+    isUpdateAvailable &&
+      Modal.show({
+        title: '检测到更新',
+        children: '是否更新',
+        onConfirm: () => {
+          Updates.fetchUpdateAsync().then(r => console.log(r));
+        },
+      });
+  }, [isUpdateAvailable]);
   return (
     <ThemeBasedView style={styles.container}>
       <View style={styles.infoContainer}>
