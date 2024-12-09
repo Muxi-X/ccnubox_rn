@@ -7,8 +7,8 @@ interface addItemType {
   id: number;
   icon: any;
   text: string;
-  // url: Href<string>;
-  url: string;
+  url: Href<string>;
+  // url: string;
 }
 
 export const addItem: addItemType[] = [
@@ -47,10 +47,15 @@ export const TooltipContent = () => {
         <TouchableOpacity
           key={item.id}
           style={styles.tooltipItem}
-          // onPress={() => navigation.navigate(item.url)}
           onPress={() => {
-            console.log(item.url);
-          }}
+            switch (item.id) {
+              case 1:
+              case 2: {
+                navigation.navigate(item.url);
+                console.log(item.url);
+                break;
+              };
+          }}}
         >
           <Image source={item.icon} style={styles.tooltipImage} />
           <Text style={styles.tooltipText}>{item.text}</Text>
