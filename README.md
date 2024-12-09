@@ -31,6 +31,7 @@
 │    ├── scraper        # 爬虫组件，目前能爬研究生
 │    ├── scrollView     # 全方向滚动组件
 │    └── skeleton       # 骨架屏
+├── mock                # mock 配置
 ├── module              # 页面实现及相关组件
 │    ├── courseTable
 │    ├── guide
@@ -76,7 +77,7 @@
 ## 接口
 
 项目采用长短token方式登录时 缓存了 shortToken 和 longToken 请求已经都封装好了都
-在 `request/interceptor.ts` 里面默认请求头添加的都是shortToken去发送请求
+在 `request/request.ts` 里面默认请求头添加的都是shortToken去发送请求
 
 ## 颜色主题自定义
 
