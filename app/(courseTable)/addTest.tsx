@@ -7,7 +7,7 @@ import ItemList from './component/ItemList';
 
 export default function addTest() {
   const route = useRouter(); // 获取 route 参数
-  const [pattern, setPattern] = React.useState<number>(0)
+  const [pattern, setPattern] = React.useState<number>(0);
   const list = [
     {
       name: '计算机基础',
@@ -23,16 +23,20 @@ export default function addTest() {
   return (
     <>
       <Nabvar
-      navText={['设置考试信息','自定义考试信息']}
-      pattern={pattern}
-      setPattern={setPattern}
+        navText={['设置考试信息', '自定义考试信息']}
+        pattern={pattern}
+        setPattern={setPattern}
       ></Nabvar>
       <View
         style={{
           margin: 20,
         }}
       >
-      {pattern === 0 ? <ItemList list={list} buttonText={'设置'} /> : <AddComponent buttonText='添加' pageText='test'/>}
+        {pattern === 0 ? (
+          <ItemList list={list} buttonText={'设置'} />
+        ) : (
+          <AddComponent buttonText="添加" pageText="test" />
+        )}
       </View>
     </>
   );
