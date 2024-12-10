@@ -1,5 +1,12 @@
+import { useRouter } from 'expo-router';
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
@@ -126,6 +133,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
 };
 
 export const Content: React.FC<CourseTransferType> = props => {
+  const navigation = useRouter();
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
@@ -141,7 +149,7 @@ export const Content: React.FC<CourseTransferType> = props => {
           left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
         }}
         onPress={() => {
-          console.log('点击了课程');
+          navigation.navigate('/(courseTable)/editCourse');
         }}
       >
         {CourseItem && <CourseItem {...props}></CourseItem>}
