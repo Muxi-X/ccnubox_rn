@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router';
 import { useEffect } from 'react';
 
-import { setupMockServer } from '@/mocks/server';
+import { setupMockServer } from '@/mock/server';
 
 // 由于 expo 没有 initialRoutes
 // 重定向到 tabs
