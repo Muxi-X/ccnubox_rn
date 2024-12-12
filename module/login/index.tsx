@@ -12,7 +12,7 @@ import Button from '@/components/button';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import axiosInstance from '@/request/interceptor';
+import { axiosInstance } from '@/request/request';
 import { commonStyles } from '@/styles/common';
 
 const LoginPage: FC = () => {
