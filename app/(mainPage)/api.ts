@@ -42,9 +42,11 @@ export const queryGradeAll = async (queryParams: any) => {
 export const queryGradeDetail = async (queryParams: any) => {
   try {
     const queryString = Object.keys(queryParams)
-      .map((key) => `${key}=${queryParams[key]}`)
+      .map(key => `${key}=${queryParams[key]}`)
       .join('&');
-    const response = await axiosInstance.get(`/grade/grade_detail?${queryString}`);
+    const response = await axiosInstance.get(
+      `/grade/grade_detail?${queryString}`
+    );
     return response.data;
   } catch (error) {
     console.error('查询成绩接口出错:', error);

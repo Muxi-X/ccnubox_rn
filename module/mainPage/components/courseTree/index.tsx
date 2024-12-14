@@ -5,39 +5,46 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Image from '@/components/image';
 
 import useVisualScheme from '@/store/visualScheme';
+
 import { queryGradeAll } from '@/app/(mainPage)/api';
 
 const CourseTree = () => {
   const [activeKey, setActiveKey] = useState<string[]>([]); // 默认使用空数组
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [list,setList] = useState([])
-  const [total,setTotal] = useState(0)
-  useEffect(()=>{
-    queryGradeAll({}).then(res=>{
-   
-      if(res.code==0){
-       console.log(res.data,'4444')
-      let num = 0
-      const data = res.data.reduce((pre:any,cur:any)=>{
-       const findIndex = pre.findIndex((i:any)=>i.title==cur.Kclbmc||i.title==cur.kcxzmc)
-          num+=Number(cur.grade) 
-          if(findIndex!==-1){
-           pre[findIndex].score +=Number(cur.grade)
-           pre[findIndex].children.push({  title: cur.course,score:Number(cur.grade),})
-          }else{
+  const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    queryGradeAll({}).then(res => {
+      if (res.code == 0) {
+        console.log(res.data, '4444');
+        let num = 0;
+        const data = res.data.reduce((pre: any, cur: any) => {
+          const findIndex = pre.findIndex(
+            (i: any) => i.title == cur.Kclbmc || i.title == cur.kcxzmc
+          );
+          num += Number(cur.grade);
+          if (findIndex !== -1) {
+            pre[findIndex].score += Number(cur.grade);
+            pre[findIndex].children.push({
+              title: cur.course,
+              score: Number(cur.grade),
+            });
+          } else {
             pre.push({
-             title:cur.Kclbmc||cur.kcxzmc,
-             score:Number(cur.grade),
-             children:[{title:cur.Kclbmc||cur.kcxzmc,score:Number(cur.grade),}]
-            })
+              title: cur.Kclbmc || cur.kcxzmc,
+              score: Number(cur.grade),
+              children: [
+                { title: cur.Kclbmc || cur.kcxzmc, score: Number(cur.grade) },
+              ],
+            });
           }
-          return pre
-       },[])
-       setTotal(num)
-       setList(data)
+          return pre;
+        }, []);
+        setTotal(num);
+        setList(data);
       }
-    })
-  },[])
+    });
+  }, []);
 
   const handlePanelChange = (key: string) => {
     setActiveKey(prev =>

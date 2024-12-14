@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
 import { queryGradeAll } from '@/app/(mainPage)/api';
 const data1 = [
   {
