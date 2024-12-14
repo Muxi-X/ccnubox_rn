@@ -18,6 +18,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@0no-co/graphql.web": "^1.0.11",
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.2.3",
     "@expo/vector-icons": "^14.0.4",
@@ -26,6 +27,7 @@
     "axios": "^1.7.7",
     "expo": "^51.0.38",
     "expo-build-properties": "~0.12.5",
+    "expo-clipboard": "~6.0.3",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.29",
     "expo-device": "^6.0.2",
