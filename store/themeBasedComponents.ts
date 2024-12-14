@@ -25,6 +25,7 @@ const useThemeBasedComponents = create<ThemeBasedComponentsType>(
 );
 
 eventBus.on('layoutChange', layoutName => {
+  console.log(layoutName);
   useThemeBasedComponents.getState().changeComponents(layoutName);
 });
 eventBus.on('layoutSet', () => {
