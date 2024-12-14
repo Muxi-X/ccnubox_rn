@@ -40,7 +40,7 @@ const LoginPage: FC = () => {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        console.log(response.headers, response.data);
+        console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
       }
