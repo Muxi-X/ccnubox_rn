@@ -5,7 +5,7 @@ import { StyleProp, StyleSheet, View } from 'react-native';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { mainPageApplications } from '@/constants/mainPageApplications';
+import { courseTableApplications } from '@/constants/courseTableApplications';
 import { keyGenerator } from '@/utils/autoKey';
 
 export default function Layout() {
@@ -24,7 +24,7 @@ export default function Layout() {
           headerBackButtonMenuEnabled: true,
         }}
       >
-        {mainPageApplications.map(config => (
+        {courseTableApplications.map(config => (
           <Stack.Screen
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
