@@ -118,7 +118,7 @@ const Picker: React.FC<DatePickerProps> = ({
       >
         {/* FIX_ME：前缀，目前采用手动计算 */}
         {prefixes &&
-          prefixes.map((prefix, index) => (
+          prefixes.map(prefix => (
             <Text
               style={[
                 styles.prefix,

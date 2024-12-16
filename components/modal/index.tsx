@@ -19,6 +19,7 @@ import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils/percent2px';
 
+//eslint-disable-next-line no-unused-vars
 const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   visible: initVisible = true,
   currentKey,
