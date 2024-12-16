@@ -1,3 +1,9 @@
+/**
+ * 学期序号
+ * 3代表第一学期
+ * 12代表第二学期
+ * 16代表第三学期
+ */
 export enum semesterMap {
   first = 3,
   second = 12,
