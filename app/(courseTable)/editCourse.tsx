@@ -2,7 +2,6 @@ import { View } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
 import { AddComponent } from './component/AddComponent';
 
-
 export default function EditCourse() {
   const route = useRouter(); // 获取 route 参数
 
@@ -14,7 +13,7 @@ export default function EditCourse() {
           margin: 20,
         }}
       >
-        <AddComponent pageText='course' buttonText="保存编辑" />
+        <AddComponent pageText="course" buttonText="保存编辑" />
       </View>
     </>
   );
