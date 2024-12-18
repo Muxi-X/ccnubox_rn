@@ -7,7 +7,7 @@ import PickerView from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 
 import { commonColors, commonStyles } from '@/styles/common';
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 import { percent2px } from '@/utils/percent2px';
 
 // picker 左侧紫色条宽度
