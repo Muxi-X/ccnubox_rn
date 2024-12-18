@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import useVisualScheme from '@/store/visualScheme';
 
 import { tabConfig } from '@/constants/tabBar';
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 
 import TabBar from '../../components/navi/index';
 

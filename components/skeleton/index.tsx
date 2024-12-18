@@ -15,7 +15,7 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 import eventBus from '@/utils/eventBus';
 
 /**

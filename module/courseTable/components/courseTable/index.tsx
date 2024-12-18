@@ -29,7 +29,7 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 
 import { CourseTableProps, CourseTransferType } from './type';
 
