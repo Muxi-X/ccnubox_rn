@@ -6,7 +6,7 @@ import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
 import { courseTableApplications } from '@/constants/courseTableApplications';
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 
 export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
