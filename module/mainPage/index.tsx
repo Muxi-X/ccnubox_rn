@@ -13,8 +13,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
 import { commonColors } from '@/styles/common';
-import { keyGenerator } from '@/utils';
-import { percent2px } from '@/utils/percent2px';
+import { keyGenerator, percent2px } from '@/utils';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
