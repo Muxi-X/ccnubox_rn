@@ -6,7 +6,7 @@ import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
 import { SettingItems } from '@/constants/settingItem';
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 
 export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({

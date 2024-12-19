@@ -1,17 +1,11 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import Nabvar from './component/Navbar';
 import { AddComponent } from './component/AddComponent';
 import ItemList from './component/ItemList';
 
-export default function addCourse() {
+export default function AddCourse() {
   const [pattern, setPattern] = React.useState(0);
 
   return (
