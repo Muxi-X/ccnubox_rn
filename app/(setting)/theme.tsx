@@ -2,7 +2,6 @@ import React from 'react';
 import { Text } from 'react-native';
 
 import Button from '@/components/button';
-import Picker from '@/components/picker';
 // eslint-disable-next-line import/no-duplicates
 import ThemeBasedView from '@/components/view';
 // eslint-disable-next-line import/no-duplicates,no-duplicate-imports
