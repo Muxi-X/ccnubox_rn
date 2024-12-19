@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { ThemeBasedComponentsType } from '@/store/types';
 
 import { componentMap } from '@/themeBasedComponents';
-import eventBus from '@/utils/eventBus';
+import { EventBus } from '@/utils';
 
 /** 主题特定组件 */
 const useThemeBasedComponents = create<ThemeBasedComponentsType>(
@@ -24,10 +24,10 @@ const useThemeBasedComponents = create<ThemeBasedComponentsType>(
   })
 );
 
-eventBus.on('layoutChange', layoutName => {
+EventBus.on('layoutChange', layoutName => {
   useThemeBasedComponents.getState().changeComponents(layoutName);
 });
-eventBus.on('layoutSet', () => {
+EventBus.on('layoutSet', () => {
   useThemeBasedComponents.getState().setComponents(componentMap);
 });
 

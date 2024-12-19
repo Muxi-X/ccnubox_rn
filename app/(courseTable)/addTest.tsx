@@ -5,7 +5,7 @@ import Nabvar from './component/Navbar';
 import React from 'react';
 import ItemList from './component/ItemList';
 
-export default function addTest() {
+export default function AddTest() {
   const route = useRouter(); // 获取 route 参数
   const [pattern, setPattern] = React.useState<number>(0);
   const list = [
