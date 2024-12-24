@@ -4,11 +4,12 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import SelectWeek from '@/module/courseTable/SelectWeek';
 import { TooltipContent } from '@/module/courseTable/TooltipContent';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';
+import notification from '@/module/notification';
+import React from 'react';
 
 /**
  * @enum tabBar颜色
@@ -144,6 +145,54 @@ export const tabConfig: SinglePageType[] = [
     name: 'notification',
     title: '通知',
     iconName: 'notification',
+    headerTitle: ()=>(
+      <></>
+    ),
+    headerLeft: () => (
+      <Text
+        style={[
+          commonStyles.fontLarge,
+          commonStyles.fontBold,
+          commonStyles.TabBarPadding,
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
+        消息通知
+      </Text>
+    ),
+    headerRight: () => (
+      <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+      }}>
+       <TouchableOpacity
+          style={[styles.notificationBtn,{
+            backgroundColor: '#7878F8'
+          }]}
+          onPress={() => {
+          }}
+        >
+          <Text
+          style={{
+            color: commonColors.white,
+          }}>
+            消息通知
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.notificationBtn,{
+            backgroundColor: '#D9D9D9'
+          }]}>
+          <Text
+          style={{
+            color: '#FF6F6F',
+          }}>
+            一键清空
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
   },
   {
     name: 'setting',
@@ -153,26 +202,12 @@ export const tabConfig: SinglePageType[] = [
 ];
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    position: 'relative',
-    left: '50%',
-  },
-  centerAlign: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  titleWithAfter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
-  afterText: {
-    transform: [{ rotate: '90deg' }],
-    width: 10,
-    fontSize: 14,
-    marginLeft: 4,
-  },
+  notificationBtn:{
+    borderWidth: 1,
+    borderColor: commonColors.gray,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginRight: 10,
+  }
 });
