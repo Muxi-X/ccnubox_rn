@@ -1,4 +1,4 @@
-import axiosInstance from '@/request/interceptor';
+import {axiosInstance} from '@/request/request';
 
 // 查询电费接口封装函数
 export const queryElectricityPrice = async (queryParams: any) => {

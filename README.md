@@ -31,6 +31,7 @@
 │    ├── scraper        # 爬虫组件，目前能爬研究生
 │    ├── scrollView     # 全方向滚动组件
 │    └── skeleton       # 骨架屏
+├── mock                # mock 配置
 ├── module              # 页面实现及相关组件
 │    ├── courseTable
 │    ├── guide
@@ -71,7 +72,12 @@
 
 # 项目基建以及代码规范
 
-本仓库并未严格限制`eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
+本仓库并未严格限制 `eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
+
+## 接口
+
+项目采用长短token方式登录时 缓存了 shortToken 和 longToken 请求已经都封装好了都
+在 `request/request.ts` 里面默认请求头添加的都是shortToken去发送请求
 
 ## 颜色主题自定义
 
@@ -99,8 +105,9 @@ export const commonColors: Partial<ColorType> = {
 
 #### 样式注册
 
-其余主题新开文件，并在 `index`注册主题通过 `geneStyleSheet`方法生成， 分为两部分：`布局`和 `样式` 目前布局有 `android`和 `ios`两套，样式分为`dark`和`light`
-后续有增加再做适配
+其余主题新开文件，并在 `index`注册主题通过 `geneStyleSheet`方法生成， 分为两部
+分：`布局`和 `样式` 目前布局有 `android`和 `ios`两套，样式分为`dark`和`light` 后
+续有增加再做适配
 
 
 ```ts
@@ -265,8 +272,11 @@ export interface ScrollableViewProps {
      }, 7000);
  }}
 ```
+
 ## Portal 组件
+
 类似于`ReactDom-Portal`的简化版,用于将某组件提升至root层
+
 ```tsx
 <Portal>
   <View></View>
@@ -274,15 +284,16 @@ export interface ScrollableViewProps {
 ```
 
 ## Picker 组件
+
 封装的选择器,分为 PickerView 与 Picker 两部分
+
 - PickerView 不带 Modal
-- Picker 为 Portal 与 PickerView 的结合
-目前黑夜样式待修改
+- Picker 为 Portal 与 PickerView 的结合目前黑夜样式待修改
 
 ## Modal 组件
 
-建议直接使用`Modal.show()`方法调用
-或者使用 `ModalTrigger`组件，通过 `triggerComponent`定义触发弹窗元素
+建议直接使用`Modal.show()`方法调用或者使用 `ModalTrigger`组件，通过
+`triggerComponent`定义触发弹窗元素
 
 > Modal.show 会在全局 portal 建立新对象用完即删除若要满足关闭 modal 仍能记住之前
 > 的状态，则需要通过 ModalTrigger 等其他方法 `mode`分为两种模式:

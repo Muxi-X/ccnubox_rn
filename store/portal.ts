@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 import { PortalStore } from '@/store/types';
 
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 
 /** portal 组件信息 */
 export const usePortalStore = create<PortalStore>((set, get) => ({
