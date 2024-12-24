@@ -7,27 +7,30 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Nabvar from './component/Navbar';
+
 import { AddComponent } from './component/AddComponent';
 import ItemList from './component/ItemList';
+import Nabvar from './component/Navbar';
 
 export default function addCourse() {
   const [pattern, setPattern] = React.useState(0);
 
   return (
     <View style={styles.container}>
-      <Nabvar navText={['自主添加', '搜索添加']} pattern={pattern} setPattern={setPattern} />
+      <Nabvar
+        navText={['自主添加', '搜索添加']}
+        pattern={pattern}
+        setPattern={setPattern}
+      />
       {pattern === 0 ? <AddPage /> : <SearchPage />}
     </View>
   );
 }
 
-
-
 const AddPage: React.FC = () => {
   return (
     <View style={styles.addContainer}>
-      <AddComponent pageText='course' buttonText="添加课程" />
+      <AddComponent pageText="course" buttonText="添加课程" />
     </View>
   );
 };
