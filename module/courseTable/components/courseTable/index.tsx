@@ -9,7 +9,6 @@ import ThemeChangeText from '@/components/text';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-
 import {
   colorOptions,
   COURSE_HEADER_HEIGHT,
@@ -82,9 +81,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
                       // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
                       // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
                       borderBottomWidth:
-                        (rowIndex + 1) % courseCollapse
-                          ? 0
-                          : 1,
+                        (rowIndex + 1) % courseCollapse ? 0 : 1,
                     },
                   ]}
                 ></View>
@@ -140,8 +137,7 @@ export const Content: React.FC<CourseTransferType> = props => {
           width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
           zIndex: 99,
           height: 'auto',
-          top:
-            COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
+          top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
           left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
         }}
         onPress={() => {
