@@ -1,5 +1,6 @@
-import { Tooltip } from '@ant-design/react-native';
+import { Modal, Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -8,8 +9,10 @@ import { TooltipContent } from '@/module/courseTable/TooltipContent';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';
-import notification from '@/module/notification';
-import React from 'react';
+import { ListItem } from '@/module/notification';
+import NotiPicker from '@/module/notification/component/NotiPicker';
+import Button from '@/components/button';
+import ClearModal from '@/module/notification/component/ClearModal';
 
 /**
  * @enum tabBar颜色
@@ -145,9 +148,7 @@ export const tabConfig: SinglePageType[] = [
     name: 'notification',
     title: '通知',
     iconName: 'notification',
-    headerTitle: ()=>(
-      <></>
-    ),
+    headerTitle: () => <></>,
     headerLeft: () => (
       <Text
         style={[
@@ -160,39 +161,54 @@ export const tabConfig: SinglePageType[] = [
         消息通知
       </Text>
     ),
-    headerRight: () => (
+    headerRight: () => {
+      const [notiVisible, setNotiVisible] = React.useState(false);
+      const [clearVisible, setClearVisible] = React.useState(false)
+      return (
       <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-      }}>
-       <TouchableOpacity
-          style={[styles.notificationBtn,{
-            backgroundColor: '#7878F8'
-          }]}
-          onPress={() => {
-          }}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        <TouchableOpacity
+          style={[
+            styles.notificationBtn,
+            {
+              backgroundColor: '#7878F8',
+            },
+          ]}
+          onPress={() =>setNotiVisible(true)}
         >
           <Text
-          style={{
-            color: commonColors.white,
-          }}>
+            style={{
+              color: commonColors.white,
+            }}
+          >
             消息通知
           </Text>
         </TouchableOpacity>
+        <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
         <TouchableOpacity
-          style={[styles.notificationBtn,{
-            backgroundColor: '#D9D9D9'
-          }]}>
+          style={[
+            styles.notificationBtn,
+            {
+              backgroundColor: '#D9D9D9',
+            },
+          ]}
+          onPress={() => {setClearVisible(true)}}
+        >
           <Text
-          style={{
-            color: '#FF6F6F',
-          }}>
+            style={{
+              color: '#FF6F6F',
+            }}
+          >
             一键清空
           </Text>
         </TouchableOpacity>
+        <ClearModal clearVisible={clearVisible} setClearVisible={setClearVisible} />
       </View>
-    )
+    )},
   },
   {
     name: 'setting',
@@ -202,12 +218,11 @@ export const tabConfig: SinglePageType[] = [
 ];
 
 const styles = StyleSheet.create({
-  notificationBtn:{
-    borderWidth: 1,
+  notificationBtn: {
     borderColor: commonColors.gray,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 3,
     marginRight: 10,
-  }
+  },
 });

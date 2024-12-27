@@ -22,7 +22,7 @@ export const defaultStyles = geneStyleSheet({
     },
     notification_text_style: {
       color: '#A8A8A8',
-    }
+    },
   },
   light: {
     schedule_background_style: {
@@ -45,6 +45,6 @@ export const defaultStyles = geneStyleSheet({
     },
     notification_text_style: {
       color: '#3D3D3D',
-    }
+    },
   },
 });
