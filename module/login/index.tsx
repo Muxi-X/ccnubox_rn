@@ -1,5 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -30,6 +31,8 @@ const LoginPage: FC = () => {
     setPasswordVisibility(!isPasswordShow);
   };
   const handleLogin = async () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const navigation = useRouter();
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例');
       return;
@@ -43,6 +46,7 @@ const LoginPage: FC = () => {
         console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
+        navigation.navigate('/(tabs)');
       }
     } catch (error) {
       console.error('注册请求失败:1111111', error);
