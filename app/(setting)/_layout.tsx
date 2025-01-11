@@ -22,6 +22,7 @@ export default function Layout() {
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackButtonMenuEnabled: true,
+          headerBackVisible: false,
         }}
       >
         {SettingItems.map(config => (
