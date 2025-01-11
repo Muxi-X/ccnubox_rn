@@ -6,7 +6,7 @@ import { AddComponent } from './component/AddComponent';
 import ItemList from './component/ItemList';
 import Nabvar from './component/Navbar';
 
-export default function addTest() {
+export default function AddTest() {
   const route = useRouter(); // 获取 route 参数
   const [pattern, setPattern] = React.useState<number>(0);
   const list = [
@@ -34,7 +34,7 @@ export default function addTest() {
         }}
       >
         {pattern === 0 ? (
-          <ItemList list={list} buttonText="设置" />
+          <ItemList list={list} buttonText={'设置'} />
         ) : (
           <AddComponent buttonText="添加" pageText="test" />
         )}

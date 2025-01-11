@@ -1,9 +1,10 @@
-function* autoKey() {
+const autoKey = function* () {
   let key = 0;
-  while (1) {
+  while (true) {
     yield key++;
   }
-}
+};
+
 /**
  * 无情的 key 生成机器
  * 无限生成唯一的 key 值。
@@ -15,4 +16,6 @@ function* autoKey() {
  * console.log(keyGen.next().value); // 输出: 2
  * // 以此类推...
  */
-export const keyGenerator = autoKey();
+const keyGenerator = autoKey();
+
+export default keyGenerator;
