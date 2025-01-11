@@ -163,52 +163,58 @@ export const tabConfig: SinglePageType[] = [
     ),
     headerRight: () => {
       const [notiVisible, setNotiVisible] = React.useState(false);
-      const [clearVisible, setClearVisible] = React.useState(false)
+      const [clearVisible, setClearVisible] = React.useState(false);
       return (
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}
-      >
-        <TouchableOpacity
-          style={[
-            styles.notificationBtn,
-            {
-              backgroundColor: '#7878F8',
-            },
-          ]}
-          onPress={() =>setNotiVisible(true)}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
         >
-          <Text
-            style={{
-              color: commonColors.white,
+          <TouchableOpacity
+            style={[
+              styles.notificationBtn,
+              {
+                backgroundColor: '#7878F8',
+              },
+            ]}
+            onPress={() => setNotiVisible(true)}
+          >
+            <Text
+              style={{
+                color: commonColors.white,
+              }}
+            >
+              消息通知
+            </Text>
+          </TouchableOpacity>
+          <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
+          <TouchableOpacity
+            style={[
+              styles.notificationBtn,
+              {
+                backgroundColor: '#D9D9D9',
+              },
+            ]}
+            onPress={() => {
+              setClearVisible(true);
             }}
           >
-            消息通知
-          </Text>
-        </TouchableOpacity>
-        <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
-        <TouchableOpacity
-          style={[
-            styles.notificationBtn,
-            {
-              backgroundColor: '#D9D9D9',
-            },
-          ]}
-          onPress={() => {setClearVisible(true)}}
-        >
-          <Text
-            style={{
-              color: '#FF6F6F',
-            }}
-          >
-            一键清空
-          </Text>
-        </TouchableOpacity>
-        <ClearModal clearVisible={clearVisible} setClearVisible={setClearVisible} />
-      </View>
-    )},
+            <Text
+              style={{
+                color: '#FF6F6F',
+              }}
+            >
+              一键清空
+            </Text>
+          </TouchableOpacity>
+          <ClearModal
+            clearVisible={clearVisible}
+            setClearVisible={setClearVisible}
+          />
+        </View>
+      );
+    },
   },
   {
     name: 'setting',
