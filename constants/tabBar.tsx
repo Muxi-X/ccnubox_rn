@@ -5,14 +5,13 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { TooltipContent } from '@/module/courseTable/TooltipContent';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';
-import { ListItem } from '@/module/notification';
 import NotiPicker from '@/module/notification/component/NotiPicker';
-import Button from '@/components/button';
 import ClearModal from '@/module/notification/component/ClearModal';
+import { tooltipActions } from './courseTableApplications';
+import { Href, router } from 'expo-router';
 
 /**
  * @enum tabBar颜色
@@ -121,9 +120,20 @@ export const tabConfig: SinglePageType[] = [
             ]}
           ></MaterialIcons>
           <View>
-            <Tooltip
-              content={<TooltipContent />}
+            <Tooltip.Menu
+              actions={tooltipActions}
+              // content={<TooltipContent />}
               placement="bottom-start"
+              onAction={node => {
+                // 根据 key 跳转,如果 key 不是路径, 则执行其他操作
+                if ((node.key as string)[0] === '/')
+                  router.navigate(node.key as Href);
+              }}
+              styles={{
+                tooltip: {
+                  width: 160,
+                },
+              }}
               trigger="onPress"
             >
               <TouchableOpacity>
@@ -138,7 +148,7 @@ export const tabConfig: SinglePageType[] = [
                   ]}
                 ></MaterialIcons>
               </TouchableOpacity>
-            </Tooltip>
+            </Tooltip.Menu>
           </View>
         </View>
       </>

@@ -1,6 +1,7 @@
-import { geneStyleSheet } from '@/utils/geneStyleSheet';
+import { generateStyleSheet } from '@/utils';
+
 /** 默认样式 */
-export const defaultStyles = geneStyleSheet({
+export const defaultStyles = generateStyleSheet({
   dark: {
     schedule_background_style: {
       backgroundColor: '#242424',
