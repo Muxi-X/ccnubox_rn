@@ -1,12 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
@@ -17,7 +11,6 @@ import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
-  colorOptions,
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
@@ -96,7 +89,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
             </View>
           ))}
           {/* 课程内容 */}
-          {courses.map((item, index) => (
+          {courses.map(item => (
             <Content
               key={keyGenerator.next().value as unknown as number}
               {...item}
@@ -113,7 +106,10 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
-          onRefresh={(handleSuccess, handleFail) => {
+          onRefresh={(
+            handleSuccess
+            // handleFail
+          ) => {
             setTimeout(() => {
               alert(666);
               handleSuccess();

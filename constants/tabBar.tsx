@@ -1,17 +1,16 @@
-import { Modal, Tooltip } from '@ant-design/react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import useVisualScheme from '@/store/visualScheme';
+import { Href, router } from 'expo-router';
 
 import { commonColors, commonStyles } from '@/styles/common';
-
 import { SinglePageType } from '@/types/tabBarTypes';
+import { tooltipActions } from './courseTableApplications';
+
+import useVisualScheme from '@/store/visualScheme';
 import NotiPicker from '@/module/notification/component/NotiPicker';
 import ClearModal from '@/module/notification/component/ClearModal';
-import { tooltipActions } from './courseTableApplications';
-import { Href, router } from 'expo-router';
 
 /**
  * @enum tabBar颜色
@@ -63,7 +62,7 @@ export const tabConfig: SinglePageType[] = [
             justifyContent: 'center',
           }}
           onPress={() => {
-            console.log('选择周次');
+            // console.log('选择周次');
           }}
         >
           <Text
@@ -172,8 +171,8 @@ export const tabConfig: SinglePageType[] = [
       </Text>
     ),
     headerRight: () => {
-      const [notiVisible, setNotiVisible] = React.useState(false);
-      const [clearVisible, setClearVisible] = React.useState(false);
+      const [notiVisible, setNotiVisible] = useState(false);
+      const [clearVisible, setClearVisible] = useState(false);
       return (
         <View
           style={{

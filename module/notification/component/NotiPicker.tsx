@@ -1,20 +1,20 @@
-import useVisualScheme from '@/store/visualScheme';
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FC } from 'react';
 import { Image, Modal, StyleSheet, Text, View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
 interface NotiPickerProps {
   visible: boolean;
-  setVisible: (visible: boolean) => void;
-  onCancel?: () => void;
-  onConfirm?: (type: string) => void;
+  setVisible: (_visible: boolean) => void;
+  // onCancel?: () => void;
+  // onConfirm?: (type: string) => void;
 }
 const NotiPicker: FC<NotiPickerProps> = ({
   visible,
   setVisible,
-  onCancel,
-  onConfirm,
+  // onCancel,
+  // onConfirm,
 }) => {
   const feedIcon = [
     {
@@ -147,7 +147,7 @@ const NotiPicker: FC<NotiPickerProps> = ({
                   checked={item.check}
                   style={[{ width: 40, height: 20, marginRight: 10 }]}
                   trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-                  thumbColor={'#979797'}
+                  thumbColor="#979797"
                 />
               </View>
             </View>

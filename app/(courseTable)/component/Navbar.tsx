@@ -1,16 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import Modal from '@/components/modal';
-
-import useThemeBasedComponents from '@/store/themeBasedComponents';
-import useVisualScheme from '@/store/visualScheme';
+// import useThemeBasedComponents from '@/store/themeBasedComponents';
+// import useVisualScheme from '@/store/visualScheme';
 
 interface Props {
   setPattern: React.Dispatch<React.SetStateAction<number>>;
@@ -18,12 +10,12 @@ interface Props {
   navText: string[];
 }
 export default function Nabvar({ setPattern, pattern, navText }: Props) {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
-  const currentComponents = useThemeBasedComponents(
-    state => state.currentComponents
-  );
+  // const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+  //   currentStyle,
+  // }));
+  // const currentComponents = useThemeBasedComponents(
+  //   state => state.currentComponents
+  // );
 
   return (
     <View style={[styles.navbar]}>

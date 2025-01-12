@@ -1,12 +1,10 @@
-import Button from '@/components/button';
-import useVisualScheme from '@/store/visualScheme';
-import { T } from '@faker-js/faker/dist/airline-BnpeTvY9';
 import { FC } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
 interface ClearModalProps {
   clearVisible: boolean;
-  setClearVisible: (visible: boolean) => void;
+  setClearVisible: (_visible: boolean) => void;
 }
 
 const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
