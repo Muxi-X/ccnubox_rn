@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colorOptions, COURSE_HEADER_HEIGHT } from '@/constants/courseTable';
+import { colorOptions } from '@/constants/courseTable';
 import { CourseTransferType } from '@/module/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
-  const { teacher, colIndex, rowIndex, courseName, classroom, timeSpan } =
-    props;
+  const { teacher, colIndex, rowIndex, courseName, classroom } = props;
   return (
     <View
       style={{
