@@ -17,6 +17,7 @@ import { axiosInstance } from '@/request/request';
 import { commonStyles } from '@/styles/common';
 
 const LoginPage: FC = () => {
+  const router = useRouter();
   // 监听键盘弹起，避免元素遮挡
   const isKeyboardShow = useKeyboardShow();
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
@@ -31,8 +32,6 @@ const LoginPage: FC = () => {
     setPasswordVisibility(!isPasswordShow);
   };
   const handleLogin = async () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const navigation = useRouter();
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例');
       return;
@@ -46,7 +45,7 @@ const LoginPage: FC = () => {
         console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
-        navigation.navigate('/(tabs)');
+        router.navigate('/(tabs)');
       }
     } catch (error) {
       console.error('注册请求失败:1111111', error);
