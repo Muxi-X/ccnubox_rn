@@ -6,7 +6,7 @@ import Image from '@/components/image';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeAll } from '@/app/(mainPage)/api';
+import { queryGradeAll } from '@/request/api';
 
 const CourseTree = () => {
   const [activeKey, setActiveKey] = useState<string[]>([]); // 默认使用空数组
