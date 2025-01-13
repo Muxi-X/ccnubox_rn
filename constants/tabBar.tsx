@@ -1,11 +1,9 @@
 import { Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import SelectWeek from '@/module/courseTable/SelectWeek';
-import { TooltipContent } from '@/module/courseTable/TooltipContent';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';

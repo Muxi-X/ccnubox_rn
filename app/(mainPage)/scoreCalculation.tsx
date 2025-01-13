@@ -13,7 +13,7 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeDetail } from './api';
+import { queryGradeDetail } from '../../request/api';
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
 const data = [
   {
