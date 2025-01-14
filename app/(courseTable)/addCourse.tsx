@@ -1,9 +1,10 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import Nabvar from './component/Navbar';
+
 import { AddComponent } from './component/AddComponent';
 import ItemList from './component/ItemList';
+import Nabvar from './component/Navbar';
 
 export default function AddCourse() {
   const [pattern, setPattern] = React.useState(0);
