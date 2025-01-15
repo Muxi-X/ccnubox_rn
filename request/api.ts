@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:utils/api.ts
-import { axiosInstance } from '@/request/request';
-========
-import { request } from '@/request/request';
->>>>>>>> a83114347940d9005631ff1cad45952f4919b6ff:request/api.ts
+import { request } from './request';
 
 // 查询电费接口封装函数
 export const queryElectricityPrice = async (queryParams: any) => {
