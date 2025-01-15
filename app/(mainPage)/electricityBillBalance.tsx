@@ -10,7 +10,7 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryElectricityPrice, setElectricityPrice } from './api';
+import { queryElectricityPrice, setElectricityPrice } from '../../utils/api';
 
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
