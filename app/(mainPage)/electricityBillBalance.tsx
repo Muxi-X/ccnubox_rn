@@ -32,7 +32,7 @@ const ElectricityBillBalance = () => {
       student_id: '2023215228',
     })
       .then(res => {
-        if (res.code === 10000) {
+        if (res?.code === 10000) {
           console.log('查询成功，电费信息：' + JSON.stringify(res.data));
           setElecInfo(res.data);
         }
