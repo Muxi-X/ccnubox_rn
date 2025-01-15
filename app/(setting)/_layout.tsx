@@ -21,8 +21,9 @@ export default function Layout() {
         screenOptions={{
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
-          headerBackButtonMenuEnabled: true,
           headerBackVisible: false,
+          headerTitleAlign: 'center',
+          headerBackButtonMenuEnabled: true,
         }}
       >
         {SettingItems.map(config => (
@@ -30,6 +31,7 @@ export default function Layout() {
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
             options={{
+              headerTitleAlign: 'center',
               headerLeft: () => {
                 return (
                   <>
@@ -50,6 +52,9 @@ export default function Layout() {
               ),
               headerStyle: currentStyle?.header_background_style as StyleProp<{
                 backgroundColor: string | undefined;
+                flexDirection: 'row';
+                justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+                alignItems: 'center';
               }>,
             }}
           ></Stack.Screen>
