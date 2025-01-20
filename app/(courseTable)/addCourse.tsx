@@ -16,18 +16,20 @@ export default function addCourse() {
 
   return (
     <View style={styles.container}>
-      <Nabvar navText={['自主添加', '搜索添加']} pattern={pattern} setPattern={setPattern} />
+      <Nabvar
+        navText={['自主添加', '搜索添加']}
+        pattern={pattern}
+        setPattern={setPattern}
+      />
       {pattern === 0 ? <AddPage /> : <SearchPage />}
     </View>
   );
 }
 
-
-
 const AddPage: React.FC = () => {
   return (
     <View style={styles.addContainer}>
-      <AddComponent pageText='course' buttonText="添加课程" />
+      <AddComponent pageText="course" buttonText="添加课程" />
     </View>
   );
 };
