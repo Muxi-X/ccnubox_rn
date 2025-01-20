@@ -20,7 +20,18 @@ const CourseItem: React.FC<CourseTransferType> = props => {
         backgroundColor: colorOptions.find(item => item.label === date)?.color,
       }}
     >
-      <View style={[styles.cellView, { marginTop: 20 }]}>
+      <View
+        style={[
+          styles.cellView,
+          {
+            marginTop: timeSpan === 1 ? 0 : 20,
+            height:
+              timeSpan === 1
+                ? COURSE_HEADER_HEIGHT - 10
+                : COURSE_HEADER_HEIGHT + 10,
+          },
+        ]}
+      >
         <Text style={styles.cellText}>{courseName || ''}</Text>
       </View>
       <View style={styles.cellView}>
