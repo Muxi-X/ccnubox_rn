@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { setItem } from 'expo-secure-store';
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
@@ -22,7 +21,6 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
-import { axiosInstance, request } from '@/request/request';
 import { commonColors } from '@/styles/common';
 
 import { CourseTableProps, CourseTransferType } from './type';

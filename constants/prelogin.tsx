@@ -2,7 +2,7 @@ import { FC, ReactElement } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import { commonStyles } from '@/styles/common';
-import { keyGenerator } from '@/utils/autoKey';
+import { keyGenerator } from '@/utils';
 
 export const GuideContent: FC<{
   texts: string[];
