@@ -2,6 +2,7 @@ import { Icon, Toast } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
+import * as React from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -20,7 +21,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { preloginGuide } from '@/constants/prelogin';
 import { commonStyles } from '@/styles/common';
-import { percent2px } from '@/utils/percent2px';
+import { percent2px } from '@/utils';
 
 const PAGE_SWIPE_ANIMATION_DURATION = 450;
 const { height: screenHeight } = Dimensions.get('window');

@@ -3,6 +3,7 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
+
 function About() {
   const handleCopy = (text: string) => {
     Clipboard.setStringAsync(text).then(r => console.log(r));
