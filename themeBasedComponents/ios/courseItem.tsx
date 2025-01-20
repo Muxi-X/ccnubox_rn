@@ -7,26 +7,26 @@ import { CourseTransferType } from '@/module/courseTable/components/courseTable/
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, colIndex, rowIndex, courseName, classroom, timeSpan } =
     props;
+  console.log('CourseItems', props);
   return (
     <View
       style={{
-        top: 15,
+        top: timeSpan === 1 ? 0 : 15,
       }}
     >
       <View
         style={[
           {
-            paddingTop: 10,
+            paddingTop: timeSpan === 1 ? 0 : 10,
             paddingBottom: 10,
             paddingLeft: 10,
             paddingRight: 6,
-            backgroundColor:
-              colorOptions[(rowIndex + colIndex) % colorOptions.length].color,
+            backgroundColor: colorOptions[rowIndex % colorOptions.length].color,
             borderRadius: 5,
           },
         ]}
       >
-        <Text style={styles.cellText}>{courseName || ''}</Text>
+        <Text style={styles.cellText}>{courseName + timeSpan + '1' || ''}</Text>
       </View>
       <View
         style={[

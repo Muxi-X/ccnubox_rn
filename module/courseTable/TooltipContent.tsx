@@ -54,8 +54,9 @@ export const TooltipContent = () => {
                 navigation.navigate(item.url);
                 console.log(item.url);
                 break;
-              };
-          }}}
+              }
+            }
+          }}
         >
           <Image source={item.icon} style={styles.tooltipImage} />
           <Text style={styles.tooltipText}>{item.text}</Text>

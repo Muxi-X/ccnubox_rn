@@ -1,12 +1,7 @@
 import { useRouter } from 'expo-router';
+import { setItem } from 'expo-secure-store';
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
@@ -17,7 +12,6 @@ import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
-  colorOptions,
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
@@ -28,8 +22,8 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import { axiosInstance, request } from '@/request/request';
 import { commonColors } from '@/styles/common';
-import { keyGenerator } from '@/utils/autoKey';
 
 import { CourseTableProps, CourseTransferType } from './type';
 
@@ -56,24 +50,31 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       );
       const courses: CourseTransferType[] = [];
       // 遍历传入的数据，根据时间和日期填充表格
-      data.forEach(
-        ({ courseName, teacher, classroom, time, date, timeSpan = 2 }) => {
-          const rowIndex = timeSlots.indexOf(time);
-          const colIndex = daysOfWeek.indexOf(date);
-          if (rowIndex !== -1 && colIndex !== -1) {
-            timetableMatrix[rowIndex][colIndex] = { courseName, timeSpan };
-            courses.push({
-              courseName,
-              timeSpan,
-              teacher,
-              date,
-              classroom,
-              rowIndex,
-              colIndex,
-            });
+      data.forEach(course => {
+        course?.info.forEach(
+          ({ id, day, teacher, where, class_when, classname }) => {
+            const timeSpan = class_when
+              .split('-')
+              .map(Number)
+              .reduce((a: number, b: number) => b - a + 1);
+            const rowIndex = Number(class_when.split('-')[0]) - 1;
+            const colIndex = day - 1;
+            if (rowIndex !== -1 && colIndex !== -1) {
+              timetableMatrix[rowIndex][colIndex] = { classname, timeSpan };
+              courses.push({
+                id,
+                courseName: classname,
+                timeSpan,
+                teacher,
+                date: daysOfWeek[colIndex],
+                classroom: where,
+                rowIndex,
+                colIndex,
+              });
+            }
           }
-        }
-      );
+        );
+      });
       return (
         <View style={styles.courseWrapperStyle}>
           {timetableMatrix.map((row, rowIndex) => (
@@ -96,11 +97,8 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
             </View>
           ))}
           {/* 课程内容 */}
-          {courses.map((item, index) => (
-            <Content
-              key={keyGenerator.next().value as unknown as number}
-              {...item}
-            ></Content>
+          {courses.map(item => (
+            <Content key={item.id} {...item}></Content>
           ))}
         </View>
       );
@@ -137,6 +135,7 @@ export const Content: React.FC<CourseTransferType> = props => {
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
+  console.log('props', props);
   return (
     <>
       <Pressable
