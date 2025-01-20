@@ -23,7 +23,6 @@ export default function Layout() {
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackVisible: false,
           headerTitleAlign: 'center',
-          headerBackButtonMenuEnabled: true,
         }}
       >
         {SettingItems.map(config => (

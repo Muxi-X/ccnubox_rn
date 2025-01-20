@@ -5,6 +5,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ThemeBasedView from '@/components/view';
 
 function About() {
+  const number = '576225292';
   const handleCopy = (text: string) => {
     Clipboard.setStringAsync(text).then(r => console.log(r));
     console.log('复制文本为：' + text);
@@ -26,15 +27,15 @@ function About() {
       <View style={styles.groupContainer}>
         <View style={styles.groupRow}>
           <Text style={styles.groupText}>匣子交流群：</Text>
-          <Text style={styles.groupNumber}>576225292</Text>
-          <TouchableOpacity onPress={() => handleCopy('576225292')}>
+          <Text style={styles.groupNumber}>{number}</Text>
+          <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.groupRow}>
-          <Text style={styles.groupText}>木属招新群：</Text>
-          <Text style={styles.groupNumber}>576225292</Text>
-          <TouchableOpacity onPress={() => handleCopy('576225292')}>
+          <Text style={styles.groupText}>木犀招新群：</Text>
+          <Text style={styles.groupNumber}>{number}</Text>
+          <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
         </View>
