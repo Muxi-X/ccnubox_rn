@@ -25,7 +25,10 @@ import { commonColors } from '@/styles/common';
 
 import { CourseTableProps, CourseTransferType } from './type';
 
-const Timetable: React.FC<CourseTableProps> = ({ data }) => {
+const Timetable: React.FC<CourseTableProps> = ({
+  data,
+  onTimetableRefresh,
+}) => {
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -102,7 +105,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       );
     })()
   );
-
+  console.log('data', data);
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -110,10 +113,9 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
           // 上方导航栏
           stickyTop={<StickyTop />}
           onRefresh={(handleSuccess, handleFail) => {
-            setTimeout(() => {
-              alert(666);
-              handleSuccess();
-            }, 7000);
+            onTimetableRefresh();
+            // alert(6636);
+            handleSuccess();
           }}
           // 学霸也是要睡觉的 ！！！！！！
           stickyBottom={<StickyBottom />}
@@ -121,7 +123,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
           stickyLeft={<StickyLeft />}
         >
           {/* 内容部分 (课程表) */}
-          {content ?? <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+          {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
         </ScrollableView>
       </View>
     </View>

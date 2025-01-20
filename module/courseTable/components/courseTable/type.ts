@@ -17,6 +17,7 @@ export type courseType = {
 
 export interface CourseTableProps {
   data: courseType[];
+  onTimetableRefresh: () => void;
 }
 
 // 课程中间类型,比 courseType 增加 rowIndex 和 colIndex
