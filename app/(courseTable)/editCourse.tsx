@@ -1,5 +1,6 @@
 import { View } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
+
 import { AddComponent } from './component/AddComponent';
 
 export default function EditCourse() {
