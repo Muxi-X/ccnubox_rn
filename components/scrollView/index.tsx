@@ -4,10 +4,12 @@ import {
   LayoutChangeEvent,
   LayoutRectangle,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -55,6 +57,9 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
     width: 0,
     height: 0,
   });
+  // 下拉刷新文本状态
+  const [refreshText, setRefreshText] = useState('下拉刷新课表');
+
   useEffect(() => {
     isAtTop.value && onReachTopEnd();
     isAtBottom.value && onReachBottomEnd();
@@ -90,6 +95,9 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       if (isAtTop.value) {
         if (event.translationY > 20) {
           backHeight.value = withSpring(100);
+          runOnJS(setRefreshText)('松开即刷新');
+        } else {
+          runOnJS(setRefreshText)('下拉刷新课表');
         }
         isAtTop.value = false;
       }
@@ -160,6 +168,8 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       ) {
         isAtBottom.value = true;
       }
+      // 重置下拉刷新文本
+      runOnJS(setRefreshText)('下拉刷新课表');
     });
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -194,7 +204,15 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-      ></Animated.View>
+      >
+        <Text
+          style={{
+            color: commonColors.white,
+          }}
+        >
+          {refreshText}
+        </Text>
+      </Animated.View>
       {/* sticky top */}
       <Animated.View
         style={[

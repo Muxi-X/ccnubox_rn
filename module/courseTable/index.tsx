@@ -21,7 +21,7 @@ const CourseTablePage: FC = () => {
       year: '2024',
     }).then(res => {
       if (res?.code === 0) {
-        setCourseData(res.classes as courseType[]);
+        setCourseData(res.data?.classes as courseType[]);
       }
     });
   };
