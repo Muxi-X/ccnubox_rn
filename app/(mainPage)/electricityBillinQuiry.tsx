@@ -1,6 +1,6 @@
 import { PickerView } from '@ant-design/react-native';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,

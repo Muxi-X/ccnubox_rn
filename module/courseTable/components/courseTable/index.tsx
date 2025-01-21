@@ -112,10 +112,14 @@ const Timetable: React.FC<CourseTableProps> = ({
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
-          onRefresh={(handleSuccess, handleFail) => {
-            onTimetableRefresh();
-            // alert(6636);
-            handleSuccess();
+          onRefresh={async (handleSuccess, handleFail) => {
+            try {
+              onTimetableRefresh();
+              handleSuccess();
+            } catch (error) {
+              console.error('刷新失败:', error);
+              handleFail();
+            }
           }}
           // 学霸也是要睡觉的 ！！！！！！
           stickyBottom={<StickyBottom />}
