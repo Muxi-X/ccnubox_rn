@@ -1,14 +1,15 @@
 import { Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Href, router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
 
-import { SinglePageType } from '@/types/tabBarTypes';
 import { tooltipActions } from './courseTableApplications';
-import { Href, router } from 'expo-router';
+
+import { SinglePageType } from '@/types/tabBarTypes';
 
 /**
  * @enum tabBar颜色

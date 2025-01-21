@@ -6,7 +6,9 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeDetail } from '../../utils/api';
+
+import { queryGradeDetail } from '@/request/api';
+
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
 const data = [
   {
@@ -72,7 +74,6 @@ const ScoreCalculation = () => {
   const [checkedList, setCheckedList] = useState<any>(
     new Set(defaultCheckedList)
   ); // 初始选中项
-  const [list, setList] = useState([]);
   const [indeterminate, setIndeterminate] = useState(false); // 半选状态
   const [checkAll, setCheckAll] = useState(true); // 全选状态
   const [visible1, setVisible1] = useState(false);
@@ -115,7 +116,7 @@ const ScoreCalculation = () => {
       xnm: '学期2',
     }).then(res => {
       console.log(res, 'res');
-      if (res.code == 0) {
+      if (res.code === 0) {
       }
     });
   }, []);
