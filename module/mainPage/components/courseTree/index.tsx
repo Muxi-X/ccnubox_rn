@@ -15,12 +15,12 @@ const CourseTree = () => {
   const [total, setTotal] = useState(0);
   useEffect(() => {
     queryGradeAll({}).then(res => {
-      if (res.code == 0) {
+      if (res.code === 0) {
         console.log(res.data, '4444');
         let num = 0;
         const data = res.data.reduce((pre: any, cur: any) => {
           const findIndex = pre.findIndex(
-            (i: any) => i.title == cur.Kclbmc || i.title == cur.kcxzmc
+            (i: any) => i.title === cur.Kclbmc || i.title === cur.kcxzmc
           );
           num += Number(cur.grade);
           if (findIndex !== -1) {
