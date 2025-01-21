@@ -5,7 +5,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeAll } from '@/request/api';
 const data1 = [
   {
     value: '2023-2024',
