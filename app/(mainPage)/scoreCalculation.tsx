@@ -6,7 +6,9 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
+
 import { queryGradeDetail } from '@/request/api';
+
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
 const data = [
   {

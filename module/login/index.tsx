@@ -1,5 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -16,6 +17,7 @@ import { axiosInstance } from '@/request/request';
 import { commonStyles } from '@/styles/common';
 
 const LoginPage: FC = () => {
+  const router = useRouter();
   // 监听键盘弹起，避免元素遮挡
   const isKeyboardShow = useKeyboardShow();
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
@@ -43,6 +45,7 @@ const LoginPage: FC = () => {
         console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
+        router.navigate('/(tabs)');
       }
     } catch (error) {
       console.error('注册请求失败:1111111', error);
