@@ -8,6 +8,7 @@ interface Props {
   pattern: number;
   navText: string[];
 }
+
 export default function Nabvar({ setPattern, pattern, navText }: Props) {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,

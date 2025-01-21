@@ -13,11 +13,12 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post?: never;
     /**
      * 删除信息整合信息
      * @description 删除信息整合信息
      */
-    post: {
+    delete: {
       parameters: {
         query?: never;
         header?: never;
@@ -42,7 +43,6 @@ export interface paths {
         };
       };
     };
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -142,11 +142,12 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post?: never;
     /**
      * 删除 banner 内容
      * @description 删除 banner 内容
      */
-    post: {
+    delete: {
       parameters: {
         query?: never;
         header?: never;
@@ -171,7 +172,6 @@ export interface paths {
         };
       };
     };
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -271,11 +271,12 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post?: never;
     /**
      * 删除日历内容
      * @description 删除日历内容
      */
-    post: {
+    delete: {
       parameters: {
         query?: never;
         header?: never;
@@ -300,7 +301,6 @@ export interface paths {
         };
       };
     };
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -427,7 +427,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['card.GetRecordOfConsumptionResponse'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['card.GetRecordOfConsumptionResponse'];
+            };
           };
         };
         /** @description 创建失败 */
@@ -436,7 +438,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['card.Result'];
+            'application/json': components['schemas']['ginx.Result'];
           };
         };
       };
@@ -480,7 +482,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['card.Result'];
+            'application/json': components['schemas']['ginx.Result'];
           };
         };
         /** @description 创建失败 */
@@ -489,7 +491,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['card.Result'];
+            'application/json': components['schemas']['ginx.Result'];
           };
         };
       };
@@ -533,7 +535,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['card.Result'];
+            'application/json': components['schemas']['ginx.Result'];
           };
         };
         /** @description 创建失败 */
@@ -542,7 +544,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['card.Result'];
+            'application/json': components['schemas']['ginx.Result'];
           };
         };
       };
@@ -688,7 +690,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['class.GetClassListResp'];
+            };
           };
         };
       };
@@ -735,7 +739,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['class.GetRecycleBinClassInfosResp'];
+            };
           };
         };
       };
@@ -836,7 +842,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['class.SearchClassResp'];
+            };
           };
         };
       };
@@ -905,11 +913,12 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post?: never;
     /**
      * 删除部门信息
      * @description 删除部门信息
      */
-    post: {
+    delete: {
       parameters: {
         query?: never;
         header?: never;
@@ -934,7 +943,6 @@ export interface paths {
         };
       };
     };
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -1058,7 +1066,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['elecprice.Price'];
+            };
           };
         };
       };
@@ -1104,7 +1114,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: string;
+            };
           };
         };
       };
@@ -1295,7 +1307,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['feed.GetFeedAllowListResp'];
+            };
           };
         };
         /** @description 系统异常 */
@@ -1343,7 +1357,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feed.GetFeedEventsResp'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['feed.GetFeedEventsResp'];
+            };
           };
         };
         /** @description 系统异常 */
@@ -1391,7 +1407,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feed.GetToBePublicMuxiOfficialMSGResp'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['feed.GetToBePublicMuxiOfficialMSGResp'];
+            };
           };
         };
         /** @description 没有访问权限 */
@@ -1455,7 +1473,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feed.PublicMuxiOfficialMSGResp'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['feed.PublicMuxiOfficialMSGResp'];
+            };
           };
         };
         /** @description 没有访问权限 */
@@ -1943,7 +1963,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.GetQuestionsResp'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['feedback_help.GetQuestionsResp'];
+            };
           };
         };
         /** @description 系统异常 */
@@ -1952,7 +1974,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['ginx.Result'];
           };
         };
       };
@@ -2150,7 +2172,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['grade.GradeAllResp'];
+            };
           };
         };
       };
@@ -2196,7 +2220,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['ginx.Result'] & {
+              data?: components['schemas']['grade.GradeResponseDetail'];
+            };
           };
         };
       };
@@ -2561,11 +2587,12 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post?: never;
     /**
      * 删除网站信息
      * @description 删除网站信息
      */
-    post: {
+    delete: {
       parameters: {
         query?: never;
         header?: never;
@@ -2590,7 +2617,6 @@ export interface paths {
         };
       };
     };
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -2682,9 +2708,7 @@ export interface paths {
     trace?: never;
   };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
   schemas: {
     'banner.Banner': {
@@ -2733,13 +2757,6 @@ export interface components {
       after_money?: number;
       money?: number;
     };
-    'card.Result': {
-      /** @description 错误码，非 0 表示失败 */
-      code?: number;
-      data?: Record<string, never>;
-      /** @description 错误或成功 描述 */
-      msg?: string;
-    };
     'card.UpdateUserKeyRequest': {
       key?: string;
     };
@@ -2763,6 +2780,34 @@ export interface components {
       /** @description 学年 */
       year?: string;
     };
+    'class.Class': {
+      info?: components['schemas']['class.ClassInfo'][];
+      thisweek?: boolean;
+    };
+    'class.ClassInfo': {
+      /** @description 上课是第几节（如1-2,3-4） */
+      class_when?: string;
+      /** @description 课程名称 */
+      classname?: string;
+      /** @description 学分 */
+      credit?: number;
+      /** @description 星期几 */
+      day?: number;
+      /** @description 集合了课程信息的字符串，便于标识（课程ID） */
+      id?: string;
+      /** @description 学期 */
+      semester?: string;
+      /** @description 任课教师 */
+      teacher?: string;
+      /** @description 上课的周数 */
+      week_duration?: string;
+      /** @description 哪些周 */
+      weeks?: number;
+      /** @description 上课地点 */
+      where?: string;
+      /** @description 学年 */
+      year?: string;
+    };
     'class.DeleteClassRequest': {
       /** @description 要被删的课程id */
       id?: string;
@@ -2776,6 +2821,12 @@ export interface components {
       week?: number;
       year?: string;
     };
+    'class.GetClassListResp': {
+      classes?: components['schemas']['class.Class'][];
+    };
+    'class.GetRecycleBinClassInfosResp': {
+      classInfos?: components['schemas']['class.ClassInfo'][];
+    };
     'class.RecoverClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
       classId?: string;
@@ -2783,6 +2834,9 @@ export interface components {
       semester?: string;
       /** @description 学年  "2024" 代表"2024-2025学年" */
       year?: string;
+    };
+    'class.SearchClassResp': {
+      classInfos?: components['schemas']['class.ClassInfo'][];
     };
     'class.SearchRequest': {
       /** @description 搜索关键词,匹配的是课程名称和教师姓名 */
@@ -2832,6 +2886,20 @@ export interface components {
       place?: string;
       time?: string;
     };
+    'elecprice.Price': {
+      /** @description 昨日用电度数 */
+      air_garde?: string;
+      /** @description 昨日空调电费 */
+      air_price?: string;
+      /** @description 空调剩余电费 */
+      air_rest?: string;
+      /** @description 昨日照明用电度数 */
+      lighting_garde?: string;
+      /** @description 昨日照明电费 */
+      lighting_price?: string;
+      /** @description 电灯剩余电费 */
+      lighting_rest?: string;
+    };
     'elecprice.SetRequest': {
       /** @description 区域 */
       area?: string;
@@ -2861,6 +2929,13 @@ export interface components {
       id?: number;
       title?: string;
       type?: string;
+    };
+    'feed.GetFeedAllowListResp': {
+      air_conditioner?: boolean;
+      grade?: boolean;
+      holiday?: boolean;
+      light?: boolean;
+      muxi?: boolean;
     };
     'feed.GetFeedEventsResp': {
       read_events?: components['schemas']['feed.FeedEvent'][];
@@ -2960,6 +3035,37 @@ export interface components {
       /** @description 错误或成功 描述 */
       msg?: string;
     };
+    'grade.Class': {
+      /** @description 课程类别名称，比如专业课/公共课 */
+      Kclbmc?: string;
+      /** @description 课程名 */
+      course?: string;
+      /** @description 学分 */
+      credit?: string;
+      /** @description 总成绩 */
+      grade?: string;
+      jxbId?: string;
+      /** @description 课程标记，比如主修/辅修 */
+      kcbj?: string;
+      /** @description 课程性质名称 比如专业主干课程/通识必修课 */
+      kcxzmc?: string;
+      /** @description 学年 */
+      xnm?: string;
+      /** @description 学期名 */
+      xqm?: string;
+    };
+    'grade.GradeAllResp': {
+      classes?: components['schemas']['grade.Class'][];
+    };
+    'grade.GradeResponseDetail': {
+      FinalGrade?: string;
+      /** @description 期末成绩占比 */
+      FinalGradePercent?: string;
+      /** @description 平时成绩 */
+      RegularGrade?: string;
+      /** @description 平时成绩占比 */
+      RegularGradePercent?: string;
+    };
     'infoSum.DelInfoSumRequest': {
       id?: number;
     };
@@ -3033,6 +3139,5 @@ export interface components {
   headers: never;
   pathItems: never;
 }
-
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

@@ -21,7 +21,7 @@ export const daysOfWeek = ['一', '二', '三', '四', '五', '六', '日'];
 /**
  * 每隔几个时间格出现下划线
  */
-export const courseCollapse = 2;
+export const courseCollapse = 1;
 /**
  * 时间段
  */
@@ -63,6 +63,15 @@ export const colorOptions = [
   {
     color: '#F39FA7',
     label: '五',
+  },
+  // Todo:周六周日课表的颜色
+  {
+    color: '#F39FA7',
+    label: '六',
+  },
+  {
+    color: '#F39FA7',
+    label: '日',
   },
 ];
 
