@@ -44,7 +44,6 @@ export const AddComponent = (props: Props) => {
   return (
     <>
       <View>
-        // Todo
         <Input
           inputStyle={styles.addText}
           allowClear
@@ -97,25 +96,25 @@ export const AddComponent = (props: Props) => {
           <Text>选择周次</Text>
         </Picker>
       </View>
-      {/*{items.map((item, index) => (*/}
-      {/*  <TouchableOpacity key={index} style={styles.card}>*/}
-      {/*    <Image source={item.icon} style={[styles.icon]}></Image>*/}
-      {/*    <View style={{ flex: 8 }}>*/}
-      {/*      {index < 2 && (
-            //   <View>
-            //     <Text style={{ fontSize: 16, fontWeight: 700 }}>
-            //       {item.title}
-            //     </Text>
-            //   </View>
-            // )}
-            //
-            // <View>
-            //   <Text
-            //     style={{ fontSize: index >= 2 ? 16 : 14, color: '#75757B' }}
-            //   >
-            //     {item.value}
-            //   </Text>
-            // </View>
+      {/*/!*{items.map((item, index) => (*!/*/}
+      {/*/!*  <TouchableOpacity key={index} style={styles.card}>*!/*/}
+      {/*/!*    <Image source={item.icon} style={[styles.icon]}></Image>*!/*/}
+      {/*/!*    <View style={{ flex: 8 }}>*!/*/}
+      {/*/!*      {index < 2 && (*/}
+      {/*         <View>*/}
+      {/*           <Text style={{ fontSize: 16, fontWeight: 700 }}>*/}
+      {/*             {item.title}*/}
+      {/*           </Text>*/}
+      {/*         </View>*/}
+      {/*       )}*/}
+      {/*      */}
+      {/*       <View>*/}
+      {/*         <Text*/}
+      {/*           style={{ fontSize: index >= 2 ? 16 : 14, color: '#75757B' }}*/}
+      {/*         >*/}
+      {/*           {item.value}*/}
+      {/*         </Text>*/}
+      {/*       </View>*/}
       {/*    </View>*/}
       {/*  </TouchableOpacity>*/}
       {/*))}*/}
