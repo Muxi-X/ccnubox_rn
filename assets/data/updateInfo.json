@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "releaseNotes": [
-    "新增组件：Modal、Picker",
-    "修复问题：解决了应用在ios上崩溃的问题。",
+    "更新课表接口",
+    "修复问题：request请求。"
   ],
   "knownIssues": [
     "在极少数情况下，应用可能会出现闪退。"
