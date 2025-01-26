@@ -1,13 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Slot } from 'expo-router';
 import { FC } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useKeyboardShow } from '@/hooks';
 
@@ -20,10 +14,7 @@ const Login: FC = () => {
   // 监听键盘弹起，避免元素遮挡
   const isKeyboardShow = useKeyboardShow();
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
+    <View style={{ flex: 1 }}>
       <LinearGradient colors={['#7B6EF1', '#7FB4FB']} style={styles.bg}>
         <AnimatedFade
           direction="vertical"
@@ -60,7 +51,7 @@ const Login: FC = () => {
           <Divider>木犀团队出品</Divider>
         </View>
       </LinearGradient>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
