@@ -38,7 +38,7 @@ const IndexPage: FC = () => {
         <View style={styles.item} key={key}>
           <Skeleton style={styles.item} loading={loading}>
             <Image
-              style={{ width: 60, height: 60, borderRadius: 30 }}
+              style={{ width: 50, height: 50, borderRadius: 5 }}
               source={imageUrl}
             ></Image>
           </Skeleton>
@@ -80,7 +80,7 @@ const IndexPage: FC = () => {
       </Skeleton>
       {/* 功能列表 */}
       <DraggableGrid
-        numColumns={4}
+        numColumns={3}
         renderItem={render}
         data={data}
         onDragRelease={setData}
