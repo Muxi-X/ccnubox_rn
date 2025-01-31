@@ -1,3 +1,5 @@
+import { Href } from 'expo-router';
+
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const mainPageApplications: MainPageGridDataType[] = [
@@ -28,5 +30,12 @@ export const mainPageApplications: MainPageGridDataType[] = [
     imageUrl: require('../assets/images/mx-logo.png'),
     key: 'grid-4',
     href: '/scoreInquiry',
+  },
+  {
+    title: '地图',
+    name: 'map',
+    imageUrl: require('../assets/images/mx-logo.png'),
+    key: 'grid-5',
+    href: '/map' as Href,
   },
 ];
