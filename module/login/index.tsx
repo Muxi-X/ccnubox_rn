@@ -1,4 +1,4 @@
-import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
+import { Checkbox, Icon, Toast, Input } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
@@ -87,6 +87,7 @@ const LoginPage: FC = () => {
         }
         placeholderTextColor={styles.textColor.color}
         textAlign="center"
+        blurOnSubmit={false}
       ></Input>
       <Input
         style={styles.input}
@@ -98,7 +99,8 @@ const LoginPage: FC = () => {
         onChangeText={text =>
           setUserInfo(prev => ({ ...prev, password: text.toString() }))
         }
-        type={isPasswordShow ? 'text' : 'password'}
+        blurOnSubmit={false}
+        type="password"
         suffix={
           <Icon
             name={isPasswordShow ? 'eye' : 'eye-invisible'}
@@ -122,7 +124,7 @@ const LoginPage: FC = () => {
         isLoading={loginTriggered}
         style={[styles.login_button, currentStyle?.button_style]}
       >
-        登陆
+        登录
       </Button>
     </AnimatedFade>
   );
