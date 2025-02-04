@@ -39,10 +39,10 @@ const IndexPage: FC = () => {
           <Skeleton style={styles.item} loading={loading}>
             <Image
               style={{
-                // width: 32,
-                // height: 40,
-                width: percent2px(8, 'width'),
-                height: percent2px(10, 'width'),
+                width: 32,
+                height: 40,
+                // width: percent2px(8, 'width'),
+                // height: percent2px(10, 'width'),
                 resizeMode: 'stretch',
               }}
               source={imageUrl}
