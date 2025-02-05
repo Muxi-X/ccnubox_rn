@@ -38,7 +38,13 @@ const IndexPage: FC = () => {
         <View style={styles.item} key={key}>
           <Skeleton style={styles.item} loading={loading}>
             <Image
-              style={{ width: 60, height: 60, borderRadius: 30 }}
+              style={{
+                width: 32,
+                height: 40,
+                // width: percent2px(8, 'width'),
+                // height: percent2px(10, 'width'),
+                resizeMode: 'stretch',
+              }}
               source={imageUrl}
             ></Image>
           </Skeleton>
@@ -52,7 +58,7 @@ const IndexPage: FC = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(!loading);
-    }, 5000);
+    }, 500);
   }, []);
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
@@ -80,7 +86,7 @@ const IndexPage: FC = () => {
       </Skeleton>
       {/* 功能列表 */}
       <DraggableGrid
-        numColumns={4}
+        numColumns={3}
         renderItem={render}
         data={data}
         onDragRelease={setData}
@@ -101,7 +107,7 @@ const styles = StyleSheet.create({
     height: 120,
     marginTop: 20,
     overflow: 'hidden',
-    marginBottom: 60,
+    marginBottom: 10,
     alignSelf: 'center',
     // justifyContent: 'center',
   },
@@ -110,8 +116,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   item: {
-    width: 100,
-    height: 100,
+    width: percent2px(30, 'width'),
+    height: 200,
     borderRadius: 8,
     margin: 10,
     justifyContent: 'center',
