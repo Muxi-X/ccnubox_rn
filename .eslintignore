@@ -1,0 +1,10 @@
+node_modules/
+.expo/
+.vscode/
+.husky/
+.idea/
+
+metro.config.js
+expo-env.d.ts
+scripts
+plugin.js

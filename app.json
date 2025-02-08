@@ -1,0 +1,93 @@
+{
+  "expo": {
+    "name": "ccnu_coursetable",
+    "slug": "ccnucoursetable",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/mx-logo.png",
+    "scheme": "wx6220588048f6e417",
+    "newArchEnabled": true,
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["assets/images/", "assets/data/", "assets/fonts"],
+    "splash": {
+      "image": "./assets/images/mx-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "release-20240916",
+      "buildNumber": "7",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        },
+        // Add iOS queries schemes of WeChat
+        "LSApplicationQueriesSchemes": [
+          "weixin",
+          "weixinULAPI",
+          "weixinURLParamsAPI"
+        ]
+      },
+      // Add your iOS universal link
+      // Example "applinks:(google.com)"
+      "associatedDomains": ["applinks:(Universal Link Here)"]
+    },
+    "android": {
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/mx-logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.ACCESS_NOTIFICATION_POLICY",
+        "android.permission.RECEIVE_BOOT_COMPLETED"
+      ],
+      "googleServicesFile": "./secret/google-services.json",
+      "package": "com.kbkbk.ccnu_coursetable"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/mx-logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "./plugin.js",
+        {
+          "appKey": "3fdd1ecdd0325fa2a197df7e",
+          "channel": "course_box"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-native-wechat"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d6863b18-d443-4651-b836-5129afd64edc"
+      }
+    },
+    "runtimeVersion": "1.2.0",
+    "updates": {
+      "url": "https://u.expo.dev/d6863b18-d443-4651-b836-5129afd64edc"
+    },
+    "owner": "muxi_fe"
+  }
+}
