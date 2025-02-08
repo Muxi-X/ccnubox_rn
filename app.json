@@ -22,15 +22,14 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        // Add iOS queries schemes of WeChat
+        
         "LSApplicationQueriesSchemes": [
           "weixin",
           "weixinULAPI",
           "weixinURLParamsAPI"
         ]
       },
-      // Add your iOS universal link
-      // Example "applinks:(google.com)"
+      
       "associatedDomains": ["applinks:(Universal Link Here)"]
     },
     "android": {

@@ -16,7 +16,6 @@ import useVisualScheme from '@/store/visualScheme';
 import { queryGradeDetail } from '@/request/api';
 
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
-
 const ScoreCalculation = () => {
   const local = useLocalSearchParams();
   const currentStyle = useVisualScheme(state => state.currentStyle);

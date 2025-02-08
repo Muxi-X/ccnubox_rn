@@ -11,35 +11,35 @@ import { queryGradeAll } from '@/utils/api';
 const CourseTree = () => {
   const [activeKey, setActiveKey] = useState<string[]>([]); // 默认使用空数组
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [list, setList] = useState<any[]>([]);
+  const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   useEffect(() => {
     queryGradeAll({}).then(res => {
       if (res.code === 0) {
+        console.log(res.data, '4444');
         let num = 0;
-        const data = [];
-        // Process the new data structure
-        for (const typeGroup of res.data.type_of_grade_scores) {
-          const groupData: any = {
-            title: typeGroup.kcxzmc,
-            score: 0,
-            children: [],
-          };
-
-          // Process each course in the grade_score_list
-          for (const course of typeGroup.grade_score_list) {
-            const courseScore = Number(course.xf);
-            num += courseScore;
-            groupData.score += courseScore;
-            groupData.children.push({
-              title: course.kcmc,
-              score: courseScore,
+        const data = res.data.reduce((pre: any, cur: any) => {
+          const findIndex = pre.findIndex(
+            (i: any) => i.title === cur.Kclbmc || i.title === cur.kcxzmc
+          );
+          num += Number(cur.grade);
+          if (findIndex !== -1) {
+            pre[findIndex].score += Number(cur.grade);
+            pre[findIndex].children.push({
+              title: cur.course,
+              score: Number(cur.grade),
+            });
+          } else {
+            pre.push({
+              title: cur.Kclbmc || cur.kcxzmc,
+              score: Number(cur.grade),
+              children: [
+                { title: cur.Kclbmc || cur.kcxzmc, score: Number(cur.grade) },
+              ],
             });
           }
-
-          data.push(groupData);
-        }
-
+          return pre;
+        }, []);
         setTotal(num);
         setList(data);
       }
