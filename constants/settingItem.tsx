@@ -19,14 +19,14 @@ export const SettingItems: SettingItem[] = [
     text: '分享',
     url: '/(setting)/share' as Href<string>,
   },
-  {
-    title: '帮助',
-    name: 'help',
-    id: 3,
-    icon: require('@/assets/images/help.png'),
-    text: '帮助与反馈',
-    url: '/(setting)/help',
-  },
+  // {
+  //   title: '帮助',
+  //   name: 'help',
+  //   id: 3,
+  //   icon: require('@/assets/images/help.png'),
+  //   text: '帮助与反馈',
+  //   url: '/(setting)/help',
+  // },
   {
     title: '检查更新',
     name: 'checkUpdate',
