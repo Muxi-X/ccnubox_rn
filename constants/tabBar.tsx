@@ -21,6 +21,63 @@ import { SinglePageType } from '@/types/tabBarTypes';
 export const TABBAR_COLOR = {
   PRIMARY: commonColors.darkGray,
 };
+
+const NotificationHeaderRight = () => {
+  const [notiVisible, setNotiVisible] = useState(false);
+  const [clearVisible, setClearVisible] = useState(false);
+
+  return (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+      }}
+    >
+      <TouchableOpacity
+        style={[
+          styles.notificationBtn,
+          {
+            backgroundColor: '#7878F8',
+          },
+        ]}
+        onPress={() => setNotiVisible(true)}
+      >
+        <Text
+          style={{
+            color: commonColors.white,
+          }}
+        >
+          消息通知
+        </Text>
+      </TouchableOpacity>
+      <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
+      <TouchableOpacity
+        style={[
+          styles.notificationBtn,
+          {
+            backgroundColor: '#D9D9D9',
+          },
+        ]}
+        onPress={() => {
+          setClearVisible(true);
+        }}
+      >
+        <Text
+          style={{
+            color: '#FF6F6F',
+          }}
+        >
+          一键清空
+        </Text>
+      </TouchableOpacity>
+      <ClearModal
+        clearVisible={clearVisible}
+        setClearVisible={setClearVisible}
+      />
+    </View>
+  );
+};
+
 /** 导航栏配置 */
 export const tabConfig: SinglePageType[] = [
   {
@@ -172,60 +229,7 @@ export const tabConfig: SinglePageType[] = [
         消息通知
       </Text>
     ),
-    headerRight: () => {
-      const [notiVisible, setNotiVisible] = useState(false);
-      const [clearVisible, setClearVisible] = useState(false);
-      return (
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-          }}
-        >
-          <TouchableOpacity
-            style={[
-              styles.notificationBtn,
-              {
-                backgroundColor: '#7878F8',
-              },
-            ]}
-            onPress={() => setNotiVisible(true)}
-          >
-            <Text
-              style={{
-                color: commonColors.white,
-              }}
-            >
-              消息通知
-            </Text>
-          </TouchableOpacity>
-          <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
-          <TouchableOpacity
-            style={[
-              styles.notificationBtn,
-              {
-                backgroundColor: '#D9D9D9',
-              },
-            ]}
-            onPress={() => {
-              setClearVisible(true);
-            }}
-          >
-            <Text
-              style={{
-                color: '#FF6F6F',
-              }}
-            >
-              一键清空
-            </Text>
-          </TouchableOpacity>
-          <ClearModal
-            clearVisible={clearVisible}
-            setClearVisible={setClearVisible}
-          />
-        </View>
-      );
-    },
+    headerRight: () => <NotificationHeaderRight />,
   },
   {
     name: 'setting',

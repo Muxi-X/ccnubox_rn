@@ -24,7 +24,6 @@ import {
 import { commonColors } from '@/styles/common';
 
 import { CourseTableProps, CourseTransferType } from './type';
-import { keyGenerator } from '@/utils';
 
 const Timetable: React.FC<CourseTableProps> = ({
   data,
@@ -100,10 +99,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           ))}
           {/* 课程内容 */}
           {courses.map(item => (
-            <Content
-              key={keyGenerator.next().value as unknown as number}
-              {...item}
-            ></Content>
+            <Content key={item.id} {...item}></Content>
           ))}
         </View>
       );
@@ -116,16 +112,13 @@ const Timetable: React.FC<CourseTableProps> = ({
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
-          onRefresh={(
-            handleSuccess
-            // handleFail
-          ) => {
-            setTimeout(() => {
-              alert(666);
+          onRefresh={async (handleSuccess, handleFail) => {
+            try {
+              onTimetableRefresh();
               handleSuccess();
             } catch (error) {
               console.error('刷新失败:', error);
-           handleFail();
+              handleFail();
             }
           }}
           // 学霸也是要睡觉的 ！！！！！！
