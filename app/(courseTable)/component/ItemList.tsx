@@ -1,8 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import Image from '@/components/image';
-
 interface Prop {
   name: string;
   teacher: string;

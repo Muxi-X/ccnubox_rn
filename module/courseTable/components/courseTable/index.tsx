@@ -24,6 +24,7 @@ import {
 import { commonColors } from '@/styles/common';
 
 import { CourseTableProps, CourseTransferType } from './type';
+import { keyGenerator } from '@/utils';
 
 const Timetable: React.FC<CourseTableProps> = ({
   data,
@@ -124,7 +125,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               handleSuccess();
             } catch (error) {
               console.error('刷新失败:', error);
-              handleFail();
+           handleFail();
             }
           }}
           // 学霸也是要睡觉的 ！！！！！！

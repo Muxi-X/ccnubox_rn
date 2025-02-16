@@ -6,6 +6,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable } from '@/request/api';
 
+// eslint-disable-next-line import/namespace
 import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';
 

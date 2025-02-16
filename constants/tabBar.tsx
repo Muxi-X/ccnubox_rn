@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Href, router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import ClearModal from '@/module/notification/component/ClearModal';
+import NotiPicker from '@/module/notification/component/NotiPicker';
 import { commonColors, commonStyles } from '@/styles/common';
-import { SinglePageType } from '@/types/tabBarTypes';
+
 import { tooltipActions } from './courseTableApplications';
+
+import { SinglePageType } from '@/types/tabBarTypes';
 
 /**
  * @enum tabBar颜色
