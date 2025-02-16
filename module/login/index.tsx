@@ -1,5 +1,6 @@
-import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
+import { Checkbox, Icon, Toast, Input } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -16,6 +17,7 @@ import { axiosInstance } from '@/request/request';
 import { commonStyles } from '@/styles/common';
 
 const LoginPage: FC = () => {
+  const router = useRouter();
   // 监听键盘弹起，避免元素遮挡
   const isKeyboardShow = useKeyboardShow();
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
@@ -43,6 +45,7 @@ const LoginPage: FC = () => {
         console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
+        router.navigate('/(tabs)');
       }
     } catch (error) {
       console.error('注册请求失败:1111111', error);
@@ -84,6 +87,7 @@ const LoginPage: FC = () => {
         }
         placeholderTextColor={styles.textColor.color}
         textAlign="center"
+        blurOnSubmit={false}
       ></Input>
       <Input
         style={styles.input}
@@ -95,7 +99,8 @@ const LoginPage: FC = () => {
         onChangeText={text =>
           setUserInfo(prev => ({ ...prev, password: text.toString() }))
         }
-        type={isPasswordShow ? 'text' : 'password'}
+        blurOnSubmit={false}
+        type="password"
         suffix={
           <Icon
             name={isPasswordShow ? 'eye' : 'eye-invisible'}
@@ -119,7 +124,7 @@ const LoginPage: FC = () => {
         isLoading={loginTriggered}
         style={[styles.login_button, currentStyle?.button_style]}
       >
-        登陆
+        登录
       </Button>
     </AnimatedFade>
   );

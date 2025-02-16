@@ -22,11 +22,13 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
-import { keyGenerator } from '@/utils';
 
 import { CourseTableProps, CourseTransferType } from './type';
 
-const Timetable: React.FC<CourseTableProps> = ({ data }) => {
+const Timetable: React.FC<CourseTableProps> = ({
+  data,
+  onTimetableRefresh,
+}) => {
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -49,24 +51,31 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       );
       const courses: CourseTransferType[] = [];
       // 遍历传入的数据，根据时间和日期填充表格
-      data.forEach(
-        ({ courseName, teacher, classroom, time, date, timeSpan = 2 }) => {
-          const rowIndex = timeSlots.indexOf(time);
-          const colIndex = daysOfWeek.indexOf(date);
-          if (rowIndex !== -1 && colIndex !== -1) {
-            timetableMatrix[rowIndex][colIndex] = { courseName, timeSpan };
-            courses.push({
-              courseName,
-              timeSpan,
-              teacher,
-              date,
-              classroom,
-              rowIndex,
-              colIndex,
-            });
+      data.forEach(course => {
+        course?.info.forEach(
+          ({ id, day, teacher, where, class_when, classname }) => {
+            const timeSpan = class_when
+              .split('-')
+              .map(Number)
+              .reduce((a: number, b: number) => b - a + 1);
+            const rowIndex = Number(class_when.split('-')[0]) - 1;
+            const colIndex = day - 1;
+            if (rowIndex !== -1 && colIndex !== -1) {
+              timetableMatrix[rowIndex][colIndex] = { classname, timeSpan };
+              courses.push({
+                id,
+                courseName: classname,
+                timeSpan,
+                teacher,
+                date: daysOfWeek[colIndex],
+                classroom: where,
+                rowIndex,
+                colIndex,
+              });
+            }
           }
-        }
-      );
+        );
+      });
       return (
         <View style={styles.courseWrapperStyle}>
           {timetableMatrix.map((row, rowIndex) => (
@@ -99,7 +108,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
       );
     })()
   );
-
+  console.log('data', data);
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -113,7 +122,10 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
             setTimeout(() => {
               alert(666);
               handleSuccess();
-            }, 7000);
+            } catch (error) {
+              console.error('刷新失败:', error);
+              handleFail();
+            }
           }}
           // 学霸也是要睡觉的 ！！！！！！
           stickyBottom={<StickyBottom />}
@@ -121,7 +133,7 @@ const Timetable: React.FC<CourseTableProps> = ({ data }) => {
           stickyLeft={<StickyLeft />}
         >
           {/* 内容部分 (课程表) */}
-          {content ?? <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+          {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
         </ScrollableView>
       </View>
     </View>
@@ -133,6 +145,7 @@ export const Content: React.FC<CourseTransferType> = props => {
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
+  console.log('props', props);
   return (
     <>
       <Pressable

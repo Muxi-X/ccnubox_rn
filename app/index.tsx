@@ -2,6 +2,7 @@ import { Redirect } from 'expo-router';
 import { useEffect } from 'react';
 
 import { setupMockServer } from '@/mock/server';
+import { getItem } from 'expo-secure-store';
 
 // 由于 expo 没有 initialRoutes
 // 重定向到 tabs
@@ -13,7 +14,10 @@ const Index = () => {
       setupMockServer();
     }
   });
-
+  const token = getItem('longToken');
+  if (!token) {
+    return <Redirect href="/auth/login"></Redirect>;
+  }
   return <Redirect href="/(tabs)"></Redirect>;
 };
 export default Index;

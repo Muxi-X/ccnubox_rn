@@ -4,13 +4,11 @@ import { Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Href, router } from 'expo-router';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { commonColors, commonStyles } from '@/styles/common';
 import { SinglePageType } from '@/types/tabBarTypes';
 import { tooltipActions } from './courseTableApplications';
-
-import useVisualScheme from '@/store/visualScheme';
-import NotiPicker from '@/module/notification/component/NotiPicker';
-import ClearModal from '@/module/notification/component/ClearModal';
 
 /**
  * @enum tabBar颜色

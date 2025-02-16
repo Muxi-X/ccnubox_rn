@@ -5,7 +5,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { commonStyles } from '@/styles/common';
 
-export const HeaderLeft: React.FC<{ title: string }> = ({ title }) => {
+export const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <Text
@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    textAlign: 'center',
   },
 });
-export default HeaderLeft;
+export default HeaderCenter;
