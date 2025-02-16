@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-
 import useVisualScheme from '@/store/visualScheme';
 
 interface Props {
@@ -11,9 +10,9 @@ interface Props {
 }
 
 export default function Nabvar({ setPattern, pattern, navText }: Props) {
-  // const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-  //   currentStyle,
-  // }));
+  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+    currentStyle,
+  }));
   // const currentComponents = useThemeBasedComponents(
   //   state => state.currentComponents
   // );
