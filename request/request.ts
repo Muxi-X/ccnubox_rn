@@ -141,22 +141,35 @@ type ResponseData<P extends Path, M extends Method> = paths[P][M] extends {
 
 function resolvePathWithParams<P extends Path>(
   path: P,
-  params?: NonNullable<RequestParams<P, Method>>
+  params?: RequestParams<P, Method>
 ): string {
-  if (!params) return path as string;
-
-  if (typeof params === 'object') {
-    return (path as string).replace(/\{(\w+)}/g, (_, key) => {
-      if (key in params) {
-        return encodeURIComponent((params as Record<string, any>)[key]);
-      }
-      throw new Error(`Missing parameter: ${key}`);
-    });
+  // @ts-ignore
+  if (!params || !params.query) {
+    return path as string;
   }
 
-  throw new Error(
-    `Expected params to be an object, but received: ${typeof params}`
-  );
+  if (typeof params === 'object' && 'query' in params) {
+    // @ts-ignore
+    const query = params.query;
+    if (typeof query === 'object') {
+      const queryParams = new URLSearchParams();
+      for (const key in query) {
+        if (Object.prototype.hasOwnProperty.call(query, key)) {
+          queryParams.append(key, query[key]);
+        }
+      }
+      const queryString = queryParams.toString();
+      return `${path as string}?${queryString}`;
+    } else {
+      throw new Error(
+        `Expected query to be an object, but received: ${typeof query}`
+      );
+    }
+  } else {
+    throw new Error(
+      `Expected params to be an object with a query property, but received: ${typeof params}`
+    );
+  }
 }
 
 async function baseRequest<P extends Path, M extends Method>(

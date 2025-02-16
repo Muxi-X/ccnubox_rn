@@ -10,7 +10,7 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryElectricityPrice, setElectricityPrice } from './api';
+import { queryElectricityPrice, setElectricityPrice } from '@/request/api';
 
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -32,7 +32,7 @@ const ElectricityBillBalance = () => {
       student_id: '2023215228',
     })
       .then(res => {
-        if (res.code === 10000) {
+        if (res?.code === 10000) {
           console.log('查询成功，电费信息：' + JSON.stringify(res.data));
           setElecInfo(res.data);
         }

@@ -21,7 +21,7 @@ const Login: FC = () => {
   const isKeyboardShow = useKeyboardShow();
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{ flex: 1 }}
     >
       <LinearGradient colors={['#7B6EF1', '#7FB4FB']} style={styles.bg}>
