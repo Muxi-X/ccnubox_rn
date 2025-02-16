@@ -1,6 +1,6 @@
-import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { AddComponent } from './component/AddComponent';
 import ItemList from './component/ItemList';

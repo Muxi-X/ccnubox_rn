@@ -7,7 +7,7 @@ interface addItemType {
   id: number;
   icon: any;
   text: string;
-  url: Href<string>;
+  url?: Href<string>;
   // url: string;
 }
 
@@ -28,13 +28,13 @@ export const addItem: addItemType[] = [
     id: 3,
     icon: require('@/assets/images/change-week.png'),
     text: '切换当前周',
-    url: '/(courseTable)/changeWeek',
+    // url: '/(courseTable)/changeWeek',
   },
   {
     id: 4,
     icon: require('@/assets/images/change-year.png'),
     text: '切换学年',
-    url: '/(courseTable)/changeYear',
+    // url: '/(courseTable)/changeYear',
   },
 ];
 
@@ -52,7 +52,6 @@ export const TooltipContent = () => {
               case 1:
               case 2: {
                 navigation.navigate(item.url);
-                console.log(item.url);
                 break;
               }
             }
