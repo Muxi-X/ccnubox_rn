@@ -13,6 +13,10 @@ export default function Nabvar({ setPattern, pattern, navText }: Props) {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
+  // const currentComponents = useThemeBasedComponents(
+  //   state => state.currentComponents
+  // );
+
   return (
     <View style={[styles.navbar]}>
       {navText.map((text, index) => (

@@ -21,6 +21,9 @@ export const defaultStyles = generateStyleSheet({
     schedule_item_background_style: {
       backgroundColor: '#242424',
     },
+    notification_text_style: {
+      color: '#A8A8A8',
+    },
   },
   light: {
     schedule_background_style: {
@@ -40,6 +43,9 @@ export const defaultStyles = generateStyleSheet({
     },
     schedule_item_background_style: {
       backgroundColor: '#F7F5FD',
+    },
+    notification_text_style: {
+      color: '#3D3D3D',
     },
   },
 });
