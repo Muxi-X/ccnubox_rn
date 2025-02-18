@@ -1,7 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import Image from '@/components/image';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface Prop {
   name: string;
