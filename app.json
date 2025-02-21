@@ -5,7 +5,7 @@
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/mx-logo.png",
-    "scheme": "myapp",
+    "scheme": "wx6220588048f6e417",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": ["assets/images/", "assets/data/", "assets/fonts"],
@@ -21,8 +21,16 @@
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
-        }
-      }
+        },
+        
+        "LSApplicationQueriesSchemes": [
+          "weixin",
+          "weixinULAPI",
+          "weixinURLParamsAPI"
+        ]
+      },
+      
+      "associatedDomains": ["applinks:(Universal Link Here)"]
     },
     "android": {
       "versionCode": 2,
@@ -61,7 +69,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-native-wechat"
     ],
     "experiments": {
       "typedRoutes": true

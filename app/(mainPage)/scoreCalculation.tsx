@@ -2,71 +2,20 @@ import { Icon, Modal, WingBlank } from '@ant-design/react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryGradeDetail } from '@/request/api';
 
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
-const data = [
-  {
-    title: '英语演讲艺术（通核）',
-    key: 'a',
-    credit: 2.0,
-    score: 98,
-    details: {
-      usualGrade: 96,
-      finalGrade: 59,
-      allGrade: 78,
-      credit: 2.0,
-      score: 98,
-      creditScore: 88,
-    },
-  },
-  {
-    title: '英语人文（通核）',
-    key: 'b',
-    credit: 2.0,
-    score: 98,
-    details: {
-      usualGrade: 96,
-      finalGrade: 59,
-      allGrade: 78,
-      credit: 2.0,
-      score: 98,
-      creditScore: 88,
-    },
-  },
-  {
-    title: '英语演讲艺术（通核）',
-    key: 'c',
-    credit: 2.0,
-    score: 98,
-    details: {
-      usualGrade: 96,
-      finalGrade: 59,
-      allGrade: 78,
-      credit: 2.0,
-      score: 98,
-      creditScore: 88,
-    },
-  },
-  {
-    title: '英语演讲艺术（通核）',
-    key: 'd',
-    credit: 2.0,
-    score: 98,
-    details: {
-      usualGrade: 96,
-      finalGrade: 59,
-      allGrade: 78,
-      credit: 2.0,
-      score: 98,
-      creditScore: 88,
-    },
-  },
-];
 const ScoreCalculation = () => {
   const local = useLocalSearchParams();
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -78,6 +27,11 @@ const ScoreCalculation = () => {
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [activeItem, setActiveItem] = useState<any>({});
+  const [calculatedGPA, setCalculatedGPA] = useState<number>(0);
+
+  const { year, semester, type } = useLocalSearchParams();
+  console.log(year, semester, type, 'year, semester, type');
+
   // 处理单个复选框的选中和取消选中
   const onChange = (i: any) => {
     const newCheckedList = new Set(checkedList); // 使用副本来更新
@@ -108,17 +62,60 @@ const ScoreCalculation = () => {
     setActiveItem(i);
     setVisible1(true);
   };
+  const [data, setGradeData] = useState<any[]>([]);
+
   useEffect(() => {
     queryGradeDetail({
-      jxbld: '6368931785492940299',
-      xqm: '学年2023-2024',
-      xnm: '学期2',
+      xqm: semester,
+      xnm: year,
     }).then(res => {
       console.log(res, 'res');
-      if (res.code === 0) {
+      if (res.Grades) {
+        // Transform the Grades array into the expected data structure
+        const transformedData = res.Grades.map((grade: any, index: number) => ({
+          title: grade.Kcmc,
+          key: index.toString(),
+          credit: grade.Xf,
+          score: grade.Cj,
+          details: {
+            usualGrade: grade.RegularGrade,
+            finalGrade: grade.FinalGrade,
+            allGrade: grade.Cj,
+            credit: grade.Xf,
+            score: grade.Jd,
+            creditScore: grade.Xf * grade.Jd,
+          },
+        }));
+
+        setGradeData(transformedData);
+        // Initialize checkedList with all keys
+        setCheckedList(new Set(transformedData.map((item: any) => item.key)));
+        setCheckAll(true);
       }
     });
-  }, []);
+  }, [semester, year]);
+
+  // Add calculation function
+  const calculateGPA = () => {
+    let totalCreditScore = 0;
+    let totalCredits = 0;
+
+    data.forEach(item => {
+      // Only calculate for checked items
+      if (checkedList.has(item.key)) {
+        totalCreditScore += item.details.creditScore;
+        totalCredits += item.details.credit;
+      }
+    });
+
+    // Calculate GPA with 4 decimal places
+    const gpa =
+      totalCredits > 0
+        ? (totalCreditScore / totalCredits).toFixed(4)
+        : '0.0000';
+    setCalculatedGPA(Number(gpa));
+  };
+
   return (
     <View
       style={[
@@ -181,66 +178,69 @@ const ScoreCalculation = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <WingBlank style={{ paddingTop: 26 }}>
-        {data.map(i => {
-          const isChecked = checkedList.has(i.key); // 是否选中
-          return (
-            <TouchableOpacity
-              key={i.key}
-              style={[
-                styles.item,
-                activeItem.key === i.key ? styles.activeItem : {},
-              ]}
-              onPress={() => handleClick(i)}
-            >
-              <View>
-                <View style={styles.itemLeft}>
-                  <View style={styles.circle} />
-                  <Text
-                    style={[{ color: '#3D3D3D' }, currentStyle?.text_style]}
-                  >
-                    {i.title}
-                  </Text>
-                </View>
-                <View style={styles.itemRight}>
-                  <Text style={[styles.credit, currentStyle?.text_style]}>
-                    学分：{i.credit}
-                  </Text>
-                  <Text style={{ color: '#969696' }}>成绩：{i.score}</Text>
-                </View>
-              </View>
+      <ScrollView style={{ flex: 1 }}>
+        <WingBlank style={{ marginTop: 26, marginBottom: 80 }}>
+          {data.map(i => {
+            const isChecked = checkedList.has(i.key); // 是否选中
+            return (
               <TouchableOpacity
-                onPress={() => onChange(i)} // 点击时触发选中状态变化
-                style={[styles.checkboxContainer]}
+                key={i.key}
+                style={[
+                  styles.item,
+                  activeItem.key === i.key ? styles.activeItem : {},
+                ]}
+                onPress={() => handleClick(i)}
               >
-                <View
-                  style={[
-                    styles.checkbox,
-                    {
-                      backgroundColor: isChecked ? '#9379F6' : '#fff', // 选中时紫色，未选中时白色
-                      borderColor: isChecked ? '#9379F6' : '#C7C7C7', // 选中时紫色，未选中时灰色
-                    },
-                  ]}
-                >
-                  {isChecked && (
-                    <Icon
-                      name="check"
-                      size={20}
-                      color="#fff"
-                      style={{ fontWeight: '600' }}
-                    />
-                  )}
+                <View>
+                  <View style={styles.itemLeft}>
+                    <View style={styles.circle} />
+                    <Text
+                      style={[{ color: '#3D3D3D' }, currentStyle?.text_style]}
+                    >
+                      {i.title}
+                    </Text>
+                  </View>
+                  <View style={styles.itemRight}>
+                    <Text style={[styles.credit, currentStyle?.text_style]}>
+                      学分：{i.credit}
+                    </Text>
+                    <Text style={{ color: '#969696' }}>成绩：{i.score}</Text>
+                  </View>
                 </View>
+                <TouchableOpacity
+                  onPress={() => onChange(i)} // 点击时触发选中状态变化
+                  style={[styles.checkboxContainer]}
+                >
+                  <View
+                    style={[
+                      styles.checkbox,
+                      {
+                        backgroundColor: isChecked ? '#9379F6' : '#fff', // 选中时紫色，未选中时白色
+                        borderColor: isChecked ? '#9379F6' : '#C7C7C7', // 选中时紫色，未选中时灰色
+                      },
+                    ]}
+                  >
+                    {isChecked && (
+                      <Icon
+                        name="check"
+                        size={20}
+                        color="#fff"
+                        style={{ fontWeight: '600' }}
+                      />
+                    )}
+                  </View>
+                </TouchableOpacity>
               </TouchableOpacity>
-            </TouchableOpacity>
-          );
-        })}
-      </WingBlank>
+            );
+          })}
+        </WingBlank>
+      </ScrollView>
 
       <View style={styles.bottomBtn}>
         <TouchableOpacity
           style={[styles.button, { borderRadius: 13 }]}
           onPress={() => {
+            calculateGPA();
             setVisible2(true);
           }}
         >
@@ -340,7 +340,7 @@ const ScoreCalculation = () => {
             </Text>
           </View>
           <View style={{ alignItems: 'center', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: 64, color: '#000' }}>90.6000</Text>
+            <Text style={{ fontSize: 64, color: '#000' }}>{calculatedGPA}</Text>
             <Text style={{ fontSize: 14, color: '#000' }}>平时学分绩</Text>
           </View>
         </View>
@@ -445,6 +445,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 320,
     borderRadius: 10,
+    zIndex: 1000,
   },
   modalTitle: {
     fontWeight: '400',

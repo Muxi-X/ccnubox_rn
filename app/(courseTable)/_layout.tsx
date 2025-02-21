@@ -19,6 +19,7 @@ export default function Layout() {
     <View style={[styles.container]}>
       <Stack
         screenOptions={{
+          headerBackVisible: false,
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackButtonMenuEnabled: true,
