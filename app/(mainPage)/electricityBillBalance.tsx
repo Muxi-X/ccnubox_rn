@@ -11,6 +11,7 @@ import {
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryElectricityPrice, setElectricityPrice } from '@/request/api';
+import { router, useLocalSearchParams } from 'expo-router';
 
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -23,14 +24,19 @@ const ElectricityBillBalance = () => {
     lighting_rest: 0,
     air_rest: 0,
   });
+
+  const { building, room, area } = useLocalSearchParams();
+
   useEffect(() => {
-    queryElectricityPrice({
-      building: '南湖05栋',
-      room: '425',
-      userId: '1',
-      area: '南湖学生宿舍',
+    const params = {
+      building: building,
+      room: room,
+      // userId: '1',
+      area: area,
       student_id: '2023215228',
-    })
+    };
+    console.log(params, 'params');
+    queryElectricityPrice(params)
       .then(res => {
         if (res?.code === 10000) {
           console.log('查询成功，电费信息：' + JSON.stringify(res.data));
@@ -43,11 +49,22 @@ const ElectricityBillBalance = () => {
   }, []);
   //设置电费
   const handleSetElectricityPrice = () => {
+    console.log(
+      {
+        building: building,
+        room: room,
+        // userId: '1',
+        area: area,
+        student_id: '2023215228',
+        money: electricityRate,
+      },
+      'electricityRate'
+    );
     setElectricityPrice({
-      building: '南湖05栋',
-      room: '425',
-      userId: '1',
-      area: '南湖学生宿舍',
+      building: building,
+      room: room,
+      // userId: '1',
+      area: area,
       student_id: '2023215228',
       money: electricityRate,
     })
@@ -63,12 +80,14 @@ const ElectricityBillBalance = () => {
       <View style={styles.header}>
         <View>
           <Text style={[styles.title, currentStyle?.text_style]}>
-            南湖 1栋 105
+            {building} {room}
           </Text>
         </View>
         <TouchableOpacity
           style={[styles.btn, currentStyle?.button_style]}
-          onPress={() => {}}
+          onPress={() => {
+            router.back();
+          }}
         >
           <Text style={currentStyle?.button_text_style}>更换宿舍</Text>
         </TouchableOpacity>

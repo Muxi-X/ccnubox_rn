@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
 interface Props {
@@ -14,9 +13,9 @@ export default function Nabvar({ setPattern, pattern, navText }: Props) {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
-  const currentComponents = useThemeBasedComponents(
-    state => state.currentComponents
-  );
+  // const currentComponents = useThemeBasedComponents(
+  //   state => state.currentComponents
+  // );
 
   return (
     <View style={[styles.navbar]}>
@@ -28,6 +27,7 @@ export default function Nabvar({ setPattern, pattern, navText }: Props) {
         >
           <Text
             style={[
+              currentStyle?.text_style,
               styles.navbarText,
               index === pattern && {
                 color: '#9379F6',
@@ -60,10 +60,12 @@ const styles = StyleSheet.create({
   navbarText: {
     fontSize: 18,
     paddingHorizontal: 15,
+    textAlign: 'center',
   },
   navbarItem: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     height: '100%',
     marginHorizontal: 20,
     borderBottomWidth: 3,

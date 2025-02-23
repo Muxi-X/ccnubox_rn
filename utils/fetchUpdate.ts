@@ -20,7 +20,7 @@ const showUpdateModal = (updateInfo: any) => {
             alert('更新失败，请稍后重试');
           }
         } catch (error) {
-          console.error('应用更新失败:', error);
+          // console.error('应用更新失败:', error);
           alert('更新失败，请稍后重试');
         }
       },
@@ -28,7 +28,7 @@ const showUpdateModal = (updateInfo: any) => {
     {
       text: '取消',
       onPress: () => {
-        console.log('用户取消更新');
+        // console.log('用户取消更新');
       },
     },
   ]);
@@ -44,7 +44,7 @@ const fetchUpdate = async () => {
       return updateInfo;
     }
   } catch (error) {
-    console.error('检查更新失败:', error);
+    // console.error('检查更新失败:', error);
     Modal.alert('更新失败', '无法检查更新，请检查网络连接或稍后再试。');
   }
 };

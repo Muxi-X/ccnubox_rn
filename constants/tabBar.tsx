@@ -1,10 +1,13 @@
 import { Tooltip } from '@ant-design/react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Href, router } from 'expo-router';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import ClearModal from '@/module/notification/component/ClearModal';
+import NotiPicker from '@/module/notification/component/NotiPicker';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { tooltipActions } from './courseTableApplications';
@@ -18,6 +21,63 @@ import { SinglePageType } from '@/types/tabBarTypes';
 export const TABBAR_COLOR = {
   PRIMARY: commonColors.darkGray,
 };
+
+const NotificationHeaderRight = () => {
+  const [notiVisible, setNotiVisible] = useState(false);
+  const [clearVisible, setClearVisible] = useState(false);
+
+  return (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+      }}
+    >
+      <TouchableOpacity
+        style={[
+          styles.notificationBtn,
+          {
+            backgroundColor: '#7878F8',
+          },
+        ]}
+        onPress={() => setNotiVisible(true)}
+      >
+        <Text
+          style={{
+            color: commonColors.white,
+          }}
+        >
+          消息通知
+        </Text>
+      </TouchableOpacity>
+      <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
+      <TouchableOpacity
+        style={[
+          styles.notificationBtn,
+          {
+            backgroundColor: '#D9D9D9',
+          },
+        ]}
+        onPress={() => {
+          setClearVisible(true);
+        }}
+      >
+        <Text
+          style={{
+            color: '#FF6F6F',
+          }}
+        >
+          一键清空
+        </Text>
+      </TouchableOpacity>
+      <ClearModal
+        clearVisible={clearVisible}
+        setClearVisible={setClearVisible}
+      />
+    </View>
+  );
+};
+
 /** 导航栏配置 */
 export const tabConfig: SinglePageType[] = [
   {
@@ -61,7 +121,7 @@ export const tabConfig: SinglePageType[] = [
             justifyContent: 'center',
           }}
           onPress={() => {
-            console.log('选择周次');
+            // console.log('选择周次');
           }}
         >
           <Text
@@ -156,6 +216,20 @@ export const tabConfig: SinglePageType[] = [
     name: 'notification',
     title: '通知',
     iconName: 'notification',
+    headerTitle: () => <></>,
+    headerLeft: () => (
+      <Text
+        style={[
+          commonStyles.fontLarge,
+          commonStyles.fontBold,
+          commonStyles.TabBarPadding,
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
+        消息通知
+      </Text>
+    ),
+    headerRight: () => <NotificationHeaderRight />,
   },
   {
     name: 'setting',
@@ -163,3 +237,13 @@ export const tabConfig: SinglePageType[] = [
     iconName: 'setting',
   },
 ];
+
+const styles = StyleSheet.create({
+  notificationBtn: {
+    borderColor: commonColors.gray,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginRight: 10,
+  },
+});

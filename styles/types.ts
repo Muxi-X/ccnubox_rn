@@ -18,6 +18,7 @@ export type ConfigurableThemeNames =
   | 'schedule_item_background_style'
   | 'schedule_border_style'
   | 'schedule_item_text_style'
+  | 'notification_text_style'
   | 'background_style'
   | 'skeleton_background_style'
   | 'navbar_icon_active_style';

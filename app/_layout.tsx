@@ -62,6 +62,7 @@ export default function RootLayout() {
           ></Scraper>
           <Stack
             screenOptions={{
+              headerBackVisible: false,
               contentStyle:
                 useVisualScheme.getState().currentStyle?.background_style,
             }}
