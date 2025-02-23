@@ -6,7 +6,7 @@ import Image from '@/components/image';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeAll } from '@/utils/api';
+import { queryGradeAll } from '@/request/api';
 
 const CourseTree = () => {
   const [activeKey, setActiveKey] = useState<string[]>([]); // 默认使用空数组
@@ -14,7 +14,7 @@ const CourseTree = () => {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   useEffect(() => {
-    queryGradeAll({}).then(res => {
+    queryGradeAll().then(res => {
       if (res.code === 0) {
         console.log(res.data, '4444');
         let num = 0;
