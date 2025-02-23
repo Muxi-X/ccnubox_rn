@@ -1,14 +1,28 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import clearFeedEvents from '@/request/api/clearFeedEvents';
 interface ClearModalProps {
+  // feedId: number;
   clearVisible: boolean;
   setClearVisible: (_visible: boolean) => void;
 }
 
-const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
+const ClearModal: FC<ClearModalProps> = ({
+  // feedId,
+  clearVisible,
+  setClearVisible,
+}) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
+  const handleClear = () => {
+    // clearFeedEvents(feedId).then(() => {});
+
+    setClearVisible(false);
+  };
+
   return (
     <Modal visible={clearVisible} transparent={true}>
       <View
@@ -52,11 +66,7 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
                 取消
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setClearVisible(false);
-              }}
-            >
+            <TouchableOpacity onPress={handleClear}>
               <Text
                 style={[
                   styles.button,

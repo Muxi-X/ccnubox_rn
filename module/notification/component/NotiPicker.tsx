@@ -1,28 +1,32 @@
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Image, Modal, StyleSheet, Text, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import changeFeedAllowList from '@/request/api/changeFeedAllowList';
+import queryFeedAllowList from '@/request/api/queryFeedAllowList';
 interface NotiPickerProps {
   visible: boolean;
   setVisible: (_visible: boolean) => void;
   // onCancel?: () => void;
   // onConfirm?: (type: string) => void;
 }
+
 const NotiPicker: FC<NotiPickerProps> = ({
   visible,
   setVisible,
   // onCancel,
   // onConfirm,
 }) => {
-  const feedIcon = [
-    {
-      label: 'class',
-      icon: require('@/assets/images/noti-class.png'),
-      title: '上课',
-      check: true,
-    },
+  const [feedIcon, setFeedIcon] = useState([
+    // {
+    //   label: 'class',
+    //   icon: require('@/assets/images/noti-class.png'),
+    //   title: '上课',
+    //   check: true,
+    // },
     {
       label: 'grade',
       icon: require('@/assets/images/a-grade.png'),
@@ -51,10 +55,43 @@ const NotiPicker: FC<NotiPickerProps> = ({
       label: 'light',
       icon: require('@/assets/images/a-light.png'),
       title: '照明电费告急',
-      check: true,
+      check: false,
     },
-  ];
+  ]);
+
+  const getFeedList = () =>{
+    queryFeedAllowList().then(res => {
+      // console.log('getlist', res);
+      const updateFeedIcon = feedIcon.map(item => {
+        if (res?.[item.label] !== undefined) {
+          return { ...item, check: res?.[item.label] };
+        }
+        return item;
+      });
+
+      // console.log('update', updateFeedIcon);
+      setFeedIcon(updateFeedIcon);
+    });
+  };
+
+  useEffect(() => {
+    getFeedList();
+  }, []);
+
+  const handleClose = () => {
+    const data = feedIcon.reduce((acc, item) => {
+      acc[item.label] = item.check;
+      return acc;
+    }, {});
+    console.log('data', data);
+    changeFeedAllowList(data).then(() => {
+      getFeedList();
+    });
+    setVisible(false);
+  };
+
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
   return (
     <Modal visible={visible} transparent={true}>
       <View
@@ -117,12 +154,10 @@ const NotiPicker: FC<NotiPickerProps> = ({
               name="close"
               color={currentStyle?.schedule_text_style?.color}
               size={24}
-              onPress={() => {
-                setVisible(false);
-              }}
+              onPress={handleClose}
             ></MaterialIcons>
           </View>
-          {feedIcon.map(item => (
+          {feedIcon.map((item, index) => (
             <View
               style={[
                 {
@@ -133,6 +168,7 @@ const NotiPicker: FC<NotiPickerProps> = ({
                 },
                 currentStyle?.background_style,
               ]}
+              key={index}
             >
               <View>
                 <Image source={item.icon} style={styles.icon} />
@@ -148,6 +184,16 @@ const NotiPicker: FC<NotiPickerProps> = ({
                   style={[{ width: 40, height: 20, marginRight: 10 }]}
                   trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
                   thumbColor="#979797"
+                  onChange={() => {
+                    setFeedIcon(prev => {
+                      return prev.map(feed => {
+                        if (feed.label === item.label) {
+                          return { ...feed, check: !feed.check };
+                        }
+                        return feed;
+                      });
+                    });
+                  }}
                 />
               </View>
             </View>

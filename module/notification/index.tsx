@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useEffect } from 'react';
 import {
   Image,
   ImageSourcePropType,
@@ -9,15 +9,16 @@ import {
 } from 'react-native';
 
 // import Skeleton from '@/components/skeleton';
-
 import useVisualScheme from '@/store/visualScheme';
 
+import queryFeedEvents from '@/request/api/queryFeedEvents';
+
 export const feedIcon = [
-  {
-    label: 'class',
-    icon: require('@/assets/images/noti-class.png'),
-    title: '上课',
-  },
+  // {
+  //   label: 'class',
+  //   icon: require('@/assets/images/noti-class.png'),
+  //   title: '上课',
+  // },
   {
     label: 'grade',
     icon: require('@/assets/images/a-grade.png'),
@@ -48,11 +49,10 @@ export const feedIcon = [
 const NotificationPage: FC = () => {
   // const [loading, setLoading] = useState<boolean>(true);
   const currentStyles = useVisualScheme(state => state.currentStyle);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 2000);
-  // }, []);
+  useEffect(() => {
+    const res = queryFeedEvents();
+    console.log('res', res);
+  }, []);
   return (
     <View style={[{ flex: 1 }, currentStyles?.background_style]}>
       {/* <Skeleton loading={loading}> */}
