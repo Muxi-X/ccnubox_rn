@@ -14,7 +14,7 @@ const CourseTree = () => {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   useEffect(() => {
-    queryGradeAll({}).then(res => {
+    queryGradeAll().then(res => {
       if (res.code === 0) {
         console.log(res.data, '4444');
         let num = 0;

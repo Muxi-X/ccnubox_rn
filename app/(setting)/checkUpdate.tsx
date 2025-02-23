@@ -46,7 +46,10 @@ function CheckUpdate(): React.ReactNode {
         <Text style={styles.appName}>华师匣子</Text>
         <Text style={styles.version}>版本 2.5.13</Text>
         <Button
-          style={[currentStyle?.button_style, { width: '60%' }]}
+          style={[
+            currentStyle?.button_style,
+            { width: '60%', marginTop: 10, marginBottom: 10 },
+          ]}
           onPress={() => {
             setLoading(true);
             Updates.checkForUpdateAsync()

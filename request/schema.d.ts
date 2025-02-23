@@ -2202,6 +2202,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/grade/getGradeByTerm': {
+    parameters: any;
+    requestBody?: any;
+    responses: any;
+    put?: any;
+    post?: any;
+    delete?: any;
+    options?: any;
+  };
   '/statics': {
     parameters: {
       query?: never;

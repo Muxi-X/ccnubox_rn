@@ -29,4 +29,11 @@ export const mainPageApplications: MainPageGridDataType[] = [
     key: 'grid-4',
     href: '/scoreInquiry',
   },
+  {
+    title: '木犀课栈',
+    name: 'wechat',
+    imageUrl: require('../assets/images/muxikezhan.png'),
+    key: 'grid-wx',
+    href: '/scoreInquiry',
+  },
 ];

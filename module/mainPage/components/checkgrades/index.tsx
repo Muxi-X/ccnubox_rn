@@ -7,16 +7,20 @@ import useVisualScheme from '@/store/visualScheme';
 
 const data1 = [
   {
-    value: '2023-2024',
-    label: '2023-2024',
+    value: '2024',
+    label: '2024',
   },
   {
-    value: '2022-2023',
-    label: '2022-2023',
+    value: '2023',
+    label: '2023',
   },
   {
-    value: '2021-2022',
-    label: '2021-2022',
+    value: '2022',
+    label: '2022',
+  },
+  {
+    value: '2021',
+    label: '2021',
   },
 ];
 const data2 = [
@@ -41,7 +45,7 @@ const data3 = [
 ];
 const CheckGrades = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [value1, setValue1] = useState(['2023-2024']);
+  const [value1, setValue1] = useState(['2024']);
   const [value2, setValue2] = useState(['第一学期']);
   const [value3, setValue3] = useState(['全部']);
   const [visible1, setVisible1] = useState(false);
@@ -124,9 +128,14 @@ const CheckGrades = () => {
           marginTop: 26,
         }}
         onPress={() => {
+          const semesterNum = value2[0] === '第一学期' ? 1 : 2;
           router.push({
             pathname: '/scoreCalculation',
-            params: { year: value1[0], semester: value2[0], type: value3[0] },
+            params: {
+              year: value1[0],
+              semester: semesterNum,
+              type: value3[0] || '全部',
+            },
           });
         }}
       >
