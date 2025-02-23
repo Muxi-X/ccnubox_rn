@@ -1,22 +1,20 @@
 export type courseType = {
-  info: {
-    class_when: string;
-    classname: string;
-    credit: number;
-    day: number;
-    id: string;
-    semester: string;
-    teacher: string;
-    week_duration: string;
-    weeks: number;
-    where: string;
-    year: string;
-  }[];
-  thisweek: boolean;
+  class_when: string;
+  classname: string;
+  credit: number;
+  day: number;
+  id: string;
+  semester: string;
+  teacher: string;
+  week_duration: string;
+  weeks: number[];
+  where: string;
+  year: string;
 };
 
 export interface CourseTableProps {
   data: courseType[];
+  currentWeek: string;
   onTimetableRefresh: () => void;
 }
 
@@ -30,4 +28,5 @@ export interface CourseTransferType {
   rowIndex: number;
   colIndex: number;
   date: string;
+  isThisWeek: boolean;
 }

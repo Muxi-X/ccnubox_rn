@@ -61,3 +61,13 @@ export const queryCourseTable = async (queryParams: any) => {
     throw error;
   }
 };
+
+// 查询当前周
+export const queryCurrentWeek = async () => {
+  try {
+    return await request.get('/class/day/get');
+  } catch (error) {
+    console.error('查询当前周接口出错:', error);
+    throw error;
+  }
+};

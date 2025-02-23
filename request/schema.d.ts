@@ -38,7 +38,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -74,7 +74,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            '*/*': components['schemas']['ginx.Result'] & {
+            '*/*': components['schemas']['web.Response'] & {
               data?: components['schemas']['infoSum.GetInfoSumsResponse'];
             };
           };
@@ -122,7 +122,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -167,7 +167,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -203,7 +203,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            '*/*': components['schemas']['ginx.Result'] & {
+            '*/*': components['schemas']['web.Response'] & {
               data?: components['schemas']['banner.GetBannersResponse'];
             };
           };
@@ -251,7 +251,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -296,7 +296,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -335,7 +335,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['calendar.GetCalendarResponse'];
             };
           };
@@ -383,7 +383,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -405,7 +405,7 @@ export interface paths {
     put?: never;
     /**
      * 获取消费记录
-     * @description 获取用户消费记录，student_id,start_time,type 必须存在  type 分为 "card"（实体卡） 与 "virtual"（虚拟卡）
+     * @description 获取用户消费记录，student_id, start_time, type 必须存在，type 分为 "card"（实体卡）与 "virtual"（虚拟卡）
      */
     post: {
       parameters: {
@@ -414,7 +414,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 记录问题解决情况 */
+      /** @description 获取消费记录 */
       requestBody: {
         content: {
           'application/json': components['schemas']['card.GetRecordOfConsumptionRequest'];
@@ -427,7 +427,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['card.GetRecordOfConsumptionResponse'];
             };
           };
@@ -438,7 +438,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -459,7 +459,7 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 记录用户的key
+     * 删除用户的key
      * @description 记录用户的key
      */
     post: {
@@ -469,7 +469,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 记录问题解决情况 */
+      /** @description 记录用户的key */
       requestBody: {
         content: {
           'application/json': components['schemas']['card.NoteUserKeyRequest'];
@@ -482,7 +482,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 创建失败 */
@@ -491,7 +491,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -522,7 +522,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 记录问题解决情况 */
+      /** @description 更新用户的key */
       requestBody: {
         content: {
           'application/json': components['schemas']['card.UpdateUserKeyRequest'];
@@ -535,7 +535,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 创建失败 */
@@ -544,7 +544,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -591,11 +591,55 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
     };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/class/day/get': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取当前周
+     * @description 获取当前周
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功获取到当前周 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['class.GetSchoolDayResp'];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -639,7 +683,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -667,8 +711,8 @@ export interface paths {
           year: string;
           /** @description 学期 */
           semester: string;
-          /** @description 当前周 */
-          week: number;
+          /** @description 是否强制从华师获取最新版本 */
+          refresh: boolean;
         };
         header: {
           /** @description Bearer Token */
@@ -690,7 +734,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['class.GetClassListResp'];
             };
           };
@@ -739,7 +783,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['class.GetRecycleBinClassInfosResp'];
             };
           };
@@ -789,7 +833,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -810,7 +854,7 @@ export interface paths {
     };
     /**
      * 搜索课程
-     * @description 根据关键词搜索课程
+     * @description 根据关键词[教师或者课程名]搜索课程
      */
     get: {
       parameters: {
@@ -842,7 +886,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['class.SearchClassResp'];
             };
           };
@@ -892,7 +936,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -938,7 +982,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -974,7 +1018,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            '*/*': components['schemas']['ginx.Result'] & {
+            '*/*': components['schemas']['web.Response'] & {
               data?: components['schemas']['department.GetDepartmentsResponse'];
             };
           };
@@ -1022,7 +1066,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1042,16 +1086,16 @@ export interface paths {
     };
     /**
      * 查询电费
-     * @description 根据学号、区域、楼栋和房间号查询电费
+     * @description 根据区域、楼栋和房间号查询电费信息
      */
     get: {
       parameters: {
         query: {
-          /** @description 区域 */
+          /** @description 区域，例如 '东区学生宿舍' */
           area: string;
-          /** @description 楼栋 */
+          /** @description 楼栋，例如 '1号楼' */
           building: string;
-          /** @description 房间 */
+          /** @description 房间号，例如 '101' */
           room: string;
         };
         header?: never;
@@ -1066,8 +1110,19 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
-              data?: components['schemas']['elecprice.Price'];
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['elecprice.CheckResponse'];
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
             };
           };
         };
@@ -1081,7 +1136,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/elecprice/set': {
+  '/elecprice/setStandard': {
     parameters: {
       query?: never;
       header?: never;
@@ -1091,8 +1146,8 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 设置电费
-     * @description 根据学号、区域、楼栋和房间号设置电费金额
+     * 设置电费提醒标准
+     * @description 根据区域、楼栋和房间号设置电费提醒的金额标准
      */
     post: {
       parameters: {
@@ -1101,21 +1156,32 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 设置电费请求参数 */
+      /** @description 设置电费提醒请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['elecprice.SetRequest'];
+          'application/json': components['schemas']['elecprice.SetStandardRequest'];
         };
       };
       responses: {
-        /** @description 成功设置电费 */
+        /** @description 设置成功的返回信息 */
         200: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
-              data?: string;
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
             };
           };
         };
@@ -1160,7 +1226,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1169,7 +1235,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1213,7 +1279,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1222,59 +1288,11 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feed/getFailMSG': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取失败的消息
-     * @description 获取已登录用户的失败消息
-     */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['ginx.Result'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['ginx.Result'];
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1307,7 +1325,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['feed.GetFeedAllowListResp'];
             };
           };
@@ -1318,7 +1336,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1357,7 +1375,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['feed.GetFeedEventsResp'];
             };
           };
@@ -1368,7 +1386,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1407,7 +1425,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['feed.GetToBePublicMuxiOfficialMSGResp'];
             };
           };
@@ -1418,7 +1436,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1427,7 +1445,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1473,7 +1491,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['feed.PublicMuxiOfficialMSGResp'];
             };
           };
@@ -1484,7 +1502,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1493,7 +1511,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1537,7 +1555,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1546,7 +1564,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1590,7 +1608,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1599,7 +1617,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1643,7 +1661,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1652,7 +1670,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1696,7 +1714,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 没有访问权限 */
@@ -1705,7 +1723,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1714,7 +1732,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1758,7 +1776,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1767,7 +1785,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1811,7 +1829,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1820,7 +1838,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1864,7 +1882,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -1873,7 +1891,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1899,17 +1917,15 @@ export interface paths {
      */
     post: {
       parameters: {
-        query?: never;
+        query: {
+          /** @description 问题名称 */
+          question: string;
+        };
         header?: never;
         path?: never;
         cookie?: never;
       };
-      /** @description 订阅事件ID */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.FindQuestionsByNameReq'];
-        };
-      };
+      requestBody?: never;
       responses: {
         /** @description 成功 */
         200: {
@@ -1917,7 +1933,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.FindQuestionsByNameResp'];
+            'application/json': components['schemas']['web.Response'] & {
+              date?: components['schemas']['feedback_help.FindQuestionsByNameResp'];
+            };
           };
         };
         /** @description 系统异常 */
@@ -1926,7 +1944,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -1963,7 +1981,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['feedback_help.GetQuestionsResp'];
             };
           };
@@ -1974,119 +1992,13 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
     };
     put?: never;
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/noteEventTracking': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 埋点
-     * @description 记录埋点 , 埋点类型
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 埋点 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.NoteEventTrackingReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['feedback_help.Result'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['feedback_help.Result'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/noteMoreFeedbackSearchSkip': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 跳转埋点
-     * @description 记录问题跳转埋点
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 问题跳转埋点 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.NoteMoreFeedbackSearchSkipReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['feedback_help.Result'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['feedback_help.Result'];
-          };
-        };
-      };
-    };
     delete?: never;
     options?: never;
     head?: never;
@@ -2103,8 +2015,8 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 记录问题解决情况
-     * @description 记录问题解决情况
+     * 标记问题解决状态
+     * @description 标记问题解决状态
      */
     post: {
       parameters: {
@@ -2113,7 +2025,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 记录问题解决情况 */
+      /** @description 标记问题解决状态 */
       requestBody: {
         content: {
           'application/json': components['schemas']['feedback_help.NoteQuestionReq'];
@@ -2126,7 +2038,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常 */
@@ -2135,7 +2047,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['feedback_help.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2146,7 +2058,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/grade/grade_all': {
+  '/grade/getGradeByTerm': {
     parameters: {
       query?: never;
       header?: never;
@@ -2154,8 +2066,63 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 查询成绩
-     * @description 获取用户的所有年份的所有成绩
+     * 查询按学年和学期的成绩
+     * @description 根据学年号和学期号获取用户的成绩
+     */
+    get: {
+      parameters: {
+        query: {
+          /** @description 学年号（如 2023 表示 2023~2024 学年） */
+          xnm: number;
+          /** @description 学期号（1 表示第一学期，2 表示第二学期） */
+          xqm: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回学年和学期的成绩信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['grade.GetGradeByTermResp'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/grade/getGradeScore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 查询学分
+     * @description 查询学分
      */
     get: {
       parameters: {
@@ -2166,15 +2133,24 @@ export interface paths {
       };
       requestBody?: never;
       responses: {
-        /** @description 成功返回成绩信息 */
+        /** @description 成功返回学分 */
         200: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
-              data?: components['schemas']['grade.GradeAllResp'];
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['grade.GetGradeScoreResp'];
             };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2187,48 +2163,39 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/grade/grade_detail': {
+  '/metrics/:eventName': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
+    get?: never;
+    put?: never;
     /**
-     * 查询详细成绩
-     * @description 根据课程编号，学年号，学期号查询成绩
+     * 用于打点的路由
+     * @description 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/kstack)表示跳转访问课栈,使用这一路由必须携带Auth请求头
      */
-    get: {
+    post: {
       parameters: {
-        query: {
-          /** @description 教学班id */
-          jxbId: string;
-          /** @description 学期 */
-          xqm: string;
-          /** @description 学年 */
-          xnm: string;
-        };
+        query?: never;
         header?: never;
         path?: never;
         cookie?: never;
       };
       requestBody?: never;
       responses: {
-        /** @description 成功返回成绩信息 */
+        /** @description 成功 */
         200: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
-              data?: components['schemas']['grade.GradeResponseDetail'];
-            };
+            '*/*': components['schemas']['web.Response'];
           };
         };
       };
     };
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2264,7 +2231,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['static.StaticVo'];
             };
           };
@@ -2308,7 +2275,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['static.GetStaticByLabelsResp'];
             };
           };
@@ -2356,58 +2323,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/statics/save_file': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 保存静态内容[文件][废弃]
-     * @description 通过上传文件保存静态内容，目前仅支持.html文件
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody: {
-        content: {
-          'multipart/form-data': {
-            /** @description 静态名称 */
-            name: string;
-            /**
-             * Format: binary
-             * @description 静态内容文件
-             */
-            content: string;
-          };
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2441,7 +2357,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['tube.GetTubeTokenData'];
             };
           };
@@ -2489,7 +2405,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2528,7 +2444,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2565,7 +2481,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2612,7 +2528,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2648,7 +2564,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            '*/*': components['schemas']['ginx.Result'] & {
+            '*/*': components['schemas']['web.Response'] & {
               data?: components['schemas']['website.GetWebsitesResponse'];
             };
           };
@@ -2696,7 +2612,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['ginx.Result'];
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -2774,15 +2690,11 @@ export interface components {
       /** @description 教师 */
       teacher?: string;
       /** @description 哪些周 */
-      weeks?: number;
+      weeks?: number[];
       /** @description 地点 */
       where?: string;
       /** @description 学年 */
       year?: string;
-    };
-    'class.Class': {
-      info?: components['schemas']['class.ClassInfo'][];
-      thisweek?: boolean;
     };
     'class.ClassInfo': {
       /** @description 上课是第几节（如1-2,3-4） */
@@ -2802,7 +2714,7 @@ export interface components {
       /** @description 上课的周数 */
       week_duration?: string;
       /** @description 哪些周 */
-      weeks?: number;
+      weeks?: number[];
       /** @description 上课地点 */
       where?: string;
       /** @description 学年 */
@@ -2817,15 +2729,19 @@ export interface components {
       year?: string;
     };
     'class.GetClassListRequest': {
+      refresh?: boolean;
       semester?: string;
-      week?: number;
       year?: string;
     };
     'class.GetClassListResp': {
-      classes?: components['schemas']['class.Class'][];
+      classes?: components['schemas']['class.ClassInfo'][];
     };
     'class.GetRecycleBinClassInfosResp': {
       classInfos?: components['schemas']['class.ClassInfo'][];
+    };
+    'class.GetSchoolDayResp': {
+      holiday_time?: number;
+      school_time?: number;
     };
     'class.RecoverClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
@@ -2860,7 +2776,7 @@ export interface components {
       /** @description 教师 */
       teacher?: string;
       /** @description 哪些周 */
-      weeks?: number;
+      weeks?: number[];
       /** @description 地点 */
       where?: string;
       /** @description 学年 */
@@ -2886,21 +2802,19 @@ export interface components {
       place?: string;
       time?: string;
     };
-    'elecprice.Price': {
-      /** @description 昨日用电度数 */
-      air_garde?: string;
-      /** @description 昨日空调电费 */
-      air_price?: string;
-      /** @description 空调剩余电费 */
-      air_rest?: string;
-      /** @description 昨日照明用电度数 */
-      lighting_garde?: string;
-      /** @description 昨日照明电费 */
-      lighting_price?: string;
-      /** @description 电灯剩余电费 */
-      lighting_rest?: string;
+    'elecprice.CheckResponse': {
+      /** @description 电费 */
+      price?: components['schemas']['elecprice.Price'];
     };
-    'elecprice.SetRequest': {
+    'elecprice.Price': {
+      air_remain_money?: string;
+      air_yesterday_use_money?: string;
+      air_yesterday_use_value?: string;
+      lighting_remain_money?: string;
+      lighting_yesterday_use_money?: string;
+      lighting_yesterday_use_value?: string;
+    };
+    'elecprice.SetStandardRequest': {
       /** @description 区域 */
       area?: string;
       /** @description 建筑 */
@@ -2919,9 +2833,12 @@ export interface components {
     };
     'feed.ClearFeedEventReq': {
       feed_id?: number;
+      /** @description 有三个可选字段all表示清除所有消息,read表示清除所有已读消息,unread表示清除所有未读消息 */
+      status?: string;
     };
     'feed.FeedEvent': {
       content?: string;
+      /** @description Unix时间戳 */
       created_at?: number;
       extend_fields?: {
         [key: string]: string;
@@ -2929,6 +2846,10 @@ export interface components {
       id?: number;
       title?: string;
       type?: string;
+    };
+    'feed.FeedEventList': {
+      read?: components['schemas']['feed.FeedEvent'][];
+      unread?: components['schemas']['feed.FeedEvent'][];
     };
     'feed.GetFeedAllowListResp': {
       air_conditioner?: boolean;
@@ -2938,19 +2859,22 @@ export interface components {
       muxi?: boolean;
     };
     'feed.GetFeedEventsResp': {
-      read_events?: components['schemas']['feed.FeedEvent'][];
-      unread_events?: components['schemas']['feed.FeedEvent'][];
+      feedEvents?: {
+        [key: string]: components['schemas']['feed.FeedEventList'];
+      };
     };
     'feed.GetToBePublicMuxiOfficialMSGResp': {
       msg_list?: components['schemas']['feed.MuxiOfficialMSG'][];
     };
     'feed.MuxiOfficialMSG': {
       content?: string;
+      /** @description 自定义拓展字段 */
       extend_fields?: {
         [key: string]: string;
       };
       id?: string;
-      public_time?: string;
+      /** @description 发布的时间 */
+      public_time?: number;
       title?: string;
     };
     'feed.PublicMuxiOfficialMSGReq': {
@@ -2958,6 +2882,7 @@ export interface components {
       extend_fields?: {
         [key: string]: string;
       };
+      /** @description 延迟多久发布(单位是秒) */
       later_time?: number;
       title?: string;
     };
@@ -2994,9 +2919,6 @@ export interface components {
     'feedback_help.DeleteQuestionReq': {
       question_id?: number;
     };
-    'feedback_help.FindQuestionsByNameReq': {
-      question?: string;
-    };
     'feedback_help.FindQuestionsByNameResp': {
       questions?: components['schemas']['feedback_help.FrequentlyAskedQuestion'][];
     };
@@ -3011,60 +2933,51 @@ export interface components {
     'feedback_help.GetQuestionsResp': {
       questions?: components['schemas']['feedback_help.FrequentlyAskedQuestion'][];
     };
-    'feedback_help.NoteEventTrackingReq': {
-      event?: number;
-    };
-    'feedback_help.NoteMoreFeedbackSearchSkipReq': {
-      question_id?: number;
-    };
     'feedback_help.NoteQuestionReq': {
       if_over?: boolean;
       question_id?: number;
     };
-    'feedback_help.Result': {
-      /** @description 错误码，非 0 表示失败 */
-      code?: number;
-      data?: Record<string, never>;
-      /** @description 错误或成功 描述 */
-      msg?: string;
+    'grade.GetGradeByTermResp': {
+      /** @description 课程信息 */
+      grades?: components['schemas']['grade.Grade'][];
     };
-    'ginx.Result': {
-      /** @description 错误码，非 0 表示失败 */
-      code?: number;
-      data?: Record<string, never>;
-      /** @description 错误或成功 描述 */
-      msg?: string;
+    'grade.GetGradeScoreResp': {
+      type_of_grade_scores?: components['schemas']['grade.TypeOfGradeScore'][];
     };
-    'grade.Class': {
-      /** @description 课程类别名称，比如专业课/公共课 */
+    'grade.Grade': {
+      /** @description 课程类别名称 */
       Kclbmc?: string;
-      /** @description 课程名 */
-      course?: string;
-      /** @description 学分 */
-      credit?: string;
-      /** @description 总成绩 */
-      grade?: string;
-      jxbId?: string;
-      /** @description 课程标记，比如主修/辅修 */
+      /** @description 最终成绩 */
+      cj?: number;
+      /** @description 期末成绩分数 */
+      finalGrade?: number;
+      /** @description /期末成绩占比 */
+      finalGradePercent?: string;
+      /** @description 绩点 */
+      jd?: number;
+      /** @description 课程标记(主修/辅修) */
       kcbj?: string;
-      /** @description 课程性质名称 比如专业主干课程/通识必修课 */
+      /** @description 课程名称 */
+      kcmc?: string;
+      /** @description 课程性质名称 */
       kcxzmc?: string;
-      /** @description 学年 */
-      xnm?: string;
-      /** @description 学期名 */
-      xqm?: string;
-    };
-    'grade.GradeAllResp': {
-      classes?: components['schemas']['grade.Class'][];
-    };
-    'grade.GradeResponseDetail': {
-      FinalGrade?: string;
-      /** @description 期末成绩占比 */
-      FinalGradePercent?: string;
-      /** @description 平时成绩 */
-      RegularGrade?: string;
+      /** @description 平时成绩分数 */
+      regularGrade?: number;
       /** @description 平时成绩占比 */
-      RegularGradePercent?: string;
+      regularGradePercent?: string;
+      /** @description 学分 */
+      xf?: number;
+    };
+    'grade.GradeScore': {
+      /** @description 课程名称 */
+      kcmc?: string;
+      /** @description 学分 */
+      xf?: number;
+    };
+    'grade.TypeOfGradeScore': {
+      grade_score_list?: components['schemas']['grade.GradeScore'][];
+      /** @description 课程性质名称 */
+      kcxzmc?: string;
     };
     'infoSum.DelInfoSumRequest': {
       id?: number;
@@ -3111,6 +3024,11 @@ export interface components {
       /** @description 密码 */
       password?: string;
       student_id?: string;
+    };
+    'web.Response': {
+      code?: number;
+      data?: Record<string, never>;
+      msg?: string;
     };
     'website.DelWebsiteRequest': {
       id?: number;
