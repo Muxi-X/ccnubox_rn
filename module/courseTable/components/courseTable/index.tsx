@@ -115,7 +115,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyTop={<StickyTop />}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
-              await onTimetableRefresh();
+              await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
               console.error('刷新失败:', error);

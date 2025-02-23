@@ -45,9 +45,33 @@ const CourseTablePage: FC = () => {
     return schoolTime;
   };
 
+  // 读取缓存的课表数据
+  const getCachedCourseTable = async (): Promise<courseType[] | null> => {
+    const dataString = await SecureStore.getItemAsync('course_table');
+    if (dataString) {
+      try {
+        const data = JSON.parse(dataString);
+        return Array.isArray(data) ? data : null;
+      } catch (error) {
+        console.error('解析缓存数据失败:', error);
+      }
+    }
+    return null;
+  };
+
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = async (forceRefresh: boolean = false) => {
     try {
+      // 如果不需要强制刷新，则先尝试从缓存中读取课表数据
+      if (!forceRefresh) {
+        const cachedData = await getCachedCourseTable();
+        if (cachedData && cachedData.length > 0) {
+          setCourseData(cachedData);
+          return;
+        }
+      }
+
+      // 获取开学时间（用于计算当前周和学期信息）
       const schoolTime = await getCachedSchoolTime(forceRefresh);
       if (!schoolTime) return;
 
@@ -59,16 +83,16 @@ const CourseTablePage: FC = () => {
       const month = startDate.getMonth(); // 获取开学时间的月份
 
       // 根据开学时间计算学期和年份
-      if (month >= 0 && month <= 4) {
-        // 1月到5月
+      if (month >= 0 && month <= 5) {
+        // 1月到5月 => 第二学期
         semester = '2';
         year = (new Date().getFullYear() - 1).toString(); // 前一年
-      } else if (month >= 5 && month <= 7) {
-        // 6月到7月
+      } else if (month >= 6 && month <= 7) {
+        // 6月到7月 => 第三学期
         semester = '3';
         year = (new Date().getFullYear() - 1).toString(); // 前一年
       } else if (month >= 8 && month <= 11) {
-        // 8月到12月
+        // 8月到12月 => 第一学期
         semester = '1';
         year = new Date().getFullYear().toString(); // 当前年
       }
@@ -84,7 +108,10 @@ const CourseTablePage: FC = () => {
       setCurrentWeek(computeWeekNumber(schoolTime).toString());
 
       if (res?.code === 0) {
-        setCourseData(res.data?.classes as courseType[]);
+        const courses = res.data?.classes as courseType[];
+        // 缓存课表
+        await SecureStore.setItemAsync('course_table', JSON.stringify(courses));
+        setCourseData(courses);
       }
     } catch (error) {
       console.error('onTimetableRefresh error:', error);
