@@ -1,7 +1,10 @@
 /**
  * 课程宽度
  */
-export const COURSE_ITEM_WIDTH = 70;
+import { Dimensions } from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+export const COURSE_ITEM_WIDTH = (windowWidth - 50) / 5;
 /**
  * 课表头高度
  */
@@ -72,6 +75,10 @@ export const colorOptions = [
   {
     color: '#F39FA7',
     label: '日',
+  },
+  {
+    color: '#808080',
+    label: '无',
   },
 ];
 
