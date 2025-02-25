@@ -3,7 +3,7 @@ import { request } from '../request';
 // 成绩查询详细
 export const queryGradeDetail = async (queryParams: any) => {
   try {
-    const response = await request.get('/grade/grade_detail', {
+    const response = await request.get('/grade/getGradeByTerm', {
       query: queryParams,
     });
     return response.data;

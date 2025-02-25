@@ -1,4 +1,4 @@
-import { Checkbox, Icon, Toast, Input } from '@ant-design/react-native';
+import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
