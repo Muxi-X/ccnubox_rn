@@ -1,14 +1,12 @@
-import { request } from '../request';
+import { axiosInstance } from '../request';
 
 // 成绩查询
-export const queryGradeAll = async (queryParams: any) => {
+export const queryGradeAll = async () => {
   try {
-    const response = await request.get('/grade/grade_all', {
-      query: queryParams,
-    });
+    const response = await axiosInstance.get(`/grade/getGradeScore`);
     return response.data;
   } catch (error) {
-    console.error('查询成绩接口出错:', error);
+    console.error('queryGradeAll 查询成绩接口出错:', error);
     throw error;
   }
 };
