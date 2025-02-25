@@ -1,28 +1,47 @@
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { FC } from 'react';
-import { Image, Modal, StyleSheet, Text, View } from 'react-native';
+import { FC, useEffect, useState } from 'react';
+import {
+  Image,
+  ImageSourcePropType,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import changeFeedAllowList from '@/request/api/changeFeedAllowList';
+import queryFeedAllowList from '@/request/api/queryFeedAllowList';
 interface NotiPickerProps {
   visible: boolean;
   setVisible: (_visible: boolean) => void;
   // onCancel?: () => void;
   // onConfirm?: (type: string) => void;
 }
+
+interface FeedIconProps {
+  label: string;
+  icon: ImageSourcePropType;
+  title: string;
+  check: boolean;
+}
+
 const NotiPicker: FC<NotiPickerProps> = ({
   visible,
   setVisible,
   // onCancel,
   // onConfirm,
 }) => {
-  const feedIcon = [
-    {
-      label: 'class',
-      icon: require('@/assets/images/noti-class.png'),
-      title: '上课',
-      check: true,
-    },
+  const [feedIcon, setFeedIcon] = useState<FeedIconProps[]>([
+    // {
+    //   label: 'class',
+    //   icon: require('@/assets/images/noti-class.png'),
+    //   title: '上课',
+    //   check: true,
+    // },
     {
       label: 'grade',
       icon: require('@/assets/images/a-grade.png'),
@@ -51,10 +70,43 @@ const NotiPicker: FC<NotiPickerProps> = ({
       label: 'light',
       icon: require('@/assets/images/a-light.png'),
       title: '照明电费告急',
-      check: true,
+      check: false,
     },
-  ];
+  ]);
+
+  const getFeedList = () => {
+    queryFeedAllowList().then(res => {
+      // console.log('getlist', res);
+      const updateFeedIcon = feedIcon.map(item => {
+        if (res?.[item.label] !== undefined) {
+          return { ...item, check: res?.[item.label] };
+        }
+        return item;
+      });
+
+      // console.log('update', updateFeedIcon);
+      setFeedIcon(updateFeedIcon);
+    });
+  };
+
+  useEffect(() => {
+    getFeedList();
+  }, []);
+
+  const handleConfirm = () => {
+    const data = feedIcon.reduce((acc, item) => {
+      acc[item.label] = item.check;
+      return acc;
+    }, {});
+    // console.log('data', data);
+    changeFeedAllowList(data).then(() => {
+      getFeedList();
+    });
+    setVisible(false);
+  };
+
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
   return (
     <Modal visible={visible} transparent={true}>
       <View
@@ -122,7 +174,7 @@ const NotiPicker: FC<NotiPickerProps> = ({
               }}
             ></MaterialIcons>
           </View>
-          {feedIcon.map(item => (
+          {feedIcon.map((item, index) => (
             <View
               style={[
                 {
@@ -133,6 +185,7 @@ const NotiPicker: FC<NotiPickerProps> = ({
                 },
                 currentStyle?.background_style,
               ]}
+              key={index}
             >
               <View>
                 <Image source={item.icon} style={styles.icon} />
@@ -148,10 +201,43 @@ const NotiPicker: FC<NotiPickerProps> = ({
                   style={[{ width: 40, height: 20, marginRight: 10 }]}
                   trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
                   thumbColor="#979797"
+                  onChange={() => {
+                    setFeedIcon(prev => {
+                      return prev.map(feed => {
+                        if (feed.label === item.label) {
+                          return { ...feed, check: !feed.check };
+                        }
+                        return feed;
+                      });
+                    });
+                  }}
                 />
               </View>
             </View>
           ))}
+          <View
+            style={[
+              {
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+              },
+              currentStyle?.background_style,
+            ]}
+          >
+            <TouchableHighlight style={[styles.button]} onPress={handleConfirm}>
+              <Text
+                style={[
+                  {
+                    color: '#FFFFFF',
+                    fontSize: 16,
+                  },
+                ]}
+              >
+                确认
+              </Text>
+            </TouchableHighlight>
+          </View>
         </View>
       </View>
     </Modal>
@@ -198,6 +284,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 0,
     backgroundColor: '#FF7474',
+  },
+  button: {
+    backgroundColor: '#7B70F1',
+    width: 150,
+    height: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 });
 
