@@ -5,7 +5,7 @@ export const queryFeedEvents = async () => {
   try {
     const response = await request.get('/feed/getFeedEvents', {});
     console.log('getevent', response);
-    return response.data;
+    return response.data?.feedEvents;
   } catch (error) {
     console.error('获取订阅消息出错:', error);
     throw error;
