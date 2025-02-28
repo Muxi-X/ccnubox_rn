@@ -1,7 +1,7 @@
 import { request } from '../request';
 
 //标记已读
-export const clearFeedToken = async (feed_id: number) => {
+export const readFeedEvent = async (feed_id: number) => {
   try {
     const response = await request.post('/feed/readFeedEvent', {
       feed_id,
@@ -13,4 +13,4 @@ export const clearFeedToken = async (feed_id: number) => {
   }
 };
 
-export default clearFeedToken;
+export default readFeedEvent;

@@ -3,6 +3,8 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import clearFeedEvents from '@/request/api/clearFeedEvents';
+
 // import clearFeedEvents from '@/request/api/clearFeedEvents';
 interface ClearModalProps {
   // feedId: number;
@@ -18,7 +20,7 @@ const ClearModal: FC<ClearModalProps> = ({
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const handleClear = () => {
-    // clearFeedEvents('all').then(() => {});
+    clearFeedEvents();
 
     setClearVisible(false);
   };
