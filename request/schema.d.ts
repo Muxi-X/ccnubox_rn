@@ -2928,6 +2928,7 @@ export interface components {
     };
     'feed.ClearFeedEventReq': {
       feed_id?: number;
+      status?: string;
     };
     'feed.FeedEvent': {
       content?: string;
@@ -2938,6 +2939,7 @@ export interface components {
       id?: number;
       title?: string;
       type?: string;
+      read?: boolean;
     };
     'feed.GetFeedAllowListResp': {
       air_conditioner?: boolean;
@@ -2947,8 +2949,7 @@ export interface components {
       muxi?: boolean;
     };
     'feed.GetFeedEventsResp': {
-      read_events?: components['schemas']['feed.FeedEvent'][];
-      unread_events?: components['schemas']['feed.FeedEvent'][];
+      feed_events?: components['schemas']['feed.FeedEvent'][];
     };
     'feed.GetToBePublicMuxiOfficialMSGResp': {
       msg_list?: components['schemas']['feed.MuxiOfficialMSG'][];
