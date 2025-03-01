@@ -1,66 +1,39 @@
 import { getItem } from 'expo-secure-store';
-import React, { FC, memo, useEffect, useState } from 'react';
+import React, { FC, memo, useEffect } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { useJPush } from '@/hooks';
+import useJPush from '@/hooks/useJPush';
 
-// import useThemeBasedComponents from '@/store/themeBasedComponents';
-// import Skeleton from '@/components/skeleton';
+import { EventProps, useEvents } from '@/store/events';
+// import { useJPush } from '@/hooks';
 import useVisualScheme from '@/store/visualScheme';
 
 import { FeedIconList } from '@/constants/notificationItem';
-import queryFeedEvents from '@/request/api/queryFeedEvents';
-import readFeedEvents, { readFeedEvent } from '@/request/api/readFeedEvent';
 import saveFeedToken from '@/request/api/saveFeedToken';
-// import saveFeedToken from '@/request/api/saveFeedToken';
-// import saveFeedToken from '@/request/api/saveFeedToken';
-
-interface ExtendFields {
-  test?: string;
-}
-interface EventProps {
-  content?: string;
-  created_at?: number; // Unix 时间戳
-  extend_fields?: ExtendFields;
-  id?: number;
-  title?: string;
-  type?: string;
-  read?: boolean;
-}
 
 const NotificationPage: FC = () => {
   const currentStyles = useVisualScheme(state => state.currentStyle);
 
-  const [feedEvents, setFeedEvents] = useState<EventProps[]>([]);
+  const { feedEvents, getFeedEvents } = useEvents();
 
   //调用useJpush
-  // useJPush();
+  useJPush();
 
-  // const fetchToken = async () => {
-  //   const token = await getItem('pushToken');
-  //   // await saveFeedToken(token);
-  // };
+  const fetchToken = async () => {
+    const token = await getItem('pushToken');
+    console.log(token);
+    await saveFeedToken(token);
+  };
 
   const getEvents = () => {
-    queryFeedEvents().then(res => {
-      if (res) {
-        const newres = [...res];
-        setFeedEvents(newres);
-      }
-    });
+    getFeedEvents();
   };
 
   useEffect(() => {
     getEvents();
-
-    // fetchToken();
-    // console.log('res', res);
+    fetchToken();
   }, []);
 
-  //监听feed
-  useEffect(() => {
-    console.log('Updated feedEvents:', feedEvents);
-  }, [feedEvents]);
   return (
     <View style={[{ flex: 1 }, currentStyles?.background_style]}>
       <View>
@@ -83,10 +56,15 @@ export const ListItem: FC<EventProps> = ({
 
   const feedIcon = FeedIconList.find(item => item.name === type);
 
+  const { markAsRead, getFeedEvents } = useEvents();
+
   const readEvent = () => {
     // console.log('id', id);
 
-    if (id) readFeedEvent(id);
+    if (id) {
+      markAsRead(id);
+      getFeedEvents();
+    }
   };
 
   if (!feedIcon) return null;

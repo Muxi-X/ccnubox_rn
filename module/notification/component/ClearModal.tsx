@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
 import clearFeedEvents from '@/request/api/clearFeedEvents';
@@ -18,9 +19,12 @@ const ClearModal: FC<ClearModalProps> = ({
   setClearVisible,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { getFeedEvents } = useEvents();
 
   const handleClear = () => {
-    clearFeedEvents();
+    clearFeedEvents().then(() => {
+      getFeedEvents();
+    });
 
     setClearVisible(false);
   };

@@ -15,7 +15,7 @@
 .
 ├── README.md
 ├── android             # 打包后安卓产物
-├── app                 # 路由 
+├── app                 # 路由
 ├── app.json            # 权限等配置，详情见下文【打包发布】部分
 ├── assets              # 附带图片、文件，目前存有图片与更新信息
 ├── babel.config.js

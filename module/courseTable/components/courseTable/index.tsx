@@ -27,6 +27,7 @@ import { CourseTableProps, CourseTransferType } from './type';
 
 const Timetable: React.FC<CourseTableProps> = ({
   data,
+  currentWeek,
   onTimetableRefresh,
 }) => {
   // 是否为刷新状态
@@ -51,31 +52,31 @@ const Timetable: React.FC<CourseTableProps> = ({
       );
       const courses: CourseTransferType[] = [];
       // 遍历传入的数据，根据时间和日期填充表格
-      data.forEach(course => {
-        course?.info.forEach(
-          ({ id, day, teacher, where, class_when, classname }) => {
-            const timeSpan = class_when
-              .split('-')
-              .map(Number)
-              .reduce((a: number, b: number) => b - a + 1);
-            const rowIndex = Number(class_when.split('-')[0]) - 1;
-            const colIndex = day - 1;
-            if (rowIndex !== -1 && colIndex !== -1) {
-              timetableMatrix[rowIndex][colIndex] = { classname, timeSpan };
-              courses.push({
-                id,
-                courseName: classname,
-                timeSpan,
-                teacher,
-                date: daysOfWeek[colIndex],
-                classroom: where,
-                rowIndex,
-                colIndex,
-              });
-            }
+      data.forEach(
+        ({ id, day, teacher, where, class_when, classname, weeks }) => {
+          const timeSpan = class_when
+            .split('-')
+            .map(Number)
+            .reduce((a: number, b: number) => b - a + 1);
+          const rowIndex = Number(class_when.split('-')[0]) - 1;
+          const colIndex = day - 1;
+          const isThisWeek = weeks.includes(Number(currentWeek));
+          if (rowIndex !== -1 && colIndex !== -1) {
+            timetableMatrix[rowIndex][colIndex] = { classname, timeSpan };
+            courses.push({
+              id,
+              courseName: classname,
+              timeSpan,
+              teacher,
+              date: daysOfWeek[colIndex],
+              classroom: where,
+              rowIndex,
+              colIndex,
+              isThisWeek,
+            });
           }
-        );
-      });
+        }
+      );
       return (
         <View style={styles.courseWrapperStyle}>
           {timetableMatrix.map((row, rowIndex) => (
@@ -105,7 +106,7 @@ const Timetable: React.FC<CourseTableProps> = ({
       );
     })()
   );
-  console.log('data', data);
+  console.log('course_data', data);
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -114,7 +115,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyTop={<StickyTop />}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
-              onTimetableRefresh();
+              await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
               console.error('刷新失败:', error);
@@ -139,7 +140,7 @@ export const Content: React.FC<CourseTransferType> = props => {
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
-  console.log('props', props);
+  console.log('Content_props', props);
   return (
     <>
       <Pressable

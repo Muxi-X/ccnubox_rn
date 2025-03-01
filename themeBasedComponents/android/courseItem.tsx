@@ -10,14 +10,16 @@ import {
 import { CourseTransferType } from '@/module/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
-  const { teacher, courseName, classroom, timeSpan, date } = props;
+  const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;
   return (
     <View
       style={{
         height:
           COURSE_ITEM_HEIGHT * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2,
         borderRadius: 5,
-        backgroundColor: colorOptions.find(item => item.label === date)?.color,
+        backgroundColor: isThisWeek
+          ? colorOptions.find(item => item.label === date)?.color
+          : colorOptions.find(item => item.label === '无')?.color,
       }}
     >
       <View

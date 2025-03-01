@@ -1,5 +1,5 @@
 import * as Clipboard from 'expo-clipboard';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
