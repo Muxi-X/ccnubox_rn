@@ -70,7 +70,7 @@ const ScoreCalculation = () => {
       xnm: year,
     }).then(res => {
       console.log(res, 'res');
-      if (res.Grades) {
+      if (res?.Grades) {
         // Transform the Grades array into the expected data structure
         const transformedData = res.Grades.map((grade: any, index: number) => ({
           title: grade.Kcmc,
@@ -103,12 +103,10 @@ const ScoreCalculation = () => {
     data.forEach(item => {
       // Only calculate for checked items
       if (checkedList.has(item.key)) {
-        totalCreditScore += item.details.creditScore;
+        totalCreditScore += item.details.allGrade * item.details.credit;
         totalCredits += item.details.credit;
       }
     });
-
-    // Calculate GPA with 4 decimal places
     const gpa =
       totalCredits > 0
         ? (totalCreditScore / totalCredits).toFixed(4)

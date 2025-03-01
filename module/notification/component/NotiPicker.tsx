@@ -3,7 +3,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { FC, useEffect, useState } from 'react';
 import {
   Image,
-  ImageSourcePropType,
   Modal,
   StyleSheet,
   Text,
@@ -13,6 +12,7 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
+import { FeedIconList } from '@/constants/notificationItem';
 import changeFeedAllowList from '@/request/api/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/queryFeedAllowList';
 interface NotiPickerProps {
@@ -22,70 +22,34 @@ interface NotiPickerProps {
   // onConfirm?: (type: string) => void;
 }
 
-interface FeedIconProps {
-  label: string;
-  icon: ImageSourcePropType;
-  title: string;
-  check: boolean;
-}
-
 const NotiPicker: FC<NotiPickerProps> = ({
   visible,
   setVisible,
   // onCancel,
   // onConfirm,
 }) => {
-  const [feedIcon, setFeedIcon] = useState<FeedIconProps[]>([
-    // {
-    //   label: 'class',
-    //   icon: require('@/assets/images/noti-class.png'),
-    //   title: '上课',
-    //   check: true,
-    // },
-    {
-      label: 'grade',
-      icon: require('@/assets/images/icons/android/a-grade.png'),
-      title: '成绩',
-      check: true,
-    },
-    {
-      label: 'muxi',
-      icon: require('@/assets/images/icons/android/a-muxi.png'),
-      title: '木犀官方',
-      check: true,
-    },
-    {
-      label: 'holiday',
-      icon: require('@/assets/images/icons/android/a-holiday.png'),
-      title: '假期临近',
-      check: true,
-    },
-    {
-      label: 'air_conditioner',
-      icon: require('@/assets/images/icons/android/a-air.png'),
-      title: '空调电费告急',
-      check: true,
-    },
-    {
-      label: 'light',
-      icon: require('@/assets/images/icons/android/a-light.png'),
-      title: '照明电费告急',
-      check: false,
-    },
-  ]);
+  const [checkList, setCheckList] = useState<Record<string, boolean>>({
+    muxi: true,
+    grade: true,
+    holiday: true,
+    air_conditioner: true,
+    light: true,
+  });
+  const feedIcon = FeedIconList;
 
   const getFeedList = () => {
     queryFeedAllowList().then(res => {
+      const data = { ...res };
       // console.log('getlist', res);
-      const updateFeedIcon = feedIcon.map(item => {
-        if (res?.[item.label] !== undefined) {
-          return { ...item, check: res?.[item.label] };
-        }
-        return item;
-      });
-
+      if (data)
+        setCheckList({
+          air_conditioner: data?.air_conditioner || false,
+          grade: data?.grade || false,
+          holiday: data?.holiday || false,
+          light: data?.light || false,
+          muxi: data?.muxi || false,
+        });
       // console.log('update', updateFeedIcon);
-      setFeedIcon(updateFeedIcon);
     });
   };
 
@@ -94,10 +58,7 @@ const NotiPicker: FC<NotiPickerProps> = ({
   }, []);
 
   const handleConfirm = () => {
-    const data = feedIcon.reduce((acc, item) => {
-      acc[item.label] = item.check;
-      return acc;
-    }, {});
+    const data = checkList;
     // console.log('data', data);
     changeFeedAllowList(data).then(() => {
       getFeedList();
@@ -188,28 +149,24 @@ const NotiPicker: FC<NotiPickerProps> = ({
               key={index}
             >
               <View>
-                <Image source={item.icon} style={styles.icon} />
+                <Image source={item.imageUrl} style={styles.icon} />
               </View>
               <View style={styles.content}>
                 <Text style={[styles.title, currentStyle?.schedule_text_style]}>
-                  {item.title}提醒
+                  {item.text}提醒
                 </Text>
               </View>
               <View style={styles.right}>
                 <Switch
-                  checked={item.check}
+                  checked={!!checkList[item.name]}
                   style={[{ width: 40, height: 20, marginRight: 10 }]}
                   trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
                   thumbColor="#979797"
                   onChange={() => {
-                    setFeedIcon(prev => {
-                      return prev.map(feed => {
-                        if (feed.label === item.label) {
-                          return { ...feed, check: !feed.check };
-                        }
-                        return feed;
-                      });
-                    });
+                    setCheckList(prev => ({
+                      ...prev,
+                      [item.name]: !prev[item.name],
+                    }));
                   }}
                 />
               </View>

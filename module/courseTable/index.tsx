@@ -18,7 +18,7 @@ const CourseTablePage: FC = () => {
   const onTimetableRefresh = async () => {
     queryCourseTable({
       semester: '1',
-      week: '2',
+      week: 2,
       year: '2024',
     }).then(res => {
       if (res?.code === 0) {

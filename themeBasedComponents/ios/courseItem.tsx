@@ -5,7 +5,7 @@ import { colorOptions } from '@/constants/courseTable';
 import { CourseTransferType } from '@/module/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
-  const { teacher, rowIndex, courseName, classroom, timeSpan } = props;
+  const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;
   console.log('CourseItems', props);
   return (
     <View
@@ -20,7 +20,9 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             paddingBottom: 10,
             paddingLeft: 10,
             paddingRight: 6,
-            backgroundColor: colorOptions[rowIndex % colorOptions.length].color,
+            backgroundColor: isThisWeek
+              ? colorOptions.find(item => item.label === date)?.color
+              : colorOptions.find(item => item.label === '无')?.color,
             borderRadius: 5,
           },
         ]}
