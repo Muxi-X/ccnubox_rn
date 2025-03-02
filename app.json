@@ -22,14 +22,14 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        
+
         "LSApplicationQueriesSchemes": [
           "weixin",
           "weixinULAPI",
           "weixinURLParamsAPI"
         ]
       },
-      
+
       "associatedDomains": ["applinks:(Universal Link Here)"]
     },
     "android": {
