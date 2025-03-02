@@ -2855,6 +2855,7 @@ export interface components {
       id?: number;
       title?: string;
       type?: string;
+      read?: boolean;
     };
     'feed.FeedEventList': {
       read?: components['schemas']['feed.FeedEvent'][];
@@ -2868,9 +2869,7 @@ export interface components {
       muxi?: boolean;
     };
     'feed.GetFeedEventsResp': {
-      feedEvents?: {
-        [key: string]: components['schemas']['feed.FeedEventList'];
-      };
+      feed_events?: components['schemas']['feed.FeedEvent'][];
     };
     'feed.GetToBePublicMuxiOfficialMSGResp': {
       msg_list?: components['schemas']['feed.MuxiOfficialMSG'][];
