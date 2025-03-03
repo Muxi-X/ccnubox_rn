@@ -65,7 +65,7 @@
     "@babel/core": "^7.26.0",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "@faker-js/faker": "^9.3.0",
+    "@faker-js/faker": "^9.5.1",
     "@inquirer/prompts": "^7.0.1",
     "@types/fs-extra": "^9.0.13",
     "@types/glob": "^7.2.0",
