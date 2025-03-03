@@ -16,6 +16,7 @@ export interface CourseTableProps {
   data: courseType[];
   currentWeek: string;
   onTimetableRefresh: (_forceRefresh: boolean) => void;
+  onToggleWeekPicker: () => void;
 }
 
 // 课程中间类型,比 courseType 增加 rowIndex 和 colIndex
@@ -29,4 +30,11 @@ export interface CourseTransferType {
   colIndex: number;
   date: string;
   isThisWeek: boolean;
+}
+
+export interface WeekSelectorProps {
+  currentWeek: string;
+  showWeekPicker: boolean;
+  onWeekSelect: (week: string) => void;
+  onToggleWeekPicker: () => void;
 }
