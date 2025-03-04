@@ -4,8 +4,6 @@ import { Pressable, StyleSheet } from 'react-native';
 import ThemeChangeText from '@/components/text';
 import View from '@/components/view';
 
-import useVisualScheme from '@/store/visualScheme';
-
 //import useVisualScheme from '@/store/visualScheme';
 import { WeekSelectorProps } from '../courseTable/type';
 
@@ -13,9 +11,8 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   currentWeek,
   showWeekPicker,
   onWeekSelect,
-  onToggleWeekPicker,
 }) => {
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+  // const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
     <>
@@ -55,42 +52,26 @@ const WeekSelector: FC<WeekSelectorProps> = ({
           </View>
         </View>
       )}
-
-      {/* Week selector button */}
-      <Pressable
-        onPress={onToggleWeekPicker}
-        style={[
-          styles.toggleButton,
-          {
-            backgroundColor:
-              currentStyle?.schedule_text_style?.color ?? '#007AFF',
-          },
-        ]}
-      >
-        <ThemeChangeText style={styles.toggleButtonText}>
-          第 {currentWeek} 周
-        </ThemeChangeText>
-      </Pressable>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   pickerContainer: {
+    //  ...StyleSheet.absoluteFillObject,
     position: 'absolute',
-    width: '100%',
-    backgroundColor: '#fff',
+    top: 45, // 确保它不会挡住头部
+    left: -160, // 让它从屏幕左侧开始
+    width: 400, // 让它宽度覆盖整个屏幕
+    backgroundColor: '#FFFFFF', // 设置背景颜色，避免透明
     borderRadius: 8,
     padding: 10,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    zIndex: 1000,
+    zIndex: 2000,
   },
   weekGrid: {
     flexDirection: 'row',

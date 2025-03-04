@@ -4,6 +4,7 @@ interface QueryParams {
   semester: string;
   week: number;
   year: string;
+  refresh: boolean;
 }
 
 // 查询课表
