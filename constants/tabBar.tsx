@@ -5,13 +5,82 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+import useWeekStore from '@/store/weekStore';
 
+import WeekSelector from '@/module/courseTable/components/weekSelector';
 import NotificationHeaderRight from '@/module/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { tooltipActions } from './courseTableApplications';
 
 import { SinglePageType } from '@/types/tabBarTypes';
+
+const ScheduleHeader: React.FC = () => {
+  const [showWeekPicker, setShowWeekPicker] = React.useState(false);
+  const { currentWeek, setCurrentWeek } = useWeekStore();
+
+  return (
+    <>
+      <View style={{ width: '100%' }}>
+        <TouchableOpacity
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            // console.log('选择周次');
+            setShowWeekPicker(!showWeekPicker);
+          }}
+        >
+          <Text
+            style={[
+              commonStyles.fontLarge,
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                textAlign: 'center',
+              },
+            ]}
+          >
+            第{currentWeek}周
+          </Text>
+          <MaterialIcons
+            name="arrow-forward-ios"
+            size={20}
+            style={[
+              useVisualScheme.getState().currentStyle?.header_text_style,
+              {
+                transform: [{ rotate: '90deg' }],
+                marginLeft: 4,
+              },
+            ]}
+          />
+        </TouchableOpacity>
+        <Text
+          style={[
+            commonStyles.fontLight,
+            commonStyles.fontSmall,
+            useVisualScheme.getState().currentStyle?.schedule_week_text_style,
+          ]}
+        >
+          当前周设置为{currentWeek}
+        </Text>
+      </View>
+      {showWeekPicker && (
+        <WeekSelector
+          currentWeek={currentWeek}
+          showWeekPicker={showWeekPicker}
+          onWeekSelect={week => {
+            setCurrentWeek(week);
+            setShowWeekPicker(false);
+          }}
+          onToggleWeekPicker={() => setShowWeekPicker(!showWeekPicker)}
+        />
+      )}
+    </>
+  );
+};
 
 /**
  * @enum tabBar颜色
@@ -47,112 +116,63 @@ export const tabConfig: SinglePageType[] = [
           commonStyles.TabBarPadding,
           useVisualScheme.getState().currentStyle?.header_text_style,
         ]}
-      ></MaterialIcons>
+      />
     ),
   },
   {
     name: 'schedule',
     title: '日程',
     iconName: 'calendar',
-    headerTitle: () => (
-      <>
-        <TouchableOpacity
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => {
-            // console.log('选择周次');
-          }}
-        >
-          <Text
-            style={[
-              commonStyles.fontLarge,
-              useVisualScheme.getState().currentStyle?.header_text_style,
-              {
-                textAlign: 'center',
-              },
-            ]}
-          >
-            第1周
-          </Text>
-          <MaterialIcons
-            name="arrow-forward-ios"
-            size={20}
-            style={[
-              useVisualScheme.getState().currentStyle?.header_text_style,
-              {
-                transform: [{ rotate: '90deg' }],
-                marginLeft: 4,
-              },
-            ]}
-          />
-        </TouchableOpacity>
-        <Text
-          style={[
-            commonStyles.fontLight,
-            commonStyles.fontSmall,
-            useVisualScheme.getState().currentStyle?.schedule_week_text_style,
-          ]}
-        >
-          当前周设置为1
-        </Text>
-      </>
-    ),
+    headerTitle: () => <ScheduleHeader />,
     headerRight: () => (
-      <>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <MaterialIcons
-            name="delete-sweep"
-            size={24}
-            style={[
-              useVisualScheme.getState().currentStyle?.header_text_style,
-              {
-                paddingRight: 10,
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <MaterialIcons
+          name="delete-sweep"
+          size={24}
+          style={[
+            useVisualScheme.getState().currentStyle?.header_text_style,
+            {
+              paddingRight: 10,
+            },
+          ]}
+        />
+        <View>
+          <Tooltip.Menu
+            actions={tooltipActions}
+            placement="bottom-start"
+            onAction={node => {
+              if ((node.key as string)[0] === '/') {
+                router.navigate(node.key as Href);
+              }
+            }}
+            styles={{
+              tooltip: {
+                width: 160,
               },
-            ]}
-          ></MaterialIcons>
-          <View>
-            <Tooltip.Menu
-              actions={tooltipActions}
-              // content={<TooltipContent />}
-              placement="bottom-start"
-              onAction={node => {
-                // 根据 key 跳转,如果 key 不是路径, 则执行其他操作
-                if ((node.key as string)[0] === '/')
-                  router.navigate(node.key as Href);
-              }}
-              styles={{
-                tooltip: {
-                  width: 160,
-                },
-              }}
-              trigger="onPress"
-            >
-              <TouchableOpacity>
-                <MaterialIcons
-                  name="add"
-                  size={24}
-                  style={[
-                    useVisualScheme.getState().currentStyle?.header_text_style,
-                    {
-                      paddingRight: 10,
-                    },
-                  ]}
-                ></MaterialIcons>
-              </TouchableOpacity>
-            </Tooltip.Menu>
-          </View>
+            }}
+            trigger="onPress"
+          >
+            <TouchableOpacity>
+              <MaterialIcons
+                name="add"
+                size={24}
+                style={[
+                  useVisualScheme.getState().currentStyle?.header_text_style,
+                  {
+                    paddingRight: 10,
+                  },
+                ]}
+              />
+            </TouchableOpacity>
+          </Tooltip.Menu>
         </View>
-      </>
+      </View>
     ),
   },
   {

@@ -36,5 +36,5 @@ export interface WeekSelectorProps {
   currentWeek: string;
   showWeekPicker: boolean;
   onWeekSelect: (week: string) => void;
-  onToggleWeekPicker: () => void;
+  // onToggleWeekPicker: () => void;
 }
