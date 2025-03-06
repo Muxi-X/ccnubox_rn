@@ -14,7 +14,7 @@ export type courseType = {
 
 export interface CourseTableProps {
   data: courseType[];
-  currentWeek: string;
+  currentWeek: number;
   onTimetableRefresh: (_forceRefresh: boolean) => void;
 }
 
@@ -29,4 +29,10 @@ export interface CourseTransferType {
   colIndex: number;
   date: string;
   isThisWeek: boolean;
+}
+
+export interface WeekSelectorProps {
+  currentWeek: number;
+  showWeekPicker: boolean;
+  onWeekSelect: (_week: number) => void;
 }

@@ -1,123 +1,153 @@
-import React, { FC, memo } from 'react';
-import {
-  Image,
-  ImageSourcePropType,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { getItem } from 'expo-secure-store';
+import React, { FC, memo, useEffect } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// import Skeleton from '@/components/skeleton';
+import useJPush from '@/hooks/useJPush';
 
+import { EventProps, useEvents } from '@/store/events';
+// import { useJPush } from '@/hooks';
 import useVisualScheme from '@/store/visualScheme';
 
-export const feedIcon = [
-  {
-    label: 'class',
-    icon: require('@/assets/images/noti-class.png'),
-    title: '上课',
-  },
-  {
-    label: 'grade',
-    icon: require('@/assets/images/a-grade.png'),
-    title: '成绩',
-  },
-  {
-    label: 'muxi',
-    icon: require('@/assets/images/a-muxi.png'),
-    title: '木犀官方',
-  },
-  {
-    label: 'holiday',
-    icon: require('@/assets/images/a-holiday.png'),
-    title: '假期临近',
-  },
-  {
-    label: 'air_conditioner',
-    icon: require('@/assets/images/a-air.png'),
-    title: '空调电费告急',
-  },
-  {
-    label: 'light',
-    icon: require('@/assets/images/a-light.png'),
-    title: '照明电费告急',
-  },
-];
+import { FeedIconList } from '@/constants/notificationItem';
+import saveFeedToken from '@/request/api/saveFeedToken';
 
 const NotificationPage: FC = () => {
-  // const [loading, setLoading] = useState<boolean>(true);
   const currentStyles = useVisualScheme(state => state.currentStyle);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 2000);
-  // }, []);
+
+  const { feedEvents, getFeedEvents } = useEvents();
+
+  //调用useJpush
+  useJPush();
+
+  const fetchToken = async () => {
+    const token = await getItem('pushToken');
+    console.log(token);
+    await saveFeedToken(token);
+  };
+
+  const getEvents = () => {
+    getFeedEvents();
+  };
+
+  useEffect(() => {
+    getEvents();
+    fetchToken();
+  }, []);
+
   return (
     <View style={[{ flex: 1 }, currentStyles?.background_style]}>
-      {/* <Skeleton loading={loading}> */}
       <View>
-        {feedIcon.map((item, index) => (
+        {feedEvents.map((item, index) => (
           <ListItem key={index} {...item} />
         ))}
       </View>
-      {/* </Skeleton> */}
     </View>
   );
 };
 
-interface ListItemProps {
-  label: string;
-  icon: ImageSourcePropType;
-  title: string;
-}
-
-export const ListItem: FC<ListItemProps> = ({ label, icon, title }) => {
+export const ListItem: FC<EventProps> = ({
+  type,
+  read,
+  content,
+  id,
+  created_at,
+}) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
+  const feedIcon = FeedIconList.find(item => item.name === type);
+
+  const { markAsRead, getFeedEvents } = useEvents();
+
+  const readEvent = () => {
+    // console.log('id', id);
+
+    if (id) {
+      markAsRead(id);
+      getFeedEvents();
+    }
+  };
+
+  if (!feedIcon) return null;
+
   return (
-    <TouchableOpacity style={styles.listItem}>
+    <TouchableOpacity onPress={readEvent} style={styles.listItem}>
       <View>
-        <Image source={icon} style={styles.icon} />
+        <Image source={feedIcon.imageUrl} style={styles.icon} />
       </View>
       <View style={styles.content}>
         <Text style={[styles.title, currentStyle?.schedule_text_style]}>
-          {title}提醒
+          {feedIcon.text}提醒
         </Text>
-        <Text
-          style={[
-            {
-              color: '#3D3D3D',
-              fontSize: 14,
-              paddingTop: 2,
-              fontWeight: '300',
-            },
-            currentStyle?.notification_text_style,
-          ]}
-        >
-          {label}
-        </Text>
+        {content && (
+          <Text
+            style={[
+              {
+                color: '#3D3D3D',
+                fontSize: 14,
+                paddingTop: 2,
+                fontWeight: '300',
+              },
+              currentStyle?.notification_text_style,
+            ]}
+          >
+            {content || ''}
+          </Text>
+        )}
       </View>
       <View style={styles.right}>
         <View>
-          <Text style={[styles.time]}>12:00</Text>
-        </View>
-        <View style={styles.badge}>
-          <Text
-            style={{
-              fontSize: 10,
-              textAlign: 'center',
-              color: '#fff',
-            }}
-          >
-            {109 > 99 ? '99+' : 109}
+          <Text style={[styles.time]}>
+            {created_at
+              ? new Date(created_at * 1000).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : ''}
           </Text>
         </View>
+        {!read && (
+          <View style={styles.badge}>
+            <Text
+              style={{
+                fontSize: 10,
+                textAlign: 'center',
+                color: '#fff',
+              }}
+            >
+              1
+            </Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  skeletonWrapper: {
+    flex: 1,
+    marginTop: 20,
+  },
+  skeletonItem: {
+    marginBottom: 20,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  skeletonIcon: {
+    width: 30,
+    height: 30,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+  },
+  skeletonText: {
+    width: 120,
+    height: 12,
+    backgroundColor: '#e0e0e0',
+    marginLeft: 10,
+    borderRadius: 4,
+  },
   listItem: {
     width: '100%',
     padding: 16,
@@ -138,6 +168,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    justifyContent: 'center',
   },
   right: {
     display: 'flex',
@@ -148,8 +179,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     position: 'relative',
     color: '#949494',
+    paddingBottom: 5,
   },
   badge: {
+    marginRight: 3,
+    width: 15,
     justifyContent: 'center',
     alignItems: 'center',
     height: 16,
