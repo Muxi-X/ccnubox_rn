@@ -2,7 +2,6 @@ import { request } from '../request';
 
 interface QueryParams {
   semester: string;
-  week: number;
   year: string;
   refresh: boolean;
 }

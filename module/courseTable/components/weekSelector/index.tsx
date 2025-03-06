@@ -23,14 +23,12 @@ const WeekSelector: FC<WeekSelectorProps> = ({
             {[...Array(20)].map((_, i) => (
               <Pressable
                 key={i}
-                onPress={() => onWeekSelect((i + 1).toString())}
+                onPress={() => onWeekSelect(i + 1)}
                 style={[
                   styles.weekButton,
                   {
                     backgroundColor:
-                      currentWeek === (i + 1).toString()
-                        ? '#7878F8'
-                        : '#F0F0F0',
+                      currentWeek === i + 1 ? '#7878F8' : '#F0F0F0',
                   },
                 ]}
               >
@@ -38,10 +36,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   style={[
                     styles.weekButtonText,
                     {
-                      color:
-                        currentWeek === (i + 1).toString()
-                          ? '#FFFFFF'
-                          : '#000000',
+                      color: currentWeek === i + 1 ? '#FFFFFF' : '#000000',
                     },
                   ]}
                 >
