@@ -11,12 +11,13 @@ import { getCurrentTime } from '@/utils/getCurrentTime';
 // eslint-disable-next-line import/namespace
 import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';
+import WeekSelector from './components/weekSelector';
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const [courseData, setCourseData] = useState<courseType[]>([]);
-  const { currentWeek, setCurrentWeek } = useWeekStore();
-  const [showWeekPicker, setShowWeekPicker] = useState(false);
+  const { currentWeek, setCurrentWeek, showWeekPicker, setShowWeekPicker } =
+    useWeekStore();
 
   const onTimetableRefresh = async () => {
     queryCourseTable({
@@ -54,6 +55,17 @@ const CourseTablePage: FC = () => {
         currentWeek={currentWeek}
         onToggleWeekPicker={() => setShowWeekPicker(!showWeekPicker)}
       />
+      {showWeekPicker && (
+        <WeekSelector
+          currentWeek={currentWeek}
+          showWeekPicker={showWeekPicker}
+          onWeekSelect={week => {
+            setCurrentWeek(week);
+            setShowWeekPicker(false);
+          }}
+          // onToggleWeekPicker={() => setShowWeekPicker(!showWeekPicker)}
+        />
+      )}
     </View>
   );
 };
