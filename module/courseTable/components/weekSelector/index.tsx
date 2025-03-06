@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
   pickerContainer: {
     //  ...StyleSheet.absoluteFillObject,
     position: 'absolute',
-    top: 45, // 确保它不会挡住头部
-    left: -160, // 让它从屏幕左侧开始
-    width: 400, // 让它宽度覆盖整个屏幕
+    // top: 45, // 确保它不会挡住头部
+    // left: -160, // 让它从屏幕左侧开始
+    width: '100%', // 让它宽度覆盖整个屏幕
     backgroundColor: '#FFFFFF', // 设置背景颜色，避免透明
     borderRadius: 8,
     padding: 10,
@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
     left: 5,
-    // width: 280,
   },
   weekButton: {
     width: 45,
