@@ -4,16 +4,20 @@ import { FC, memo, useEffect, useState } from 'react';
 import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
+import useWeekStore from '@/store/weekStore';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api';
 
 import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';
+import WeekSelector from './components/weekSelector';
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
   const [courseData, setCourseData] = useState<courseType[]>([]);
-  const [currentWeek, setCurrentWeek] = useState<string>('1');
+  const { currentWeek, setCurrentWeek, showWeekPicker, setShowWeekPicker } =
+    useWeekStore();
 
   // 根据开学日期计算当前周数，开学当天为第一周
   const computeWeekNumber = (schoolTime: string): number => {
@@ -105,7 +109,7 @@ const CourseTablePage: FC = () => {
       });
 
       // 计算当前周
-      setCurrentWeek(computeWeekNumber(schoolTime).toString());
+      setCurrentWeek(computeWeekNumber(schoolTime));
 
       if (res?.code === 0) {
         const courses = res.data?.classes as courseType[];
@@ -132,9 +136,19 @@ const CourseTablePage: FC = () => {
     >
       <CourseTable
         data={courseData}
-        currentWeek={currentWeek}
         onTimetableRefresh={onTimetableRefresh}
-      ></CourseTable>
+        currentWeek={currentWeek}
+      />
+      {showWeekPicker && (
+        <WeekSelector
+          currentWeek={currentWeek}
+          showWeekPicker={showWeekPicker}
+          onWeekSelect={week => {
+            setCurrentWeek(week);
+            setShowWeekPicker(false);
+          }}
+        />
+      )}
     </View>
   );
 };
