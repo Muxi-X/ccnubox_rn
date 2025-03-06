@@ -1,3 +1,4 @@
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -11,7 +12,6 @@ import {
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryElectricityPrice, setElectricityPrice } from '@/request/api';
-import { router, useLocalSearchParams } from 'expo-router';
 
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -29,11 +29,9 @@ const ElectricityBillBalance = () => {
 
   useEffect(() => {
     const params = {
-      building: building,
-      room: room,
-      // userId: '1',
-      area: area,
-      student_id: '2023215228',
+      building: building as string,
+      room: room as string,
+      area: area as string,
     };
     console.log(params, 'params');
     queryElectricityPrice(params)

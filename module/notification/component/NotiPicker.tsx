@@ -1,60 +1,73 @@
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { FC } from 'react';
-import { Image, Modal, StyleSheet, Text, View } from 'react-native';
+import { FC, useEffect, useState } from 'react';
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import { FeedIconList } from '@/constants/notificationItem';
+import changeFeedAllowList from '@/request/api/changeFeedAllowList';
+import queryFeedAllowList from '@/request/api/queryFeedAllowList';
 interface NotiPickerProps {
   visible: boolean;
   setVisible: (_visible: boolean) => void;
   // onCancel?: () => void;
   // onConfirm?: (type: string) => void;
 }
+
 const NotiPicker: FC<NotiPickerProps> = ({
   visible,
   setVisible,
   // onCancel,
   // onConfirm,
 }) => {
-  const feedIcon = [
-    {
-      label: 'class',
-      icon: require('@/assets/images/noti-class.png'),
-      title: '上课',
-      check: true,
-    },
-    {
-      label: 'grade',
-      icon: require('@/assets/images/a-grade.png'),
-      title: '成绩',
-      check: true,
-    },
-    {
-      label: 'muxi',
-      icon: require('@/assets/images/a-muxi.png'),
-      title: '木犀官方',
-      check: true,
-    },
-    {
-      label: 'holiday',
-      icon: require('@/assets/images/a-holiday.png'),
-      title: '假期临近',
-      check: true,
-    },
-    {
-      label: 'air_conditioner',
-      icon: require('@/assets/images/a-air.png'),
-      title: '空调电费告急',
-      check: true,
-    },
-    {
-      label: 'light',
-      icon: require('@/assets/images/a-light.png'),
-      title: '照明电费告急',
-      check: true,
-    },
-  ];
+  const [checkList, setCheckList] = useState<Record<string, boolean>>({
+    muxi: true,
+    grade: true,
+    holiday: true,
+    air_conditioner: true,
+    light: true,
+  });
+  const feedIcon = FeedIconList;
+
+  const getFeedList = () => {
+    queryFeedAllowList().then(res => {
+      const data = { ...res };
+      // console.log('getlist', res);
+      if (data)
+        setCheckList({
+          air_conditioner: data?.air_conditioner || false,
+          grade: data?.grade || false,
+          holiday: data?.holiday || false,
+          light: data?.light || false,
+          muxi: data?.muxi || false,
+        });
+      // console.log('update', updateFeedIcon);
+    });
+  };
+
+  useEffect(() => {
+    getFeedList();
+  }, []);
+
+  const handleConfirm = () => {
+    const data = checkList;
+    // console.log('data', data);
+    changeFeedAllowList(data).then(() => {
+      getFeedList();
+    });
+    setVisible(false);
+  };
+
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
   return (
     <Modal visible={visible} transparent={true}>
       <View
@@ -122,7 +135,7 @@ const NotiPicker: FC<NotiPickerProps> = ({
               }}
             ></MaterialIcons>
           </View>
-          {feedIcon.map(item => (
+          {feedIcon.map((item, index) => (
             <View
               style={[
                 {
@@ -133,25 +146,55 @@ const NotiPicker: FC<NotiPickerProps> = ({
                 },
                 currentStyle?.background_style,
               ]}
+              key={index}
             >
               <View>
-                <Image source={item.icon} style={styles.icon} />
+                <Image source={item.imageUrl} style={styles.icon} />
               </View>
               <View style={styles.content}>
                 <Text style={[styles.title, currentStyle?.schedule_text_style]}>
-                  {item.title}提醒
+                  {item.text}提醒
                 </Text>
               </View>
               <View style={styles.right}>
                 <Switch
-                  checked={item.check}
+                  checked={!!checkList[item.name]}
                   style={[{ width: 40, height: 20, marginRight: 10 }]}
                   trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
                   thumbColor="#979797"
+                  onChange={() => {
+                    setCheckList(prev => ({
+                      ...prev,
+                      [item.name]: !prev[item.name],
+                    }));
+                  }}
                 />
               </View>
             </View>
           ))}
+          <View
+            style={[
+              {
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+              },
+              currentStyle?.background_style,
+            ]}
+          >
+            <TouchableHighlight style={[styles.button]} onPress={handleConfirm}>
+              <Text
+                style={[
+                  {
+                    color: '#FFFFFF',
+                    fontSize: 16,
+                  },
+                ]}
+              >
+                确认
+              </Text>
+            </TouchableHighlight>
+          </View>
         </View>
       </View>
     </Modal>
@@ -198,6 +241,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 0,
     backgroundColor: '#FF7474',
+  },
+  button: {
+    backgroundColor: '#7B70F1',
+    width: 150,
+    height: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 });
 

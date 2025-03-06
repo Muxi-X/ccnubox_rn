@@ -60,7 +60,7 @@ const Timetable: React.FC<CourseTableProps> = ({
             .reduce((a: number, b: number) => b - a + 1);
           const rowIndex = Number(class_when.split('-')[0]) - 1;
           const colIndex = day - 1;
-          const isThisWeek = weeks.includes(Number(currentWeek));
+          const isThisWeek = weeks.includes(currentWeek);
           if (rowIndex !== -1 && colIndex !== -1) {
             timetableMatrix[rowIndex][colIndex] = { classname, timeSpan };
             courses.push({

@@ -15,54 +15,70 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { queryGradeDetail } from '@/request/api';
 
+interface GradeDetails {
+  usualGrade: string | number;
+  finalGrade: string | number;
+  allGrade: number;
+  credit: number;
+  score: number;
+  creditScore: number;
+}
+
+interface GradeData {
+  title: string;
+  key: string;
+  credit: number;
+  score: string | number;
+  details: GradeDetails;
+}
+
 const defaultCheckedList = ['a', 'b', 'c', 'd'];
 const ScoreCalculation = () => {
   const local = useLocalSearchParams();
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [checkedList, setCheckedList] = useState<any>(
+  const [checkedList, setCheckedList] = useState<Set<string>>(
     new Set(defaultCheckedList)
-  ); // 初始选中项
-  const [indeterminate, setIndeterminate] = useState(false); // 半选状态
-  const [checkAll, setCheckAll] = useState(true); // 全选状态
+  );
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(true);
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
-  const [activeItem, setActiveItem] = useState<any>({});
+  const [activeItem, setActiveItem] = useState<GradeData | null>(null);
   const [calculatedGPA, setCalculatedGPA] = useState<number>(0);
 
   const { year, semester, type } = useLocalSearchParams();
   console.log(year, semester, type, 'year, semester, type');
 
-  // 处理单个复选框的选中和取消选中
-  const onChange = (i: any) => {
-    const newCheckedList = new Set(checkedList); // 使用副本来更新
+  const onChange = (i: GradeData) => {
+    const newCheckedList = new Set([...checkedList]);
     if (newCheckedList.has(i.key)) {
-      newCheckedList.delete(i.key); // 如果选中，取消选中
+      newCheckedList.delete(i.key);
     } else {
-      newCheckedList.add(i.key); // 如果没有选中，添加到选中列表
+      newCheckedList.add(i.key);
     }
 
     setCheckedList(newCheckedList);
-    // 更新半选和全选状态
     setIndeterminate(
       newCheckedList.size > 0 && newCheckedList.size < data.length
     );
     setCheckAll(newCheckedList.size === data.length);
   };
 
-  // 处理全选框的选中与取消全选
   const onCheckAllChange = (e: { target: { checked: boolean } }) => {
     const newCheckedList = e.target.checked
-      ? new Set(data.map(i => i.key))
-      : new Set();
+      ? new Set(Array.from(data).map((i: GradeData) => i.key))
+      : new Set<string>();
     setCheckedList(newCheckedList);
     setIndeterminate(false);
     setCheckAll(e.target.checked);
   };
-  const handleClick = (i: any) => {
+
+  const handleClick = (i: GradeData) => {
     setActiveItem(i);
     setVisible1(true);
   };
-  const [data, setGradeData] = useState<any[]>([]);
+
+  const [data, setGradeData] = useState<GradeData[]>([]);
 
   useEffect(() => {
     queryGradeDetail({
@@ -70,45 +86,51 @@ const ScoreCalculation = () => {
       xnm: year,
     }).then(res => {
       console.log(res, 'res');
-      if (res.Grades) {
-        // Transform the Grades array into the expected data structure
-        const transformedData = res.Grades.map((grade: any, index: number) => ({
-          title: grade.Kcmc,
-          key: index.toString(),
-          credit: grade.Xf,
-          score: grade.Cj,
-          details: {
-            usualGrade: grade.RegularGrade,
-            finalGrade: grade.FinalGrade,
-            allGrade: grade.Cj,
+      if (res?.Grades) {
+        interface Grade {
+          Kcmc: string;
+          Xf: number;
+          Cj: string | number;
+          RegularGrade: string | number;
+          FinalGrade: string | number;
+          Jd: number;
+        }
+        const transformedData = (res.Grades as Grade[]).map(
+          (grade: Grade, index: number) => ({
+            title: grade.Kcmc,
+            key: index.toString(),
             credit: grade.Xf,
-            score: grade.Jd,
-            creditScore: grade.Xf * grade.Jd,
-          },
-        }));
+            score: grade.Cj,
+            details: {
+              usualGrade: grade.RegularGrade,
+              finalGrade: grade.FinalGrade,
+              allGrade: Number(grade.Cj),
+              credit: grade.Xf,
+              score: grade.Jd,
+              creditScore: grade.Xf * grade.Jd,
+            },
+          })
+        );
 
         setGradeData(transformedData);
-        // Initialize checkedList with all keys
-        setCheckedList(new Set(transformedData.map((item: any) => item.key)));
+        setCheckedList(
+          new Set(transformedData.map((item: GradeData) => item.key))
+        );
         setCheckAll(true);
       }
     });
   }, [semester, year]);
 
-  // Add calculation function
   const calculateGPA = () => {
     let totalCreditScore = 0;
     let totalCredits = 0;
 
     data.forEach(item => {
-      // Only calculate for checked items
       if (checkedList.has(item.key)) {
-        totalCreditScore += item.details.creditScore;
+        totalCreditScore += item.details.allGrade * item.details.credit;
         totalCredits += item.details.credit;
       }
     });
-
-    // Calculate GPA with 4 decimal places
     const gpa =
       totalCredits > 0
         ? (totalCreditScore / totalCredits).toFixed(4)
@@ -151,16 +173,13 @@ const ScoreCalculation = () => {
           }}
         >
           <Text style={currentStyle?.text_style}>全选：</Text>
-          {/* 自定义全选复选框 */}
           <TouchableOpacity
             onPress={() => onCheckAllChange({ target: { checked: !checkAll } })}
             style={[
               styles.checkbox,
               {
-                backgroundColor: checkAll
-                  ? '#9379F6' // 选中时背景色
-                  : '#fff', // 未选中时背景色
-                borderColor: checkAll ? '#9379F6' : '#C7C7C7', // 选中时边框紫色，未选中时灰色
+                backgroundColor: checkAll ? '#9379F6' : '#fff',
+                borderColor: checkAll ? '#9379F6' : '#C7C7C7',
               },
             ]}
           >
@@ -181,13 +200,13 @@ const ScoreCalculation = () => {
       <ScrollView style={{ flex: 1 }}>
         <WingBlank style={{ marginTop: 26, marginBottom: 80 }}>
           {data.map(i => {
-            const isChecked = checkedList.has(i.key); // 是否选中
+            const isChecked = checkedList.has(i.key);
             return (
               <TouchableOpacity
                 key={i.key}
                 style={[
                   styles.item,
-                  activeItem.key === i.key ? styles.activeItem : {},
+                  activeItem?.key === i.key ? styles.activeItem : {},
                 ]}
                 onPress={() => handleClick(i)}
               >
@@ -208,15 +227,15 @@ const ScoreCalculation = () => {
                   </View>
                 </View>
                 <TouchableOpacity
-                  onPress={() => onChange(i)} // 点击时触发选中状态变化
+                  onPress={() => onChange(i)}
                   style={[styles.checkboxContainer]}
                 >
                   <View
                     style={[
                       styles.checkbox,
                       {
-                        backgroundColor: isChecked ? '#9379F6' : '#fff', // 选中时紫色，未选中时白色
-                        borderColor: isChecked ? '#9379F6' : '#C7C7C7', // 选中时紫色，未选中时灰色
+                        backgroundColor: isChecked ? '#9379F6' : '#fff',
+                        borderColor: isChecked ? '#9379F6' : '#C7C7C7',
                       },
                     ]}
                   >
@@ -262,7 +281,7 @@ const ScoreCalculation = () => {
               alignItems: 'center',
             }}
           >
-            <Text style={styles.modalTitle}>{activeItem.title}</Text>
+            <Text style={styles.modalTitle}>{activeItem?.title}</Text>
             <Image
               style={{ width: 24, height: 24, borderRadius: 24 }}
               source={require('../../assets/images/mx-logo.png')}
@@ -278,33 +297,35 @@ const ScoreCalculation = () => {
             <Text style={styles.textItem}>
               平时成绩（60%）:{' '}
               <Text style={styles.textColor}>
-                {activeItem.details?.usualGrade}
+                {activeItem?.details?.usualGrade}
               </Text>
             </Text>
             <Text style={styles.textItem}>
               期末成绩（40%）:{' '}
               <Text style={styles.textColor}>
-                {activeItem.details?.finalGrade}
+                {activeItem?.details?.finalGrade}
               </Text>
             </Text>
             <Text style={styles.textItem}>
               总成绩:{' '}
               <Text style={styles.textColor}>
-                {activeItem.details?.allGrade}
+                {activeItem?.details?.allGrade}
               </Text>
             </Text>
             <Text style={styles.textItem}>
               学分:{' '}
-              <Text style={styles.textColor}>{activeItem.details?.credit}</Text>
+              <Text style={styles.textColor}>
+                {activeItem?.details?.credit}
+              </Text>
             </Text>
             <Text style={styles.textItem}>
               绩点:{' '}
-              <Text style={styles.textColor}>{activeItem.details?.score}</Text>
+              <Text style={styles.textColor}>{activeItem?.details?.score}</Text>
             </Text>
             <Text style={styles.textItem}>
               学分绩点:{' '}
               <Text style={styles.textColor}>
-                {activeItem.details?.creditScore}
+                {activeItem?.details?.creditScore}
               </Text>
             </Text>
           </View>
@@ -390,7 +411,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderWidth: 2,
-    borderRadius: 4, // 正方形边框，边角微微圆润
+    borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
@@ -401,9 +422,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   halfCheckBox: {
-    width: 12, // 缩小的方框
+    width: 12,
     height: 12,
-    borderRadius: 2, // 小方框有圆角
+    borderRadius: 2,
     backgroundColor: '#9379F6',
   },
   item: {
@@ -423,7 +444,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 33,
     marginTop: 5,
-
     fontSize: 12,
   },
   credit: {
@@ -453,9 +473,9 @@ const styles = StyleSheet.create({
     color: '#242424',
   },
   button: {
-    backgroundColor: '#7878F8', // 按钮背景色
-    paddingVertical: 12, // 按钮的上下内边距
-    paddingHorizontal: 14, // 按钮的左右内边距
+    backgroundColor: '#7878F8',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -482,4 +502,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
 });
+
 export default ScoreCalculation;

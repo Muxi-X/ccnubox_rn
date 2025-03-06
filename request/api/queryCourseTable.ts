@@ -1,7 +1,13 @@
 import { request } from '../request';
 
+interface QueryParams {
+  semester: string;
+  year: string;
+  refresh: boolean;
+}
+
 // 查询课表
-export const queryCourseTable = async (queryParams: any) => {
+export const queryCourseTable = async (queryParams: QueryParams) => {
   try {
     return await request.get('/class/get', {
       query: queryParams,
