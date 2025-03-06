@@ -7,7 +7,6 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import useVisualScheme from '@/store/visualScheme';
 import useWeekStore from '@/store/weekStore';
 
-import WeekSelector from '@/module/courseTable/components/weekSelector';
 import NotificationHeaderRight from '@/module/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
 
@@ -16,8 +15,8 @@ import { tooltipActions } from './courseTableApplications';
 import { SinglePageType } from '@/types/tabBarTypes';
 
 const ScheduleHeader: React.FC = () => {
-  const [showWeekPicker, setShowWeekPicker] = React.useState(false);
-  const { currentWeek, setCurrentWeek } = useWeekStore();
+  // const [showWeekPicker, setShowWeekPicker] = React.useState(false);
+  const { currentWeek, showWeekPicker, setShowWeekPicker } = useWeekStore();
 
   return (
     <>
@@ -31,6 +30,7 @@ const ScheduleHeader: React.FC = () => {
           }}
           onPress={() => {
             // console.log('选择周次');
+            // setShowWeekPicker(!showWeekPicker);
             setShowWeekPicker(!showWeekPicker);
           }}
         >
@@ -62,22 +62,14 @@ const ScheduleHeader: React.FC = () => {
             commonStyles.fontLight,
             commonStyles.fontSmall,
             useVisualScheme.getState().currentStyle?.schedule_week_text_style,
+            {
+              textAlign: 'center',
+            },
           ]}
         >
           当前周设置为{currentWeek}
         </Text>
       </View>
-      {showWeekPicker && (
-        <WeekSelector
-          currentWeek={currentWeek}
-          showWeekPicker={showWeekPicker}
-          onWeekSelect={week => {
-            setCurrentWeek(week);
-            setShowWeekPicker(false);
-          }}
-          onToggleWeekPicker={() => setShowWeekPicker(!showWeekPicker)}
-        />
-      )}
     </>
   );
 };
