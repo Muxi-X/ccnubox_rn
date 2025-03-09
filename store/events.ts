@@ -22,13 +22,13 @@ export interface EventProps {
 export const useEvents = create<{
   feedEvents: EventProps[];
   setFeedEvents: (newEvents: EventProps[]) => void;
-  markAsRead: (id: number) => void;
+  markAsRead: (id: number) => Promise<void>;
   getFeedEvents: () => void;
 }>(set => ({
   feedEvents: [], // 初始数据为空数组
   setFeedEvents: newEvents => set({ feedEvents: newEvents }), // 设置事件列表
-  markAsRead: id => {
-    readFeedEvent(id);
+  markAsRead: async id => {
+    await readFeedEvent(id);
   },
   getFeedEvents: () => {
     queryFeedEvents().then(res => {
