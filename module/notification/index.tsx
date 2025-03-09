@@ -1,5 +1,5 @@
 import { getItem } from 'expo-secure-store';
-import React, { FC, memo, useEffect } from 'react';
+import React, { FC, memo, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useJPush from '@/hooks/useJPush';
@@ -15,14 +15,14 @@ const NotificationPage: FC = () => {
   const currentStyles = useVisualScheme(state => state.currentStyle);
 
   const { feedEvents, getFeedEvents } = useEvents();
+  const [pushToken, setPushToken] = useState<string | null | undefined>();
 
-  //调用useJpush
   useJPush();
 
   const fetchToken = async () => {
     const token = await getItem('pushToken');
     console.log(token);
-    await saveFeedToken(token);
+    setPushToken(token);
   };
 
   const getEvents = () => {
@@ -33,6 +33,14 @@ const NotificationPage: FC = () => {
     getEvents();
     fetchToken();
   }, []);
+
+  useEffect(() => {
+    if (pushToken) {
+      console.log(pushToken);
+
+      saveFeedToken(pushToken);
+    }
+  }, [pushToken]);
 
   return (
     <View style={[{ flex: 1 }, currentStyles?.background_style]}>
@@ -59,11 +67,10 @@ export const ListItem: FC<EventProps> = ({
   const { markAsRead, getFeedEvents } = useEvents();
 
   const readEvent = () => {
-    // console.log('id', id);
-
     if (id) {
-      markAsRead(id);
-      getFeedEvents();
+      markAsRead(id).then(() => {
+        getFeedEvents();
+      });
     }
   };
 
