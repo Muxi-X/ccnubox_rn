@@ -66,7 +66,7 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@faker-js/faker": "^9.3.0",
-    "@inquirer/prompts": "^7.0.1",
+    "@inquirer/prompts": "^7.3.3",
     "@types/fs-extra": "^9.0.13",
     "@types/glob": "^7.2.0",
     "@types/jest": "^29.5.14",
