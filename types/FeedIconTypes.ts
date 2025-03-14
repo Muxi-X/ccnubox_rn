@@ -4,7 +4,7 @@ import { ImageSourcePropType } from 'react-native';
 import { SinglePageType } from './tabBarTypes';
 
 export interface FeedIconTypes
-  extends Omit<Omit<SinglePageType, 'iconName'>, 'headerLeft'> {
+  extends Omit<SinglePageType, 'iconName' | 'headerLeft'> {
   name: string;
   imageUrl: ImageSourcePropType;
   text: string;

@@ -23,7 +23,7 @@ import {
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
 
-import { CourseTableProps, CourseTransferType } from './type';
+import { CourseTableProps, CourseTransferType, courseType } from './type';
 
 const Timetable: React.FC<CourseTableProps> = ({
   data,
@@ -51,32 +51,56 @@ const Timetable: React.FC<CourseTableProps> = ({
         Array(daysOfWeek.length).fill(null)
       );
       const courses: CourseTransferType[] = [];
-      // 遍历传入的数据，根据时间和日期填充表格
-      data.forEach(
-        ({ id, day, teacher, where, class_when, classname, weeks }) => {
-          const timeSpan = class_when
-            .split('-')
-            .map(Number)
-            .reduce((a: number, b: number) => b - a + 1);
-          const rowIndex = Number(class_when.split('-')[0]) - 1;
-          const colIndex = day - 1;
-          const isThisWeek = weeks.includes(currentWeek);
-          if (rowIndex !== -1 && colIndex !== -1) {
-            timetableMatrix[rowIndex][colIndex] = { classname, timeSpan };
-            courses.push({
-              id,
-              courseName: classname,
-              timeSpan,
-              teacher,
-              date: daysOfWeek[colIndex],
-              classroom: where,
-              rowIndex,
-              colIndex,
-              isThisWeek,
-            });
+      // 先按时间槽和日期分组课程
+      const coursesBySlot = new Map();
+      data.forEach((course: courseType) => {
+        const { id, day, teacher, where, class_when, classname, weeks } =
+          course;
+        const timeSpan = class_when
+          .split('-')
+          .map(Number)
+          .reduce((a: number, b: number) => b - a + 1);
+        const rowIndex = Number(class_when.split('-')[0]) - 1;
+        const colIndex = day - 1;
+        const key = `${rowIndex}-${colIndex}`;
+
+        if (rowIndex !== -1 && colIndex !== -1) {
+          if (!coursesBySlot.has(key)) {
+            coursesBySlot.set(key, []);
           }
+          coursesBySlot.get(key).push({
+            id,
+            courseName: classname,
+            timeSpan,
+            teacher,
+            date: daysOfWeek[colIndex],
+            classroom: where,
+            rowIndex,
+            colIndex,
+            weeks,
+            isThisWeek: weeks.includes(currentWeek),
+          });
         }
-      );
+      });
+
+      // 遍历每个时间槽，选择正确的课程显示
+      for (const [key, slotCourses] of coursesBySlot) {
+        const [rowIndex, colIndex] = key.split('-').map(Number);
+
+        // 找到当前周应该显示的课程
+        const courseToShow =
+          slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
+            course.weeks.includes(currentWeek)
+          ) || slotCourses[0];
+
+        if (courseToShow) {
+          timetableMatrix[rowIndex][colIndex] = {
+            classname: courseToShow.courseName,
+            timeSpan: courseToShow.timeSpan,
+          };
+          courses.push(courseToShow);
+        }
+      }
       return (
         <View style={styles.courseWrapperStyle}>
           {timetableMatrix.map((row, rowIndex) => (
@@ -115,7 +139,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyTop={<StickyTop />}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
-              await onTimetableRefresh(true);
+              onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
               console.error('刷新失败:', error);

@@ -58,6 +58,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
     // FIX_ME： 由于rn自带modal不支持获取动画结束时间
     // 因此这里采取定时器的方案
     // 过一秒后清除动画
+    //requestAnimationFrame优化一下
     setTimeout(() => {
       currentKey && deleteChildren(currentKey);
     }, 1000);
