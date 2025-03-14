@@ -1,4 +1,4 @@
-import { Icon, Modal, WingBlank } from '@ant-design/react-native';
+import { Icon, WingBlank } from '@ant-design/react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
+import Modal from '@/components/modal';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -41,10 +43,7 @@ const ScoreCalculation = () => {
   );
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(true);
-  const [visible1, setVisible1] = useState(false);
-  const [visible2, setVisible2] = useState(false);
   const [activeItem, setActiveItem] = useState<GradeData | null>(null);
-  const [calculatedGPA, setCalculatedGPA] = useState<number>(0);
 
   const { year, semester, type } = useLocalSearchParams();
   console.log(year, semester, type, 'year, semester, type');
@@ -73,9 +72,103 @@ const ScoreCalculation = () => {
     setCheckAll(e.target.checked);
   };
 
-  const handleClick = (i: GradeData) => {
+  const showDetailModal = (i: GradeData) => {
     setActiveItem(i);
-    setVisible1(true);
+    Modal.show({
+      mode: 'middle',
+      showCancel: false,
+      confirmText: '我知道了',
+      children: (
+        <View style={{ paddingVertical: 20, width: 290 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={styles.modalTitle}>{i.title}</Text>
+            <Image
+              style={{ width: 24, height: 24, borderRadius: 24 }}
+              source={require('../../assets/images/mx-logo.png')}
+            />
+          </View>
+          <View
+            style={{
+              alignItems: 'flex-start',
+              paddingTop: 26,
+              paddingHorizontal: 20,
+            }}
+          >
+            <Text style={styles.textItem}>
+              平时成绩（60%）:{' '}
+              <Text style={styles.textColor}>{i.details?.usualGrade}</Text>
+            </Text>
+            <Text style={styles.textItem}>
+              期末成绩（40%）:{' '}
+              <Text style={styles.textColor}>{i.details?.finalGrade}</Text>
+            </Text>
+            <Text style={styles.textItem}>
+              总成绩:{' '}
+              <Text style={styles.textColor}>{i.details?.allGrade}</Text>
+            </Text>
+            <Text style={styles.textItem}>
+              学分: <Text style={styles.textColor}>{i.details?.credit}</Text>
+            </Text>
+            <Text style={styles.textItem}>
+              绩点: <Text style={styles.textColor}>{i.details?.score}</Text>
+            </Text>
+            <Text style={styles.textItem}>
+              学分绩点:{' '}
+              <Text style={styles.textColor}>{i.details?.creditScore}</Text>
+            </Text>
+          </View>
+        </View>
+      ),
+    });
+  };
+
+  const calculateGPA = () => {
+    let totalCreditScore = 0;
+    let totalCredits = 0;
+
+    data.forEach(item => {
+      if (checkedList.has(item.key)) {
+        totalCreditScore += item.details.allGrade * item.details.credit;
+        totalCredits += item.details.credit;
+      }
+    });
+    return totalCredits > 0
+      ? Number((totalCreditScore / totalCredits).toFixed(4))
+      : 0;
+  };
+
+  const showResultModal = () => {
+    const gpa = calculateGPA();
+    Modal.show({
+      mode: 'middle',
+      showCancel: false,
+      confirmText: '我知道了',
+      children: (
+        <View style={{ paddingVertical: 20, width: 290 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 20, color: '#ABAAAA', fontWeight: '400' }}>
+              计算结果
+            </Text>
+          </View>
+          <View style={{ alignItems: 'center', paddingHorizontal: 20 }}>
+            <Text style={{ fontSize: 64, color: '#000' }}>{gpa}</Text>
+            <Text style={{ fontSize: 14, color: '#000' }}>平时学分绩</Text>
+          </View>
+        </View>
+      ),
+    });
   };
 
   const [data, setGradeData] = useState<GradeData[]>([]);
@@ -120,23 +213,6 @@ const ScoreCalculation = () => {
       }
     });
   }, [semester, year]);
-
-  const calculateGPA = () => {
-    let totalCreditScore = 0;
-    let totalCredits = 0;
-
-    data.forEach(item => {
-      if (checkedList.has(item.key)) {
-        totalCreditScore += item.details.allGrade * item.details.credit;
-        totalCredits += item.details.credit;
-      }
-    });
-    const gpa =
-      totalCredits > 0
-        ? (totalCreditScore / totalCredits).toFixed(4)
-        : '0.0000';
-    setCalculatedGPA(Number(gpa));
-  };
 
   return (
     <View
@@ -208,7 +284,7 @@ const ScoreCalculation = () => {
                   styles.item,
                   activeItem?.key === i.key ? styles.activeItem : {},
                 ]}
-                onPress={() => handleClick(i)}
+                onPress={() => showDetailModal(i)}
               >
                 <View>
                   <View style={styles.itemLeft}>
@@ -258,124 +334,11 @@ const ScoreCalculation = () => {
       <View style={styles.bottomBtn}>
         <TouchableOpacity
           style={[styles.button, { borderRadius: 13 }]}
-          onPress={() => {
-            calculateGPA();
-            setVisible2(true);
-          }}
+          onPress={showResultModal}
         >
           <Text style={styles.buttonText}>计算学分绩</Text>
         </TouchableOpacity>
       </View>
-      <Modal
-        transparent
-        onClose={() => setVisible1(false)}
-        maskClosable
-        visible={visible1}
-        style={styles.modal}
-      >
-        <View style={{ paddingVertical: 20, width: 290 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={styles.modalTitle}>{activeItem?.title}</Text>
-            <Image
-              style={{ width: 24, height: 24, borderRadius: 24 }}
-              source={require('../../assets/images/mx-logo.png')}
-            />
-          </View>
-          <View
-            style={{
-              alignItems: 'flex-start',
-              paddingTop: 26,
-              paddingHorizontal: 20,
-            }}
-          >
-            <Text style={styles.textItem}>
-              平时成绩（60%）:{' '}
-              <Text style={styles.textColor}>
-                {activeItem?.details?.usualGrade}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              期末成绩（40%）:{' '}
-              <Text style={styles.textColor}>
-                {activeItem?.details?.finalGrade}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              总成绩:{' '}
-              <Text style={styles.textColor}>
-                {activeItem?.details?.allGrade}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              学分:{' '}
-              <Text style={styles.textColor}>
-                {activeItem?.details?.credit}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              绩点:{' '}
-              <Text style={styles.textColor}>{activeItem?.details?.score}</Text>
-            </Text>
-            <Text style={styles.textItem}>
-              学分绩点:{' '}
-              <Text style={styles.textColor}>
-                {activeItem?.details?.creditScore}
-              </Text>
-            </Text>
-          </View>
-        </View>
-        <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity
-            style={[styles.button, { width: 110, borderRadius: 25 }]}
-            onPress={() => {
-              setVisible1(false);
-            }}
-          >
-            <Text style={styles.buttonText}>我知道了</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-      <Modal
-        transparent
-        onClose={() => setVisible2(false)}
-        maskClosable
-        visible={visible2}
-        style={styles.modal}
-      >
-        <View style={{ paddingVertical: 20, width: 290 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ fontSize: 20, color: '#ABAAAA', fontWeight: '400' }}>
-              计算结果
-            </Text>
-          </View>
-          <View style={{ alignItems: 'center', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: 64, color: '#000' }}>{calculatedGPA}</Text>
-            <Text style={{ fontSize: 14, color: '#000' }}>平时学分绩</Text>
-          </View>
-        </View>
-        <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity
-            style={[styles.button, { width: 110, borderRadius: 25 }]}
-            onPress={() => {
-              setVisible2(false);
-            }}
-          >
-            <Text style={styles.buttonText}>我知道了</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -459,13 +422,6 @@ const styles = StyleSheet.create({
   },
   activeItem: {
     backgroundColor: '#e9e3ff',
-  },
-  modal: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 320,
-    borderRadius: 10,
-    zIndex: 1000,
   },
   modalTitle: {
     fontWeight: '400',
