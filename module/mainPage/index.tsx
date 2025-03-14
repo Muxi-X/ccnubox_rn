@@ -41,7 +41,6 @@ const IndexPage: FC = () => {
               style={{
                 width: 32,
                 height: 40,
-                resizeMode: 'stretch',
               }}
               source={imageUrl}
             ></Image>
