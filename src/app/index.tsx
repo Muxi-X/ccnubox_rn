@@ -1,7 +1,6 @@
 import { Redirect } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 import { useEffect } from 'react';
-
 import { setupMockServer } from '@/mock/server';
 
 // 由于 expo 没有 initialRoutes
