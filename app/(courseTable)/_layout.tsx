@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import React from 'react';
+import * as React from 'react';
 import { StyleProp, StyleSheet, View } from 'react-native';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';

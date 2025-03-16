@@ -1,6 +1,7 @@
-import { Image, Text, StyleSheet, View } from 'react-native';
-import { SinglePageType } from '@/types/tabBarTypes';
 import { Action } from '@ant-design/react-native/lib/tooltip';
+import { Image, StyleSheet, Text, View } from 'react-native';
+
+import { SinglePageType } from '@/types/tabBarTypes';
 
 export const courseTableApplications: Omit<
   Omit<SinglePageType, 'iconName'>,
