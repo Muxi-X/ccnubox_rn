@@ -36,7 +36,7 @@ export const mainPageApplications: MainPageGridDataType[] = [
   },
   {
     title: '校园卡',
-    name: 'card',
+    name: 'schoolCard',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/card.png'),
       android: require('../assets/images/icons/android/card.png'),
@@ -103,5 +103,25 @@ export const mainPageApplications: MainPageGridDataType[] = [
     }),
     key: 'grid-10',
     href: '/kestack' as Href,
+  },
+  {
+    title: '信息整合',
+    name: 'all',
+    imageUrl: Platform.select({
+      ios: require('../assets/images/icons/ios/all.png'),
+      android: require('../assets/images/icons/android/all.png'),
+    }),
+    key: 'grid-11',
+    href: '/all' as Href,
+  },
+  {
+    title: '座位预约',
+    name: 'site',
+    imageUrl: Platform.select({
+      ios: require('../assets/images/icons/ios/site.png'),
+      android: require('../assets/images/icons/android/site.png'),
+    }),
+    key: 'grid-12',
+    href: '/site' as Href,
   },
 ];
