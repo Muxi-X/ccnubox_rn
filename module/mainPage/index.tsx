@@ -35,13 +35,7 @@ const IndexPage: FC = () => {
       <TouchableOpacity onPress={handlePress}>
         <View style={styles.item} key={key}>
           <Skeleton style={styles.item} loading={loading}>
-            <Image
-              style={{
-                width: 32,
-                height: 40,
-              }}
-              source={imageUrl}
-            ></Image>
+            <Image source={imageUrl}></Image>
           </Skeleton>
           <Skeleton loading={loading}>
             <Text style={styles.itemText}>{title}</Text>
