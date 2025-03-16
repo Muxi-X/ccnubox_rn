@@ -1,5 +1,4 @@
 import { View } from '@ant-design/react-native';
-import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 
 import { AddComponent } from './component/AddComponent';
@@ -7,7 +6,6 @@ import ItemList from './component/ItemList';
 import Nabvar from './component/Navbar';
 
 export default function AddTest() {
-  const route = useRouter(); // 获取 route 参数
   const [pattern, setPattern] = useState<number>(0);
   const list = [
     {
