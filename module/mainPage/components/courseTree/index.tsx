@@ -1,47 +1,59 @@
 import { Icon } from '@ant-design/react-native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Image from '@/components/image';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeAll } from '@/request/api';
+import { queryGradeScore } from '@/request/api';
+
+interface BaseCourseNode {
+  title: string;
+  credits: number;
+}
+
+interface ParentCourseNode extends BaseCourseNode {
+  children: BaseCourseNode[];
+}
 
 const CourseTree = () => {
-  const [activeKey, setActiveKey] = useState<string[]>([]); // 默认使用空数组
+  const [activeKey, setActiveKey] = useState<string[]>([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [list, setList] = useState([]);
+  const [list, setList] = useState<ParentCourseNode[]>([]);
   const [total, setTotal] = useState(0);
+
   useEffect(() => {
-    queryGradeAll().then(res => {
-      if (res.code === 0) {
-        console.log(res.data, '4444');
-        let num = 0;
-        const data = res.data.reduce((pre: any, cur: any) => {
-          const findIndex = pre.findIndex(
-            (i: any) => i.title === cur.Kclbmc || i.title === cur.kcxzmc
+    queryGradeScore().then(res => {
+      if (res.code === 0 && res.data?.type_of_grade_scores) {
+        const typeOfGradeScores = res.data.type_of_grade_scores;
+        let totalCredits = 0;
+
+        const data = typeOfGradeScores.map(group => {
+          const gradeScoreList = group.grade_score_list || [];
+          const groupCredits = gradeScoreList.reduce(
+            (sum, course) => sum + (course.xf || 0),
+            0
           );
-          num += Number(cur.grade);
-          if (findIndex !== -1) {
-            pre[findIndex].score += Number(cur.grade);
-            pre[findIndex].children.push({
-              title: cur.course,
-              score: Number(cur.grade),
-            });
-          } else {
-            pre.push({
-              title: cur.Kclbmc || cur.kcxzmc,
-              score: Number(cur.grade),
-              children: [
-                { title: cur.Kclbmc || cur.kcxzmc, score: Number(cur.grade) },
-              ],
-            });
-          }
-          return pre;
-        }, []);
-        setTotal(num);
-        setList(data);
+          totalCredits += groupCredits;
+
+          return {
+            title: group.kcxzmc || '未知课程类型',
+            credits: groupCredits,
+            children: gradeScoreList.map(course => ({
+              title: course.kcmc || '未知课程',
+              credits: course.xf || 0,
+            })),
+          };
+        });
+
+        // Filter out any invalid data
+        const validData = data.filter(
+          item => item.title && item.children.every(child => child.title)
+        ) as ParentCourseNode[];
+
+        setTotal(totalCredits);
+        setList(validData);
       }
     });
   }, []);
@@ -52,7 +64,10 @@ const CourseTree = () => {
     );
   };
 
-  const renderNode = (item: any, index: number) => {
+  const renderNode = (
+    item: BaseCourseNode & { children?: BaseCourseNode[] },
+    index: number
+  ) => {
     const hasChildren = item.children && item.children.length > 0;
     const isActive = activeKey.includes(item.title);
 
@@ -86,14 +101,14 @@ const CourseTree = () => {
                   : styles.nodeSubScore
               }
             >
-              {item.score}
+              {item.credits} 学分
             </Text>
           </View>
         </View>
         {/* 子项渲染 */}
         {isActive && item.children && item.children.length > 0 && (
           <View style={styles.subNode}>
-            {item.children.map((subItem: any, subIndex: number) => (
+            {item.children.map((subItem: BaseCourseNode, subIndex: number) => (
               <View key={subIndex}>{renderNode(subItem, subIndex)}</View>
             ))}
           </View>
@@ -103,53 +118,71 @@ const CourseTree = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      style={{
-        backgroundColor: currentStyle?.background_style?.backgroundColor,
-      }}
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: currentStyle?.background_style?.backgroundColor },
+      ]}
     >
-      <View style={[styles.node, styles.titleBorder]}>
-        <View style={styles.nodeLeft}>
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require('../../../../assets/images/flag.png')}
-          />
-          <Text
-            style={[
-              styles.nodeText,
-              styles.titleText,
-              currentStyle?.text_style,
-            ]}
-          >
-            全部已修学分
-          </Text>
-        </View>
-        <View style={[styles.nodeRight, currentStyle?.background_style]}>
-          <Text
-            style={[
-              styles.nodeScore,
-              styles.titleText,
-              currentStyle?.text_style,
-            ]}
-          >
-            {total.toFixed(1)}
-          </Text>
+      <View style={styles.header}>
+        <View style={[styles.node, styles.titleBorder]}>
+          <View style={styles.nodeLeft}>
+            <Image
+              style={{ width: 35, height: 35 }}
+              source={require('../../../../assets/images/flag.png')}
+            />
+            <Text
+              style={[
+                styles.nodeText,
+                styles.titleText,
+                currentStyle?.text_style,
+              ]}
+            >
+              全部已修学分
+            </Text>
+          </View>
+          <View style={[styles.nodeRight, currentStyle?.background_style]}>
+            <Text
+              style={[
+                styles.nodeScore,
+                styles.titleText,
+                currentStyle?.text_style,
+              ]}
+            >
+              {total.toFixed(1)} 学分
+            </Text>
+          </View>
         </View>
       </View>
-      {list.map((item, index) => renderNode(item, index))}
-    </ScrollView>
+      <View style={styles.content}>
+        <ScrollView>
+          {list.map((item, index) => renderNode(item, index))}
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </View>
+    </View>
   );
 };
 
+const windowHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
+  container: {
+    // height: windowHeight,
+  },
+  header: {
+    backgroundColor: '#fff',
+  },
+  content: {
+    height: windowHeight - 100, // Adjust based on header height
+  },
   titleBorder: {
     borderBottomWidth: 1,
     borderBottomColor: '#f1f1f1',
     paddingBottom: 20,
   },
   node: {
-    flexDirection: 'row', // 横向布局
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -164,7 +197,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   nodeRight: {
-    marginLeft: 'auto', // 右对齐
+    marginLeft: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -182,15 +215,15 @@ const styles = StyleSheet.create({
     color: '#ABAAAA',
   },
   subNode: {
-    marginLeft: 20, // 展开后的缩进
+    marginLeft: 20,
     paddingVertical: 6,
-    marginTop: 6, // 子项距离父项略有间隔
-    flexDirection: 'column', // 子项垂直排列
+    marginTop: 6,
+    flexDirection: 'column',
   },
   subNodeText: {
-    marginLeft: 20, // 展开后的缩进
+    marginLeft: 20,
     paddingVertical: 6,
-    flexDirection: 'column', // 子项垂直排列
+    flexDirection: 'column',
     color: '#ABAAAA',
   },
 });

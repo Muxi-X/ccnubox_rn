@@ -450,7 +450,7 @@ const ElectricityBillinQuiry = () => {
           // 获取区域名称，默认为"南湖"
           const areaName =
             addressData.find(item => item.value === address)?.label || '南湖';
-          console.log(pickerValue, 'pickerValue', pickerValue2);
+          //    console.log(pickerValue, 'pickerValue', pickerValue2);
           // 获取楼栋号，默认为"05"
           const buildingNumber = pickerValue?.[1] || 'e';
           const buildingName = areaName + bulldList?.[buildingNumber];
@@ -458,14 +458,14 @@ const ElectricityBillinQuiry = () => {
           // 获取房间号，默认为"425"
           const roomNumber = pickerValue2?.[1] || '425';
 
-          console.log(
-            {
-              building: buildingName,
-              room: roomNumber,
-              area: areaName + '学生宿舍',
-            },
-            'press'
-          );
+          // console.log(
+          //   {
+          //     building: buildingName,
+          //     room: roomNumber,
+          //     area: areaName + '学生宿舍',
+          //   },
+          //   'press'
+          // );
           router.push({
             pathname: '/electricityBillBalance',
             params: {
