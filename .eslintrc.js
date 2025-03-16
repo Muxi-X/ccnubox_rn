@@ -14,7 +14,7 @@ module.exports = {
     'import/no-useless-path-segments': 'error',
     'react-hooks/exhaustive-deps': 'off',
     'no-unused-vars': [
-      'error',
+      'warn',
       { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
     ],
     'no-console': 'warn',

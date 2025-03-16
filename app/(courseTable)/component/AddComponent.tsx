@@ -1,5 +1,5 @@
 import { Button, Input, List, WhiteSpace } from '@ant-design/react-native';
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Image from '@/components/image';

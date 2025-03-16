@@ -19,9 +19,7 @@ import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 const IndexPage: FC = () => {
   const router = useRouter();
-  const [banners, setBanners] = useState<
-    { bannerUrl: string; navUrl: string }[]
-  >([
+  const [banners] = useState<{ bannerUrl: string; navUrl: string }[]>([
     { bannerUrl: '', navUrl: '' },
     { bannerUrl: '', navUrl: '' },
   ]);
