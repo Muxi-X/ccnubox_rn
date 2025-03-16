@@ -1,9 +1,9 @@
-import { useRouter } from 'expo-router';
 import React, { memo, useDeferredValue, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
+import Modal from '@/components/modal';
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 
@@ -158,9 +158,25 @@ const Timetable: React.FC<CourseTableProps> = ({
     </View>
   );
 };
+interface ModalContentProps {
+  courseName: string;
+  teacher: string;
+  classroom: string;
+}
 
+export const ModalContent: React.FC<ModalContentProps> = props => {
+  const { courseName, teacher, classroom } = props;
+  console.log(props);
+  return (
+    <View>
+      <Text>{classroom}</Text>
+      <Text>{teacher}</Text>
+      <Text>{courseName}</Text>
+    </View>
+  );
+};
 export const Content: React.FC<CourseTransferType> = props => {
-  const navigation = useRouter();
+  const { classroom, courseName, teacher } = props;
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
@@ -177,7 +193,24 @@ export const Content: React.FC<CourseTransferType> = props => {
           left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
         }}
         onPress={() => {
-          navigation.navigate('/(courseTable)/editCourse');
+          Modal.show({
+            children: (
+              <ModalContent
+                courseName={courseName}
+                teacher={teacher}
+                classroom={classroom}
+              ></ModalContent>
+            ),
+            mode: 'middle',
+            confirmText: '删除',
+            cancelText: '编辑',
+            onConfirm: () => {
+              // Handle delete
+            },
+            onCancel: () => {
+              // Handle edit
+            },
+          });
         }}
       >
         {CourseItem && <CourseItem {...props}></CourseItem>}
