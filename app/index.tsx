@@ -1,8 +1,8 @@
 import { Redirect } from 'expo-router';
+import { getItem } from 'expo-secure-store';
 import { useEffect } from 'react';
 
 import { setupMockServer } from '@/mock/server';
-import { getItem } from 'expo-secure-store';
 
 // 由于 expo 没有 initialRoutes
 // 重定向到 tabs

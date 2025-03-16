@@ -1,5 +1,5 @@
 import { Tabs } from '@ant-design/react-native';
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
