@@ -1,0 +1,58 @@
+name: Lint and Format Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: '9.14.4'
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Prettier
+        run: pnpm prettier --check .
+        continue-on-error: false
+
+      - name: Run ESLint
+        run: npx eslint .
+        continue-on-error: false
+
+      - name: Check if PR should be blocked
+        if: github.event_name == 'pull_request'
+        run: |
+          if [[ "${{ job.status }}" == "failure" ]]; then
+            echo "The 'Build and Test' step failed. The PR will be blocked from merging."
+          else
+            echo "The 'Build and Test' step passed. The PR can be merged."
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Build failed. Please check the logs for details."
+          # Optionally, send notifications or update PR status
