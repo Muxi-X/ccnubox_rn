@@ -162,21 +162,61 @@ interface ModalContentProps {
   courseName: string;
   teacher: string;
   classroom: string;
+  isThisWeek: boolean;
 }
 
 export const ModalContent: React.FC<ModalContentProps> = props => {
-  const { courseName, teacher, classroom } = props;
-  console.log(props);
+  const { courseName, teacher, classroom, isThisWeek } = props;
+  // const currentStyle = useVisualScheme(state => state.currentStyle);
+
   return (
-    <View>
-      <Text>{classroom}</Text>
-      <Text>{teacher}</Text>
-      <Text>{courseName}</Text>
+    <View style={styles.modalContainer}>
+      <View style={styles.modalHeader}>
+        <ThemeChangeText style={styles.modalTitle}>
+          {courseName}
+        </ThemeChangeText>
+        {!isThisWeek && (
+          <View style={styles.notThisWeekTag}>
+            <Text style={styles.notThisWeekText}>非本周</Text>
+          </View>
+        )}
+      </View>
+      <Text style={styles.modalSubtitle}>专业主干课 3.0学分</Text>
+
+      <View style={styles.modalInfoGrid}>
+        <View style={styles.modalInfoItem}>
+          <View style={styles.modalInfoIcon}>
+            <Text style={styles.iconText}>📅</Text>
+          </View>
+          <Text style={styles.modalInfoText}>1-17周</Text>
+        </View>
+
+        <View style={styles.modalInfoItem}>
+          <View style={styles.modalInfoIcon}>
+            <Text style={styles.iconText}>🕒</Text>
+          </View>
+          <Text style={styles.modalInfoText}>周一3-4节</Text>
+        </View>
+
+        <View style={styles.modalInfoItem}>
+          <View style={styles.modalInfoIcon}>
+            <Text style={styles.iconText}>👨‍🏫</Text>
+          </View>
+          <Text style={styles.modalInfoText}>{teacher}</Text>
+        </View>
+
+        <View style={styles.modalInfoItem}>
+          <View style={styles.modalInfoIcon}>
+            <Text style={styles.iconText}>🏢</Text>
+          </View>
+          <Text style={styles.modalInfoText}>{classroom}</Text>
+        </View>
+      </View>
     </View>
   );
 };
 export const Content: React.FC<CourseTransferType> = props => {
-  const { classroom, courseName, teacher } = props;
+  const { classroom, courseName, teacher, isThisWeek } = props;
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
@@ -196,6 +236,7 @@ export const Content: React.FC<CourseTransferType> = props => {
           Modal.show({
             children: (
               <ModalContent
+                isThisWeek={isThisWeek}
                 courseName={courseName}
                 teacher={teacher}
                 classroom={classroom}
@@ -204,12 +245,9 @@ export const Content: React.FC<CourseTransferType> = props => {
             mode: 'middle',
             confirmText: '删除',
             cancelText: '编辑',
-            onConfirm: () => {
-              // Handle delete
-            },
-            onCancel: () => {
-              // Handle edit
-            },
+
+            onConfirm: () => {},
+            onCancel: () => {},
           });
         }}
       >
@@ -367,6 +405,65 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRightWidth: 1,
     zIndex: 0,
+  },
+  modalContainer: {
+    borderRadius: 12,
+    backgroundColor: '#fff',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    position: 'relative',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  notThisWeekTag: {
+    position: 'absolute',
+    right: 0,
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  notThisWeekText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalInfoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+  },
+  modalInfoItem: {
+    width: '50%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalInfoIcon: {
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  iconText: {
+    fontSize: 18,
+  },
+  modalInfoText: {
+    fontSize: 14,
+    color: '#333',
   },
 });
 
