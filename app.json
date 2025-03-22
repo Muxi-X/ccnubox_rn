@@ -4,13 +4,17 @@
     "slug": "ccnucoursetable",
     "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/mx-logo.png",
-    "scheme": "myapp",
+    "icon": "./src/assets/images/mx-logo.png",
+    "scheme": "wx6220588048f6e417",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
-    "assetBundlePatterns": ["assets/images/", "assets/data/", "assets/fonts"],
+    "assetBundlePatterns": [
+      "src/assets/images/",
+      "src/assets/data/",
+      "src/assets/fonts"
+    ],
     "splash": {
-      "image": "./assets/images/mx-logo.png",
+      "image": "./src/assets/images/mx-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -27,7 +31,7 @@
     "android": {
       "versionCode": 2,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/mx-logo.png",
+        "foregroundImage": "./src/assets/images/mx-logo.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -36,13 +40,13 @@
         "android.permission.ACCESS_NOTIFICATION_POLICY",
         "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
-      "googleServicesFile": "./secret/google-services.json",
+      "googleServicesFile": "./src/secret/google-services.json",
       "package": "com.kbkbk.ccnu_coursetable"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/mx-logo.png"
+      "favicon": "./src/assets/images/mx-logo.png"
     },
     "plugins": [
       "expo-router",
