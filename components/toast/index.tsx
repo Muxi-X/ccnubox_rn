@@ -38,12 +38,7 @@ const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
   return (
     <>
       <ModalBack visible={visible} style={{ zIndex: currentKey }}>
-        <View
-          style={[
-            styles.modalOverlay,
-            { elevation: currentKey, zIndex: currentKey },
-          ]}
-        >
+        <View style={[styles.modalOverlay, { zIndex: currentKey }]}>
           <TouchableOpacity
             activeOpacity={1}
             style={styles.modalBackground}
