@@ -14,7 +14,7 @@ fi
 printf "正在执行 Prettier 格式化... "
 prettier_start_time=$(date +%s)
 
-if prettier --write "**/*.{ts,tsx,js,jsx}" --loglevel error ; then
+if prettier --write "**/*.{ts,tsx,js,jsx}" --log-level error ; then
     prettier_end_time=$(date +%s)
     echo -e "\r\033[32m✅ Prettier 格式化完成 (耗时 $((prettier_end_time - prettier_start_time)) 秒)\033[0m"
 else
