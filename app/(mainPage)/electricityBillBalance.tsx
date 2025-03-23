@@ -1,3 +1,4 @@
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -11,7 +12,7 @@ import {
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryElectricityPrice, setElectricityPrice } from '@/request/api';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Toast } from '@ant-design/react-native';
 
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -29,18 +30,31 @@ const ElectricityBillBalance = () => {
 
   useEffect(() => {
     const params = {
-      building: building,
-      room: room,
-      // userId: '1',
-      area: area,
-      student_id: '2023215228',
+      building: building as string,
+      room: room as string,
+      area: area as string,
     };
     console.log(params, 'params');
     queryElectricityPrice(params)
       .then(res => {
-        if (res?.code === 10000) {
-          console.log('查询成功，电费信息：' + JSON.stringify(res.data));
-          setElecInfo(res.data);
+        console.log('查询成功，电费信息：' + JSON.stringify(res));
+
+        // Transform the API response to match the elecInfo state structure
+        if (res?.price) {
+          const transformedData = {
+            lighting_price:
+              parseFloat(res.price.lighting_yesterday_use_money || '0') || 0,
+            lighting_garde:
+              parseFloat(res.price.lighting_yesterday_use_value || '0') || 0,
+            air_price:
+              parseFloat(res.price.air_yesterday_use_money || '0') || 0,
+            air_garde:
+              parseFloat(res.price.air_yesterday_use_value || '0') || 0,
+            lighting_rest:
+              parseFloat(res.price.lighting_remain_money || '0') || 0,
+            air_rest: parseFloat(res.price.air_remain_money || '0') || 0,
+          };
+          setElecInfo(transformedData);
         }
       })
       .catch(error => {
@@ -49,13 +63,14 @@ const ElectricityBillBalance = () => {
   }, []);
   //设置电费
   const handleSetElectricityPrice = () => {
+    if (!electricityRate) {
+      return Toast.fail('请输入电费标准');
+    }
     console.log(
       {
         building: building,
         room: room,
-        // userId: '1',
         area: area,
-        student_id: '2023215228',
         money: electricityRate,
       },
       'electricityRate'
@@ -63,16 +78,16 @@ const ElectricityBillBalance = () => {
     setElectricityPrice({
       building: building,
       room: room,
-      // userId: '1',
       area: area,
-      student_id: '2023215228',
-      money: electricityRate,
+      money: Number(electricityRate),
     })
       .then(response => {
         console.log('设置成功', response);
+        Toast.success('设置成功');
       })
       .catch(error => {
         console.log('设置失败：' + error.message);
+        Toast.fail('设置失败');
       });
   };
   return (

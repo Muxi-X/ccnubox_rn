@@ -1,9 +1,17 @@
-import { Picker } from '@ant-design/react-native';
+import { PickerView } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Modal,
+} from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
+// import Modal from '@/components/modal';
 
 const data1 = [
   {
@@ -141,30 +149,87 @@ const CheckGrades = () => {
       >
         <Text style={{ color: '#FFFFFF' }}>查询</Text>
       </TouchableOpacity>
-      <Picker
+      <Modal
         visible={visible1}
-        onVisibleChange={(val: boolean) => setVisible1(val)}
-        data={data1}
-        cols={3}
-        value={value1}
-        onChange={(val: any) => setValue1(val)}
-      ></Picker>
-      <Picker
+        transparent={true}
+        onRequestClose={() => setVisible1(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setVisible1(false)}>
+                <Text style={styles.modalButtonText}>取消</Text>
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>选择学年</Text>
+              <TouchableOpacity onPress={() => setVisible1(false)}>
+                <Text style={styles.modalButtonText}>确定</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.pickerContainer}>
+              <PickerView
+                data={data1}
+                cols={3}
+                value={value1}
+                onChange={(val: any) => setValue1(val)}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
         visible={visible2}
-        onVisibleChange={(val: boolean) => setVisible2(val)}
-        data={data2}
-        cols={3}
-        value={value2}
-        onChange={(val: any) => setValue2(val)}
-      ></Picker>
-      <Picker
+        transparent={true}
+        onRequestClose={() => setVisible2(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setVisible2(false)}>
+                <Text style={styles.modalButtonText}>取消</Text>
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>选择学期</Text>
+              <TouchableOpacity onPress={() => setVisible2(false)}>
+                <Text style={styles.modalButtonText}>确定</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.pickerContainer}>
+              <PickerView
+                data={data2}
+                cols={3}
+                value={value2}
+                onChange={(val: any) => setValue2(val)}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
         visible={visible3}
-        onVisibleChange={(val: boolean) => setVisible3(val)}
-        data={data3}
-        cols={3}
-        value={value3}
-        onChange={(val: any) => setValue3(val)}
-      ></Picker>
+        transparent={true}
+        onRequestClose={() => setVisible3(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setVisible3(false)}>
+                <Text style={styles.modalButtonText}>取消</Text>
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>选择课程种类</Text>
+              <TouchableOpacity onPress={() => setVisible3(false)}>
+                <Text style={styles.modalButtonText}>确定</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.pickerContainer}>
+              <PickerView
+                data={data3}
+                cols={3}
+                value={value3}
+                onChange={(val: any) => setValue3(val)}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -181,5 +246,37 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderColor: '#D8D8D8',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    paddingBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalButtonText: {
+    fontSize: 14,
+    color: '#7878F8',
+  },
+  pickerContainer: {
+    width: '100%',
+    height: 200,
   },
 });
