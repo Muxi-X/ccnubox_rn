@@ -6,6 +6,7 @@ import { SinglePageType } from '@/types/tabBarTypes';
 export interface MainPageGridDataType
   extends Omit<SinglePageType, 'iconName' | 'headerLeft'> {
   imageUrl: ImageSourcePropType;
-  href: Href;
+  href?: Href;
+  action?: () => void;
   key: string;
 }
