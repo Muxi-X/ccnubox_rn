@@ -3,7 +3,7 @@ import * as Updates from 'expo-updates';
 
 /* 获取更新信息 */
 export const getUpdateInfo = async () =>
-  require('../assets/data/updateInfo').default; // 确保返回的是默认导出的内容
+  require('../../src/assets/data/updateInfo.json').default; // 确保返回的是默认导出的内容
 
 /* 显示更新模态框 */
 const showUpdateModal = (updateInfo: any) => {
