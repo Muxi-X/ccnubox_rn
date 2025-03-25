@@ -1,12 +1,16 @@
 import { Href, useRouter } from 'expo-router';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import useVisualScheme from '@/store/visualScheme';
+
 interface ItemProps {
   icon: { uri: string };
   text: string;
   url: Href<string>;
 }
 function SettingItem({ icon, text, url }: ItemProps) {
+  const currentScheme = useVisualScheme(state => state.currentStyle);
   const navigation = useRouter();
   return (
     <TouchableOpacity
@@ -18,7 +22,7 @@ function SettingItem({ icon, text, url }: ItemProps) {
       <View style={styles.iconContainer}>
         <Image source={icon} style={styles.icon} />
       </View>
-      <Text style={styles.title}>{text}</Text>
+      <Text style={[styles.title, currentScheme?.text_style]}>{text}</Text>
       <Text style={styles.arrow}>➔</Text>
     </TouchableOpacity>
   );
@@ -51,7 +55,6 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
   },
   arrow: {
     fontSize: 18,

@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Image, SafeAreaView, StyleSheet, Text } from 'react-native';
+import {
+  FlatList,
+  Image,
+  Linking,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+} from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import View from '@/components/view';
+import useVisualScheme from '@/store/visualScheme';
 
 import { request } from '@/request/request';
 import { commonColors } from '@/styles/common';
-import handleCopy from '@/utils/handleCopy';
 
 /**
  * web.Response
@@ -38,18 +45,19 @@ export interface WebsiteWebsite {
 type ItemProps = { title: string; _url: string; link: string };
 
 const WebsiteItem = ({ title, _url, link }: ItemProps) => {
+  const currentVisualScheme = useVisualScheme(state => state.currentStyle);
   return (
-    <View style={styles.item}>
+    <Pressable
+      style={styles.item}
+      onPress={() => {
+        Linking.openURL(link);
+      }}
+    >
       <Image source={{ uri: _url }} style={styles.image} />
-      <Text
-        style={styles.title}
-        onPress={() => {
-          handleCopy(link);
-        }}
-      >
+      <Text style={[styles.title, currentVisualScheme?.text_style]}>
         {title}
       </Text>
-    </View>
+    </Pressable>
   );
 };
 
@@ -89,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    // backgroundColor: '#f9c2ff',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
