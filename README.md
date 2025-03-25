@@ -14,53 +14,83 @@
 ```text
 .
 ├── README.md
-├── android             # 打包后安卓产物
-├── app                 # 路由
-├── app.json            # 权限等配置，详情见下文【打包发布】部分
-├── assets              # 附带图片、文件，目前存有图片与更新信息
-├── babel.config.js
-├── components          # 组件栏
-│    ├── animatedView   # 动画组件
-│    ├── button         # button
-│    ├── divider        # 分割线
-│    ├── modal          # modal
-│    ├── navi           # 下方tabbar
-│    ├── pagination     # 分页器
-│    ├── picker         # 选择器
-│    ├── scraper        # 爬虫组件，目前能爬研究生
-│    ├── scrollView     # 全方向滚动组件
-│    └── skeleton       # 骨架屏
-├── mock                # mock 配置
-├── module              # 页面实现及相关组件
-│    ├── courseTable
-│    ├── guide
-│    ├── login
-│    ├── mainPage
-│    ├── notification
-│    └── setting
-├── constants           # config 文件
-├── dist                # expo 运行需要
-├── eas.json            # eas 配置文件，详情见下文【打包发布】部分
-├── expo-env.d.ts
-├── hooks               # 自定义 hook
-├── index.js
-├── ios                 # ios 打包后产物
-├── metro.config.js     # metro bundler 配置文件
-├── node_modules
-├── package.json
-├── plugin.js           # mx-jpush-plugin 兜底版本
-├── pnpm-lock.yaml
-├── react-native.config.js
-├── request             # 请求部分
-├── scripts             # 脚本部分
-├── secret              # google 密钥，目前可以删除
-├── store               # 全局 store
-├── styles              # 主题样式配置文件
-├── tsconfig.json
-├── types
-└── utils               # 工具函数/垃圾桶，不知道放哪就放这
-
+├── android/                        # 安卓原生配置
+│   ├── app/                       # 主应用配置
+├── assets/                        # 项目静态资源
+│   └── images/                    # 图片资源
+├── ios/                          # iOS原生配置
+├── scripts/                      # 项目脚本
+├── src/                          # 源代码目录
+│   ├── app/                      # App路由及页面
+│   │   ├── (courseTable)/       # 课程表相关页面
+│   │   ├── (mainPage)/          # 主页相关页面
+│   │   ├── (setting)/           # 设置相关页面
+│   │   ├── (tabs)/              # 底部标签页
+│   │   └── auth/                # 登录相关页面
+│   ├── assets/
+│   │   ├── data/               # 应用数据
+│   │   ├── fonts/              # 字体文件
+│   │   └── images/             # 图片资源
+│   ├── components/             # 通用组件
+│   │   ├── animatedView/       # 动画组件
+│   │   ├── button/            # 按钮组件
+│   │   ├── divider/           # 分割线组件
+│   │   ├── image/             # 图片组件
+│   │   ├── modal/             # 弹窗组件
+│   │   ├── navi/              # 导航组件
+│   │   ├── pagination/        # 分页组件
+│   │   ├── picker/            # 选择器组件
+│   │   ├── portal/            # Portal组件
+│   │   ├── scraper/          # 数据抓取组件
+│   │   ├── scrollView/       # 滚动视图组件
+│   │   ├── skeleton/         # 骨架屏组件
+│   │   ├── text/             # 文本组件
+│   │   ├── toast/            # 提示组件
+│   │   └── view/             # 视图组件
+│   ├── constants/            # 常量定义
+│   ├── hooks/               # 自定义Hooks
+│   ├── mock/               # 模拟数据
+│   ├── module/             # 业务模块
+│   │   ├── courseTable/    # 课程表模块
+│   │   ├── guide/         # 引导模块
+│   │   ├── login/         # 登录模块
+│   │   ├── mainPage/      # 主页模块
+│   │   ├── notification/  # 通知模块
+│   │   ├── selectStyle/   # 样式选择模块
+│   │   ├── selectTheme/   # 主题选择模块
+│   │   └── setting/       # 设置模块
+│   ├── request/           # 网络请求
+│   │   └── api/          # API定义
+│   ├── secret/           # 敏感配置
+│   ├── store/            # 状态管理
+│   ├── styles/           # 样式定义
+│   ├── themeBasedComponents/ # 主题组件
+│   │   ├── android/      # 安卓主题组件
+│   │   └── ios/          # iOS主题组件
+│   ├── types/            # 类型定义
+│   └── utils/            # 工具函数/垃圾桶
+├── app.json              # Expo配置
+├── babel.config.js       # Babel配置
+├── eas.json             # EAS构建配置
+├── index.js             # 入口文件
+├── metro.config.js      # Metro配置
+├── package.json         # 项目依赖
+├── plugin.js            # JPush插件配置
+└── tsconfig.json        # TypeScript配置
 ```
+
+# 开发环境版本
+
+- **Node.js**: >=18.0.0
+- **pnpm**: >=9.14.4
+- **React**: 18.2.0
+- **React Native**: 0.74.5
+- **Expo**: 51.0.38
+- **Gradle**: 8.6
+- **Android SDK**: 34 (compileSdkVersion)
+- **Android Build Tools**: 34.0.0
+- **JDK**: 17
+- **TypeScript**: ~5.3.3
 
 # 推荐开发调试方法
 
