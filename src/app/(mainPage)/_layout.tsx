@@ -25,39 +25,42 @@ export default function Layout() {
           headerTitleAlign: 'center',
         }}
       >
-        {mainPageApplications.map(config => (
-          <Stack.Screen
-            key={keyGenerator.next().value as unknown as number}
-            name={config.name}
-            options={{
-              headerTitleAlign: 'center',
-              headerLeft: () => {
-                return (
+        {mainPageApplications
+          .filter(app => app.href)
+          .map(config => (
+            <Stack.Screen
+              key={keyGenerator.next().value as unknown as number}
+              name={config.name}
+              options={{
+                headerTitleAlign: 'center',
+                headerLeft: () => {
+                  return (
+                    <>
+                      {currentComponents && (
+                        <currentComponents.header_left title={config.title} />
+                      )}
+                    </>
+                  );
+                },
+                headerTitle: () => (
                   <>
                     {currentComponents && (
-                      <currentComponents.header_left title={config.title} />
+                      <currentComponents.header_center
+                        title={config.title}
+                      ></currentComponents.header_center>
                     )}
                   </>
-                );
-              },
-              headerTitle: () => (
-                <>
-                  {currentComponents && (
-                    <currentComponents.header_center
-                      title={config.title}
-                    ></currentComponents.header_center>
-                  )}
-                </>
-              ),
-              headerStyle: currentStyle?.header_background_style as StyleProp<{
-                backgroundColor: string | undefined;
-                flexDirection: 'row';
-                justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-                alignItems: 'center';
-              }>,
-            }}
-          ></Stack.Screen>
-        ))}
+                ),
+                headerStyle:
+                  currentStyle?.header_background_style as StyleProp<{
+                    backgroundColor: string | undefined;
+                    flexDirection: 'row';
+                    justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+                    alignItems: 'center';
+                  }>,
+              }}
+            ></Stack.Screen>
+          ))}
       </Stack>
     </View>
   );
