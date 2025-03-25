@@ -55,11 +55,13 @@ const IndexPage: FC = () => {
       </TouchableOpacity>
     );
   };
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(!loading);
     }, 500);
   }, []);
+
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
       {/* carousel */}
