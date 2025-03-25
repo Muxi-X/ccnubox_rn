@@ -1,5 +1,3 @@
-import { Href } from 'expo-router';
-
 import { SettingItem } from '@/types/settingItem';
 
 export const SettingItems: SettingItem[] = [
@@ -17,7 +15,7 @@ export const SettingItems: SettingItem[] = [
     id: 2,
     icon: require('@/assets/images/share.png'),
     text: '分享',
-    url: '/(setting)/share' as Href<string>,
+    url: '/(setting)/share',
   },
   {
     title: '检查更新',
@@ -41,6 +39,6 @@ export const SettingItems: SettingItem[] = [
     id: 6,
     icon: require('@/assets/images/exit.png'),
     text: '退出',
-    url: '/(setting)/exit' as Href<string>,
+    url: '/(setting)/exit',
   },
 ];
