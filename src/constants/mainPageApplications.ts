@@ -16,8 +16,8 @@ export const mainPageApplications: MainPageGridDataType[] = [
   },
   {
     title: '电费',
-    name: 'electricityBillinQuiry',
-    href: '/electricityBillinQuiry',
+    name: 'electricity',
+    href: '/electricity',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/energy.png'),
       android: require('../assets/images/icons/android/energy.png'),
