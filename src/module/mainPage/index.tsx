@@ -27,9 +27,20 @@ const IndexPage: FC = () => {
   const [data, setData] =
     useState<MainPageGridDataType[]>(mainPageApplications);
   const [loading, setLoading] = useState(true);
-  const render = ({ key, title, href, imageUrl }: MainPageGridDataType) => {
+  const render = ({
+    key,
+    title,
+    href,
+    action,
+    imageUrl,
+  }: MainPageGridDataType) => {
     const handlePress = () => {
-      router.navigate(href);
+      if (href) {
+        router.navigate(href);
+      }
+      if (action) {
+        action();
+      }
     };
     return (
       <TouchableOpacity onPress={handlePress}>
@@ -44,11 +55,13 @@ const IndexPage: FC = () => {
       </TouchableOpacity>
     );
   };
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(!loading);
     }, 500);
   }, []);
+
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
       {/* carousel */}

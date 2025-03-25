@@ -3,6 +3,7 @@ assets
 .expo
 .husky
 .vscode
+.github
 dist
 package.json
 pnpm-lock.yaml
