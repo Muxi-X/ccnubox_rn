@@ -24,7 +24,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const {
     onScrollToTop,
     onScrollToBottom,
-    stickyBottom,
     stickyTop,
     stickyLeft,
     children,
@@ -87,27 +86,23 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   const panGesture = Gesture.Pan()
     .onStart(() => {
-      // 在手势开始时记录当前的偏移量
       startX.value = translateX.value;
       startY.value = translateY.value;
     })
     .onUpdate(event => {
-      if (isAtTop.value) {
+      if (translateY.value === 0 && event.translationY > 0) {
         if (event.translationY > 20) {
-          backHeight.value = withSpring(100);
+          backHeight.value = withSpring(100, {
+            damping: 15,
+            stiffness: 150,
+          });
           runOnJS(setRefreshText)('松开即刷新');
         } else {
+          backHeight.value = event.translationY;
           runOnJS(setRefreshText)('下拉刷新课表');
         }
-        isAtTop.value = false;
       }
-      if (isAtBottom.value) {
-        overScrollHeight.value = -Math.min(event.translationY, 100);
-      }
-      // 如果全用 withTiming 等动画
-      // 低速下会造成卡顿的错觉
 
-      // 限制 translateX 在 -leftLimit 到 0 范围内（左侧和右侧停住）
       translateX.value = Math.min(
         0,
         Math.max(
@@ -122,45 +117,59 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           wrapperSize.height - containerSize.height
         )
       );
-      // 记录滑动距离
       if (isAtBottom.value) {
-        overScrollHeight.value =
-          event.translationY < 0 ? Math.min(-event.translationY, 100) : 0;
+        overScrollHeight.value = withSpring(
+          event.translationY < 0 ? Math.min(-event.translationY, 100) : 0,
+          {
+            damping: 20,
+            stiffness: 200,
+          }
+        );
       }
     })
     .onEnd(event => {
-      // 检查是否触及顶部或底部边界，触发状态
-      translateY.value = withTiming(
+      const springConfig = {
+        damping: 15,
+        stiffness: 150,
+        mass: 0.5,
+      };
+
+      if (translateY.value === 0 && backHeight.value > 20) {
+        isAtTop.value = true;
+      } else {
+        backHeight.value = withTiming(0);
+      }
+
+      translateY.value = withSpring(
         Math.min(
           0,
           Math.max(
-            translateY.value + event.velocityY * 0.2,
+            translateY.value + event.velocityY * 0.1,
             wrapperSize.height - containerSize.height
           )
-        )
+        ),
+        springConfig
       );
-      translateX.value = withTiming(
+      translateX.value = withSpring(
         Math.min(
           0,
           Math.max(
-            translateX.value + event.velocityX * 0.2,
+            translateX.value + event.velocityX * 0.1,
             wrapperSize.width - containerSize.width
           )
-        )
+        ),
+        springConfig
       );
-      // 如果在顶部大力滑动，则触发刷新
-      if (translateY.value === 0 && !isAtTop.value) {
-        isAtTop.value = true;
-      }
-      // 若在底部滚动到底，触发彩蛋
+
       if (isAtBottom.value && event.translationY < 0) {
         translateY.value = withSpring(
-          Math.max(
-            wrapperSize.height - containerSize.height + overScrollHeight.value,
-            translateY.value
-          )
+          wrapperSize.height - containerSize.height,
+          springConfig
         );
-        overScrollHeight.value = withTiming(0);
+        overScrollHeight.value = withSpring(0, {
+          damping: 20,
+          stiffness: 200,
+        });
         isAtBottom.value = false;
       } else if (
         translateY.value <= -(containerSize.height - wrapperSize.height) &&
@@ -168,8 +177,10 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       ) {
         isAtBottom.value = true;
       }
-      // 重置下拉刷新文本
-      runOnJS(setRefreshText)('下拉刷新课表');
+
+      if (!isAtTop.value) {
+        runOnJS(setRefreshText)('下拉刷新课表');
+      }
     });
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -274,7 +285,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         </View>
       </Animated.View>
       {/* sticky bottom */}
-      <Animated.View
+      {/* <Animated.View
         style={{
           width: '100%',
           height: overScrollHeight,
@@ -283,7 +294,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         }}
       >
         {stickyBottom}
-      </Animated.View>
+      </Animated.View> */}
     </View>
   );
 };
