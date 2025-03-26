@@ -1,6 +1,5 @@
-import React, { memo, useDeferredValue, useEffect, useState } from 'react';
+import React, { memo, useDeferredValue, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSharedValue, withSpring } from 'react-native-reanimated';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -33,16 +32,6 @@ const Timetable: React.FC<CourseTableProps> = ({
   // 是否为刷新状态
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const translateY = useSharedValue(0);
-  useEffect(() => {
-    if (isFetching) {
-      setTimeout(() => {
-        setIsFetching(false);
-        // 搞完就弹回
-        translateY.value = withSpring(0);
-      }, 2000);
-    }
-  }, [isFetching]);
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -103,7 +92,7 @@ const Timetable: React.FC<CourseTableProps> = ({
       }
       return (
         <View style={styles.courseWrapperStyle}>
-          {timetableMatrix.map((row, rowIndex) => (
+          {timetableMatrix?.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map((subject, colIndex) => (
                 <View
@@ -130,7 +119,6 @@ const Timetable: React.FC<CourseTableProps> = ({
       );
     })()
   );
-  console.log('course_data', data);
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -139,11 +127,14 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyTop={<StickyTop />}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
-              onTimetableRefresh(true);
+              setIsFetching(true);
+              await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
               console.error('刷新失败:', error);
               handleFail();
+            } finally {
+              setIsFetching(false);
             }
           }}
           // 学霸也是要睡觉的 ！！！！！！
