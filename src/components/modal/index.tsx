@@ -154,6 +154,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
           styles.modalOverlay,
           {
             justifyContent: isBottomMode ? 'flex-end' : 'center',
+            paddingBottom: isBottomMode ? percent2px(20) : 0,
           },
         ]}
       >
