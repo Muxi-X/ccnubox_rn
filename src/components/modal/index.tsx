@@ -239,7 +239,9 @@ export const ModalBack: FC<
           {
             flex: 1,
             width: percent2px(100),
-            height: percent2px(100, 'height'),
+            // 这里 dimension 获取到的屏幕高度不带全面屏底部的手势条高度，只能 110% 了
+            height: percent2px(110, 'height'),
+            // height: '100%',
             position: 'absolute',
             top: 0,
           },
