@@ -178,6 +178,10 @@ export const tabConfig: SinglePageType[] = [
           commonStyles.fontLarge,
           commonStyles.fontBold,
           commonStyles.TabBarPadding,
+          {
+            lineHeight: 30,
+            height: 30,
+          },
           useVisualScheme.getState().currentStyle?.header_text_style,
         ]}
       >
