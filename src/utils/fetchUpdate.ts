@@ -1,9 +1,11 @@
 import { Modal } from '@ant-design/react-native';
 import * as Updates from 'expo-updates';
 
+import updateInfo from '../assets/data/updateInfo.json';
 /* 获取更新信息 */
-export const getUpdateInfo = async () =>
-  require('../../src/assets/data/updateInfo.json').default; // 确保返回的是默认导出的内容
+// export const getUpdateInfo = async () => {
+//   require('../../src/assets/data/updateInfo.json').default; // 确保返回的是默认导出的内容
+// };
 
 /* 显示更新模态框 */
 const showUpdateModal = (updateInfo: any) => {
@@ -39,7 +41,6 @@ const fetchUpdate = async () => {
   try {
     const update = await Updates.checkForUpdateAsync();
     if (update.isAvailable) {
-      const updateInfo = await getUpdateInfo();
       showUpdateModal(updateInfo);
       return updateInfo;
     }
