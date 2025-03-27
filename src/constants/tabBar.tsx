@@ -20,13 +20,19 @@ const ScheduleHeader: React.FC = () => {
 
   return (
     <>
-      <View style={{ width: '100%' }}>
+      <View
+        style={{
+          width: '60%',
+          margin: 'auto',
+        }}
+      >
         <TouchableOpacity
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+            width: '100%',
           }}
           onPress={() => {
             // console.log('选择周次');
