@@ -1,6 +1,7 @@
 import { Href } from 'expo-router';
-import { Linking, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
+import { handleOpenURL } from '@/utils';
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const mainPageApplications: MainPageGridDataType[] = [
@@ -43,7 +44,10 @@ export const mainPageApplications: MainPageGridDataType[] = [
     }),
     key: 'grid-4',
     action: () =>
-      Linking.openURL('alipays://platformapi/startapp?appId=2021004168660064'),
+      handleOpenURL(
+        'alipays://platformapi/startapp?appId=2021004168660064',
+        '支付宝'
+      ),
   },
   {
     title: '空闲教室',
@@ -105,7 +109,7 @@ export const mainPageApplications: MainPageGridDataType[] = [
     key: 'grid-10',
     action: () => {
       // 暂时还不能用，等课栈提供生成加密 URL Scheme的接口
-      Linking.openURL('weixin://dl/business/?appid=wx6220588048f6e417');
+      handleOpenURL('weixin://dl/business/?appid=wx6220588048f6e417', '微信');
     },
   },
   {
