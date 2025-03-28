@@ -21,7 +21,10 @@ export type ConfigurableThemeNames =
   | 'notification_text_style'
   | 'background_style'
   | 'skeleton_background_style'
-  | 'navbar_icon_active_style';
+  | 'navbar_icon_active_style'
+  | 'information_background_style'
+  | 'information_title_style'
+  | 'information_text_style';
 /** 完整 layout 应有配置类型 */
 export type LayoutType = {
   [key in ThemeName]: Partial<ThemeType>;
