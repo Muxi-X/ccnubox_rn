@@ -1,43 +1,50 @@
-import { Button, Input, List, WhiteSpace } from '@ant-design/react-native';
+import { Button, Input, WhiteSpace } from '@ant-design/react-native';
 import * as React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import Image from '@/components/image';
 import Picker from '@/components/picker';
 
-interface itemType {
+import { percent2px } from '@/utils';
+
+interface FormItem {
   icon: any;
   title: string;
   value: string;
+  type: 'input' | 'picker';
 }
 
-interface Props {
+interface AddComponentProps {
   buttonText: string;
   pageText: string;
 }
 
-export const AddComponent = (props: Props) => {
+export const AddComponent = (props: AddComponentProps) => {
   const text = props.pageText === 'test' ? '考试' : '上课';
-  const items: itemType[] = [
+  const items: FormItem[] = [
     {
       icon: require('@/assets/images/week.png'),
       title: '选择周次',
       value: '1-18周',
+      type: 'picker',
     },
     {
       icon: require('@/assets/images/time.png'),
       title: `${text}时间`,
       value: '周一1-2节',
+      type: 'picker',
     },
     {
       icon: require('@/assets/images/location.png'),
       title: '',
       value: `输入${text}地点(非必填)`,
+      type: 'input',
     },
     {
       icon: require('@/assets/images/teacher.png'),
       title: '',
       value: '输入教师(非必填)',
+      type: 'input',
     },
   ];
   const { buttonText } = props;
@@ -51,26 +58,36 @@ export const AddComponent = (props: Props) => {
           placeholderTextColor="#75757B"
         />
         <WhiteSpace size="lg" />
-        <List>
+        {/* <List>
           {items.map((item, index) => (
             <List.Item
               key={index}
-              arrow={index < 2 ? 'horizontal' : undefined}
-              thumb={<Image source={item.icon} style={styles.icon} />}
+              arrow={item.type === 'picker' ? 'horizontal' : undefined}
+              thumb={}
               style={styles.card}
             >
-              {index < 2 ? (
+            </List.Item>
+          ))}
+        </List> */}
+        <FlatList
+          data={items}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={item.icon} style={styles.icon} />
+              {item.type === 'picker' ? (
                 <Picker>
-                  <TouchableOpacity>
+                  <View style={{ width: percent2px(70) }}>
                     <View>
-                      <Text style={{ fontSize: 16 }}>{item.title}</Text>
+                      <Text style={{ fontSize: 16, height: 20 }}>
+                        {item.title}
+                      </Text>
                     </View>
                     <View>
                       <Text style={{ fontSize: 14, color: '#75757B' }}>
                         {item.value}
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </Picker>
               ) : (
                 <Input
@@ -79,9 +96,9 @@ export const AddComponent = (props: Props) => {
                   allowClear
                 />
               )}
-            </List.Item>
-          ))}
-        </List>
+            </View>
+          )}
+        ></FlatList>
         <WhiteSpace size="lg" />
         <Button
           type="primary"
@@ -92,9 +109,6 @@ export const AddComponent = (props: Props) => {
         >
           {buttonText}
         </Button>
-        <Picker>
-          <Text>选择周次</Text>
-        </Picker>
       </View>
     </>
   );
@@ -120,7 +134,6 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   icon: {
