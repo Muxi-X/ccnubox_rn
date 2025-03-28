@@ -1,4 +1,4 @@
-import { Icon, WingBlank } from '@ant-design/react-native';
+import { ActivityIndicator, Icon, WingBlank } from '@ant-design/react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
@@ -34,93 +34,95 @@ interface GradeData {
   details: GradeDetails;
 }
 
-const defaultCheckedList = ['a', 'b', 'c', 'd'];
-const ScoreCalculation = () => {
-  const local = useLocalSearchParams();
+const ScoreCalculation: React.FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [checkedList, setCheckedList] = useState<Set<string>>(
-    new Set(defaultCheckedList)
+  const [selectedCourses, setSelectedCourses] = useState<Set<string>>(
+    new Set()
   );
-  const [indeterminate, setIndeterminate] = useState(false);
-  const [checkAll, setCheckAll] = useState(true);
-  const [activeItem, setActiveItem] = useState<GradeData | null>(null);
+  const [isPartiallySelected, setIsPartiallySelected] = useState(false);
+  const [isAllSelected, setIsAllSelected] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState<GradeData | null>(null);
+  const [gradeData, setGradeData] = useState<GradeData[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const { year, semester, type } = useLocalSearchParams();
-  console.log(year, semester, type, 'year, semester, type');
+  const { year, semester } = useLocalSearchParams();
+  const yearNum = Number(year);
+  const semesterNum = Number(semester);
 
-  const onChange = (i: GradeData) => {
-    const newCheckedList = new Set([...checkedList]);
-    if (newCheckedList.has(i.key)) {
-      newCheckedList.delete(i.key);
+  const handleCourseSelection = (course: GradeData) => {
+    const newSelection = new Set([...selectedCourses]);
+    if (newSelection.has(course.key)) {
+      newSelection.delete(course.key);
     } else {
-      newCheckedList.add(i.key);
+      newSelection.add(course.key);
     }
 
-    setCheckedList(newCheckedList);
-    setIndeterminate(
-      newCheckedList.size > 0 && newCheckedList.size < data.length
-    );
-    setCheckAll(newCheckedList.size === data.length);
+    setSelectedCourses(newSelection);
+    updateSelectionState(newSelection);
   };
 
-  const onCheckAllChange = (e: { target: { checked: boolean } }) => {
-    const newCheckedList = e.target.checked
-      ? new Set(Array.from(data).map((i: GradeData) => i.key))
+  const handleSelectAllToggle = (isSelected: boolean) => {
+    const newSelection = isSelected
+      ? new Set(gradeData.map(course => course.key))
       : new Set<string>();
-    setCheckedList(newCheckedList);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
+    setSelectedCourses(newSelection);
+    setIsPartiallySelected(false);
+    setIsAllSelected(isSelected);
   };
 
-  const showDetailModal = (i: GradeData) => {
-    setActiveItem(i);
+  const updateSelectionState = (selection: Set<string>) => {
+    const isPartial = selection.size > 0 && selection.size < gradeData.length;
+    setIsPartiallySelected(isPartial);
+    setIsAllSelected(selection.size === gradeData.length);
+  };
+
+  const showCourseDetails = (course: GradeData) => {
+    setSelectedCourse(course);
     Modal.show({
       mode: 'middle',
       showCancel: false,
       confirmText: '我知道了',
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={styles.modalTitle}>{i.title}</Text>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{course.title}</Text>
             <Image
-              style={{ width: 24, height: 24, borderRadius: 24 }}
+              style={styles.modalLogo}
               source={require('../../assets/images/mx-logo.png')}
             />
           </View>
-          <View
-            style={{
-              alignItems: 'flex-start',
-              paddingTop: 26,
-              paddingHorizontal: 20,
-            }}
-          >
+          <View style={styles.modalContent}>
             <Text style={styles.textItem}>
               平时成绩（60%）:{' '}
-              <Text style={styles.textColor}>{i.details?.usualGrade}</Text>
+              <Text style={styles.textHighlight}>
+                {course.details?.usualGrade}
+              </Text>
             </Text>
             <Text style={styles.textItem}>
               期末成绩（40%）:{' '}
-              <Text style={styles.textColor}>{i.details?.finalGrade}</Text>
+              <Text style={styles.textHighlight}>
+                {course.details?.finalGrade}
+              </Text>
             </Text>
             <Text style={styles.textItem}>
               总成绩:{' '}
-              <Text style={styles.textColor}>{i.details?.allGrade}</Text>
+              <Text style={styles.textHighlight}>
+                {course.details?.allGrade}
+              </Text>
             </Text>
             <Text style={styles.textItem}>
-              学分: <Text style={styles.textColor}>{i.details?.credit}</Text>
+              学分:{' '}
+              <Text style={styles.textHighlight}>{course.details?.credit}</Text>
             </Text>
             <Text style={styles.textItem}>
-              绩点: <Text style={styles.textColor}>{i.details?.score}</Text>
+              绩点:{' '}
+              <Text style={styles.textHighlight}>{course.details?.score}</Text>
             </Text>
             <Text style={styles.textItem}>
               学分绩点:{' '}
-              <Text style={styles.textColor}>{i.details?.creditScore}</Text>
+              <Text style={styles.textHighlight}>
+                {course.details?.creditScore}
+              </Text>
             </Text>
           </View>
         </View>
@@ -128,215 +130,209 @@ const ScoreCalculation = () => {
     });
   };
 
-  const calculateGPA = () => {
-    let totalCreditScore = 0;
+  const calculateAverageScore = () => {
+    let totalWeightedScore = 0;
     let totalCredits = 0;
 
-    data.forEach(item => {
-      if (checkedList.has(item.key)) {
-        totalCreditScore += item.details.allGrade * item.details.credit;
-        totalCredits += item.details.credit;
+    gradeData.forEach(course => {
+      if (selectedCourses.has(course.key)) {
+        totalWeightedScore += course.details.allGrade * course.details.credit;
+        totalCredits += course.details.credit;
       }
     });
+
     return totalCredits > 0
-      ? Number((totalCreditScore / totalCredits).toFixed(4))
+      ? Number((totalWeightedScore / totalCredits).toFixed(4))
       : 0;
   };
 
   const showResultModal = () => {
-    const gpa = calculateGPA();
+    const averageScore = calculateAverageScore();
     Modal.show({
       mode: 'middle',
       showCancel: false,
       confirmText: '我知道了',
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ fontSize: 20, color: '#ABAAAA', fontWeight: '400' }}>
-              计算结果
-            </Text>
+          <View style={styles.modalHeader}>
+            <Text style={styles.resultTitle}>计算结果</Text>
           </View>
-          <View style={{ alignItems: 'center', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: 64, color: '#000' }}>{gpa}</Text>
-            <Text style={{ fontSize: 14, color: '#000' }}>平时学分绩</Text>
+          <View style={styles.resultContent}>
+            <Text style={styles.resultScore}>{averageScore}</Text>
+            <Text style={styles.resultLabel}>平时学分绩</Text>
           </View>
         </View>
       ),
     });
   };
 
-  const [data, setGradeData] = useState<GradeData[]>([]);
-
   useEffect(() => {
+    setLoading(true);
     queryGradeDetail({
-      xqm: semester,
-      xnm: year,
-    }).then(res => {
-      console.log(res, 'res');
-      if (res?.Grades) {
-        interface Grade {
-          Kcmc: string;
-          Xf: number;
-          Cj: string | number;
-          RegularGrade: string | number;
-          FinalGrade: string | number;
-          Jd: number;
-        }
-        const transformedData = (res.Grades as Grade[]).map(
-          (grade: Grade, index: number) => ({
-            title: grade.Kcmc,
-            key: index.toString(),
-            credit: grade.Xf,
-            score: grade.Cj,
-            details: {
-              usualGrade: grade.RegularGrade,
-              finalGrade: grade.FinalGrade,
-              allGrade: Number(grade.Cj),
+      xqm: semesterNum,
+      xnm: yearNum,
+    })
+      .then(res => {
+        if (res?.Grades) {
+          interface Grade {
+            Kcmc: string;
+            Xf: number;
+            Cj: string | number;
+            RegularGrade: string | number;
+            FinalGrade: string | number;
+            Jd: number;
+          }
+          const transformedData = (res.Grades as Grade[]).map(
+            (grade: Grade, index: number) => ({
+              title: grade.Kcmc,
+              key: index.toString(),
               credit: grade.Xf,
-              score: grade.Jd,
-              creditScore: grade.Xf * grade.Jd,
-            },
-          })
-        );
+              score: grade.Cj,
+              details: {
+                usualGrade: grade.RegularGrade,
+                finalGrade: grade.FinalGrade,
+                allGrade: Number(grade.Cj),
+                credit: grade.Xf,
+                score: grade.Jd,
+                creditScore: grade.Xf * grade.Jd,
+              },
+            })
+          );
 
-        setGradeData(transformedData);
-        setCheckedList(
-          new Set(transformedData.map((item: GradeData) => item.key))
-        );
-        setCheckAll(true);
-      }
-    });
-  }, [semester, year]);
+          setGradeData(transformedData);
+          setSelectedCourses(
+            new Set(transformedData.map(course => course.key))
+          );
+          setIsAllSelected(true);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('获取成绩失败:', error);
+        setLoading(false);
+      });
+  }, [yearNum, semesterNum]);
 
   return (
-    <View
-      style={[
-        {
-          flex: 1,
-          backgroundColor: '#FFF',
-          position: 'absolute',
-          height: '100%',
-        },
-        currentStyle?.background_style,
-      ]}
-    >
+    <View style={[styles.container, currentStyle?.background_style]}>
       <StatusBar
         backgroundColor={currentStyle?.navbar_background_style as any}
       />
-      <View style={[styles.head, currentStyle?.navbar_background_style]}>
-        <View style={[styles.headerLeft]}>
+      <View style={[styles.header, currentStyle?.navbar_background_style]}>
+        <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => router.back()}>
             <Image
-              style={{ width: 24, height: 24 }}
+              style={styles.backIcon}
               source={require('../../assets/images/arrow-left.png')}
             />
           </TouchableOpacity>
-          <Text style={[styles.headText, currentStyle?.text_style]}>
-            {local?.year}学年
+          <Text style={[styles.headerTitle, currentStyle?.text_style]}>
+            {yearNum}学年
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingRight: 18,
-          }}
-        >
+        <View style={styles.headerRight}>
           <Text style={currentStyle?.text_style}>全选：</Text>
           <TouchableOpacity
-            onPress={() => onCheckAllChange({ target: { checked: !checkAll } })}
+            onPress={() => handleSelectAllToggle(!isAllSelected)}
             style={[
               styles.checkbox,
               {
-                backgroundColor: checkAll ? '#9379F6' : '#fff',
-                borderColor: checkAll ? '#9379F6' : '#C7C7C7',
+                backgroundColor: isAllSelected ? '#9379F6' : '#fff',
+                borderColor: isAllSelected ? '#9379F6' : '#C7C7C7',
               },
             ]}
           >
-            {checkAll && (
+            {isAllSelected && (
               <Icon
                 name="check"
                 size={20}
                 color="#fff"
-                style={{ fontWeight: '600' }}
+                style={styles.checkIcon}
               />
             )}
-            {indeterminate && !checkAll && (
-              <View style={styles.halfCheckBox}></View>
+            {isPartiallySelected && !isAllSelected && (
+              <View style={styles.partialCheckbox} />
             )}
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView style={{ flex: 1 }}>
-        <WingBlank style={{ marginTop: 26, marginBottom: 80 }}>
-          {data.map(i => {
-            const isChecked = checkedList.has(i.key);
-            return (
-              <TouchableOpacity
-                key={i.key}
-                style={[
-                  styles.item,
-                  activeItem?.key === i.key ? styles.activeItem : {},
-                ]}
-                onPress={() => showDetailModal(i)}
-              >
-                <View>
-                  <View style={styles.itemLeft}>
-                    <View style={styles.circle} />
-                    <Text
-                      style={[{ color: '#3D3D3D' }, currentStyle?.text_style]}
-                    >
-                      {i.title}
-                    </Text>
-                  </View>
-                  <View style={styles.itemRight}>
-                    <Text style={[styles.credit, currentStyle?.text_style]}>
-                      学分：{i.credit}
-                    </Text>
-                    <Text style={{ color: '#969696' }}>成绩：{i.score}</Text>
-                  </View>
-                </View>
-                <TouchableOpacity
-                  onPress={() => onChange(i)}
-                  style={[styles.checkboxContainer]}
-                >
-                  <View
-                    style={[
-                      styles.checkbox,
-                      {
-                        backgroundColor: isChecked ? '#9379F6' : '#fff',
-                        borderColor: isChecked ? '#9379F6' : '#C7C7C7',
-                      },
-                    ]}
-                  >
-                    {isChecked && (
-                      <Icon
-                        name="check"
-                        size={20}
-                        color="#fff"
-                        style={{ fontWeight: '600' }}
-                      />
-                    )}
-                  </View>
-                </TouchableOpacity>
-              </TouchableOpacity>
-            );
-          })}
-        </WingBlank>
-      </ScrollView>
 
-      <View style={styles.bottomBtn}>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#7878F8" />
+          <Text style={[styles.loadingText, currentStyle?.text_style]}>
+            加载中...
+          </Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.scrollView}>
+          <WingBlank style={styles.contentContainer}>
+            {gradeData.map(course => {
+              const isSelected = selectedCourses.has(course.key);
+              return (
+                <TouchableOpacity
+                  key={course.key}
+                  style={[
+                    styles.courseItem,
+                    selectedCourse?.key === course.key &&
+                      styles.activeCourseItem,
+                  ]}
+                  onPress={() => showCourseDetails(course)}
+                >
+                  <View>
+                    <View style={styles.courseHeader}>
+                      <View style={styles.courseDot} />
+                      <Text
+                        style={[styles.courseTitle, currentStyle?.text_style]}
+                      >
+                        {course.title}
+                      </Text>
+                    </View>
+                    <View style={styles.courseInfo}>
+                      <Text
+                        style={[styles.creditText, currentStyle?.text_style]}
+                      >
+                        学分：{course.credit}
+                      </Text>
+                      <Text style={styles.scoreText}>成绩：{course.score}</Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => handleCourseSelection(course)}
+                    style={styles.checkboxContainer}
+                  >
+                    <View
+                      style={[
+                        styles.checkbox,
+                        {
+                          backgroundColor: isSelected ? '#9379F6' : '#fff',
+                          borderColor: isSelected ? '#9379F6' : '#C7C7C7',
+                        },
+                      ]}
+                    >
+                      {isSelected && (
+                        <Icon
+                          name="check"
+                          size={20}
+                          color="#fff"
+                          style={styles.checkIcon}
+                        />
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              );
+            })}
+          </WingBlank>
+        </ScrollView>
+      )}
+
+      <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.button, { borderRadius: 13 }]}
+          style={[styles.calculateButton]}
           onPress={showResultModal}
         >
-          <Text style={styles.buttonText}>计算学分绩</Text>
+          <Text style={styles.calculateButtonText}>计算学分绩</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -344,9 +340,16 @@ const ScoreCalculation = () => {
 };
 
 const styles = StyleSheet.create({
-  head: {
-    justifyContent: 'space-between',
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+  },
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 7,
     paddingTop: 40,
@@ -355,15 +358,78 @@ const styles = StyleSheet.create({
   },
   headerLeft: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    textAlign: 'center',
+    alignItems: 'center',
   },
-  headText: {
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 18,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+  },
+  headerTitle: {
     fontSize: 22,
     lineHeight: 24,
     fontWeight: '600',
     color: '#232323',
     marginLeft: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#666',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    marginTop: 26,
+    marginBottom: 80,
+  },
+  courseItem: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 8,
+  },
+  activeCourseItem: {
+    backgroundColor: '#e9e3ff',
+  },
+  courseHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  courseDot: {
+    width: 13,
+    height: 13,
+    borderRadius: 13,
+    marginRight: 20,
+    backgroundColor: '#7086F3',
+  },
+  courseTitle: {
+    fontSize: 14,
+    color: '#3D3D3D',
+  },
+  courseInfo: {
+    flexDirection: 'row',
+    paddingLeft: 33,
+    marginTop: 5,
+    fontSize: 12,
+  },
+  creditText: {
+    color: '#969696',
+    marginRight: 26,
+  },
+  scoreText: {
+    color: '#969696',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -379,66 +445,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10,
   },
-  checkmark: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  checkIcon: {
+    fontWeight: '600',
   },
-  halfCheckBox: {
+  partialCheckbox: {
     width: 12,
     height: 12,
     borderRadius: 2,
     backgroundColor: '#9379F6',
   },
-  item: {
-    width: '100%',
+  modalHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 8,
   },
-  itemLeft: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    fontSize: 14,
+  modalLogo: {
+    width: 24,
+    height: 24,
+    borderRadius: 24,
   },
-  itemRight: {
-    flexDirection: 'row',
-    paddingLeft: 33,
-    marginTop: 5,
-    fontSize: 12,
-  },
-  credit: {
-    color: '#969696',
-    marginRight: 26,
-  },
-  circle: {
-    width: 13,
-    height: 13,
-    borderRadius: 13,
-    marginRight: 20,
-    backgroundColor: '#7086F3',
-  },
-  activeItem: {
-    backgroundColor: '#e9e3ff',
+  modalContent: {
+    alignItems: 'flex-start',
+    paddingTop: 26,
+    paddingHorizontal: 20,
   },
   modalTitle: {
     fontWeight: '400',
     fontSize: 20,
     color: '#242424',
-  },
-  button: {
-    backgroundColor: '#7878F8',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
   textItem: {
     fontWeight: '400',
@@ -447,15 +481,45 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     paddingBottom: 11,
   },
-  textColor: {
+  textHighlight: {
     color: '#9379F6',
   },
-  bottomBtn: {
+  resultTitle: {
+    fontSize: 20,
+    color: '#ABAAAA',
+    fontWeight: '400',
+  },
+  resultContent: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  resultScore: {
+    fontSize: 64,
+    color: '#000',
+  },
+  resultLabel: {
+    fontSize: 14,
+    color: '#000',
+  },
+  footer: {
     position: 'absolute',
     bottom: 0,
     paddingBottom: 30,
     width: '100%',
     paddingHorizontal: 25,
+  },
+  calculateButton: {
+    backgroundColor: '#7878F8',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 13,
+  },
+  calculateButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
