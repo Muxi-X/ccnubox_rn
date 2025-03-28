@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   item: {
     width: percent2px(30, 'width'),
-    height: 200,
+    height: 100,
     borderRadius: 8,
     margin: 10,
     justifyContent: 'center',
