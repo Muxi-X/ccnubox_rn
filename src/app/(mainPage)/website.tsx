@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
-  Linking,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -14,6 +13,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { request } from '@/request/request';
 import { commonColors } from '@/styles/common';
+import { handleOpenURL } from '@/utils';
 
 /**
  * web.Response
@@ -46,12 +46,11 @@ type ItemProps = { title: string; _url: string; link: string };
 
 const WebsiteItem = ({ title, _url, link }: ItemProps) => {
   const currentVisualScheme = useVisualScheme(state => state.currentStyle);
+
   return (
     <Pressable
       style={styles.item}
-      onPress={() => {
-        Linking.openURL(link);
-      }}
+      onPress={() => handleOpenURL(link, '网站应用')}
     >
       <Image source={{ uri: _url }} style={styles.image} />
       <Text style={[styles.title, currentVisualScheme?.text_style]}>
