@@ -1,8 +1,8 @@
 {
-  "version": "1.1.1",
+  "version": "1.1.2",
   "releaseNotes": [
     "修复首页icon显示",
-    "修复问题：修复首页icon显示"
+    "修复问题:修复首页icon显示"
   ],
   "knownIssues": [
     "在极少数情况下，应用可能会出现闪退。"
