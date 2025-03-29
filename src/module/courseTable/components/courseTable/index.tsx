@@ -30,7 +30,7 @@ const Timetable: React.FC<CourseTableProps> = ({
   onTimetableRefresh,
 }) => {
   // 是否为刷新状态
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [, setIsFetching] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   // 内容部分
   const content = useDeferredValue(
