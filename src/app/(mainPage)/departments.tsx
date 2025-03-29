@@ -10,26 +10,14 @@ import {
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import Toast from '@/components/toast';
+
 import useVisualScheme from '@/store/visualScheme';
 
-import { request } from '@/request/request';
+import { queryDepartmentInformation } from '@/request/api';
 import { openPhoneNumber } from '@/utils/handleOpenURL';
 
-export interface Response {
-  code?: number;
-  data: {
-    departments: DepartmentInformation[];
-  };
-  msg?: string;
-}
-
-export interface DepartmentInformation {
-  id: number;
-  name: string;
-  phone: string;
-  place: string;
-  time: string;
-}
+import { DepartmentInformation } from '@/types/shared-types';
 
 const Department = ({ info }: { info: DepartmentInformation }) => {
   const currentVisualScheme = useVisualScheme(state => state.currentStyle);
@@ -86,20 +74,17 @@ const Department = ({ info }: { info: DepartmentInformation }) => {
   );
 };
 
-function Information() {
+function Departments() {
   const [departments, setDepartments] = useState<DepartmentInformation[]>([]);
 
-  const handleWeb = async () => {
-    try {
-      const res: Response = await request.get('/department/getDepartments'); // 等待请求完成
-      setDepartments(res.data.departments); // 更新状态
-    } catch (error) {
-      // console.error(error); // 错误处理
-    }
-  };
-
   useEffect(() => {
-    handleWeb(); // 调用异步函数
+    queryDepartmentInformation()
+      .then(res => {
+        setDepartments(res.departments);
+      })
+      .catch(err => {
+        Toast.show({ text: '获取部门信息失败' + err.toString() });
+      });
   }, []);
 
   return (
@@ -109,7 +94,7 @@ function Information() {
           data={departments} // 显示网站数据
           renderItem={({ item }) => <Department info={item} />}
           keyExtractor={item => item.id.toString()}
-          style={{ marginVertical: 15 }}
+          style={{ paddingTop: 15 }}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -145,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Information;
+export default Departments;
