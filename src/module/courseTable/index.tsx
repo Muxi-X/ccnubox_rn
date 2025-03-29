@@ -108,9 +108,6 @@ const CourseTablePage: FC = () => {
         refresh: forceRefresh,
       });
 
-      // 计算当前周
-      setCurrentWeek(computeWeekNumber(schoolTime));
-
       if (res?.code === 0) {
         const courses = res.data?.classes as courseType[];
         // 缓存课表
@@ -124,8 +121,11 @@ const CourseTablePage: FC = () => {
 
   useEffect(() => {
     (async () => {
-      // 预先获取并缓存开学时间，再刷新课程表数据
-      await getCachedSchoolTime();
+      // 获取并缓存开学时间
+      const schoolTime = await getCachedSchoolTime();
+      if (schoolTime) {
+        setCurrentWeek(computeWeekNumber(schoolTime));
+      }
       await onTimetableRefresh();
     })();
   }, []);
