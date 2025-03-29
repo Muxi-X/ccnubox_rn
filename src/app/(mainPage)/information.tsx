@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -12,6 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import useVisualScheme from '@/store/visualScheme';
 
 import { request } from '@/request/request';
+import { openPhoneNumber } from '@/utils/handleOpenURL';
 
 export interface Response {
   code?: number;
@@ -41,13 +43,16 @@ const Department = ({ info }: { info: DepartmentInformation }) => {
       >
         {info.name}
       </Text>
-      <View style={styles.infoContainer}>
+      <TouchableOpacity
+        onPress={() => openPhoneNumber(info.phone)}
+        style={styles.infoContainer}
+      >
         <Image
           source={require('@/assets/images/phone.png')}
           style={styles.icon}
         ></Image>
         <Text style={{ color: '#9379F6' }}>{info.phone}</Text>
-      </View>
+      </TouchableOpacity>
       <View
         style={[
           styles.infoContainer,
