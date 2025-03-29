@@ -11,36 +11,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { request } from '@/request/request';
+import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
 import { handleOpenURL } from '@/utils';
 
-/**
- * web.Response
- */
-export interface Response {
-  code?: number;
-  data: WebsiteGetWebsitesResponse;
-  msg?: string;
-}
-
-/**
- * website.GetWebsitesResponse
- */
-export interface WebsiteGetWebsitesResponse {
-  websites: WebsiteWebsite[];
-}
-
-/**
- * website.Website
- */
-export interface WebsiteWebsite {
-  description: string;
-  id: number;
-  image: string;
-  link: string;
-  name: string;
-}
+import { PopularWebsite } from '@/types/shared-types';
 
 type ItemProps = { title: string; _url: string; link: string };
 
@@ -60,27 +35,24 @@ const WebsiteItem = ({ title, _url, link }: ItemProps) => {
   );
 };
 
-function Website() {
-  const [web, setWeb] = useState<WebsiteWebsite[]>([]);
-
-  const handleWeb = async () => {
-    try {
-      const res: Response = await request.get('/website/getWebsites'); // 等待请求完成
-      setWeb(res.data.websites); // 更新状态
-    } catch (error) {
-      // console.error(error); // 错误处理
-    }
-  };
+const Websites = () => {
+  const [websites, setWebsites] = useState<PopularWebsite[]>([]);
 
   useEffect(() => {
-    handleWeb(); // 调用异步函数
+    queryWebsites()
+      .then(res => {
+        setWebsites(res.websites);
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }, []);
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <FlatList
-          data={web} // 显示网站数据
+          data={websites} // 显示网站数据
           renderItem={({ item }) => (
             <WebsiteItem title={item.name} _url={item.image} link={item.link} />
           )}
@@ -89,7 +61,7 @@ function Website() {
       </SafeAreaView>
     </SafeAreaProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -115,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Website;
+export default Websites;
