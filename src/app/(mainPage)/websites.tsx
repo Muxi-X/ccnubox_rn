@@ -13,7 +13,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
-import { handleOpenURL } from '@/utils';
+import handleOpenURL from '@/utils/handleOpenURL';
 
 import { PopularWebsite } from '@/types/shared-types';
 
