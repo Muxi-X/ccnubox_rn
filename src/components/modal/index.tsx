@@ -61,7 +61,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
     //requestAnimationFrame优化一下
     setTimeout(() => {
       currentKey && deleteChildren(currentKey);
-    }, 1000);
+    }, 500);
   };
   const modalContent = useMemo(() => {
     return (
@@ -160,9 +160,15 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
       >
         <TouchableOpacity
           activeOpacity={1}
-          style={styles.modalBackground}
+          style={[
+            styles.modalBackground,
+            {
+              height: '100%',
+              zIndex: 1,
+            },
+          ]}
           onPress={handleClose}
-        ></TouchableOpacity>
+        />
         {/* 底部 modal 与中部动画不一致 */}
         {isBottomMode ? (
           <AnimatedSlide
@@ -262,11 +268,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   modalBackground: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
   },
   bottomChoice: {
     marginTop: 20,
@@ -287,7 +294,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     display: 'flex',
     overflow: 'hidden',
   },
