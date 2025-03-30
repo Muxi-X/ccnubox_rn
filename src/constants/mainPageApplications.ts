@@ -2,6 +2,7 @@ import { Href } from 'expo-router';
 import { Platform } from 'react-native';
 
 import { handleOpenURL } from '@/utils';
+
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const mainPageApplications: MainPageGridDataType[] = [

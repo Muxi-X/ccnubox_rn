@@ -1,2 +1,2 @@
-import IndexPage from '@/module/mainPage';
+import IndexPage from '@/modules/mainPage';
 export default IndexPage;
