@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Slot } from 'expo-router';
-import { FC } from 'react';
+import * as React from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,9 +16,10 @@ import Divider from '@/components/divider';
 
 import { commonStyles } from '@/styles/common';
 
-const Login: FC = () => {
+const Login: React.FC = () => {
   // 监听键盘弹起，避免元素遮挡
   const isKeyboardShow = useKeyboardShow();
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
