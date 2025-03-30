@@ -1,3 +1,3 @@
-import NotificationPage from '@/module/notification';
+import NotificationPage from '@/modules/notification';
 
 export default NotificationPage;

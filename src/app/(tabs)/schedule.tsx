@@ -1,3 +1,3 @@
-import CourseTablePage from '@/module/courseTable';
+import CourseTablePage from '@/modules/courseTable';
 
 export default CourseTablePage;
