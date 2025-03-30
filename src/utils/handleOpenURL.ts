@@ -1,4 +1,5 @@
 import { Linking } from 'react-native';
+
 import Toast from '@/components/toast';
 
 /**
