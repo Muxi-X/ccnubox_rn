@@ -16,21 +16,32 @@ class DailyCourseWidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
+            appWidgetManager.updateAppWidget(appWidgetId, updateRemoteViews(context))
         }
     }
 
-    private fun updateAppWidget(
+    public fun updateRemoteViews(
         context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int
-    ) {
+    ) :RemoteViews{
         val views = RemoteViews(context.packageName, R.layout.daily_course_widget)
 
         //getData
         //bind
+        val sharedPreferences=context.getSharedPreferences("WidgetData",Context.MODE_PRIVATE)
+        val jsonData=sharedPreferences.getString("course_data",null)
 
-        appWidgetManager.updateAppWidget(appWidgetId, views)
+        val string=extractJsonField(jsonData,"date")
+        views.setTextViewText(R.id.widget_date,string)
+
+        return views
+    }
+
+    private fun extractJsonField(json: String?, key: String): String? {
+        return try {
+            org.json.JSONObject(json ?: "{}").optString(key, null)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     //搞一些测试数据 后面改成检索符合条件的数据
