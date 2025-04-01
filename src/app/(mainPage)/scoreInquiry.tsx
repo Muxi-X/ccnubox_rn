@@ -4,8 +4,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import CheckGrades from '@/module/mainPage/components/checkgrades';
-import CourseTree from '@/module/mainPage/components/courseTree';
+import CheckGrades from '@/modules/mainPage/components/checkgrades';
+import CourseTree from '@/modules/mainPage/components/courseTree';
 const tabs = [{ title: '查算学分绩' }, { title: '已修学分' }];
 const ScoreInquiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);

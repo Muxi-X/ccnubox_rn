@@ -7,7 +7,7 @@ import {
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
 } from '@/constants/courseTable';
-import { CourseTransferType } from '@/module/courseTable/components/courseTable/type';
+import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;

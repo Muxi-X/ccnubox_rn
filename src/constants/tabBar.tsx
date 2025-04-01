@@ -7,7 +7,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import useVisualScheme from '@/store/visualScheme';
 import useWeekStore from '@/store/weekStore';
 
-import NotificationHeaderRight from '@/module/notification/component/NotiNavbar';
+import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
 
 import { tooltipActions } from './courseTableApplications';

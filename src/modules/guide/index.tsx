@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { PreLoginCard } from '@/module/guide/components/preloginCard';
+import { PreLoginCard } from '@/modules/guide/components/preloginCard';
 
 const GuidePage: FC = () => {
   return (
