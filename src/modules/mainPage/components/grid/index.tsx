@@ -6,7 +6,7 @@ import { DraggableGrid as Grid } from 'react-native-draggable-grid';
 import {
   DraggableGridProps,
   GridDataType as ItemData,
-} from '@/module/mainPage/components/grid/type';
+} from '@/modules/mainPage/components/grid/type';
 
 /**
  * 可拖动 grid， 调的包
