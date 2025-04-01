@@ -27,7 +27,16 @@ module.exports = {
     'scope-enum': [
       2,
       'always',
-      ['global', 'components', 'pages', 'hooks', 'utils', 'styles', 'config'], // 提交信息的 scope 必须在指定的范围内
+      [
+        'global',
+        'components',
+        'pages',
+        'hooks',
+        'utils',
+        'styles',
+        'config',
+        'modules',
+      ], // 提交信息的 scope 必须在指定的范围内
     ],
     'scope-case': [2, 'always', 'lower-case'], // 提交信息的 scope 必须小写
     'scope-empty': [2, 'never'], // 提交信息的 scope 不能为空

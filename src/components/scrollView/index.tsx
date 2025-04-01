@@ -12,6 +12,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDecay,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
@@ -22,7 +23,6 @@ import { commonColors } from '@/styles/common';
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const {
-    onScrollToTop,
     onScrollToBottom,
     stickyTop,
     stickyLeft,
@@ -58,6 +58,8 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   });
   // 下拉刷新文本状态
   const [refreshText, setRefreshText] = useState('下拉刷新课表');
+  // 添加一个标记来判断是否已经在顶部
+  const hasReachedTop = useSharedValue(false);
 
   useEffect(() => {
     isAtTop.value && onReachTopEnd();
@@ -66,18 +68,24 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   // 监听边界事件
   const onReachTopEnd = () => {
-    onScrollToTop && onScrollToTop();
+    if (!onRefresh) return;
+
     const handleHideRefreshing = () => {
       backHeight.value = withTiming(0);
+      isAtTop.value = false; // 重置状态
+      runOnJS(setRefreshText)('下拉刷新课表');
     };
+
     const success = () => {
       handleHideRefreshing();
     };
+
     const fail = () => {
       handleHideRefreshing();
       Toast.fail('刷新失败');
     };
-    onRefresh && onRefresh(success, fail);
+
+    onRefresh(success, fail);
   };
 
   const onReachBottomEnd = () => {
@@ -90,17 +98,28 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       startY.value = translateY.value;
     })
     .onUpdate(event => {
+      // 只有已经在顶部的情况下才允许下拉刷新
       if (translateY.value === 0 && event.translationY > 0) {
-        if (event.translationY > 20) {
-          backHeight.value = withSpring(100, {
-            damping: 15,
-            stiffness: 150,
-          });
-          runOnJS(setRefreshText)('松开即刷新');
+        if (hasReachedTop.value) {
+          if (event.translationY > 60) {
+            backHeight.value = withSpring(100, {
+              damping: 15,
+              stiffness: 150,
+            });
+            runOnJS(setRefreshText)('松开即刷新');
+          } else {
+            backHeight.value = event.translationY;
+            runOnJS(setRefreshText)('下拉刷新课表');
+          }
         } else {
-          backHeight.value = event.translationY;
-          runOnJS(setRefreshText)('下拉刷新课表');
+          // 第一次到达顶部，设置标记
+          hasReachedTop.value = true;
         }
+      }
+
+      // 当不在顶部时重置标记
+      if (translateY.value !== 0) {
+        hasReachedTop.value = false;
       }
 
       translateX.value = Math.min(
@@ -128,43 +147,43 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       }
     })
     .onEnd(event => {
-      const springConfig = {
-        damping: 15,
-        stiffness: 150,
-        mass: 0.5,
-      };
-
-      if (translateY.value === 0 && backHeight.value > 20) {
+      // 只有已经在顶部的情况下才触发刷新
+      if (
+        translateY.value === 0 &&
+        backHeight.value > 100 &&
+        hasReachedTop.value
+      ) {
         isAtTop.value = true;
       } else {
         backHeight.value = withTiming(0);
+        isAtTop.value = false;
       }
 
-      translateY.value = withSpring(
-        Math.min(
-          0,
-          Math.max(
-            translateY.value + event.velocityY * 0.1,
-            wrapperSize.height - containerSize.height
-          )
-        ),
-        springConfig
-      );
-      translateX.value = withSpring(
-        Math.min(
-          0,
-          Math.max(
-            translateX.value + event.velocityX * 0.1,
-            wrapperSize.width - containerSize.width
-          )
-        ),
-        springConfig
-      );
+      if (Math.abs(event.velocityY) > 0) {
+        translateY.value = withDecay({
+          velocity: event.velocityY,
+          clamp: [wrapperSize.height - containerSize.height, 0],
+          deceleration: 0.292,
+          velocityFactor: 0.9,
+        });
+      }
+
+      if (Math.abs(event.velocityX) > 0) {
+        translateX.value = withDecay({
+          velocity: event.velocityX,
+          clamp: [wrapperSize.width - containerSize.width, 0],
+          deceleration: 0.992,
+          velocityFactor: 0.8,
+        });
+      }
 
       if (isAtBottom.value && event.translationY < 0) {
         translateY.value = withSpring(
           wrapperSize.height - containerSize.height,
-          springConfig
+          {
+            damping: 15,
+            stiffness: 150,
+          }
         );
         overScrollHeight.value = withSpring(0, {
           damping: 20,
@@ -190,7 +209,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         { translateY: translateY.value },
       ],
     };
-  });
+  }, []);
   const animatedOnlyX = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
