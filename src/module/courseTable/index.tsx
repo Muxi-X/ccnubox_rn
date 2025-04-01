@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { FC, memo, useEffect, useState } from 'react';
 
@@ -51,7 +52,7 @@ const CourseTablePage: FC = () => {
 
   // 读取缓存的课表数据
   const getCachedCourseTable = async (): Promise<courseType[] | null> => {
-    const dataString = await SecureStore.getItemAsync('course_table');
+    const dataString = await AsyncStorage.getItem('course_table');
     if (dataString) {
       try {
         const data = JSON.parse(dataString);
@@ -111,7 +112,7 @@ const CourseTablePage: FC = () => {
       if (res?.code === 0) {
         const courses = res.data?.classes as courseType[];
         // 缓存课表
-        await SecureStore.setItemAsync('course_table', JSON.stringify(courses));
+        await AsyncStorage.setItem('course_table', JSON.stringify(courses));
         setCourseData(courses);
       }
     } catch (error) {
