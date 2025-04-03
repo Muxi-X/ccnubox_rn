@@ -1,6 +1,6 @@
 import { ActivityIndicator, Icon, WingBlank } from '@ant-design/react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+// import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -215,9 +215,9 @@ const ScoreCalculation: React.FC = () => {
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      <StatusBar
+      {/* <StatusBar
         backgroundColor={currentStyle?.navbar_background_style as any}
-      />
+      /> */}
       <View style={[styles.header, currentStyle?.navbar_background_style]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 7,
-    paddingTop: 40,
+    paddingTop: 50,
     paddingVertical: 6,
     backgroundColor: '#F7F7F7',
   },
@@ -370,8 +370,9 @@ const styles = StyleSheet.create({
     height: 24,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     lineHeight: 24,
+    height: 24,
     fontWeight: '600',
     color: '#232323',
     marginLeft: 20,
