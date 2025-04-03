@@ -32,4 +32,13 @@ const handleOpenURL = async (url: string, appName: string) => {
   }
 };
 
+/**
+ * 使用指定的电话号码打开拨号器。
+ *
+ * @param number - 要拨打的电话号码，应为电话号码的字符串。
+ */
+export const openPhoneNumber = (number: string) => {
+  handleOpenURL(`tel:${number}`, '电话');
+};
+
 export default handleOpenURL;

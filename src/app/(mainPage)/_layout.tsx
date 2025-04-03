@@ -61,6 +61,10 @@ export default function Layout() {
               }}
             ></Stack.Screen>
           ))}
+        <Stack.Screen
+          name="scoreCalculation"
+          options={{ headerShown: false }}
+        ></Stack.Screen>
       </Stack>
     </View>
   );
