@@ -8,7 +8,7 @@ export const commonStyles = StyleSheet.create({
     fontSize: 26,
   },
   fontLarge: {
-    fontSize: 20,
+    fontSize: 24,
   },
   fontMedium: {
     fontSize: 16,
