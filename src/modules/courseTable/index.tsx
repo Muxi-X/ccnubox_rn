@@ -1,5 +1,5 @@
-//import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import * as SecureStore from 'expo-secure-store';
 import { FC, memo, useEffect, useState } from 'react';
 
 import View from '@/components/view';
@@ -35,16 +35,16 @@ const CourseTablePage: FC = () => {
     let schoolTime: string | null = null;
     let holiday_time: string | null = null;
     if (!forceRefresh) {
-      schoolTime = await SecureStore.getItemAsync('school_time');
-      holiday_time = await SecureStore.getItemAsync('holiday_time');
+      schoolTime = await AsyncStorage.getItem('school_time');
+      holiday_time = await AsyncStorage.getItem('holiday_time');
     }
     if (!schoolTime || !holiday_time || forceRefresh) {
       const res = await queryCurrentWeek();
       if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
         schoolTime = String(res.data.school_time);
         holiday_time = String(res.data.holiday_time);
-        await SecureStore.setItemAsync('school_time', schoolTime);
-        await SecureStore.setItemAsync('holiday_time', holiday_time);
+        await AsyncStorage.setItem('school_time', schoolTime);
+        await AsyncStorage.setItem('holiday_time', holiday_time);
       }
     }
     return schoolTime;
@@ -52,7 +52,7 @@ const CourseTablePage: FC = () => {
 
   // 读取缓存的课表数据
   const getCachedCourseTable = async (): Promise<courseType[] | null> => {
-    const dataString = await SecureStore.getItemAsync('course_table');
+    const dataString = await AsyncStorage.getItem('course_table');
     if (dataString) {
       try {
         const data = JSON.parse(dataString);
@@ -112,7 +112,7 @@ const CourseTablePage: FC = () => {
       if (res?.code === 0) {
         const courses = res.data?.classes as courseType[];
         // 缓存课表
-        await SecureStore.setItem('course_table', JSON.stringify(courses));
+        await AsyncStorage.setItem('course_table', JSON.stringify(courses));
         setCourseData(courses);
       }
     } catch (error) {
