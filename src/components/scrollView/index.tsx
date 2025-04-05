@@ -12,6 +12,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDecay,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
@@ -22,9 +23,7 @@ import { commonColors } from '@/styles/common';
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const {
-    onScrollToTop,
     onScrollToBottom,
-    stickyBottom,
     stickyTop,
     stickyLeft,
     children,
@@ -59,6 +58,8 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   });
   // 下拉刷新文本状态
   const [refreshText, setRefreshText] = useState('下拉刷新课表');
+  // 添加一个标记来判断是否已经在顶部
+  const hasReachedTop = useSharedValue(false);
 
   useEffect(() => {
     isAtTop.value && onReachTopEnd();
@@ -67,18 +68,24 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   // 监听边界事件
   const onReachTopEnd = () => {
-    onScrollToTop && onScrollToTop();
+    if (!onRefresh) return;
+
     const handleHideRefreshing = () => {
       backHeight.value = withTiming(0);
+      isAtTop.value = false; // 重置状态
+      runOnJS(setRefreshText)('下拉刷新课表');
     };
+
     const success = () => {
       handleHideRefreshing();
     };
+
     const fail = () => {
       handleHideRefreshing();
       Toast.fail('刷新失败');
     };
-    onRefresh && onRefresh(success, fail);
+
+    onRefresh(success, fail);
   };
 
   const onReachBottomEnd = () => {
@@ -87,27 +94,34 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
 
   const panGesture = Gesture.Pan()
     .onStart(() => {
-      // 在手势开始时记录当前的偏移量
       startX.value = translateX.value;
       startY.value = translateY.value;
     })
     .onUpdate(event => {
-      if (isAtTop.value) {
-        if (event.translationY > 20) {
-          backHeight.value = withSpring(100);
-          runOnJS(setRefreshText)('松开即刷新');
+      // 只有已经在顶部的情况下才允许下拉刷新
+      if (translateY.value === 0 && event.translationY > 0) {
+        if (hasReachedTop.value) {
+          if (event.translationY > 60) {
+            backHeight.value = withSpring(100, {
+              damping: 15,
+              stiffness: 150,
+            });
+            runOnJS(setRefreshText)('松开即刷新');
+          } else {
+            backHeight.value = event.translationY;
+            runOnJS(setRefreshText)('下拉刷新课表');
+          }
         } else {
-          runOnJS(setRefreshText)('下拉刷新课表');
+          // 第一次到达顶部，设置标记
+          hasReachedTop.value = true;
         }
-        isAtTop.value = false;
       }
-      if (isAtBottom.value) {
-        overScrollHeight.value = -Math.min(event.translationY, 100);
-      }
-      // 如果全用 withTiming 等动画
-      // 低速下会造成卡顿的错觉
 
-      // 限制 translateX 在 -leftLimit 到 0 范围内（左侧和右侧停住）
+      // 当不在顶部时重置标记
+      if (translateY.value !== 0) {
+        hasReachedTop.value = false;
+      }
+
       translateX.value = Math.min(
         0,
         Math.max(
@@ -122,45 +136,59 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           wrapperSize.height - containerSize.height
         )
       );
-      // 记录滑动距离
       if (isAtBottom.value) {
-        overScrollHeight.value =
-          event.translationY < 0 ? Math.min(-event.translationY, 100) : 0;
+        overScrollHeight.value = withSpring(
+          event.translationY < 0 ? Math.min(-event.translationY, 100) : 0,
+          {
+            damping: 20,
+            stiffness: 200,
+          }
+        );
       }
     })
     .onEnd(event => {
-      // 检查是否触及顶部或底部边界，触发状态
-      translateY.value = withTiming(
-        Math.min(
-          0,
-          Math.max(
-            translateY.value + event.velocityY * 0.2,
-            wrapperSize.height - containerSize.height
-          )
-        )
-      );
-      translateX.value = withTiming(
-        Math.min(
-          0,
-          Math.max(
-            translateX.value + event.velocityX * 0.2,
-            wrapperSize.width - containerSize.width
-          )
-        )
-      );
-      // 如果在顶部大力滑动，则触发刷新
-      if (translateY.value === 0 && !isAtTop.value) {
+      // 只有已经在顶部的情况下才触发刷新
+      if (
+        translateY.value === 0 &&
+        backHeight.value > 100 &&
+        hasReachedTop.value
+      ) {
         isAtTop.value = true;
+      } else {
+        backHeight.value = withTiming(0);
+        isAtTop.value = false;
       }
-      // 若在底部滚动到底，触发彩蛋
+
+      if (Math.abs(event.velocityY) > 0) {
+        translateY.value = withDecay({
+          velocity: event.velocityY,
+          clamp: [wrapperSize.height - containerSize.height, 0],
+          deceleration: 0.292,
+          velocityFactor: 0.9,
+        });
+      }
+
+      if (Math.abs(event.velocityX) > 0) {
+        translateX.value = withDecay({
+          velocity: event.velocityX,
+          clamp: [wrapperSize.width - containerSize.width, 0],
+          deceleration: 0.992,
+          velocityFactor: 0.8,
+        });
+      }
+
       if (isAtBottom.value && event.translationY < 0) {
         translateY.value = withSpring(
-          Math.max(
-            wrapperSize.height - containerSize.height + overScrollHeight.value,
-            translateY.value
-          )
+          wrapperSize.height - containerSize.height,
+          {
+            damping: 15,
+            stiffness: 150,
+          }
         );
-        overScrollHeight.value = withTiming(0);
+        overScrollHeight.value = withSpring(0, {
+          damping: 20,
+          stiffness: 200,
+        });
         isAtBottom.value = false;
       } else if (
         translateY.value <= -(containerSize.height - wrapperSize.height) &&
@@ -168,8 +196,10 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       ) {
         isAtBottom.value = true;
       }
-      // 重置下拉刷新文本
-      runOnJS(setRefreshText)('下拉刷新课表');
+
+      if (!isAtTop.value) {
+        runOnJS(setRefreshText)('下拉刷新课表');
+      }
     });
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -179,7 +209,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         { translateY: translateY.value },
       ],
     };
-  });
+  }, []);
   const animatedOnlyX = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
@@ -274,7 +304,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         </View>
       </Animated.View>
       {/* sticky bottom */}
-      <Animated.View
+      {/* <Animated.View
         style={{
           width: '100%',
           height: overScrollHeight,
@@ -283,7 +313,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         }}
       >
         {stickyBottom}
-      </Animated.View>
+      </Animated.View> */}
     </View>
   );
 };

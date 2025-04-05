@@ -2,6 +2,7 @@ import { Href } from 'expo-router';
 import { Platform } from 'react-native';
 
 import { handleOpenURL } from '@/utils';
+
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const mainPageApplications: MainPageGridDataType[] = [
@@ -71,13 +72,13 @@ export const mainPageApplications: MainPageGridDataType[] = [
   },
   {
     title: '部门信息',
-    name: 'information',
+    name: 'departments',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/information.png'),
       android: require('../assets/images/icons/android/information.png'),
     }),
     key: 'grid-7',
-    href: '/information' as Href,
+    href: '/departments' as Href,
   },
   {
     title: '校历',
@@ -91,13 +92,13 @@ export const mainPageApplications: MainPageGridDataType[] = [
   },
   {
     title: '常用网站',
-    name: 'website',
+    name: 'websites',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/web.png'),
       android: require('../assets/images/icons/android/web.png'),
     }),
     key: 'grid-9',
-    href: '/website' as Href,
+    href: '/websites' as Href,
   },
   {
     title: '木犀课栈',

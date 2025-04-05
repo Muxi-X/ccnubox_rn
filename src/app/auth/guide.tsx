@@ -1,3 +1,3 @@
-import GuidePage from '@/module/guide';
+import GuidePage from '@/modules/guide';
 
 export default GuidePage;

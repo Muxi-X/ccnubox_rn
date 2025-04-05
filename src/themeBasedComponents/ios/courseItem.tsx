@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colorOptions } from '@/constants/courseTable';
-import { CourseTransferType } from '@/module/courseTable/components/courseTable/type';
+import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;

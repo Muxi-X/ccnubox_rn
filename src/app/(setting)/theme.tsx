@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 
 import View from '@/components/view';
 
-import SelectStyle from '@/module/selectStyle';
-import SelectTheme from '@/module/selectTheme';
+import SelectStyle from '@/modules/selectStyle';
+import SelectTheme from '@/modules/selectTheme';
 
 import Nabvar from '../(courseTable)/component/Navbar';
 export default function Theme() {
