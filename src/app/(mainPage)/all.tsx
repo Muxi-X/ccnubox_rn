@@ -1,30 +1,36 @@
 import { NativeModules } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '@/components/button';
+import useWeekStore from '@/store/weekStore';
 export default function All() {
   const { WidgetManager } = NativeModules;
-  const updateCourseData = () => {
-    const courseData = {
-      date: new Date()
-        .toLocaleDateString('zh-CN', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-        .replace(/\s/g, ''),
-      courses: [
-        {
-          classWhen: '8:00-9:35',
-          classname: '高等数学',
-          credit: 4,
-          day: 1,
-          id: '666',
-          semester: '2024-2025第一学期',
-          teacher: 'sjn',
-        },
-      ],
-    };
+  const { currentWeek } = useWeekStore();
+  const getCachedCourseTable = async () => {
+    const dataString = await AsyncStorage.getItem('course_table');
+    if (dataString) {
+      try {
+        const data = JSON.parse(dataString);
+        return Array.isArray(data) ? data : null;
+      } catch (error) {
+        console.error('解析缓存数据失败:', error);
+      }
+    }
+    return null;
+  };
+  const updateCourseData = async () => {
+    const courses = await getCachedCourseTable();
+    if (!courses) {
+      console.error('No cached course data found');
+      return;
+    }
 
+    const courseData = {
+      date: `第${currentWeek}周`,
+      courses: courses.map(course => ({
+        id: course.id,
+      })),
+    };
+    console.log('111', courseData);
     WidgetManager.updateCourseData(JSON.stringify(courseData))
       .then((result: string) => {
         console.log('数据更新成功:', result);
@@ -36,5 +42,5 @@ export default function All() {
       });
   };
 
-  return <Button onPress={updateCourseData}>222</Button>;
+  return <Button onPress={updateCourseData}>测试小组件</Button>;
 }
