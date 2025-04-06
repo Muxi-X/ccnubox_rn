@@ -1,5 +1,13 @@
-import React, { memo, useDeferredValue, useState } from 'react';
+import * as MediaLibrary from 'expo-media-library';
+import React, {
+  memo,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { captureRef } from 'react-native-view-shot';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -21,6 +29,7 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -34,6 +43,38 @@ const Timetable: React.FC<CourseTableProps> = ({
   const { currentStyle, themeName } = useVisualScheme(
     ({ currentStyle, themeName }) => ({ currentStyle, themeName })
   );
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+  const imageRef = useRef<View>(null);
+  if (status === null) {
+    requestPermission();
+  }
+  const onSaveImageAsync = async () => {
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 1400,
+        quality: 1,
+      });
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        Modal.show({
+          title: '截图成功',
+          mode: 'middle',
+        });
+      }
+    } catch (e) {
+      Modal.show({ title: `${e}` });
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    globalEventBus.on('SaveImageShot', onSaveImageAsync);
+
+    return () => {
+      //  globalEventBus.off('SaveImageShot', onSaveImageAsync);
+    };
+  }, []);
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -93,7 +134,11 @@ const Timetable: React.FC<CourseTableProps> = ({
         }
       }
       return (
-        <View style={styles.courseWrapperStyle}>
+        <View
+          style={styles.courseWrapperStyle}
+          ref={imageRef}
+          collapsable={false}
+        >
           {timetableMatrix?.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map((subject, colIndex) => (
