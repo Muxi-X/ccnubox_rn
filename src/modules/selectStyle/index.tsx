@@ -39,7 +39,7 @@ export default function SelectStyle() {
             },
           ]}
         >
-          暗黑模式
+          深夜模式
         </Text>
         <Button
           style={[
@@ -59,14 +59,15 @@ export default function SelectStyle() {
         </Button>
       </View>
       <Image
-        source={require('@/assets/images/theme/base.png')}
+        source={require('@/assets/images/theme/darkStyle.png')}
         style={{
+          borderRadius: 60,
           justifyContent: 'center',
           marginTop: 20,
           width: 300,
           height: 180,
           alignSelf: 'center',
-          resizeMode: 'cover',
+          resizeMode: 'contain',
         }}
       />
       <View
@@ -75,7 +76,7 @@ export default function SelectStyle() {
           justifyContent: 'space-between',
           display: 'flex',
           alignItems: 'center',
-          marginTop: 20,
+          marginTop: 40,
         }}
       >
         <Text
@@ -87,7 +88,7 @@ export default function SelectStyle() {
             },
           ]}
         >
-          IOS版
+          原版
         </Text>
         <Button
           style={[
@@ -107,14 +108,15 @@ export default function SelectStyle() {
         </Button>
       </View>
       <Image
-        source={require('@/assets/images/theme/ios.png')}
+        source={require('@/assets/images/theme/baseStyle.png')}
         style={{
+          borderRadius: 20,
           justifyContent: 'center',
           marginTop: 20,
           width: 300,
-          height: 200,
+          height: 100,
           alignSelf: 'center',
-          resizeMode: 'cover',
+          resizeMode: 'contain',
         }}
       />
     </ThemeBasedView>
