@@ -51,4 +51,8 @@ export interface ScrollableViewProps {
    * 样式
    */
   style?: StyleProps;
+  /**
+   * 左上角样式
+   */
+  conrerStyle?: StyleProps;
 }

@@ -33,7 +33,9 @@ const Timetable: React.FC<CourseTableProps> = ({
 }) => {
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { currentStyle, themeName } = useVisualScheme(
+    ({ currentStyle, themeName }) => ({ currentStyle, themeName })
+  );
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
   if (status === null) {
@@ -152,6 +154,10 @@ const Timetable: React.FC<CourseTableProps> = ({
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
+          conrerStyle={{
+            backgroundColor:
+              themeName === 'light' ? commonColors.gray : commonColors.black,
+          }}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
               setIsFetching(true);
@@ -238,7 +244,6 @@ export const Content: React.FC<CourseTransferType> = props => {
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
-  console.log('Content_props', props);
   return (
     <>
       <Pressable

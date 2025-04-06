@@ -28,6 +28,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
     stickyLeft,
     children,
     style,
+    conrerStyle,
     onRefresh,
   } = props;
   const translateX = useSharedValue(0);
@@ -266,6 +267,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           left: 0,
           backgroundColor: commonColors.gray,
           zIndex: 20,
+          ...conrerStyle,
         }}
       ></Animated.View>
       <Animated.View
