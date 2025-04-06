@@ -17,26 +17,30 @@ const useThemeChangeStyle = (
   styleName: keyof StyleProps
 ) => {
   const isFocused = useIsFocused();
-  const currentStyle = useVisualScheme(state => state.currentStyle); // 获取当前颜色值
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const previousColor = useSharedValue(
     (currentStyle?.[configurableThemeName]?.[styleName] ?? '') as string
   );
-  // 共享值来控制动画进度
   const progress = useSharedValue(0);
 
   // 动态样式
   const animatedStyle = useAnimatedStyle(() => {
-    const color = isFocused
-      ? interpolateColor(
-          progress.value,
-          [0, 1],
-          [
-            previousColor.value,
-            (currentStyle?.[configurableThemeName]?.[styleName] ??
-              '') as string,
-          ] // 输出的颜色范围
-        )
-      : previousColor.value;
+    const currentColor = (currentStyle?.[configurableThemeName]?.[styleName] ??
+      '') as string;
+
+    // 如果不是当前页面，直接返回新的颜色值
+    if (!isFocused) {
+      return {
+        [styleName]: currentColor,
+      };
+    }
+
+    // 当前页面才执行动画
+    const color = interpolateColor(
+      progress.value,
+      [0, 1],
+      [previousColor.value, currentColor]
+    );
 
     return {
       [styleName]: color,
@@ -46,12 +50,18 @@ const useThemeChangeStyle = (
   useEffect(() => {
     const currentColor =
       currentStyle?.[configurableThemeName]?.[styleName] ?? '';
-    if (isFocused && previousColor.value !== currentColor) {
-      // 颜色更新时，从当前颜色到新颜色进行动画
-      progress.value = 0; // 重置进度
-      progress.value = withTiming(1, { duration: 400 }, () => {
+    if (previousColor.value !== currentColor) {
+      if (isFocused) {
+        // 当前页面执行动画
+        progress.value = 0;
+        progress.value = withTiming(1, { duration: 400 }, () => {
+          previousColor.value = currentColor as string;
+        });
+      } else {
+        // 非当前页面直接更新颜色，不执行动画
+        progress.value = 1;
         previousColor.value = currentColor as string;
-      });
+      }
     }
   }, [currentStyle, isFocused]);
 
