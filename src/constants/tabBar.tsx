@@ -9,11 +9,11 @@ import useWeekStore from '@/store/weekStore';
 
 import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { tooltipActions } from './courseTableApplications';
 
 import { SinglePageType } from '@/types/tabBarTypes';
-import globalEventBus from '@/utils/eventBus';
 
 const ScheduleHeader: React.FC = () => {
   // const [showWeekPicker, setShowWeekPicker] = React.useState(false);

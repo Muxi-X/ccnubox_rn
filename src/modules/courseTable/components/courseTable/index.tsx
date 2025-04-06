@@ -29,9 +29,9 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
-import globalEventBus from '@/utils/eventBus';
 
 const Timetable: React.FC<CourseTableProps> = ({
   data,
