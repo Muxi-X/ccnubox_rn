@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
   memo,
@@ -16,6 +17,7 @@ import ThemeChangeText from '@/components/text';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
+import useWeekStore from '@/store/weekStore';
 
 import {
   COURSE_HEADER_HEIGHT,
@@ -300,6 +302,45 @@ export const Content: React.FC<CourseTransferType> = props => {
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { currentWeek } = useWeekStore();
+  const [dates, setDates] = useState<string[]>([]);
+
+  useEffect(() => {
+    const calculateDates = async () => {
+      try {
+        // 从缓存中获取开学时间
+        const schoolTime = await AsyncStorage.getItem('school_time');
+        if (!schoolTime) return;
+
+        // 计算开学日期
+        const startTimestamp = Number(schoolTime) * 1000;
+        const startDate = new Date(startTimestamp);
+
+        // 计算当前周的第一天（周一）
+        // 开学日期是第1周的第1天，所以需要计算当前周的第1天
+        const daysToAdd = (currentWeek - 1) * 7;
+        const currentWeekStartDate = new Date(startDate);
+        currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
+
+        // 计算当前周的每一天
+        const weekDates: string[] = [];
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(currentWeekStartDate);
+          date.setDate(currentWeekStartDate.getDate() + i);
+          const month = date.getMonth() + 1; // 月份从0开始
+          const day = date.getDate();
+          weekDates.push(`${month}/${day}`);
+        }
+
+        setDates(weekDates);
+      } catch (error) {
+        console.error('计算日期失败:', error);
+      }
+    };
+
+    calculateDates();
+  }, [currentWeek]);
+
   return (
     <View style={styles.header}>
       <View style={styles.headerRow}>
@@ -313,7 +354,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
             ]}
           >
             <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
-            <Text style={styles.dayText}>09/0{index + 1}</Text>
+            <Text style={styles.dayText}>{dates[index] || ''}</Text>
           </View>
         ))}
       </View>
