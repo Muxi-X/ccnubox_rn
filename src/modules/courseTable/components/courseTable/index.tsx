@@ -1,5 +1,11 @@
 import * as MediaLibrary from 'expo-media-library';
-import React, { memo, useDeferredValue, useRef, useState } from 'react';
+import React, {
+  memo,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
@@ -25,6 +31,7 @@ import {
 import { commonColors } from '@/styles/common';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
+import globalEventBus from '@/utils/eventBus';
 
 const Timetable: React.FC<CourseTableProps> = ({
   data,
@@ -44,18 +51,29 @@ const Timetable: React.FC<CourseTableProps> = ({
   const onSaveImageAsync = async () => {
     try {
       const localUri = await captureRef(imageRef, {
-        height: 440,
+        height: 1400,
         quality: 1,
       });
 
       await MediaLibrary.saveToLibraryAsync(localUri);
       if (localUri) {
-        alert('Saved!');
+        Modal.show({
+          title: '截图成功',
+          mode: 'middle',
+        });
       }
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    globalEventBus.on('SaveImageShot', onSaveImageAsync);
+
+    return () => {
+      globalEventBus.off('SaveImageShot', onSaveImageAsync);
+    };
+  }, []);
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -115,7 +133,11 @@ const Timetable: React.FC<CourseTableProps> = ({
         }
       }
       return (
-        <View style={styles.courseWrapperStyle}>
+        <View
+          style={styles.courseWrapperStyle}
+          ref={imageRef}
+          collapsable={false}
+        >
           {timetableMatrix?.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map((subject, colIndex) => (
@@ -144,12 +166,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     })()
   );
   return (
-    <View style={{ flex: 1 }} ref={imageRef}>
-      <View>
-        <Pressable onPress={onSaveImageAsync}>
-          <Text>111</Text>
-        </Pressable>
-      </View>
+    <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <ScrollableView
           // 上方导航栏
