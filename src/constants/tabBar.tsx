@@ -9,6 +9,7 @@ import useWeekStore from '@/store/weekStore';
 
 import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { tooltipActions } from './courseTableApplications';
 
@@ -145,6 +146,9 @@ export const tabConfig: SinglePageType[] = [
             actions={tooltipActions}
             placement="bottom-start"
             onAction={node => {
+              if (node.key === 'screenShot') {
+                globalEventBus.emit('SaveImageShot');
+              }
               if ((node.key as string)[0] === '/') {
                 router.navigate(node.key as Href);
               }
