@@ -6,6 +6,8 @@ import { ModalTrigger } from '@/components/modal';
 import PickerView from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { commonColors, commonStyles } from '@/styles/common';
 import { keyGenerator, percent2px } from '@/utils';
 
@@ -78,6 +80,12 @@ const Picker: React.FC<DatePickerProps> = ({
     return pickedLabels.join('-') + '节';
   },
 }) => {
+  const themeName = useVisualScheme(state => state.themeName);
+  const borderLeftColor = useMemo(() => {
+    return themeName === 'light'
+      ? commonColors.lightGray
+      : commonColors.darkGray;
+  }, [themeName]);
   const [pickerValue, setPickerValue] = useState<(string | number)[]>([]);
   const title = useMemo(
     () => titleDisplayLogic(pickerValue, data),
@@ -147,7 +155,7 @@ const Picker: React.FC<DatePickerProps> = ({
               style={{
                 flex: 1,
                 borderLeftWidth: BORDER_LEFT_WIDTH,
-                borderLeftColor: commonColors.lightGray,
+                borderLeftColor,
                 opacity: 0.6,
                 borderRadius: 5,
               }}
@@ -155,8 +163,9 @@ const Picker: React.FC<DatePickerProps> = ({
           );
         }}
         renderMaskTop={() =>
-          isBottomMode ? (
-            <View style={styles.maskTop}>
+          /** 浅色模式的底部需要渐变 */
+          isBottomMode && themeName === 'light' ? (
+            <View style={{ ...styles.maskTop, borderLeftColor }}>
               <LinearGradient
                 colors={['#ADA5A600', '#ffffff12']}
                 start={{ x: 0, y: 0 }}
@@ -168,7 +177,10 @@ const Picker: React.FC<DatePickerProps> = ({
             <View
               style={{
                 flex: 1,
-                backgroundColor: commonColors.white,
+                backgroundColor:
+                  themeName === 'light'
+                    ? commonColors.white
+                    : commonColors.black,
                 opacity: 0.6,
               }}
             ></View>
@@ -210,7 +222,6 @@ const styles = StyleSheet.create({
 });
 const pickerStyles = StyleSheet.create({
   maskMiddle: {
-    backgroundColor: '#ADA5A612',
     borderLeftWidth: BORDER_LEFT_WIDTH,
     borderColor: commonColors.purple,
     borderTopWidth: 0,
