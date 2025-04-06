@@ -1,5 +1,7 @@
-import React, { memo, useDeferredValue, useState } from 'react';
+import * as MediaLibrary from 'expo-media-library';
+import React, { memo, useDeferredValue, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { captureRef } from 'react-native-view-shot';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -32,6 +34,26 @@ const Timetable: React.FC<CourseTableProps> = ({
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+  const imageRef = useRef<View>(null);
+  if (status === null) {
+    requestPermission();
+  }
+  const onSaveImageAsync = async () => {
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        alert('Saved!');
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -120,7 +142,12 @@ const Timetable: React.FC<CourseTableProps> = ({
     })()
   );
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} ref={imageRef}>
+      <View>
+        <Pressable onPress={onSaveImageAsync}>
+          <Text>111</Text>
+        </Pressable>
+      </View>
       <View style={styles.container}>
         <ScrollableView
           // 上方导航栏

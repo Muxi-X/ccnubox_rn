@@ -70,9 +70,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     //  ...StyleSheet.absoluteFillObject,
     position: 'absolute',
-    // top: 45, // 确保它不会挡住头部
-    // left: -160, // 让它从屏幕左侧开始
-    width: '100%', // 让它宽度覆盖整个屏幕
+    width: '100%',
     borderRadius: 8,
     padding: 10,
     shadowColor: '#000',

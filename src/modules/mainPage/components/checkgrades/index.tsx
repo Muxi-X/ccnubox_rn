@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Picker from '@/components/picker';
+
 import useVisualScheme from '@/store/visualScheme';
 
 const yearOptions = [
