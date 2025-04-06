@@ -242,6 +242,9 @@ PODS:
     - ExpoModulesCore
   - ExpoLinearGradient (13.0.2):
     - ExpoModulesCore
+  - ExpoMediaLibrary (16.0.5):
+    - ExpoModulesCore
+    - React-Core
   - ExpoModulesCore (1.12.26):
     - DoubleConversion
     - glog
@@ -1332,6 +1335,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-view-shot (3.8.0):
+    - React-Core
   - react-native-webview (13.8.6):
     - DoubleConversion
     - glog
@@ -1721,6 +1726,7 @@ DEPENDENCIES:
   - ExpoInsights (from `../node_modules/expo-insights/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
+  - ExpoMediaLibrary (from `../node_modules/expo-media-library/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoNativeWechat (from `../node_modules/expo-native-wechat/ios`)
   - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
@@ -1763,6 +1769,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-view-shot (from `../node_modules/react-native-view-shot`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1847,6 +1854,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
     :path: "../node_modules/expo-linear-gradient/ios"
+  ExpoMediaLibrary:
+    :path: "../node_modules/expo-media-library/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoNativeWechat:
@@ -1928,6 +1937,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-view-shot:
+    :path: "../node_modules/react-native-view-shot"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-nativeconfig:
@@ -2011,6 +2022,7 @@ SPEC CHECKSUMS:
   ExpoInsights: 1a7bfa48b2a1b26982bebd61288252c572011150
   ExpoKeepAwake: dd02e65d49f1cfd9194640028ae2857e536eb1c9
   ExpoLinearGradient: 4c44b3803b441724874b232e6520b51ca6a50db1
+  ExpoMediaLibrary: b30366bf8f938166b1fe2d019e5b15337349d91e
   ExpoModulesCore: f680aa88662248011bc8149abebff87c8907509a
   ExpoNativeWechat: d65b7650525da5b3dfa79f807f672c64969e889e
   ExpoSecureStore: 6506992a9f53c94ea716c54d4a63144965945c2c
@@ -2052,6 +2064,7 @@ SPEC CHECKSUMS:
   React-logger: 780b9ee9cec7d44eabc4093de90107c379078cb6
   React-Mapbuffer: f544f00b98dbdd8cbae96dd2bdb8b47f719976e0
   react-native-safe-area-context: 40152ab788eaf1d1185891c1b43424ce66f10985
+  react-native-view-shot: d1a701eb0719c6dccbd20b4bb43b1069f304cb70
   react-native-webview: 0056d7fb9b4870b60cdc2ecabb027711b98ba83d
   React-nativeconfig: ba9a2e54e2f0882cf7882698825052793ed4c851
   React-NativeModulesApple: 84aaad2b0e546d7b839837ca537f6e72804a4cad

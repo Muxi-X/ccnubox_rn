@@ -63,6 +63,7 @@ const Timetable: React.FC<CourseTableProps> = ({
         });
       }
     } catch (e) {
+      Modal.show({ title: `${e}` });
       console.log(e);
     }
   };
@@ -71,7 +72,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     globalEventBus.on('SaveImageShot', onSaveImageAsync);
 
     return () => {
-      globalEventBus.off('SaveImageShot', onSaveImageAsync);
+      //  globalEventBus.off('SaveImageShot', onSaveImageAsync);
     };
   }, []);
   // 内容部分

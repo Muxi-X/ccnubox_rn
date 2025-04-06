@@ -27,7 +27,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           },
         ]}
       >
-        <Text style={styles.cellText}>{courseName + timeSpan + '1' || ''}</Text>
+        <Text style={styles.cellText}>{courseName}</Text>
       </View>
       <View
         style={[
