@@ -45,7 +45,9 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
     return mode !== 'middle';
   }, [mode]);
   const [visible, setVisible] = useState<boolean>(initVisible);
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { currentStyle, themeName } = useVisualScheme(
+    ({ currentStyle, themeName }) => ({ currentStyle, themeName })
+  );
   const { deleteChildren } = usePortalStore(({ deleteChildren }) => ({
     deleteChildren,
   }));
@@ -66,8 +68,8 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   const modalContent = useMemo(() => {
     return (
       <>
-        {/* 只有底部弹窗才有渐变 */}
-        {isBottomMode && (
+        {/* 只有浅色模式底部弹窗才有渐变 */}
+        {isBottomMode && themeName === 'light' && (
           <LinearGradient
             colors={['#C5B8F8BB', '#E6E1F900']}
             style={styles.linearGradient}
@@ -164,7 +166,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             styles.modalBackground,
             {
               height: '100%',
-              zIndex: 1,
+              zIndex: -1,
             },
           ]}
           onPress={handleClose}
