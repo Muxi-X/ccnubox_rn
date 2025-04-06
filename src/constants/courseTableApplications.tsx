@@ -67,14 +67,14 @@ export const tooltipActions: Action[] = [
     text: <TextNode text="添加考试安排" />,
   },
   {
-    key: 'changeWeek',
+    key: 'screenShot',
     icon: (
       <Image
         style={styles.tooltipImage}
         source={require('@/assets/images/change-week.png')}
       />
     ),
-    text: <TextNode text="切换当前周" />,
+    text: <TextNode text="课表截图" />,
   },
   {
     key: 'changeYear',

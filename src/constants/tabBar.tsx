@@ -13,6 +13,7 @@ import { commonColors, commonStyles } from '@/styles/common';
 import { tooltipActions } from './courseTableApplications';
 
 import { SinglePageType } from '@/types/tabBarTypes';
+import globalEventBus from '@/utils/eventBus';
 
 const ScheduleHeader: React.FC = () => {
   // const [showWeekPicker, setShowWeekPicker] = React.useState(false);
@@ -145,6 +146,9 @@ export const tabConfig: SinglePageType[] = [
             actions={tooltipActions}
             placement="bottom-start"
             onAction={node => {
+              if (node.key === 'screenShot') {
+                globalEventBus.emit('SaveImageShot');
+              }
               if ((node.key as string)[0] === '/') {
                 router.navigate(node.key as Href);
               }
