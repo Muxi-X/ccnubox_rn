@@ -53,19 +53,6 @@ const Timetable: React.FC<CourseTableProps> = ({
   }
   const onSaveImageAsync = async () => {
     try {
-      // const localUri = await captureRef(imageRef, {
-      //   height: 1200,
-      //   quality: 1,
-      // });
-
-      // await MediaLibrary.saveToLibraryAsync(localUri);
-      // if (localUri) {
-      //   Modal.show({
-      //     title: '截图成功',
-      //     mode: 'middle',
-      //   });
-      // }
-
       const snapshot = await makeImageFromView(imageRef);
       if (!snapshot) {
         Modal.show({
