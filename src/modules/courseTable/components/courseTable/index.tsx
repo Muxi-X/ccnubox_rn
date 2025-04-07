@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { makeImageFromView } from '@shopify/react-native-skia';
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
   memo,
@@ -8,7 +10,6 @@ import React, {
   useState,
 } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { captureRef } from 'react-native-view-shot';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -52,20 +53,45 @@ const Timetable: React.FC<CourseTableProps> = ({
   }
   const onSaveImageAsync = async () => {
     try {
-      const localUri = await captureRef(imageRef, {
-        height: 1200,
-        quality: 1,
+      // const localUri = await captureRef(imageRef, {
+      //   height: 1200,
+      //   quality: 1,
+      // });
+
+      // await MediaLibrary.saveToLibraryAsync(localUri);
+      // if (localUri) {
+      //   Modal.show({
+      //     title: '截图成功',
+      //     mode: 'middle',
+      //   });
+      // }
+
+      const snapshot = await makeImageFromView(imageRef);
+      if (!snapshot) {
+        Modal.show({
+          title: '截图失败',
+          mode: 'middle',
+        });
+      }
+      const data = await snapshot?.encodeToBase64();
+      const uri = `data:image/png;base64,${data}`;
+
+      const result = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 1,
+        format: ImageManipulator.SaveFormat.PNG,
+        base64: false,
       });
 
-      await MediaLibrary.saveToLibraryAsync(localUri);
-      if (localUri) {
+      if (result && result.uri) {
+        const assets = await MediaLibrary.createAssetAsync(result.uri);
+        await MediaLibrary.saveToLibraryAsync(assets.uri);
         Modal.show({
           title: '截图成功',
           mode: 'middle',
         });
       }
     } catch (e) {
-      Modal.show({ title: `${e}` });
+      Modal.show({ title: `截图失败：${e}` });
       console.log(e);
     }
   };
