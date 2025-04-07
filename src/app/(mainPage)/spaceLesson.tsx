@@ -29,7 +29,6 @@ export default function SpaceLesson() {
           placeholderTextColor="#75757B"
         />
       </View>
-      {/* <ItemList buttonText="添加" /> */}
     </View>
   );
 }
