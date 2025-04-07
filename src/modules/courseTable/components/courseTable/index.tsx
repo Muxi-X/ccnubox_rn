@@ -53,7 +53,7 @@ const Timetable: React.FC<CourseTableProps> = ({
   const onSaveImageAsync = async () => {
     try {
       const localUri = await captureRef(imageRef, {
-        height: 1400,
+        height: 1200,
         quality: 1,
       });
 
@@ -74,7 +74,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     globalEventBus.on('SaveImageShot', onSaveImageAsync);
 
     return () => {
-      //  globalEventBus.off('SaveImageShot', onSaveImageAsync);
+      globalEventBus.off('SaveImageShot', onSaveImageAsync);
     };
   }, []);
   // 内容部分
@@ -137,7 +137,13 @@ const Timetable: React.FC<CourseTableProps> = ({
       }
       return (
         <View
-          style={styles.courseWrapperStyle}
+          style={[
+            styles.courseWrapperStyle,
+            //不设置截图会截出来透明的
+            {
+              backgroundColor: currentStyle?.background_style?.backgroundColor,
+            },
+          ]}
           ref={imageRef}
           collapsable={false}
         >
