@@ -16,10 +16,9 @@ const CourseItem: React.FC<CourseTransferType> = props => {
       <View
         style={[
           {
-            paddingTop: timeSpan === 1 ? 0 : 10,
+            paddingTop: timeSpan === 1 ? 5 : 10,
             paddingBottom: 10,
-            paddingLeft: 10,
-            paddingRight: 6,
+            alignItems: 'center',
             backgroundColor: isThisWeek
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
