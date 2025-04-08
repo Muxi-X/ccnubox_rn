@@ -5,6 +5,8 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Image from '@/components/image';
 import Picker from '@/components/picker';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { percent2px } from '@/utils';
 
 interface FormItem {
@@ -48,6 +50,7 @@ export const ManualAdd = (props: AddComponentProps) => {
     },
   ];
   const { buttonText } = props;
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <>
       <View style={styles.addContainer}>
@@ -67,7 +70,12 @@ export const ManualAdd = (props: AddComponentProps) => {
                 <Picker>
                   <View style={{ width: percent2px(70) }}>
                     <View>
-                      <Text style={{ fontSize: 16, height: 20 }}>
+                      <Text
+                        style={[
+                          { fontSize: 16, height: 20 },
+                          currentStyle?.text_style,
+                        ]}
+                      >
                         {item.title}
                       </Text>
                     </View>
