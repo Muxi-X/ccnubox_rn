@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 interface Prop {
   name: string;
   teacher: string;
@@ -40,6 +42,7 @@ const ItemListItem = (props: Prop) => {
   const { name, teacher, score, classroom, week, time, index, buttonText } =
     props;
   const icon = require('@/assets/images/course.png');
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <TouchableOpacity onPress={() => {}} key={index} style={styles.card}>
       <View style={styles.icon}>
@@ -55,17 +58,27 @@ const ItemListItem = (props: Prop) => {
         >
           <View>
             <Text
-              style={{
-                fontSize: 16,
-                fontWeight: 500,
-                paddingRight: 15,
-              }}
+              style={[
+                {
+                  fontSize: 16,
+                  fontWeight: 500,
+                  paddingRight: 15,
+                },
+                currentStyle?.text_style,
+              ]}
             >
               {name}
             </Text>
           </View>
           <View>
-            <Text style={{ fontSize: 16, fontWeight: 500 }}>{teacher}</Text>
+            <Text
+              style={[
+                { fontSize: 16, fontWeight: 500 },
+                currentStyle?.text_style,
+              ]}
+            >
+              {teacher}
+            </Text>
           </View>
         </View>
         <View
