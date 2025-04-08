@@ -70,8 +70,10 @@ const Timetable: React.FC<CourseTableProps> = ({
       });
 
       if (result && result.uri) {
-        const assets = await MediaLibrary.createAssetAsync(result.uri);
-        await MediaLibrary.saveToLibraryAsync(assets.uri);
+        // 这里创建资源的时候就会保存到相册……
+        await MediaLibrary.createAssetAsync(result.uri);
+        // 这里如果再保存就会再多一张……傻逼 expo
+        // await MediaLibrary.saveToLibraryAsync(assets.uri);
         Modal.show({
           title: '截图成功',
           mode: 'middle',
@@ -87,7 +89,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     globalEventBus.on('SaveImageShot', onSaveImageAsync);
 
     return () => {
-      globalEventBus.off('SaveImageShot', onSaveImageAsync);
+      // globalEventBus.off('SaveImageShot', onSaveImageAsync);
     };
   }, []);
   // 内容部分
