@@ -9,13 +9,10 @@ interface Props {
   navText: string[];
 }
 
-export default function Nabvar({ setPattern, pattern, navText }: Props) {
+export default function TabBar({ setPattern, pattern, navText }: Props) {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
-  // const currentComponents = useThemeBasedComponents(
-  //   state => state.currentComponents
-  // );
 
   return (
     <View style={[styles.navbar]}>
