@@ -88,7 +88,7 @@ export const mainPageApplications: MainPageGridDataType[] = [
       android: require('../assets/images/icons/android/date.png'),
     }),
     key: 'grid-8',
-    href: '/date' as Href,
+    href: '/clendar' as Href,
   },
   {
     title: '常用网站',
