@@ -1,6 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import * as React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+
 import ItemList from './ItemList';
 
 export const SearchAdd: React.FC = () => {
