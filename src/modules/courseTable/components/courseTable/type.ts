@@ -29,6 +29,9 @@ export interface CourseTransferType {
   colIndex: number;
   date: string;
   isThisWeek: boolean;
+  week_duration: string;
+  credit: number;
+  class_when: string;
 }
 
 export interface WeekSelectorProps {
