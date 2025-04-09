@@ -18,11 +18,13 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           {
             paddingTop: timeSpan === 1 ? 5 : 10,
             paddingBottom: 10,
+            justifyContent:"center",
             alignItems: 'center',
             backgroundColor: isThisWeek
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
             borderRadius: 5,
+            minHeight: 40,
           },
         ]}
       >
@@ -64,7 +66,7 @@ export const styles = StyleSheet.create({
   cellText: {
     fontSize: 11,
     color: 'white',
-    textAlign: 'left',
+   textAlign: 'center',
   },
 });
 
