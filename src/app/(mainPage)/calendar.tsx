@@ -1,6 +1,6 @@
 import * as FileSystem from 'expo-file-system';
-import { useCallback, useEffect, useState } from 'react';
-import { Platform, StyleSheet, Text } from 'react-native';
+import * as React from 'react';
+import { Dimensions, Platform, StyleSheet, Text } from 'react-native';
 import PdfRendererView from 'react-native-pdf-renderer';
 import { WebView } from 'react-native-webview';
 
@@ -14,18 +14,25 @@ export default function Calendar() {
         style={styles.container}
         source={{
           uri: pdfUrl,
+          cache: true,
         }}
+        scalesPageToFit={true}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        injectedJavaScript={`
+          document.body.style.overflowX = 'hidden';
+        `}
       />
     ),
     android: <AndroidCalendar />,
   });
 }
 
-const AndroidCalendar = () => {
-  const [downloading, setDownloading] = useState(false);
-  const [source, setSource] = useState<string>();
+const AndroidCalendar: React.FC = () => {
+  const [downloading, setDownloading] = React.useState<boolean>(false);
+  const [source, setSource] = React.useState<string>();
 
-  const downloadWithExpoFileSystem = useCallback(async () => {
+  const downloadWithExpoFileSystem = React.useCallback(async () => {
     try {
       setDownloading(true);
       /**
@@ -46,7 +53,7 @@ const AndroidCalendar = () => {
     }
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     downloadWithExpoFileSystem();
     // downloadWithBlobUtil();
   }, [downloadWithExpoFileSystem]);
@@ -61,5 +68,7 @@ const AndroidCalendar = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
 });
