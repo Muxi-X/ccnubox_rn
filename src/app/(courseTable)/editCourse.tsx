@@ -1,6 +1,6 @@
 import { View } from '@ant-design/react-native';
 
-import { AddComponent } from './component/AddComponent';
+import { ManualAdd } from './components/ManualAdd';
 
 export default function EditCourse() {
   // const route = useRouter(); // 获取 route 参数
@@ -12,7 +12,7 @@ export default function EditCourse() {
         margin: 20,
       }}
     >
-      <AddComponent pageText="course" buttonText="保存编辑" />
+      <ManualAdd pageText="course" buttonText="保存编辑" />
     </View>
   );
 }

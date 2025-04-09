@@ -21,3 +21,6 @@ else
     echo -e "\r\033[31m❌ Prettier格式化失败\033[0m"
     exit 1
 fi
+
+printf "正在执行 git add... "
+git add .

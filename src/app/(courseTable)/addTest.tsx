@@ -1,9 +1,10 @@
 import { View } from '@ant-design/react-native';
 import React, { useState } from 'react';
 
-import { AddComponent } from './component/AddComponent';
-import ItemList from './component/ItemList';
-import Nabvar from './component/Navbar';
+import TabBar from '@/components/tabbar';
+
+import ItemList from './components/ItemList';
+import { ManualAdd } from './components/ManualAdd';
 
 export default function AddTest() {
   const [pattern, setPattern] = useState<number>(0);
@@ -21,11 +22,11 @@ export default function AddTest() {
   // const courseData = route.courseData;
   return (
     <>
-      <Nabvar
+      <TabBar
         navText={['设置考试信息', '自定义考试信息']}
         pattern={pattern}
         setPattern={setPattern}
-      ></Nabvar>
+      ></TabBar>
       <View
         style={{
           margin: 20,
@@ -34,7 +35,7 @@ export default function AddTest() {
         {pattern === 0 ? (
           <ItemList list={list} buttonText="设置" />
         ) : (
-          <AddComponent buttonText="添加" pageText="test" />
+          <ManualAdd buttonText="添加" pageText="test" />
         )}
       </View>
     </>

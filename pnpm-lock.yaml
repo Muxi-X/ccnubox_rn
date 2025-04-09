@@ -17,12 +17,18 @@ dependencies:
   '@expo/vector-icons':
     specifier: ^14.0.4
     version: 14.1.0(expo-font@12.0.10)(react-native@0.74.5)(react@18.2.0)
+  '@react-native-async-storage/async-storage':
+    specifier: 1.23.1
+    version: 1.23.1(react-native@0.74.5)
   '@react-native-community/cli-platform-android':
     specifier: ^14.1.1
     version: 14.1.2
   '@react-navigation/native':
     specifier: ^6.1.18
     version: 6.1.18(react-native@0.74.5)(react@18.2.0)
+  '@shopify/react-native-skia':
+    specifier: ^1.12.3
+    version: 1.12.3(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0)
   axios:
     specifier: ^1.7.9
     version: 1.8.4
@@ -50,6 +56,9 @@ dependencies:
   expo-haptics:
     specifier: ~13.0.1
     version: 13.0.1(expo@51.0.39)
+  expo-image-manipulator:
+    specifier: ~12.0.5
+    version: 12.0.5(expo@51.0.39)
   expo-insights:
     specifier: ~0.7.0
     version: 0.7.0(expo@51.0.39)
@@ -59,6 +68,9 @@ dependencies:
   expo-linking:
     specifier: ~6.3.1
     version: 6.3.1(expo@51.0.39)
+  expo-media-library:
+    specifier: ^16.0.5
+    version: 16.0.5(expo@51.0.39)
   expo-native-wechat:
     specifier: ^0.1.8
     version: 0.1.8(expo@51.0.39)(react-native@0.74.5)(react@18.2.0)
@@ -110,6 +122,9 @@ dependencies:
   react-native-gesture-handler:
     specifier: ~2.16.2
     version: 2.16.2(react-native@0.74.5)(react@18.2.0)
+  react-native-pdf-renderer:
+    specifier: ^1.6.0
+    version: 1.6.0(react-native@0.74.5)
   react-native-reanimated:
     specifier: ~3.10.1
     version: 3.10.1(@babel/core@7.26.10)(react-native@0.74.5)(react@18.2.0)
@@ -1997,7 +2012,7 @@ packages:
 
   /@expo/bunyan@4.0.1:
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {node: '>=0.10.0'}
+    engines: {'0': node >=0.10.0}
     dependencies:
       uuid: 8.3.2
     dev: false
@@ -3295,6 +3310,15 @@ packages:
       '@babel/runtime': 7.27.0
     dev: false
 
+  /@react-native-async-storage/async-storage@1.23.1(react-native@0.74.5):
+    resolution: {integrity: sha512-Qd2kQ3yi6Y3+AcUlrHxSLlnBvpdCEMVGFlVBneVOjaFaPU61g1huc38g339ysXspwY1QZA2aNhrk/KlHGO+ewA==}
+    peerDependencies:
+      react-native: ^0.0.0-0 || >=0.60 <1.0
+    dependencies:
+      merge-options: 3.0.4
+      react-native: 0.74.5(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(@types/react@18.2.79)(react@18.2.0)
+    dev: false
+
   /@react-native-community/cli-clean@13.6.9:
     resolution: {integrity: sha512-7Dj5+4p9JggxuVNOjPbduZBAP1SUgNhLKVw5noBUzT/3ZpUZkDM+RCSwyoyg8xKWoE4OrdUAXwAFlMcFDPKykA==}
     dependencies:
@@ -3888,6 +3912,26 @@ packages:
     dependencies:
       component-type: 1.2.2
       join-component: 1.1.0
+    dev: false
+
+  /@shopify/react-native-skia@1.12.3(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0):
+    resolution: {integrity: sha512-QTJ/pliXWzFgrafM0r8QJ8+W8WgRkvBfcVmdKX5BfAIEujm0uGKamu1h8w2/fY6nIfnl7wLaMINhTWUPPBd+cw==}
+    hasBin: true
+    peerDependencies:
+      react: '>=18.0 <19.0.0'
+      react-native: '>=0.64 <0.78.0'
+      react-native-reanimated: '>=2.0.0'
+    peerDependenciesMeta:
+      react-native:
+        optional: true
+      react-native-reanimated:
+        optional: true
+    dependencies:
+      canvaskit-wasm: 0.40.0
+      react: 18.2.0
+      react-native: 0.74.5(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(@types/react@18.2.79)(react@18.2.0)
+      react-native-reanimated: 3.10.1(@babel/core@7.26.10)(react-native@0.74.5)(react@18.2.0)
+      react-reconciler: 0.27.0(react@18.2.0)
     dev: false
 
   /@sideway/address@4.1.5:
@@ -4630,6 +4674,10 @@ packages:
 
   /@web3-storage/multipart-parser@1.0.0:
     resolution: {integrity: sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==}
+    dev: false
+
+  /@webgpu/types@0.1.21:
+    resolution: {integrity: sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==}
     dev: false
 
   /@wojtekmaj/enzyme-adapter-react-17@0.6.7(enzyme@3.11.0)(react-dom@18.2.0)(react@18.2.0):
@@ -5649,6 +5697,12 @@ packages:
 
   /caniuse-lite@1.0.30001712:
     resolution: {integrity: sha512-MBqPpGYYdQ7/hfKiet9SCI+nmN5/hp4ZzveOJubl5DTAMa5oggjAuoi0Z4onBpKPFI2ePGnQuQIzF3VxDjDJig==}
+
+  /canvaskit-wasm@0.40.0:
+    resolution: {integrity: sha512-Od2o+ZmoEw9PBdN/yCGvzfu0WVqlufBPEWNG452wY7E9aT8RBE+ChpZF526doOlg7zumO4iCS+RAeht4P0Gbpw==}
+    dependencies:
+      '@webgpu/types': 0.1.21
+    dev: false
 
   /capture-exit@2.0.0:
     resolution: {integrity: sha512-PiT/hQmTonHhl/HFGN+Lx3JJUznrVYJ3+AQsnthneZbvW7x+f08Tk7yLJTLEOUvBTbduLeeBkxEaYXUOUrRq6g==}
@@ -7601,6 +7655,23 @@ packages:
       expo: 51.0.39(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(react-native@0.74.5)(react@18.2.0)
     dev: false
 
+  /expo-image-loader@4.7.0(expo@51.0.39):
+    resolution: {integrity: sha512-cx+MxxsAMGl9AiWnQUzrkJMJH4eNOGlu7XkLGnAXSJrRoIiciGaKqzeaD326IyCTV+Z1fXvIliSgNW+DscvD8g==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 51.0.39(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(react-native@0.74.5)(react@18.2.0)
+    dev: false
+
+  /expo-image-manipulator@12.0.5(expo@51.0.39):
+    resolution: {integrity: sha512-zJ8yINjckYw/yfoSuICt4yJ9xr112+W9e5QVXwK3nCAHr7sv45RQ5sxte0qppf594TPl+UoV6Tjim7WpoKipRQ==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 51.0.39(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(react-native@0.74.5)(react@18.2.0)
+      expo-image-loader: 4.7.0(expo@51.0.39)
+    dev: false
+
   /expo-insights@0.7.0(expo@51.0.39):
     resolution: {integrity: sha512-GC8WpaynF8QB+GoOfq1kBNeD1UICHvN2ek3KMmIIs1Iho1y3fwwwgLDeGCpOsVKQsNaX6viDVPCedj4V2SD4lA==}
     peerDependencies:
@@ -7650,6 +7721,14 @@ packages:
       expo-json-utils: 0.13.1
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /expo-media-library@16.0.5(expo@51.0.39):
+    resolution: {integrity: sha512-O9RUqBWgJVRF0mO6EiLSBFyfb5wR1/ZqovbT43V0TAo5sgcjrHRs+0NID/U6BWDRuiFeX2AU516JgNDutNUFSw==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 51.0.39(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(react-native@0.74.5)(react@18.2.0)
     dev: false
 
   /expo-module-scripts@2.1.1(@babel/core@7.26.10)(eslint@8.57.1)(jest@29.7.0)(prettier@3.5.3)(react-dom@18.2.0)(react-test-renderer@18.2.0)(react@18.2.0):
@@ -9140,6 +9219,11 @@ packages:
   /is-path-inside@3.0.3:
     resolution: {integrity: sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==}
     engines: {node: '>=8'}
+
+  /is-plain-obj@2.1.0:
+    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
+    engines: {node: '>=8'}
+    dev: false
 
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
@@ -10926,6 +11010,13 @@ packages:
     engines: {node: '>=16.10'}
     dev: true
 
+  /merge-options@3.0.4:
+    resolution: {integrity: sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      is-plain-obj: 2.1.0
+    dev: false
+
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
 
@@ -12408,6 +12499,14 @@ packages:
       react-native: 0.74.5(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(@types/react@18.2.79)(react@18.2.0)
     dev: false
 
+  /react-native-pdf-renderer@1.6.0(react-native@0.74.5):
+    resolution: {integrity: sha512-UWYcP3XE60MSyN9FlTKWRZfht8w2EyXEMVv9aD8wCEXPc67nxzxiSmbUog2jIgh8GApiKNCK1eCgZZiFme2AiQ==}
+    peerDependencies:
+      react-native: '>=0.60'
+    dependencies:
+      react-native: 0.74.5(@babel/core@7.26.10)(@babel/preset-env@7.26.9)(@types/react@18.2.79)(react@18.2.0)
+    dev: false
+
   /react-native-reanimated-carousel@3.5.1(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0):
     resolution: {integrity: sha512-9BBQV6JAYSQm2lV7MFtT4mzapXmW4IZO6s38gfiJL84Jg23ivGB1UykcNQauKgtHyhtW2NuZJzItb1s42lM+hA==}
     peerDependencies:
@@ -12555,6 +12654,17 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+
+  /react-reconciler@0.27.0(react@18.2.0):
+    resolution: {integrity: sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.2.0
+      scheduler: 0.21.0
+    dev: false
 
   /react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
@@ -13055,6 +13165,12 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
     dev: true
+
+  /scheduler@0.21.0:
+    resolution: {integrity: sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /scheduler@0.22.0:
     resolution: {integrity: sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==}
