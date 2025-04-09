@@ -13,7 +13,7 @@ const ScoreInquiry = () => {
     <View
       style={[
         [
-          { flex: 1, paddingTop: 40, backgroundColor: '#FFF' },
+          { flex: 1, paddingTop: 10, backgroundColor: '#FFF' },
           currentStyle?.background_style,
         ],
       ]}
