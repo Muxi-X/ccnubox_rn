@@ -72,33 +72,33 @@ export const mainPageApplications: MainPageGridDataType[] = [
   },
   {
     title: '部门信息',
-    name: 'information',
+    name: 'departments',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/information.png'),
       android: require('../assets/images/icons/android/information.png'),
     }),
     key: 'grid-7',
-    href: '/information' as Href,
+    href: '/departments' as Href,
   },
   {
     title: '校历',
-    name: 'date',
+    name: 'calendar',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/date.png'),
       android: require('../assets/images/icons/android/date.png'),
     }),
     key: 'grid-8',
-    href: '/date' as Href,
+    href: '/calendar' as Href,
   },
   {
     title: '常用网站',
-    name: 'website',
+    name: 'websites',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/web.png'),
       android: require('../assets/images/icons/android/web.png'),
     }),
     key: 'grid-9',
-    href: '/website' as Href,
+    href: '/websites' as Href,
   },
   {
     title: '木犀课栈',

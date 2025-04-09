@@ -124,7 +124,7 @@ const CourseTree = () => {
         { backgroundColor: currentStyle?.background_style?.backgroundColor },
       ]}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, currentStyle?.background_style]}>
         <View style={[styles.node, styles.titleBorder]}>
           <View style={styles.nodeLeft}>
             <Image
@@ -141,7 +141,7 @@ const CourseTree = () => {
               全部已修学分
             </Text>
           </View>
-          <View style={[styles.nodeRight, currentStyle?.background_style]}>
+          <View style={styles.nodeRight}>
             <Text
               style={[
                 styles.nodeScore,

@@ -1,4 +1,14 @@
-import React, { memo, useDeferredValue, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { makeImageFromView } from '@shopify/react-native-skia';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as MediaLibrary from 'expo-media-library';
+import React, {
+  memo,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Divider from '@/components/divider';
@@ -8,6 +18,7 @@ import ThemeChangeText from '@/components/text';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
+import useWeekStore from '@/store/weekStore';
 
 import {
   COURSE_HEADER_HEIGHT,
@@ -21,6 +32,7 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -34,6 +46,52 @@ const Timetable: React.FC<CourseTableProps> = ({
   const { currentStyle, themeName } = useVisualScheme(
     ({ currentStyle, themeName }) => ({ currentStyle, themeName })
   );
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+  const imageRef = useRef<View>(null);
+  if (status === null) {
+    requestPermission();
+  }
+  const onSaveImageAsync = async () => {
+    try {
+      const snapshot = await makeImageFromView(imageRef);
+      if (!snapshot) {
+        Modal.show({
+          title: '截图失败',
+          mode: 'middle',
+        });
+      }
+      const data = await snapshot?.encodeToBase64();
+      const uri = `data:image/png;base64,${data}`;
+
+      const result = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 1,
+        format: ImageManipulator.SaveFormat.PNG,
+        base64: false,
+      });
+
+      if (result && result.uri) {
+        // 这里创建资源的时候就会保存到相册……
+        await MediaLibrary.createAssetAsync(result.uri);
+        // 这里如果再保存就会再多一张……傻逼 expo
+        // await MediaLibrary.saveToLibraryAsync(assets.uri);
+        Modal.show({
+          title: '截图成功',
+          mode: 'middle',
+        });
+      }
+    } catch (e) {
+      Modal.show({ title: `截图失败：${e}` });
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    globalEventBus.on('SaveImageShot', onSaveImageAsync);
+
+    return () => {
+      // globalEventBus.off('SaveImageShot', onSaveImageAsync);
+    };
+  }, []);
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -93,7 +151,17 @@ const Timetable: React.FC<CourseTableProps> = ({
         }
       }
       return (
-        <View style={styles.courseWrapperStyle}>
+        <View
+          style={[
+            styles.courseWrapperStyle,
+            //不设置截图会截出来透明的
+            {
+              backgroundColor: currentStyle?.background_style?.backgroundColor,
+            },
+          ]}
+          ref={imageRef}
+          collapsable={false}
+        >
           {timetableMatrix?.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map((subject, colIndex) => (
@@ -255,6 +323,45 @@ export const Content: React.FC<CourseTransferType> = props => {
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { currentWeek } = useWeekStore();
+  const [dates, setDates] = useState<string[]>([]);
+
+  useEffect(() => {
+    const calculateDates = async () => {
+      try {
+        // 从缓存中获取开学时间
+        const schoolTime = await AsyncStorage.getItem('school_time');
+        if (!schoolTime) return;
+
+        // 计算开学日期
+        const startTimestamp = Number(schoolTime) * 1000;
+        const startDate = new Date(startTimestamp);
+
+        // 计算当前周的第一天（周一）
+        // 开学日期是第1周的第1天，所以需要计算当前周的第1天
+        const daysToAdd = (currentWeek - 1) * 7;
+        const currentWeekStartDate = new Date(startDate);
+        currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
+
+        // 计算当前周的每一天
+        const weekDates: string[] = [];
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(currentWeekStartDate);
+          date.setDate(currentWeekStartDate.getDate() + i);
+          const month = date.getMonth() + 1; // 月份从0开始
+          const day = date.getDate();
+          weekDates.push(`${month}/${day}`);
+        }
+
+        setDates(weekDates);
+      } catch (error) {
+        console.error('计算日期失败:', error);
+      }
+    };
+
+    calculateDates();
+  }, [currentWeek]);
+
   return (
     <View style={styles.header}>
       <View style={styles.headerRow}>
@@ -268,7 +375,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
             ]}
           >
             <ThemeChangeText style={styles.headerText}>{day}</ThemeChangeText>
-            <Text style={styles.dayText}>09/0{index + 1}</Text>
+            <Text style={styles.dayText}>{dates[index] || ''}</Text>
           </View>
         ))}
       </View>

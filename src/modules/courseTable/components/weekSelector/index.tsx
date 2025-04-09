@@ -4,7 +4,8 @@ import { Pressable, StyleSheet } from 'react-native';
 import ThemeChangeText from '@/components/text';
 import View from '@/components/view';
 
-//import useVisualScheme from '@/store/visualScheme';
+import useVisualScheme from '@/store/visualScheme';
+
 import { WeekSelectorProps } from '../courseTable/type';
 
 const WeekSelector: FC<WeekSelectorProps> = ({
@@ -12,13 +13,21 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   showWeekPicker,
   onWeekSelect,
 }) => {
-  // const currentStyle = useVisualScheme(state => state.currentStyle);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
     <>
       {/* Week selector floating window */}
       {showWeekPicker && (
-        <View style={styles.pickerContainer}>
+        <View
+          style={[
+            styles.pickerContainer,
+            {
+              backgroundColor:
+                currentStyle?.schedule_background_style?.backgroundColor,
+            },
+          ]}
+        >
           <View style={styles.weekGrid}>
             {[...Array(20)].map((_, i) => (
               <Pressable
@@ -28,7 +37,10 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   styles.weekButton,
                   {
                     backgroundColor:
-                      currentWeek === i + 1 ? '#7878F8' : '#F0F0F0',
+                      currentWeek === i + 1
+                        ? '#7878F8'
+                        : currentStyle?.schedule_background_style
+                            ?.backgroundColor,
                   },
                 ]}
               >
@@ -36,7 +48,10 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   style={[
                     styles.weekButtonText,
                     {
-                      color: currentWeek === i + 1 ? '#FFFFFF' : '#000000',
+                      color:
+                        currentWeek === i + 1
+                          ? '#FFFFFF'
+                          : currentStyle?.schedule_text_style?.color,
                     },
                   ]}
                 >
@@ -55,10 +70,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     //  ...StyleSheet.absoluteFillObject,
     position: 'absolute',
-    // top: 45, // 确保它不会挡住头部
-    // left: -160, // 让它从屏幕左侧开始
-    width: '100%', // 让它宽度覆盖整个屏幕
-    backgroundColor: '#FFFFFF', // 设置背景颜色，避免透明
+    width: '100%',
     borderRadius: 8,
     padding: 10,
     shadowColor: '#000',

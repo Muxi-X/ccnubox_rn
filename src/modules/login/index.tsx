@@ -100,7 +100,7 @@ const LoginPage: FC = () => {
           setUserInfo(prev => ({ ...prev, password: text.toString() }))
         }
         blurOnSubmit={false}
-        type="password"
+        type={isPasswordShow ? 'text' : 'password'}
         suffix={
           <Icon
             name={isPasswordShow ? 'eye' : 'eye-invisible'}

@@ -16,18 +16,19 @@ const CourseItem: React.FC<CourseTransferType> = props => {
       <View
         style={[
           {
-            paddingTop: timeSpan === 1 ? 0 : 10,
+            paddingTop: timeSpan === 1 ? 5 : 10,
             paddingBottom: 10,
-            paddingLeft: 10,
-            paddingRight: 6,
+            justifyContent:"center",
+            alignItems: 'center',
             backgroundColor: isThisWeek
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
             borderRadius: 5,
+            minHeight: 40,
           },
         ]}
       >
-        <Text style={styles.cellText}>{courseName + timeSpan + '1' || ''}</Text>
+        <Text style={styles.cellText}>{courseName}</Text>
       </View>
       <View
         style={[
@@ -65,7 +66,7 @@ export const styles = StyleSheet.create({
   cellText: {
     fontSize: 11,
     color: 'white',
-    textAlign: 'left',
+   textAlign: 'center',
   },
 });
 

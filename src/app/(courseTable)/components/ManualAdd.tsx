@@ -5,6 +5,8 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Image from '@/components/image';
 import Picker from '@/components/picker';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { percent2px } from '@/utils';
 
 interface FormItem {
@@ -19,7 +21,7 @@ interface AddComponentProps {
   pageText: string;
 }
 
-export const AddComponent = (props: AddComponentProps) => {
+export const ManualAdd = (props: AddComponentProps) => {
   const text = props.pageText === 'test' ? '考试' : '上课';
   const items: FormItem[] = [
     {
@@ -48,27 +50,17 @@ export const AddComponent = (props: AddComponentProps) => {
     },
   ];
   const { buttonText } = props;
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <>
-      <View>
+      <View style={styles.addContainer}>
         <Input
           inputStyle={styles.addText}
           allowClear
-          placeholder="请输入课程名称"
+          placeholder={`请输入${props.pageText === 'test' ? '考试' : '课程'}名称`}
           placeholderTextColor="#75757B"
         />
         <WhiteSpace size="lg" />
-        {/* <List>
-          {items.map((item, index) => (
-            <List.Item
-              key={index}
-              arrow={item.type === 'picker' ? 'horizontal' : undefined}
-              thumb={}
-              style={styles.card}
-            >
-            </List.Item>
-          ))}
-        </List> */}
         <FlatList
           data={items}
           renderItem={({ item }) => (
@@ -78,7 +70,12 @@ export const AddComponent = (props: AddComponentProps) => {
                 <Picker>
                   <View style={{ width: percent2px(70) }}>
                     <View>
-                      <Text style={{ fontSize: 16, height: 20 }}>
+                      <Text
+                        style={[
+                          { fontSize: 16, height: 20 },
+                          currentStyle?.text_style,
+                        ]}
+                      >
                         {item.title}
                       </Text>
                     </View>
