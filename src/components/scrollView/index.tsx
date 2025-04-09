@@ -12,14 +12,14 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withDecay,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
 
 import { commonColors } from '@/styles/common';
+
+const REFRESH_THRESHOLD = 100; // 触发刷新的阈值
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const {
@@ -33,6 +33,7 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   } = props;
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  const prevTranslateX = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
   // FIX_ME 此处为两个 sticky 交界处，会覆盖，很丑，目前方式为计算重叠块大小，用一个块覆盖
@@ -40,9 +41,11 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const cornerHeight = useSharedValue(0);
   // 下拉刷新背景高度
   const backHeight = useSharedValue(0);
-  const overScrollHeight = useSharedValue(0);
   const isAtTop = useSharedValue(false);
   const isAtBottom = useSharedValue(false);
+  // 当前 touchEvent 是否满足触发 refresh 的条件
+  // 如果横向滑动太大,则不触发 refresh, 重新 touch 以触发下一次
+  const shouldRefresh = useSharedValue(true);
   // 实际内容大小
   const [containerSize, setContainerSize] = useState<LayoutRectangle>({
     x: 0,
@@ -57,10 +60,9 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
     width: 0,
     height: 0,
   });
-  // 下拉刷新文本状态
-  const [refreshText, setRefreshText] = useState('下拉刷新课表');
-  // 添加一个标记来判断是否已经在顶部
-  const hasReachedTop = useSharedValue(false);
+  // 使用共享值来控制文字状态，减少重渲染
+  const refreshTextState = useSharedValue('pull'); // 'pull' | 'release' | 'refreshing'
+  const isTriggered = useSharedValue(false); // 是否已触发刷新
 
   useEffect(() => {
     isAtTop.value && onReachTopEnd();
@@ -71,22 +73,27 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
   const onReachTopEnd = () => {
     if (!onRefresh) return;
 
-    const handleHideRefreshing = () => {
-      backHeight.value = withTiming(0);
-      isAtTop.value = false; // 重置状态
-      runOnJS(setRefreshText)('下拉刷新课表');
-    };
-
-    const success = () => {
-      handleHideRefreshing();
-    };
-
-    const fail = () => {
-      handleHideRefreshing();
-      Toast.fail('刷新失败');
-    };
-
-    onRefresh(success, fail);
+    onRefresh(
+      () => {
+        // 请求成功后等待1秒再重置
+        setTimeout(() => {
+          backHeight.value = withTiming(0, {
+            duration: 300,
+          });
+          refreshTextState.value = 'pull';
+        }, 1000);
+      },
+      () => {
+        // 请求失败后等待1秒再重置
+        setTimeout(() => {
+          backHeight.value = withTiming(0, {
+            duration: 300,
+          });
+          refreshTextState.value = 'pull';
+          runOnJS(Toast.fail)('刷新失败');
+        }, 1000);
+      }
+    );
   };
 
   const onReachBottomEnd = () => {
@@ -99,30 +106,29 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
       startY.value = translateY.value;
     })
     .onUpdate(event => {
-      // 只有已经在顶部的情况下才允许下拉刷新
-      if (translateY.value === 0 && event.translationY > 0) {
-        if (hasReachedTop.value) {
-          if (event.translationY > 60) {
-            backHeight.value = withSpring(100, {
-              damping: 15,
-              stiffness: 150,
-            });
-            runOnJS(setRefreshText)('松开即刷新');
-          } else {
-            backHeight.value = event.translationY;
-            runOnJS(setRefreshText)('下拉刷新课表');
+      'worklet';
+      if (Math.abs(event.absoluteX - prevTranslateX.value) > 60) {
+        shouldRefresh.value = false;
+      }
+      if (
+        translateY.value === 0 &&
+        event.translationY > 0 &&
+        shouldRefresh.value
+      ) {
+        if (!isTriggered.value) {
+          backHeight.value = Math.min(event.translationY, REFRESH_THRESHOLD);
+          if (event.translationY > REFRESH_THRESHOLD) {
+            isTriggered.value = true;
+            refreshTextState.value = 'release';
           }
-        } else {
-          // 第一次到达顶部，设置标记
-          hasReachedTop.value = true;
         }
       }
 
-      // 当不在顶部时重置标记
       if (translateY.value !== 0) {
-        hasReachedTop.value = false;
+        backHeight.value = 0;
       }
 
+      // 正常滚动处理
       translateX.value = Math.min(
         0,
         Math.max(
@@ -137,70 +143,20 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
           wrapperSize.height - containerSize.height
         )
       );
-      if (isAtBottom.value) {
-        overScrollHeight.value = withSpring(
-          event.translationY < 0 ? Math.min(-event.translationY, 100) : 0,
-          {
-            damping: 20,
-            stiffness: 200,
-          }
-        );
-      }
     })
     .onEnd(event => {
-      // 只有已经在顶部的情况下才触发刷新
-      if (
-        translateY.value === 0 &&
-        backHeight.value > 100 &&
-        hasReachedTop.value
-      ) {
-        isAtTop.value = true;
+      prevTranslateX.value = event.absoluteX;
+      shouldRefresh.value = true;
+      if (isTriggered.value) {
+        // 触发时保持在阈值位置，等待请求完成
+        refreshTextState.value = 'refreshing';
+        backHeight.value = withTiming(REFRESH_THRESHOLD);
+        runOnJS(onReachTopEnd)();
       } else {
+        // 如果没触发刷新，直接重置
         backHeight.value = withTiming(0);
-        isAtTop.value = false;
       }
-
-      if (Math.abs(event.velocityY) > 0) {
-        translateY.value = withDecay({
-          velocity: event.velocityY,
-          clamp: [wrapperSize.height - containerSize.height, 0],
-          deceleration: 0.292,
-          velocityFactor: 0.9,
-        });
-      }
-
-      if (Math.abs(event.velocityX) > 0) {
-        translateX.value = withDecay({
-          velocity: event.velocityX,
-          clamp: [wrapperSize.width - containerSize.width, 0],
-          deceleration: 0.992,
-          velocityFactor: 0.8,
-        });
-      }
-
-      if (isAtBottom.value && event.translationY < 0) {
-        translateY.value = withSpring(
-          wrapperSize.height - containerSize.height,
-          {
-            damping: 15,
-            stiffness: 150,
-          }
-        );
-        overScrollHeight.value = withSpring(0, {
-          damping: 20,
-          stiffness: 200,
-        });
-        isAtBottom.value = false;
-      } else if (
-        translateY.value <= -(containerSize.height - wrapperSize.height) &&
-        !isAtBottom.value
-      ) {
-        isAtBottom.value = true;
-      }
-
-      if (!isAtTop.value) {
-        runOnJS(setRefreshText)('下拉刷新课表');
-      }
+      isTriggered.value = false;
     });
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -222,26 +178,32 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
     setContainerSize(layout);
   };
 
+  // 使用普通的 Text 组件而不是 Animated.Text
+  const RefreshText = () => {
+    switch (refreshTextState.value) {
+      case 'release':
+        return '松开即可刷新';
+      case 'refreshing':
+        return '刷新中...';
+      default:
+        return '下拉刷新课表';
+    }
+  };
+
   return (
     <View style={[styles.largeWrapper, style]}>
-      {/* refresh control */}
       <Animated.View
         style={{
           height: backHeight,
           width: '100%',
-          // 解决下拉刷新时用户滚动页面溢出问题
           zIndex: 21,
           backgroundColor: commonColors.purple,
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
-        <Text
-          style={{
-            color: commonColors.white,
-          }}
-        >
-          {refreshText}
+        <Text style={{ color: commonColors.white }}>
+          <RefreshText />
         </Text>
       </Animated.View>
       {/* sticky top */}
@@ -306,16 +268,6 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
         </View>
       </Animated.View>
       {/* sticky bottom */}
-      {/* <Animated.View
-        style={{
-          width: '100%',
-          height: overScrollHeight,
-          zIndex: -20,
-          overflow: 'hidden',
-        }}
-      >
-        {stickyBottom}
-      </Animated.View> */}
     </View>
   );
 };
@@ -357,6 +309,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+  },
+  refreshText: {
+    color: commonColors.white,
   },
 });
 
