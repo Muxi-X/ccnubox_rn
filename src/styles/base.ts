@@ -25,6 +25,7 @@ const baseStyle: ThemeType = {
     },
     modal_background_style: {
       backgroundColor: black,
+      zIndex: 1,
     },
     button_style: {
       backgroundColor: purple,
