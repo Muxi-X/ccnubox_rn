@@ -166,7 +166,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             styles.modalBackground,
             {
               height: '100%',
-              zIndex: -1,
+              zIndex: 1,
             },
           ]}
           onPress={handleClose}
@@ -252,6 +252,7 @@ export const ModalBack: FC<
             height: percent2px(110, 'height'),
             // height: '100%',
             position: 'absolute',
+            display: visible ? 'flex' : 'none',
             top: 0,
           },
           style,
