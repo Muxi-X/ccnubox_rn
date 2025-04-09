@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { FC, memo, useEffect, useState } from 'react';
+import React, { FC, memo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
@@ -26,7 +26,6 @@ const IndexPage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [data, setData] =
     useState<MainPageGridDataType[]>(mainPageApplications);
-  const [loading, setLoading] = useState(true);
   const render = ({
     key,
     title,
@@ -45,10 +44,10 @@ const IndexPage: FC = () => {
     return (
       <TouchableOpacity onPress={handlePress}>
         <View style={styles.item} key={key}>
-          <Skeleton style={styles.item} loading={loading}>
+          <Skeleton style={styles.item}>
             <Image source={imageUrl}></Image>
           </Skeleton>
-          <Skeleton loading={loading}>
+          <Skeleton>
             <Text style={styles.itemText}>{title}</Text>
           </Skeleton>
         </View>
@@ -56,16 +55,10 @@ const IndexPage: FC = () => {
     );
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(!loading);
-    }, 500);
-  }, []);
-
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
       {/* carousel */}
-      <Skeleton loading={loading}>
+      <Skeleton>
         <View style={styles.banner}>
           <Carousel
             style={{ flex: 1, marginHorizontal: percent2px(2.5) }}
