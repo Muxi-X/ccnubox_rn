@@ -3,14 +3,17 @@ import { StyleSheet, View } from 'react-native';
 
 import TabBar from '@/components/tabbar';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { ManualAdd } from './components/ManualAdd';
 import { SearchAdd } from './components/SearchAdd';
 
 export default function AddCourse() {
   const [pattern, setPattern] = React.useState(0);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, currentStyle?.background_style]}>
       <TabBar
         navText={['自主添加', '搜索添加']}
         pattern={pattern}
