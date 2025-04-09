@@ -41,7 +41,7 @@
     "expo-linking": "~6.3.1",
     "expo-media-library": "^16.0.5",
     "expo-native-wechat": "^0.1.8",
-    "expo-notifications": "^0.28.19",
+    "expo-notifications": "^0.29.14",
     "expo-router": "^3.5.23",
     "expo-secure-store": "^13.0.2",
     "expo-splash-screen": "~0.27.6",
