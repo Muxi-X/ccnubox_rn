@@ -15,7 +15,13 @@ import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
 import handleOpenURL from '@/utils/handleOpenURL';
 
-import { PopularWebsite } from '@/types/shared-types';
+interface PopularWebsite {
+  description: string;
+  id: number;
+  image: string;
+  link: string;
+  name: string;
+}
 
 type ItemProps = { title: string; _url: string; link: string };
 
