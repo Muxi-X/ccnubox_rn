@@ -873,12 +873,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 搜索课程请求 */
-      requestBody: {
-        content: {
-          '*/*': components['schemas']['class.SearchRequest'];
-        };
-      };
+      requestBody?: never;
       responses: {
         /** @description 成功搜索到课程 */
         200: {
@@ -941,6 +936,63 @@ export interface paths {
         };
       };
     };
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/classroom/getFreeClassRoom': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 查询空闲教室
+     * @description 根据学年、学期、周次、节次、地点等信息查询空闲教室列表
+     */
+    get: {
+      parameters: {
+        query: {
+          /** @description 学年，如：2024-2025 */
+          year: string;
+          /** @description 学期，如：1 或 2 */
+          semester: string;
+          /** @description 第几周 */
+          week: number;
+          /** @description 星期几，1-7 */
+          day: number;
+          /** @description 第几节课（可多选） */
+          sections: number[];
+          /** @description 地点前缀，如 n1 表示南湖一楼 */
+          wherePrefix: string;
+        };
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 查询成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['classroom.GetFreeClassRoomResp'];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
     post?: never;
     delete?: never;
     options?: never;
@@ -1077,7 +1129,64 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/elecprice/check': {
+  '/elecprice/cancelStandard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * 取消电费提醒标准
+     * @description 取消自己订阅的电费提醒
+     */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 取消电费提醒请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['elecprice.CancelStandardRequest'];
+        };
+      };
+      responses: {
+        /** @description 取消成功的返回信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/elecprice/getArchitecture': {
     parameters: {
       query?: never;
       header?: never;
@@ -1085,18 +1194,13 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 查询电费
-     * @description 根据区域、楼栋和房间号查询电费信息
+     * 获取楼栋信息
+     * @description 通过区域获取楼栋信息
      */
     get: {
       parameters: {
-        query: {
-          /** @description 区域，例如 '东区学生宿舍' */
-          area: string;
-          /** @description 楼栋，例如 '1号楼' */
-          building: string;
-          /** @description 房间号，例如 '101' */
-          room: string;
+        query?: {
+          area_name?: string;
         };
         header?: never;
         path?: never;
@@ -1104,14 +1208,175 @@ export interface paths {
       };
       requestBody?: never;
       responses: {
-        /** @description 成功返回电费信息 */
+        /** @description 设置成功的返回信息 */
         200: {
           headers: {
             [name: string]: unknown;
           };
           content: {
             'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['elecprice.CheckResponse'];
+              msg?: components['schemas']['elecprice.GetArchitectureResponse'];
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/elecprice/getPrice': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取电费
+     * @description 根据房间号获取电费信息
+     */
+    get: {
+      parameters: {
+        query?: {
+          room_id?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 获取成功的返回信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: components['schemas']['elecprice.GetPriceResponse'];
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/elecprice/getRoomInfo': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取房间号和id
+     * @description 根据房间号和空调/照明id
+     */
+    get: {
+      parameters: {
+        query?: {
+          architecture_id?: string;
+          floor?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 获取成功的返回信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: components['schemas']['elecprice.GetRoomInfoResponse'];
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/elecprice/getStandardList': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取电费提醒标准
+     * @description 获取自己订阅的电费提醒标准
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 获取成功的返回信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: components['schemas']['elecprice.GetStandardListResponse'];
             };
           };
         };
@@ -1144,12 +1409,11 @@ export interface paths {
       cookie?: never;
     };
     get?: never;
-    put?: never;
     /**
      * 设置电费提醒标准
      * @description 根据区域、楼栋和房间号设置电费提醒的金额标准
      */
-    post: {
+    put: {
       parameters: {
         query?: never;
         header?: never;
@@ -1187,6 +1451,7 @@ export interface paths {
         };
       };
     };
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1257,7 +1522,7 @@ export interface paths {
     put?: never;
     /**
      * 清除feed订阅事件
-     * @description 清除指定用户的feed订阅事件,feedid有三种状态0表示全部清除(不加参数默认为0),-1表示清除已读,指定feedid表示只清除这个id的feed消息
+     * @description 清除指定用户的feed订阅事件,都是可选字段
      */
     post: {
       parameters: {
@@ -1909,13 +2174,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
     /**
      * 搜取问题
      * @description 对常见问题进行模糊搜索
      */
-    post: {
+    get: {
       parameters: {
         query: {
           /** @description 问题名称 */
@@ -1949,6 +2212,8 @@ export interface paths {
         };
       };
     };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2201,15 +2466,6 @@ export interface paths {
     head?: never;
     patch?: never;
     trace?: never;
-  };
-  '/grade/getGradeByTerm': {
-    parameters: any;
-    requestBody?: any;
-    responses: any;
-    put?: any;
-    post?: any;
-    delete?: any;
-    options?: any;
   };
   '/statics': {
     parameters: {
@@ -2763,12 +3019,6 @@ export interface components {
     'class.SearchClassResp': {
       classInfos?: components['schemas']['class.ClassInfo'][];
     };
-    'class.SearchRequest': {
-      /** @description 搜索关键词,匹配的是课程名称和教师姓名 */
-      searchKeyWords?: string;
-      semester?: string;
-      year?: string;
-    };
     'class.UpdateClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
       classId?: string;
@@ -2791,6 +3041,16 @@ export interface components {
       /** @description 学年 */
       year?: string;
     };
+    'classroom.ClassroomAvailableStat': {
+      /** @description 空闲情况（与sections一一对应） */
+      availableStat?: boolean[];
+      /** @description 教室名 */
+      classroom?: string;
+    };
+    'classroom.GetFreeClassRoomResp': {
+      /** @description 各教室的空闲情况 */
+      stat?: components['schemas']['classroom.ClassroomAvailableStat'][];
+    };
     'department.DelDepartmentRequest': {
       id?: number;
     };
@@ -2811,41 +3071,58 @@ export interface components {
       place?: string;
       time?: string;
     };
-    'elecprice.CheckResponse': {
-      /** @description 电费 */
+    'elecprice.Architecture': {
+      architecture_id?: string;
+      architecture_name?: string;
+      base_floor?: string;
+      top_floor?: string;
+    };
+    'elecprice.CancelStandardRequest': {
+      room_id?: string;
+    };
+    'elecprice.GetArchitectureResponse': {
+      architecture_list?: components['schemas']['elecprice.Architecture'][];
+    };
+    'elecprice.GetPriceResponse': {
       price?: components['schemas']['elecprice.Price'];
     };
+    'elecprice.GetRoomInfoResponse': {
+      room_list?: components['schemas']['elecprice.Room'][];
+    };
+    'elecprice.GetStandardListResponse': {
+      standard_list?: components['schemas']['elecprice.StandardResp'][];
+    };
     'elecprice.Price': {
-      air_remain_money?: string;
-      air_yesterday_use_money?: string;
-      air_yesterday_use_value?: string;
-      lighting_remain_money?: string;
-      lighting_yesterday_use_money?: string;
-      lighting_yesterday_use_value?: string;
+      remain_money?: string;
+      yesterday_use_money?: string;
+      yesterday_use_value?: string;
+    };
+    'elecprice.Room': {
+      room_id?: string;
+      room_name?: string;
     };
     'elecprice.SetStandardRequest': {
-      /** @description 区域 */
-      area?: string;
-      /** @description 建筑 */
-      building?: string;
-      /** @description 金额 */
-      money?: number;
-      /** @description 房间号 */
-      room?: string;
+      limit?: number;
+      room_id?: string;
+      room_name?: string;
+    };
+    'elecprice.StandardResp': {
+      limit?: number;
+      room_name?: string;
     };
     'feed.ChangeFeedAllowListReq': {
-      air_conditioner?: boolean;
+      energy?: boolean;
       grade?: boolean;
       holiday?: boolean;
-      light?: boolean;
       muxi?: boolean;
     };
     'feed.ClearFeedEventReq': {
+      /** @description 如果feedid和status都被填写了,那么就会清除当前的feedid代表的feed消息且状态为设置的status的 */
       feed_id?: number;
       /** @description 有三个可选字段all表示清除所有消息,read表示清除所有已读消息,unread表示清除所有未读消息 */
       status?: string;
     };
-    'feed.FeedEvent': {
+    'feed.FeedEventVO': {
       content?: string;
       /** @description Unix时间戳 */
       created_at?: number;
@@ -2853,23 +3130,18 @@ export interface components {
         [key: string]: string;
       };
       id?: number;
+      read?: boolean;
       title?: string;
       type?: string;
-      read?: boolean;
-    };
-    'feed.FeedEventList': {
-      read?: components['schemas']['feed.FeedEvent'][];
-      unread?: components['schemas']['feed.FeedEvent'][];
     };
     'feed.GetFeedAllowListResp': {
-      air_conditioner?: boolean;
+      energy?: boolean;
       grade?: boolean;
       holiday?: boolean;
-      light?: boolean;
       muxi?: boolean;
     };
     'feed.GetFeedEventsResp': {
-      feed_events?: components['schemas']['feed.FeedEvent'][];
+      feed_events?: components['schemas']['feed.FeedEventVO'][];
     };
     'feed.GetToBePublicMuxiOfficialMSGResp': {
       msg_list?: components['schemas']['feed.MuxiOfficialMSG'][];
