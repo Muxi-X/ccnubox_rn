@@ -1,18 +1,8 @@
-import { request } from '../request';
-
-import { PopularWebsite } from '@/types/shared-types';
-
-interface Response {
-  code?: number;
-  data: {
-    websites: PopularWebsite[];
-  };
-  msg?: string;
-}
+import { axiosInstance } from '../request';
 
 const queryWebsites = async () => {
   try {
-    const response: Response = await request.get('/website/getWebsites');
+    const response = await axiosInstance.get(`/website/getWebsites`);
     return response.data;
   } catch (error) {
     throw error;
