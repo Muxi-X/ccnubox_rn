@@ -41,4 +41,13 @@ export const openPhoneNumber = (number: string) => {
   handleOpenURL(`tel:${number}`, '电话');
 };
 
+/**
+ * 使用指定的URL打开浏览器。
+ *
+ * @param url - 要打开的URL，应为URL的字符串。
+ */
+export const openBrowser = (url: string) => {
+  handleOpenURL(url, '浏览器');
+};
+
 export default handleOpenURL;
