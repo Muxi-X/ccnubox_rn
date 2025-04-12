@@ -51,7 +51,7 @@ export const TooltipContent = () => {
             switch (item.id) {
               case 1:
               case 2: {
-                navigation.navigate(item.url);
+                navigation.navigate(item.url as Href<string | object>);
                 break;
               }
             }
