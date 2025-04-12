@@ -17,7 +17,13 @@ import useVisualScheme from '@/store/visualScheme';
 import { queryDepartmentInformation } from '@/request/api';
 import { openPhoneNumber } from '@/utils/handleOpenURL';
 
-import { DepartmentInformation } from '@/types/shared-types';
+interface DepartmentInformation {
+  id: number;
+  name: string;
+  phone: string;
+  place: string;
+  time: string;
+}
 
 const Department = ({ info }: { info: DepartmentInformation }) => {
   const currentVisualScheme = useVisualScheme(state => state.currentStyle);

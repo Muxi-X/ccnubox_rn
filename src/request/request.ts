@@ -76,6 +76,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   response => {
+    requestBus.requestComplete();
     switch (response.status) {
       case 200:
         return response;
@@ -88,12 +89,7 @@ axiosInstance.interceptors.response.use(
       default:
         Toast.show({ text: '服务器错误' });
     }
-    requestBus.requestComplete();
-    if (response.status === 200) {
-      return response;
-    } else {
-      return Promise.reject(new Error(`Error status code: ${response.status}`));
-    }
+    return Promise.reject(new Error(`Error status code: ${response.status}`));
   },
   async error => {
     requestBus.requestComplete();

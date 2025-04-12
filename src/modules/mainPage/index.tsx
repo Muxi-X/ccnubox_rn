@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import React, { FC, memo, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { FC, memo, useEffect, useState } from 'react';
+import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -12,20 +12,43 @@ import ThemeChangeView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
+import queryBanners from '@/request/api/queryBanners';
 import { commonColors } from '@/styles/common';
 import { keyGenerator, percent2px } from '@/utils';
+import { openBrowser } from '@/utils/handleOpenURL';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 const IndexPage: FC = () => {
   const router = useRouter();
-  const [banners] = useState<{ bannerUrl: string; navUrl: string }[]>([
-    { bannerUrl: '', navUrl: '' },
-    { bannerUrl: '', navUrl: '' },
-  ]);
+  const [banners, setBanners] = useState<
+    {
+      bannerUrl: string;
+      navUrl: string;
+    }[]
+  >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [data, setData] =
     useState<MainPageGridDataType[]>(mainPageApplications);
+
+  const loadBanners = async () => {
+    const res = await queryBanners();
+    if (res?.code === 0 && res.data?.banners) {
+      setBanners(
+        res.data.banners.map(
+          (banner: { picture_link: string; web_link: string }) => ({
+            bannerUrl: banner.picture_link,
+            navUrl: banner.web_link,
+          })
+        )
+      );
+    }
+  };
+
+  useEffect(() => {
+    loadBanners();
+  }, []);
+
   const render = ({
     key,
     title,
@@ -68,12 +91,23 @@ const IndexPage: FC = () => {
             loop
             data={banners}
             scrollAnimationDuration={2000}
-            renderItem={() => {
+            renderItem={({ item }) => {
               return (
                 <View
                   style={styles.bannerItem}
                   key={keyGenerator.next().value as unknown as number}
-                ></View>
+                >
+                  <Pressable onPress={() => openBrowser(item.navUrl)}>
+                    <Image
+                      source={{ uri: item.bannerUrl }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 10,
+                      }}
+                    ></Image>
+                  </Pressable>
+                </View>
               );
             }}
           ></Carousel>
@@ -122,7 +156,7 @@ const styles = StyleSheet.create({
     width: '95%',
     height: 120,
     borderRadius: 10,
-    backgroundColor: commonColors.purple,
+    // backgroundColor: commonColors.purple,
   },
   itemText: {
     fontSize: 14,
