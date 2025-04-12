@@ -166,7 +166,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             styles.modalBackground,
             {
               height: '100%',
-              zIndex: 1,
+              zIndex: 0,
             },
           ]}
           onPress={handleClose}
