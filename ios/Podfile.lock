@@ -343,9 +343,9 @@ PODS:
   - hermes-engine (0.74.5):
     - hermes-engine/Pre-built (= 0.74.5)
   - hermes-engine/Pre-built (0.74.5)
-  - JCore (2.2.5):
+  - JCore (2.2.6):
     - React
-  - JPush (3.1.3):
+  - JPush (3.1.4):
     - React
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
@@ -2096,10 +2096,10 @@ SPEC CHECKSUMS:
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
   hermes-engine: 8c1577f3fdb849cbe7729c2e7b5abc4b845e88f8
-  JCore: 3ed9d81604365f302afcf85d8d5c878c9a3f95ee
-  JPush: a3298a19b2b9595cda761d40efea2f2a9f0a9718
+  JCore: 9f3340fc12f1d151913dd875cb30f0cf4f423768
+  JPush: 036fc34a58dc24b3dbe3eb92a08f4bd9e21142ee
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
-  RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
+  RCT-Folly: 02617c592a293bd6d418e0a88ff4ee1f88329b47
   RCTDeprecation: 3afceddffa65aee666dafd6f0116f1d975db1584
   RCTRequired: ec1239bc9d8bf63e10fb92bd8b26171a9258e0c1
   RCTTypeSafety: f5ecbc86c5c5fa163c05acb7a1c5012e15b5f994
