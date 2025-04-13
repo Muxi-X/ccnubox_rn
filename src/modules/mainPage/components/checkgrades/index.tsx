@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingHorizontal: 14,
-    paddingVertical: 16,
+    paddingVertical: 10,
   },
   itemBorder: {
     borderBottomWidth: 1,

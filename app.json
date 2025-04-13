@@ -27,7 +27,8 @@
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
-        }
+        },
+        "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
       }
     },
     "android": {

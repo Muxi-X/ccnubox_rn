@@ -348,7 +348,7 @@ export const Content: React.FC<CourseTransferType> = props => {
               ></ModalContent>
             ),
             mode: 'middle',
-            confirmText: '删除',
+            confirmText: '退出',
             cancelText: '编辑',
 
             onConfirm: () => {},
