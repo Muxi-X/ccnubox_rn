@@ -86,7 +86,7 @@ function Departments() {
   useEffect(() => {
     queryDepartmentInformation()
       .then(res => {
-        setDepartments(res.departments);
+        setDepartments(res.data.departments);
       })
       .catch(err => {
         Toast.show({ text: '获取部门信息失败' + err.toString() });
