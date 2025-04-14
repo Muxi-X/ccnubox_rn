@@ -50,7 +50,7 @@ export default function SelectStyle() {
               : { backgroundColor: 'white' },
           ]}
           onPress={() => {
-            if (!isApplied('android')) {
+            if (!isApplied('dark')) {
               changeTheme(themeName === 'dark' ? 'light' : 'dark');
             }
           }}
