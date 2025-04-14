@@ -15,7 +15,8 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { EventBus, keyGenerator } from '@/utils';
+import { EventBus } from '@/eventBus';
+import { keyGenerator } from '@/utils';
 
 /**
  * 骨架屏组件

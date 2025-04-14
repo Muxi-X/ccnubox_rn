@@ -32,8 +32,8 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
