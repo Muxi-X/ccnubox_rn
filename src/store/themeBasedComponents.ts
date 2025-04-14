@@ -2,8 +2,8 @@ import { create } from 'zustand';
 
 import { ThemeBasedComponentsType } from '@/store/types';
 
+import { EventBus } from '@/eventBus';
 import { componentMap } from '@/themeBasedComponents';
-import { EventBus } from '@/utils';
 
 /** 主题特定组件 */
 const useThemeBasedComponents = create<ThemeBasedComponentsType>(

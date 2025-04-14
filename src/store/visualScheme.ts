@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
+import { EventBus } from '@/eventBus';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
-import { EventBus } from '@/utils';
 
 import { visualSchemeType } from './types';
 
