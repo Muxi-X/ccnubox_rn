@@ -257,10 +257,10 @@ export const ModalContent: React.FC<ModalContentProps> = props => {
     class_when,
     date,
   } = props;
-  // const currentStyle = useVisualScheme(state => state.currentStyle);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
-    <View style={styles.modalContainer}>
+    <View style={[styles.modalContainer, currentStyle?.background_style]}>
       <View style={styles.modalHeader}>
         <ThemeChangeText style={styles.modalTitle}>
           {courseName}
@@ -278,14 +278,16 @@ export const ModalContent: React.FC<ModalContentProps> = props => {
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>📅</Text>
           </View>
-          <Text style={styles.modalInfoText}>{week_duration}</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            {week_duration}
+          </Text>
         </View>
 
         <View style={styles.modalInfoItem}>
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>🕒</Text>
           </View>
-          <Text style={styles.modalInfoText}>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
             周{date}
             {class_when}节
           </Text>
@@ -295,14 +297,18 @@ export const ModalContent: React.FC<ModalContentProps> = props => {
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>👨‍🏫</Text>
           </View>
-          <Text style={styles.modalInfoText}>{teacher}</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            {teacher}
+          </Text>
         </View>
 
         <View style={styles.modalInfoItem}>
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>🏢</Text>
           </View>
-          <Text style={styles.modalInfoText}>{classroom}</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            {classroom}
+          </Text>
         </View>
       </View>
     </View>
