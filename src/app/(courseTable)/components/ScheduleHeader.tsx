@@ -7,8 +7,8 @@ import useVisualScheme from '@/store/visualScheme';
 import useWeekStore from '@/store/weekStore';
 
 import { tooltipActions } from '@/constants/courseTableApplications';
+import globalEventBus from '@/eventBus';
 import { commonStyles } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   // const [showWeekPicker, setShowWeekPicker] = React.useState(false);
