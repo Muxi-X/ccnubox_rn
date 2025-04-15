@@ -155,7 +155,7 @@ const CourseTree = () => {
         </View>
       </View>
       <View style={styles.content}>
-        <ScrollView>
+        <ScrollView style={{ maxHeight: '80%' }}>
           {list.map((item, index) => renderNode(item, index))}
           <View style={{ height: 20 }} />
         </ScrollView>
@@ -168,7 +168,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
-    // height: windowHeight,
+    height: windowHeight,
   },
   header: {
     backgroundColor: '#fff',

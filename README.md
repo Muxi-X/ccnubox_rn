@@ -345,7 +345,7 @@ export interface ScrollableViewProps {
 ## update（热更新）
 
 ```bash
- eas update --branch production --message "wdigets test_1"
+eas update --branch production --message "wdigets test_1"
 ```
 
 ## 生成API类型定义
