@@ -1,5 +1,7 @@
-import { Modal } from '@ant-design/react-native';
 import * as Updates from 'expo-updates';
+import { StyleSheet, Text, View } from 'react-native';
+
+import Modal from '@/components/modal';
 
 import updateInfo from '../assets/data/updateInfo.json';
 /* 获取更新信息 */
@@ -9,31 +11,32 @@ import updateInfo from '../assets/data/updateInfo.json';
 
 /* 显示更新模态框 */
 const showUpdateModal = (updateInfo: any) => {
-  Modal.alert('有新的发布', `是否更新: ${updateInfo.version}`, [
-    {
-      text: '更新',
-      onPress: async () => {
+  Modal.show({
+    confirmText: '更新',
+    mode: 'middle',
+    onConfirm() {
+      async () => {
         try {
           const res = await Updates.fetchUpdateAsync();
           if (res.isNew) {
             alert('更新成功，即将重启应用');
             await Updates.reloadAsync();
           } else {
-            alert('更新失败，请稍后重试');
+            alert('没有新更新');
           }
         } catch (error) {
-          // console.error('应用更新失败:', error);
           alert('更新失败，请稍后重试');
         }
-      },
+      };
     },
-    {
-      text: '取消',
-      onPress: () => {
-        // console.log('用户取消更新');
-      },
-    },
-  ]);
+    children: (
+      <View style={styles.modalContent}>
+        <Text style={styles.modalText}>
+          发现最新版本 {updateInfo?.version}, 是否更新应用？
+        </Text>
+      </View>
+    ),
+  });
 };
 
 /* 检查并应用更新 */
@@ -46,8 +49,27 @@ const fetchUpdate = async () => {
     }
   } catch (error) {
     // console.error('检查更新失败:', error);
-    Modal.alert('更新失败', '无法检查更新，请检查网络连接或稍后再试。');
+    Modal.show({
+      title: '更新失败',
+      children: '无法检查更新，请检查网络连接或稍后再试.',
+      mode: 'middle',
+    });
   }
 };
 
 export default fetchUpdate;
+const styles = StyleSheet.create({
+  modalContent: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 20,
+    fontSize: 18,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+});

@@ -17,7 +17,13 @@ import useVisualScheme from '@/store/visualScheme';
 import { queryDepartmentInformation } from '@/request/api';
 import { openPhoneNumber } from '@/utils/handleOpenURL';
 
-import { DepartmentInformation } from '@/types/shared-types';
+interface DepartmentInformation {
+  id: number;
+  name: string;
+  phone: string;
+  place: string;
+  time: string;
+}
 
 const Department = ({ info }: { info: DepartmentInformation }) => {
   const currentVisualScheme = useVisualScheme(state => state.currentStyle);
@@ -80,7 +86,7 @@ function Departments() {
   useEffect(() => {
     queryDepartmentInformation()
       .then(res => {
-        setDepartments(res.departments);
+        setDepartments(res.data.departments);
       })
       .catch(err => {
         Toast.show({ text: '获取部门信息失败' + err.toString() });

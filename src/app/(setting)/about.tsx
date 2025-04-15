@@ -1,40 +1,50 @@
-import * as Clipboard from 'expo-clipboard';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
 
+import useVisualScheme from '@/store/visualScheme';
+
+import { handleCopy } from '@/utils';
+
 function About() {
   const number = '576225292';
-  const handleCopy = (text: string) => {
-    Clipboard.setStringAsync(text).then(r => console.log(r));
-    console.log('复制文本为：' + text);
-  };
+  const { currentStyle } = useVisualScheme();
 
   return (
     <ThemeBasedView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>关于</Text>
+        <Text style={[styles.headerText, currentStyle?.text_style]}>关于</Text>
       </View>
       <View style={styles.infoContainer}>
         <Image
           source={require('../../assets/images/mx-logo.png')}
           style={styles.icon}
         />
-        <Text style={styles.appName}>华师匣子</Text>
-        <Text style={styles.version}>版本 2.5.14</Text>
+        <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
+        <Text style={[styles.version, currentStyle?.text_style]}>
+          版本 2.5.14
+        </Text>
       </View>
-      <View style={styles.groupContainer}>
+      <View style={[styles.groupContainer, currentStyle?.background_style]}>
         <View style={styles.groupRow}>
-          <Text style={styles.groupText}>匣子交流群：</Text>
-          <Text style={styles.groupNumber}>{number}</Text>
+          <Text style={[styles.groupText, currentStyle?.text_style]}>
+            匣子交流群：
+          </Text>
+          <Text style={[styles.groupNumber, currentStyle?.text_style]}>
+            {number}
+          </Text>
           <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.groupRow}>
-          <Text style={styles.groupText}>木犀招新群：</Text>
-          <Text style={styles.groupNumber}>{number}</Text>
+          <Text style={[styles.groupText, currentStyle?.text_style]}>
+            木犀招新群：
+          </Text>
+          <Text style={[styles.groupNumber, currentStyle?.text_style]}>
+            {number}
+          </Text>
           <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>

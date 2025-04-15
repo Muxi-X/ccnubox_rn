@@ -345,7 +345,13 @@ export interface ScrollableViewProps {
 ## update（热更新）
 
 ```bash
- eas update --branch production --message "wdigets test_1"
+eas update --branch production --message "wdigets test_1"
+```
+
+## 生成API类型定义
+
+```bash
+npx openapi-typescript src/request/openapi.yaml -o src/request/schema.d.ts
 ```
 
 # 更新须知

@@ -82,13 +82,13 @@ export const mainPageApplications: MainPageGridDataType[] = [
   },
   {
     title: '校历',
-    name: 'date',
+    name: 'calendar',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/date.png'),
       android: require('../assets/images/icons/android/date.png'),
     }),
     key: 'grid-8',
-    href: '/date' as Href,
+    href: '/calendar' as Href,
   },
   {
     title: '常用网站',
