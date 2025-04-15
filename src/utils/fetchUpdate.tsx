@@ -4,30 +4,29 @@ import { StyleSheet, Text, View } from 'react-native';
 import Modal from '@/components/modal';
 
 import updateInfo from '../assets/data/updateInfo.json';
+
 /* 获取更新信息 */
 // export const getUpdateInfo = async () => {
 //   require('../../src/assets/data/updateInfo.json').default; // 确保返回的是默认导出的内容
 // };
 
 /* 显示更新模态框 */
-const showUpdateModal = (updateInfo: any) => {
+const showUpdateModal = async (updateInfo: any) => {
   Modal.show({
     confirmText: '更新',
     mode: 'middle',
-    onConfirm() {
-      async () => {
-        try {
-          const res = await Updates.fetchUpdateAsync();
-          if (res.isNew) {
-            alert('更新成功，即将重启应用');
-            await Updates.reloadAsync();
-          } else {
-            alert('没有新更新');
-          }
-        } catch (error) {
-          alert('更新失败，请稍后重试');
+    onConfirm: async () => {
+      try {
+        const res = await Updates.fetchUpdateAsync();
+        if (res.isNew) {
+          alert('更新成功，即将重启应用');
+          await Updates.reloadAsync();
+        } else {
+          alert('没有新更新');
         }
-      };
+      } catch (error) {
+        alert('更新失败，请稍后重试');
+      }
     },
     children: (
       <View style={styles.modalContent}>
@@ -48,7 +47,6 @@ const fetchUpdate = async () => {
       return updateInfo;
     }
   } catch (error) {
-    // console.error('检查更新失败:', error);
     Modal.show({
       title: '更新失败',
       children: '无法检查更新，请检查网络连接或稍后再试.',
@@ -58,6 +56,7 @@ const fetchUpdate = async () => {
 };
 
 export default fetchUpdate;
+
 const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
