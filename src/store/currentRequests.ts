@@ -1,6 +1,6 @@
 import { CurrentRequestsType } from '@/store/types';
 
-import { EventBus } from '@/eventBus';
+import globalEventBus from '@/eventBus';
 
 /** 当前所有请求监听 */
 const requestBus: CurrentRequestsType = {
@@ -16,7 +16,7 @@ const requestBus: CurrentRequestsType = {
       setTimeout(() => {
         if (this.totalRequestNum === currentTotal) {
           this.totalRequestNum = this.resolvedRequestNum = 0;
-          EventBus.emit('request_complete');
+          globalEventBus.emit('request_complete');
         }
       }, 1000);
     }

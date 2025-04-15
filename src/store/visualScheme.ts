@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { EventBus } from '@/eventBus';
+import globalEventBus from '@/eventBus';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 
@@ -18,8 +18,8 @@ const useVisualScheme = create<visualSchemeType>(set => ({
         LayoutName,
         LayoutType
       >;
-      EventBus.emit('layoutSet');
-      EventBus.emit('layoutChange', state.layoutName);
+      globalEventBus.emit('layoutSet');
+      globalEventBus.emit('layoutChange', state.layoutName);
       return {
         ...state,
         currentStyle: layoutMap[state.layoutName][
@@ -53,7 +53,7 @@ const useVisualScheme = create<visualSchemeType>(set => ({
     set(state => {
       const { themeName, layouts, currentStyle } = state;
       const newStyle = layouts.get(layoutName)![themeName] as SingleThemeType;
-      EventBus.emit('layoutChange', layoutName);
+      globalEventBus.emit('layoutChange', layoutName);
       return {
         ...state,
         currentStyle: newStyle ?? currentStyle,
