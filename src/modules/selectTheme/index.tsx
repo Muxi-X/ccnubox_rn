@@ -10,7 +10,7 @@ import View from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SelectTheme() {
-  const { currentStyle, layoutName, changeLayout } = useVisualScheme(
+  const { currentStyle, themeName, layoutName, changeLayout } = useVisualScheme(
     ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
       currentStyle,
       changeTheme,
@@ -59,7 +59,11 @@ export default function SelectTheme() {
         </Button>
       </View>
       <Image
-        source={require('@/assets/images/theme/base.png')}
+        source={
+          themeName === 'dark'
+            ? require('@/assets/images/theme/baseDark.png')
+            : require('@/assets/images/theme/base.png')
+        }
         style={{
           justifyContent: 'center',
           marginTop: 20,
@@ -107,7 +111,11 @@ export default function SelectTheme() {
         </Button>
       </View>
       <Image
-        source={require('@/assets/images/theme/ios.png')}
+        source={
+          themeName === 'dark'
+            ? require('@/assets/images/theme/iosDark.png')
+            : require('@/assets/images/theme/ios.png')
+        }
         style={{
           justifyContent: 'center',
           marginTop: 20,
