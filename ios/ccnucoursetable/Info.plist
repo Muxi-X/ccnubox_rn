@@ -10,6 +10,13 @@
     <string>我们需要读取您的照片以供分享或查看。</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>我们需要将图片保存到您的照片库。</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>weixin</string>
+      <string>alipays</string>
+      <string>tel</string>
+      <string>sms</string>
+    </array>
     <key>CFBundleDisplayName</key>
     <string>ccnu_coursetable</string>
     <key>CFBundleExecutable</key>

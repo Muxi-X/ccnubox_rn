@@ -23,4 +23,4 @@ else
 fi
 
 printf "正在执行 git add... "
-git add .
+git add -u

@@ -111,8 +111,17 @@ const Timetable: React.FC<CourseTableProps> = ({
       // 先按时间槽和日期分组课程
       const coursesBySlot = new Map();
       data.forEach((course: courseType) => {
-        const { id, day, teacher, where, class_when, classname, weeks } =
-          course;
+        const {
+          id,
+          day,
+          teacher,
+          where,
+          class_when,
+          classname,
+          weeks,
+          week_duration,
+          credit,
+        } = course;
         const timeSpan = class_when
           .split('-')
           .map(Number)
@@ -136,6 +145,9 @@ const Timetable: React.FC<CourseTableProps> = ({
             colIndex,
             weeks,
             isThisWeek: weeks.includes(currentWeek),
+            week_duration,
+            credit,
+            class_when,
           });
         }
       });
@@ -236,14 +248,27 @@ interface ModalContentProps {
   teacher: string;
   classroom: string;
   isThisWeek: boolean;
+  week_duration: string;
+  credit: number;
+  class_when: string;
+  date: string;
 }
 
 export const ModalContent: React.FC<ModalContentProps> = props => {
-  const { courseName, teacher, classroom, isThisWeek } = props;
-  // const currentStyle = useVisualScheme(state => state.currentStyle);
+  const {
+    courseName,
+    teacher,
+    classroom,
+    isThisWeek,
+    week_duration,
+    credit,
+    class_when,
+    date,
+  } = props;
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
-    <View style={styles.modalContainer}>
+    <View style={[styles.modalContainer, currentStyle?.background_style]}>
       <View style={styles.modalHeader}>
         <ThemeChangeText style={styles.modalTitle}>
           {courseName}
@@ -254,42 +279,60 @@ export const ModalContent: React.FC<ModalContentProps> = props => {
           </View>
         )}
       </View>
-      <Text style={styles.modalSubtitle}>专业主干课 3.0学分</Text>
+      <Text style={styles.modalSubtitle}>{credit}学分</Text>
 
       <View style={styles.modalInfoGrid}>
         <View style={styles.modalInfoItem}>
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>📅</Text>
           </View>
-          <Text style={styles.modalInfoText}>1-17周</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            {week_duration}
+          </Text>
         </View>
 
         <View style={styles.modalInfoItem}>
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>🕒</Text>
           </View>
-          <Text style={styles.modalInfoText}>周一3-4节</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            周{date}
+            {class_when}节
+          </Text>
         </View>
 
         <View style={styles.modalInfoItem}>
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>👨‍🏫</Text>
           </View>
-          <Text style={styles.modalInfoText}>{teacher}</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            {teacher}
+          </Text>
         </View>
 
         <View style={styles.modalInfoItem}>
           <View style={styles.modalInfoIcon}>
             <Text style={styles.iconText}>🏢</Text>
           </View>
-          <Text style={styles.modalInfoText}>{classroom}</Text>
+          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            {classroom}
+          </Text>
         </View>
       </View>
     </View>
   );
 };
 export const Content: React.FC<CourseTransferType> = props => {
-  const { classroom, courseName, teacher, isThisWeek } = props;
+  const {
+    classroom,
+    courseName,
+    teacher,
+    isThisWeek,
+    week_duration,
+    credit,
+    class_when,
+    date,
+  } = props;
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
@@ -308,14 +351,18 @@ export const Content: React.FC<CourseTransferType> = props => {
           Modal.show({
             children: (
               <ModalContent
+                class_when={class_when}
                 isThisWeek={isThisWeek}
                 courseName={courseName}
                 teacher={teacher}
                 classroom={classroom}
+                week_duration={week_duration}
+                credit={credit}
+                date={date}
               ></ModalContent>
             ),
             mode: 'middle',
-            confirmText: '删除',
+            confirmText: '退出',
             cancelText: '编辑',
 
             onConfirm: () => {},

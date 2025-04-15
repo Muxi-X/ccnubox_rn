@@ -24,7 +24,7 @@ export const daysOfWeek = ['一', '二', '三', '四', '五', '六', '日'];
 /**
  * 每隔几个时间格出现下划线
  */
-export const courseCollapse = 1;
+export const courseCollapse = 2;
 /**
  * 时间段
  */

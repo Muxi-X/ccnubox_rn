@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { colorOptions } from '@/constants/courseTable';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;
+  const { currentStyle } = useVisualScheme();
   console.log('CourseItems', props);
   return (
     <View
@@ -18,11 +21,13 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           {
             paddingTop: timeSpan === 1 ? 5 : 10,
             paddingBottom: 10,
+            justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: isThisWeek
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
             borderRadius: 5,
+            minHeight: 40,
           },
         ]}
       >
@@ -43,6 +48,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           style={[
             styles.cellText,
             { color: '#0D0D0D', fontSize: 11, fontWeight: 'bold' },
+            currentStyle?.text_style,
           ]}
         >
           {teacher || ''}
@@ -64,7 +70,7 @@ export const styles = StyleSheet.create({
   cellText: {
     fontSize: 11,
     color: 'white',
-    textAlign: 'left',
+    textAlign: 'center',
   },
 });
 
