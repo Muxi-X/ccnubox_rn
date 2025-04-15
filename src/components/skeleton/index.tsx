@@ -15,7 +15,7 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { EventBus } from '@/eventBus';
+import globalEventBus from '@/eventBus';
 import { keyGenerator } from '@/utils';
 
 /**
@@ -43,7 +43,7 @@ const SkeletonLoader: FC<SkeletonType> = ({
   const isFocused = useIsFocused();
   // 监听请求完成事件
   useEffect(() => {
-    EventBus.on('request_complete', () => {
+    globalEventBus.on('request_complete', () => {
       isFocused && setLoading(false);
     });
   }, []);
