@@ -48,11 +48,19 @@ const Timetable: React.FC<CourseTableProps> = ({
   );
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
-  if (status === null) {
-    requestPermission();
-  }
   const onSaveImageAsync = async () => {
     try {
+      // 在真正需要使用权限时才请求
+      if (status?.status !== 'granted') {
+        const permissionResult = await requestPermission();
+        if (permissionResult.status !== 'granted') {
+          Modal.show({
+            title: '需要相册权限才能保存截图',
+            mode: 'middle',
+          });
+          return;
+        }
+      }
       const snapshot = await makeImageFromView(imageRef);
       if (!snapshot) {
         Modal.show({
