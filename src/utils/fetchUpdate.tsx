@@ -1,8 +1,6 @@
 import * as Updates from 'expo-updates';
 import { StyleSheet, Text, View } from 'react-native';
 
-import Modal from '@/components/modal';
-
 import updateInfo from '../assets/data/updateInfo.json';
 /* 获取更新信息 */
 // export const getUpdateInfo = async () => {
@@ -10,7 +8,11 @@ import updateInfo from '../assets/data/updateInfo.json';
 // };
 
 /* 显示更新模态框 */
-const showUpdateModal = (updateInfo: any) => {
+const showUpdateModal = async (updateInfo: any) => {
+  // 动态导入 Modal 组件，避免循环依赖
+  //目前采用了这种很逆天的加载格式因为modal和visualScheme耦合度过高导致的 后期重构
+  const { default: Modal } = await import('@/components/modal');
+
   Modal.show({
     confirmText: '更新',
     mode: 'middle',
@@ -49,6 +51,9 @@ const fetchUpdate = async () => {
     }
   } catch (error) {
     // console.error('检查更新失败:', error);
+    // 动态导入 Modal 组件，避免循环依赖
+    const { default: Modal } = await import('@/components/modal');
+
     Modal.show({
       title: '更新失败',
       children: '无法检查更新，请检查网络连接或稍后再试.',
