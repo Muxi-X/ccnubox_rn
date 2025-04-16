@@ -19,6 +19,8 @@ import { ScrollableViewProps } from '@/components/scrollView/type';
 
 import { commonColors } from '@/styles/common';
 
+import Modal from '../modal';
+
 const REFRESH_THRESHOLD = 100; // 触发刷新的阈值
 
 const ScrollLikeView: FC<ScrollableViewProps> = props => {
@@ -81,6 +83,10 @@ const ScrollLikeView: FC<ScrollableViewProps> = props => {
             duration: 300,
           });
           refreshTextState.value = 'pull';
+          Modal.show({
+            title: '刷新成功',
+            mode: 'middle',
+          });
         }, 1000);
       },
       () => {
