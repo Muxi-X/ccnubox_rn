@@ -32,6 +32,7 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
+import { percent2px } from '@/utils';
 import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
@@ -81,7 +82,7 @@ const Timetable: React.FC<CourseTableProps> = ({
         // 这里创建资源的时候就会保存到相册……
         await MediaLibrary.createAssetAsync(result.uri);
         // 这里如果再保存就会再多一张……傻逼 expo
-        // await MediaLibrary.saveToLibraryAsync(assets.uri);
+        //  await MediaLibrary.saveToLibraryAsync(result.uri);
         Modal.show({
           title: '截图成功',
           mode: 'middle',
@@ -179,8 +180,6 @@ const Timetable: React.FC<CourseTableProps> = ({
               backgroundColor: currentStyle?.background_style?.backgroundColor,
             },
           ]}
-          ref={imageRef}
-          collapsable={false}
         >
           {timetableMatrix?.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
@@ -211,7 +210,7 @@ const Timetable: React.FC<CourseTableProps> = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.container}>
+      <View style={styles.container} ref={imageRef} collapsable={false}>
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
@@ -476,6 +475,8 @@ export const StickyBottom = memo(function StickyBottom() {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
+    width: percent2px(135, 'width'),
+    height: 900,
     flexDirection: 'row',
     marginBottom: 20,
     flex: 1,
