@@ -16,6 +16,7 @@ import Modal from '@/components/modal';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryGradeDetail } from '@/request/api';
+import { percent2px } from '@/utils';
 
 interface GradeDetails {
   usualGrade: string | number;
@@ -86,10 +87,10 @@ const ScoreCalculation: React.FC = () => {
         <View style={{ paddingVertical: 20, width: 290 }}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{course.title}</Text>
-            <Image
+            {/* <Image
               style={styles.modalLogo}
               source={require('../../assets/images/mx-logo.png')}
-            />
+            /> */}
           </View>
           <View style={styles.modalContent}>
             <Text style={styles.textItem}>
@@ -416,6 +417,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7086F3',
   },
   courseTitle: {
+    maxWidth: percent2px(60, 'width'),
     fontSize: 14,
     color: '#3D3D3D',
   },
