@@ -2,6 +2,8 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { FC } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { useDebounce } from '@/hooks';
+
 import ColorTransitionView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -15,6 +17,33 @@ const TabBar: FC<BottomTabBarProps> = props => {
   const navbarStyle = useVisualScheme(
     state => state.currentStyle?.navbar_background_style
   );
+  const handlePress = useDebounce(
+    (
+      routeKey: string,
+      routeName: string,
+      routeParams: any,
+      focused: boolean
+    ) => {
+      const event = navigation.emit({
+        type: 'tabPress',
+        target: routeKey,
+        canPreventDefault: true,
+      });
+
+      if (!focused && !event.defaultPrevented) {
+        navigation.navigate(routeName, routeParams);
+      }
+    },
+    100
+  );
+
+  const handleLongPress = useDebounce((routeKey: string) => {
+    navigation.emit({
+      type: 'tabLongPress',
+      target: routeKey,
+    });
+  }, 100);
+
   return (
     <ColorTransitionView
       configurableThemeName="navbar_background_style"
@@ -32,23 +61,13 @@ const TabBar: FC<BottomTabBarProps> = props => {
 
         const isFocused = state?.index === index;
 
+        // 使用闭包创建特定路由的处理函数
         const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
+          handlePress(route.key, route.name, route.params, isFocused);
         };
 
         const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
+          handleLongPress(route.key);
         };
         return (
           <TabBarItem
