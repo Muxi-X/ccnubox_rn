@@ -55,4 +55,12 @@ export interface ScrollableViewProps {
    * 左上角样式
    */
   conrerStyle?: StyleProps;
+  /**
+   * 是否可折叠
+   */
+  collapsable?: boolean;
+  /**
+   * 是否启用滚动
+   */
+  enableScrolling?: boolean;
 }

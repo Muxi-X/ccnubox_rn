@@ -32,7 +32,7 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
-import { percent2px } from '@/utils';
+// import { percent2px } from '@/utils';
 import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
@@ -62,35 +62,62 @@ const Timetable: React.FC<CourseTableProps> = ({
           return;
         }
       }
-      const snapshot = await makeImageFromView(imageRef);
-      if (!snapshot) {
-        Modal.show({
-          title: '截图失败',
-          mode: 'middle',
-        });
-      }
-      const data = await snapshot?.encodeToBase64();
-      const uri = `data:image/png;base64,${data}`;
 
-      const result = await ImageManipulator.manipulateAsync(uri, [], {
-        compress: 1,
-        format: ImageManipulator.SaveFormat.PNG,
-        base64: false,
+      // 显示加载提示
+      Modal.show({
+        title: '正在生成截图...',
+        mode: 'middle',
       });
 
-      if (result && result.uri) {
-        // 这里创建资源的时候就会保存到相册……
-        await MediaLibrary.createAssetAsync(result.uri);
-        // 这里如果再保存就会再多一张……傻逼 expo
-        //  await MediaLibrary.saveToLibraryAsync(result.uri);
-        Modal.show({
-          title: '截图成功',
-          mode: 'middle',
-        });
-      }
+      // 确保截图前视图已完全渲染
+      setTimeout(async () => {
+        try {
+          // 将滚动位置重置到顶部，确保截取完整课表
+          // 这里我们使用事件总线触发一个事件来重置滚动位置
+          globalEventBus.emit('ResetScrollPosition');
+
+          // 给予一点时间让滚动位置重置
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          const snapshot = await makeImageFromView(imageRef);
+          if (!snapshot) {
+            Modal.show({
+              title: '截图失败',
+              mode: 'middle',
+            });
+            return;
+          }
+
+          const data = await snapshot?.encodeToBase64();
+          const uri = `data:image/png;base64,${data}`;
+
+          const manipulateResult = await ImageManipulator.manipulateAsync(
+            uri,
+            [],
+            {
+              compress: 1,
+              format: ImageManipulator.SaveFormat.PNG,
+              base64: false,
+            }
+          );
+
+          if (manipulateResult && manipulateResult.uri) {
+            // 这里创建资源的时候就会保存到相册
+            await MediaLibrary.createAssetAsync(manipulateResult.uri);
+            Modal.show({
+              title: '截图成功',
+              mode: 'middle',
+            });
+          }
+        } catch (error) {
+          Modal.show({ title: `截图失败：${error}` });
+          // 避免使用console.log
+          return;
+        }
+      }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
       Modal.show({ title: `截图失败：${e}` });
-      console.log(e);
+      // 避免使用console.log
     }
   };
 
@@ -210,10 +237,12 @@ const Timetable: React.FC<CourseTableProps> = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.container} ref={imageRef} collapsable={false}>
+      <View style={styles.container}>
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
+          ref={imageRef}
+          collapsable={false}
           conrerStyle={{
             backgroundColor:
               themeName === 'light' ? commonColors.gray : commonColors.black,
@@ -234,6 +263,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyBottom={<StickyBottom />}
           // 左侧时间栏
           stickyLeft={<StickyLeft />}
+          // 确保可以正常滚动
+          enableScrolling={true}
+          style={{ flex: 1 }}
         >
           {/* 内容部分 (课程表) */}
           {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
@@ -475,18 +507,16 @@ export const StickyBottom = memo(function StickyBottom() {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    width: percent2px(135, 'width'),
-    height: 900,
     flexDirection: 'row',
     marginBottom: 20,
     flex: 1,
-    overflow: 'scroll',
+    overflow: 'visible', // 修改为visible以确保内容不被裁剪
   },
   courseWrapperStyle: {
     position: 'relative',
     width: COURSE_ITEM_WIDTH * daysOfWeek.length,
     height: COURSE_ITEM_HEIGHT * timeSlots.length + COURSE_HEADER_HEIGHT,
-    overflow: 'scroll',
+    overflow: 'visible', // 修改为visible以确保内容不被裁剪
     zIndex: -1,
   },
   timeSideBar: {
