@@ -32,7 +32,6 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
-// import { percent2px } from '@/utils';
 import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
@@ -49,6 +48,9 @@ const Timetable: React.FC<CourseTableProps> = ({
   );
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
+  // 完整课表内容的引用
+  const fullTableRef = useRef<View>(null);
+
   const onSaveImageAsync = async () => {
     try {
       // 在真正需要使用权限时才请求
@@ -63,23 +65,17 @@ const Timetable: React.FC<CourseTableProps> = ({
         }
       }
 
-      // 显示加载提示
-      Modal.show({
-        title: '正在生成截图...',
-        mode: 'middle',
-      });
-
       // 确保截图前视图已完全渲染
       setTimeout(async () => {
         try {
-          // 将滚动位置重置到顶部，确保截取完整课表
-          // 这里我们使用事件总线触发一个事件来重置滚动位置
+          // 将滚动位置重置到顶部
           globalEventBus.emit('ResetScrollPosition');
 
-          // 给予一点时间让滚动位置重置
+          // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
 
-          const snapshot = await makeImageFromView(imageRef);
+          // 使用完整课表内容的引用而不是滚动视图
+          const snapshot = await makeImageFromView(fullTableRef);
           if (!snapshot) {
             Modal.show({
               title: '截图失败',
@@ -88,7 +84,7 @@ const Timetable: React.FC<CourseTableProps> = ({
             return;
           }
 
-          const data = await snapshot?.encodeToBase64();
+          const data = snapshot?.encodeToBase64();
           const uri = `data:image/png;base64,${data}`;
 
           const manipulateResult = await ImageManipulator.manipulateAsync(
@@ -111,13 +107,11 @@ const Timetable: React.FC<CourseTableProps> = ({
           }
         } catch (error) {
           Modal.show({ title: `截图失败：${error}` });
-          // 避免使用console.log
           return;
         }
       }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
       Modal.show({ title: `截图失败：${e}` });
-      // 避免使用console.log
     }
   };
 
@@ -128,6 +122,7 @@ const Timetable: React.FC<CourseTableProps> = ({
       // globalEventBus.off('SaveImageShot', onSaveImageAsync);
     };
   }, []);
+
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -235,9 +230,48 @@ const Timetable: React.FC<CourseTableProps> = ({
       );
     })()
   );
+  // 创建完整课表内容的视图，用于截图
+  const fullTableContent = (
+    <View
+      ref={fullTableRef}
+      collapsable={false}
+      style={{
+        position: 'absolute',
+        // opacity: 0, // 隐藏这个视图，只用于截图
+        zIndex: -100,
+        backgroundColor: currentStyle?.background_style?.backgroundColor,
+      }}
+    >
+      <View style={{ flexDirection: 'row' }}>
+        {/* 左上角空白区域 */}
+        <View
+          style={{
+            width: TIME_WIDTH,
+            height: COURSE_HEADER_HEIGHT,
+            backgroundColor:
+              themeName === 'light' ? commonColors.gray : commonColors.black,
+          }}
+        />
+        {/* 顶部周标题 */}
+        <StickyTop />
+      </View>
+      <View style={{ flexDirection: 'row' }}>
+        {/* 左侧时间栏 */}
+        <View>
+          <StickyLeft />
+        </View>
+        {/* 课表内容 */}
+        {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+      </View>
+    </View>
+  );
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
+        {/* 用于截图的完整课表内容 */}
+        {fullTableContent}
+
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
@@ -250,6 +284,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           onRefresh={async (handleSuccess, handleFail) => {
             try {
               setIsFetching(true);
+              // onTimetableRefresh returns a Promise so we need to await it
               await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
@@ -353,6 +388,7 @@ export const ModalContent: React.FC<ModalContentProps> = props => {
     </View>
   );
 };
+
 export const Content: React.FC<CourseTransferType> = props => {
   const {
     classroom,
@@ -491,6 +527,7 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
     </>
   );
 });
+
 export const StickyBottom = memo(function StickyBottom() {
   return (
     <Divider
@@ -504,18 +541,18 @@ export const StickyBottom = memo(function StickyBottom() {
     </Divider>
   );
 });
+
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: 20,
     flex: 1,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
   },
   courseWrapperStyle: {
     position: 'relative',
     width: COURSE_ITEM_WIDTH * daysOfWeek.length,
-    height: COURSE_ITEM_HEIGHT * timeSlots.length + COURSE_HEADER_HEIGHT,
+    height: COURSE_ITEM_HEIGHT * timeSlots.length,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
     zIndex: -1,
   },
