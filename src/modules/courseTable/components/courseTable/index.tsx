@@ -32,7 +32,6 @@ import {
   timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
-import { percent2px } from '@/utils';
 import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
@@ -49,6 +48,9 @@ const Timetable: React.FC<CourseTableProps> = ({
   );
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
+  // 完整课表内容的引用
+  const fullTableRef = useRef<View>(null);
+
   const onSaveImageAsync = async () => {
     try {
       // 在真正需要使用权限时才请求
@@ -62,35 +64,54 @@ const Timetable: React.FC<CourseTableProps> = ({
           return;
         }
       }
-      const snapshot = await makeImageFromView(imageRef);
-      if (!snapshot) {
-        Modal.show({
-          title: '截图失败',
-          mode: 'middle',
-        });
-      }
-      const data = await snapshot?.encodeToBase64();
-      const uri = `data:image/png;base64,${data}`;
 
-      const result = await ImageManipulator.manipulateAsync(uri, [], {
-        compress: 1,
-        format: ImageManipulator.SaveFormat.PNG,
-        base64: false,
-      });
+      // 确保截图前视图已完全渲染
+      setTimeout(async () => {
+        try {
+          // 将滚动位置重置到顶部
+          globalEventBus.emit('ResetScrollPosition');
 
-      if (result && result.uri) {
-        // 这里创建资源的时候就会保存到相册……
-        await MediaLibrary.createAssetAsync(result.uri);
-        // 这里如果再保存就会再多一张……傻逼 expo
-        //  await MediaLibrary.saveToLibraryAsync(result.uri);
-        Modal.show({
-          title: '截图成功',
-          mode: 'middle',
-        });
-      }
+          // 给予时间让滚动位置重置
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          // 使用完整课表内容的引用而不是滚动视图
+          const snapshot = await makeImageFromView(fullTableRef);
+          if (!snapshot) {
+            Modal.show({
+              title: '截图失败',
+              mode: 'middle',
+            });
+            return;
+          }
+
+          const data = snapshot?.encodeToBase64();
+          const uri = `data:image/png;base64,${data}`;
+
+          const manipulateResult = await ImageManipulator.manipulateAsync(
+            uri,
+            [],
+            {
+              compress: 1,
+              format: ImageManipulator.SaveFormat.PNG,
+              base64: false,
+            }
+          );
+
+          if (manipulateResult && manipulateResult.uri) {
+            // 这里创建资源的时候就会保存到相册
+            await MediaLibrary.createAssetAsync(manipulateResult.uri);
+            Modal.show({
+              title: '截图成功',
+              mode: 'middle',
+            });
+          }
+        } catch (error) {
+          Modal.show({ title: `截图失败：${error}` });
+          return;
+        }
+      }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
       Modal.show({ title: `截图失败：${e}` });
-      console.log(e);
     }
   };
 
@@ -101,6 +122,7 @@ const Timetable: React.FC<CourseTableProps> = ({
       // globalEventBus.off('SaveImageShot', onSaveImageAsync);
     };
   }, []);
+
   // 内容部分
   const content = useDeferredValue(
     (() => {
@@ -208,12 +230,53 @@ const Timetable: React.FC<CourseTableProps> = ({
       );
     })()
   );
+  // 创建完整课表内容的视图，用于截图
+  const fullTableContent = (
+    <View
+      ref={fullTableRef}
+      collapsable={false}
+      style={{
+        position: 'absolute',
+        // opacity: 0, // 隐藏这个视图，只用于截图
+        zIndex: -100,
+        backgroundColor: currentStyle?.background_style?.backgroundColor,
+      }}
+    >
+      <View style={{ flexDirection: 'row' }}>
+        {/* 左上角空白区域 */}
+        <View
+          style={{
+            width: TIME_WIDTH,
+            height: COURSE_HEADER_HEIGHT,
+            backgroundColor:
+              themeName === 'light' ? commonColors.gray : commonColors.black,
+          }}
+        />
+        {/* 顶部周标题 */}
+        <StickyTop />
+      </View>
+      <View style={{ flexDirection: 'row' }}>
+        {/* 左侧时间栏 */}
+        <View>
+          <StickyLeft />
+        </View>
+        {/* 课表内容 */}
+        {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+      </View>
+    </View>
+  );
+
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.container} ref={imageRef} collapsable={false}>
+      <View style={styles.container}>
+        {/* 用于截图的完整课表内容 */}
+        {fullTableContent}
+
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
+          ref={imageRef}
+          collapsable={false}
           conrerStyle={{
             backgroundColor:
               themeName === 'light' ? commonColors.gray : commonColors.black,
@@ -221,6 +284,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           onRefresh={async (handleSuccess, handleFail) => {
             try {
               setIsFetching(true);
+              // onTimetableRefresh returns a Promise so we need to await it
               await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
@@ -234,6 +298,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyBottom={<StickyBottom />}
           // 左侧时间栏
           stickyLeft={<StickyLeft />}
+          // 确保可以正常滚动
+          enableScrolling={true}
+          style={{ flex: 1 }}
         >
           {/* 内容部分 (课程表) */}
           {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
@@ -321,6 +388,7 @@ export const ModalContent: React.FC<ModalContentProps> = props => {
     </View>
   );
 };
+
 export const Content: React.FC<CourseTransferType> = props => {
   const {
     classroom,
@@ -459,6 +527,7 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
     </>
   );
 });
+
 export const StickyBottom = memo(function StickyBottom() {
   return (
     <Divider
@@ -472,21 +541,19 @@ export const StickyBottom = memo(function StickyBottom() {
     </Divider>
   );
 });
+
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    width: percent2px(135, 'width'),
-    height: 900,
     flexDirection: 'row',
-    marginBottom: 20,
     flex: 1,
-    overflow: 'scroll',
+    overflow: 'visible', // 修改为visible以确保内容不被裁剪
   },
   courseWrapperStyle: {
     position: 'relative',
     width: COURSE_ITEM_WIDTH * daysOfWeek.length,
-    height: COURSE_ITEM_HEIGHT * timeSlots.length + COURSE_HEADER_HEIGHT,
-    overflow: 'scroll',
+    height: COURSE_ITEM_HEIGHT * timeSlots.length,
+    overflow: 'visible', // 修改为visible以确保内容不被裁剪
     zIndex: -1,
   },
   timeSideBar: {

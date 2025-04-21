@@ -15,7 +15,7 @@ export type courseType = {
 export interface CourseTableProps {
   data: courseType[];
   currentWeek: number;
-  onTimetableRefresh: (_forceRefresh: boolean) => void;
+  onTimetableRefresh: (_forceRefresh: boolean) => Promise<void>;
 }
 
 // 课程中间类型,比 courseType 增加 rowIndex 和 colIndex
