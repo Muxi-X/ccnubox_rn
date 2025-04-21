@@ -187,6 +187,21 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         isTriggered.value = false;
       });
 
+    // Create animated styles for various components
+
+    // Animated style for refresh header height
+    const refreshHeaderStyle = useAnimatedStyle(() => {
+      return {
+        height: backHeight.value,
+      };
+    }, []);
+
+    // Animated style for corner top position
+    const cornerTopStyle = useAnimatedStyle(() => {
+      return {
+        top: backHeight.value,
+      };
+    }, []);
     const animatedStyle = useAnimatedStyle(() => {
       return {
         transform: [
@@ -195,11 +210,46 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         ],
       };
     }, []);
+
+    // Animated style for content margins
+    const contentMarginStyle = useAnimatedStyle(() => {
+      return {
+        marginLeft: cornerWidth.value,
+        marginTop: cornerHeight.value,
+      };
+    }, []);
+
+    // Animated style for corner dimensions
+    const cornerStyle = useAnimatedStyle(() => {
+      return {
+        height: cornerHeight.value,
+        width: cornerWidth.value,
+      };
+    }, []);
+
+    // Animated style for sticky top margin
+    const stickyTopMarginStyle = useAnimatedStyle(() => {
+      return {
+        marginLeft: cornerWidth.value,
+      };
+    }, []);
+
+    // Animated style for sticky left top position
+    const stickyLeftTopStyle = useAnimatedStyle(() => {
+      return {
+        top: cornerHeight.value,
+      };
+    }, []);
+    // For the sticky top, we only want horizontal scrolling, not vertical
     const animatedOnlyX = useAnimatedStyle(() => ({
       transform: [{ translateX: translateX.value }],
+      zIndex: 10, // Ensure it stays on top
     }));
+
+    // For the sticky left, we only want vertical scrolling, not horizontal
     const animatedOnlyY = useAnimatedStyle(() => ({
       transform: [{ translateY: translateY.value }],
+      zIndex: 9, // Ensure it stays on top but below the corner
     }));
     const handleChildLayout = (event: LayoutChangeEvent) => {
       const { layout } = event.nativeEvent;
@@ -227,14 +277,16 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         pointerEvents="box-none"
       >
         <Animated.View
-          style={{
-            height: backHeight,
-            width: '100%',
-            zIndex: 21,
-            backgroundColor: commonColors.purple,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          style={[
+            refreshHeaderStyle,
+            {
+              width: '100%',
+              zIndex: 21,
+              backgroundColor: commonColors.purple,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          ]}
         >
           <Text style={{ color: commonColors.white }}>
             <RefreshText />
@@ -243,8 +295,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         {/* sticky top */}
         <Animated.View
           style={[
-            styles.stickyContent,
-            { width: containerSize.width, marginLeft: cornerWidth },
+            styles.stickyTop,
+            { width: containerSize.width },
+            stickyTopMarginStyle,
             animatedOnlyX,
           ]}
           onLayout={layout => {
@@ -255,16 +308,17 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         </Animated.View>
         {/* corner */}
         <Animated.View
-          style={{
-            height: cornerHeight,
-            width: cornerWidth,
-            position: 'absolute',
-            top: backHeight,
-            left: 0,
-            backgroundColor: commonColors.gray,
-            zIndex: 20,
-            ...conrerStyle,
-          }}
+          style={[
+            cornerStyle,
+            cornerTopStyle,
+            {
+              position: 'absolute',
+              left: 0,
+              backgroundColor: commonColors.gray,
+              zIndex: 20,
+              ...conrerStyle,
+            },
+          ]}
         ></Animated.View>
         <Animated.View
           style={{
@@ -280,13 +334,21 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             style={[
               styles.stickyLeft,
               { height: containerSize.height },
+              stickyLeftTopStyle,
               animatedOnlyY,
             ]}
           >
             {stickyLeft}
           </Animated.View>
-          <View
-            style={[styles.wrapper]}
+          <Animated.View
+            style={[
+              styles.wrapper,
+              contentMarginStyle,
+              {
+                paddingLeft: 1, // Add a small padding to ensure proper alignment
+                paddingTop: 1,
+              },
+            ]}
             onLayout={event => {
               const { layout } = event.nativeEvent;
               setWrapperSize(layout);
@@ -299,7 +361,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
                   React.cloneElement(children, { onLayout: handleChildLayout })}
               </Animated.View>
             </GestureDetector>
-          </View>
+          </Animated.View>
         </Animated.View>
         {/* sticky bottom */}
       </View>
@@ -324,14 +386,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     top: 0,
     left: 0,
-    zIndex: 5,
+    zIndex: 10,
   },
   stickyLeft: {
-    position: 'relative',
+    position: 'absolute',
     top: 0,
     left: 0,
     flexShrink: 0,
     flexGrow: 0,
+    zIndex: 9,
   },
   stickyContent: {
     flexShrink: 0,
