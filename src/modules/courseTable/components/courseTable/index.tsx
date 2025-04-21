@@ -403,6 +403,7 @@ export const Content: React.FC<CourseTransferType> = props => {
   const CourseItem = useThemeBasedComponents(
     state => state.currentComponents?.course_item
   );
+
   return (
     <>
       <Pressable
