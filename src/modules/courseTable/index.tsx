@@ -133,7 +133,10 @@ const CourseTablePage: FC = () => {
 
   return (
     <View
-      style={[{ height: '95%', width: '100%' }, currentStyle?.background_style]}
+      style={[
+        { height: '120%', width: '100%' },
+        currentStyle?.background_style,
+      ]}
     >
       <CourseTable
         data={courseData}
