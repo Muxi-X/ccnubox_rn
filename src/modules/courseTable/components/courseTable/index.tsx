@@ -15,6 +15,7 @@ import Divider from '@/components/divider';
 import Modal from '@/components/modal';
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
+import Toast from '@/components/toast';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
@@ -57,14 +58,13 @@ const Timetable: React.FC<CourseTableProps> = ({
       if (status?.status !== 'granted') {
         const permissionResult = await requestPermission();
         if (permissionResult.status !== 'granted') {
-          Modal.show({
-            title: '需要相册权限才能保存截图',
-            mode: 'middle',
+          Toast.show({
+            text: '需要相册权限才能保存截图',
+            icon: 'fail',
           });
           return;
         }
       }
-
       // 确保截图前视图已完全渲染
       setTimeout(async () => {
         try {
@@ -77,9 +77,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           // 使用完整课表内容的引用而不是滚动视图
           const snapshot = await makeImageFromView(fullTableRef);
           if (!snapshot) {
-            Modal.show({
-              title: '截图失败',
-              mode: 'middle',
+            Toast.show({
+              text: '截图失败',
+              icon: 'fail',
             });
             return;
           }
@@ -100,18 +100,18 @@ const Timetable: React.FC<CourseTableProps> = ({
           if (manipulateResult && manipulateResult.uri) {
             // 这里创建资源的时候就会保存到相册
             await MediaLibrary.createAssetAsync(manipulateResult.uri);
-            Modal.show({
-              title: '截图成功',
-              mode: 'middle',
+            Toast.show({
+              text: '截图成功',
+              icon: 'success',
             });
           }
         } catch (error) {
-          Modal.show({ title: `截图失败：${error}` });
+          Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
           return;
         }
       }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
-      Modal.show({ title: `截图失败：${e}` });
+      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
     }
   };
 
@@ -298,8 +298,6 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyBottom={<StickyBottom />}
           // 左侧时间栏
           stickyLeft={<StickyLeft />}
-          // 确保可以正常滚动
-          enableScrolling={true}
           style={{ flex: 1 }}
         >
           {/* 内容部分 (课程表) */}

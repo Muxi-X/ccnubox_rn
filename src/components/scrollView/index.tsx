@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import React, { memo, useEffect, useState } from 'react';
 import {
   LayoutChangeEvent,
@@ -20,7 +19,7 @@ import { ScrollableViewProps } from '@/components/scrollView/type';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
-import Modal from '../modal';
+import Toast from '../toast';
 
 const REFRESH_THRESHOLD = 100; // 触发刷新的阈值
 
@@ -102,9 +101,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               duration: 300,
             });
             refreshTextState.value = 'pull';
-            Modal.show({
-              title: '刷新成功',
-              mode: 'middle',
+            Toast.show({
+              text: '刷新成功',
+              icon: 'success',
             });
           }, 1000);
         },
@@ -334,14 +333,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             {stickyLeft}
           </Animated.View>
           <Animated.View
-            style={[
-              styles.wrapper,
-              contentMarginStyle,
-              {
-                paddingLeft: 1, // Add a small padding to ensure proper alignment
-                paddingTop: 1,
-              },
-            ]}
+            style={[styles.wrapper, contentMarginStyle]}
             onLayout={event => {
               const { layout } = event.nativeEvent;
               setWrapperSize(layout);
