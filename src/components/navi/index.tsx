@@ -1,8 +1,8 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { useDebounce } from '@/hooks';
+import useDebounce from '@/hooks/useDebounce';
 
 import ColorTransitionView from '@/components/view';
 
@@ -17,56 +17,53 @@ const TabBar: FC<BottomTabBarProps> = props => {
   const navbarStyle = useVisualScheme(
     state => state.currentStyle?.navbar_background_style
   );
-  const handlePress = useDebounce(
-    (
-      routeKey: string,
-      routeName: string,
-      routeParams: any,
-      focused: boolean
-    ) => {
+
+  const handlePress = useCallback(
+    (route: any, isFocused: boolean) => {
+      if (!route) return;
+
       const event = navigation.emit({
         type: 'tabPress',
-        target: routeKey,
+        target: route.key,
         canPreventDefault: true,
       });
 
-      if (!focused && !event.defaultPrevented) {
-        navigation.navigate(routeName, routeParams);
+      if (!isFocused && !event.defaultPrevented) {
+        navigation.navigate(route.name, route.params);
       }
     },
-    100
+    [navigation]
   );
 
-  const handleLongPress = useDebounce((routeKey: string) => {
-    navigation.emit({
-      type: 'tabLongPress',
-      target: routeKey,
-    });
-  }, 100);
+  const debouncedHandler = useDebounce(handlePress, 300);
   return (
     <ColorTransitionView
       configurableThemeName="navbar_background_style"
       style={[styles.tabbar, navbarStyle]}
     >
       {state.routes.map((route, index) => {
+        if (!route || !route.key || !descriptors || !descriptors[route.key]) {
+          // Skip rendering this tab item if route or descriptor is missing
+          return null;
+        }
+
         const { options } = descriptors[route.key];
         const iconName = tabConfig[index]?.iconName;
         const label =
-          options.tabBarLabel !== undefined
+          options?.tabBarLabel !== undefined
             ? options.tabBarLabel
-            : options.title !== undefined
+            : options?.title !== undefined
               ? options.title
               : route.name;
 
         const isFocused = state?.index === index;
-
-        // 使用闭包创建特定路由的处理函数
-        const onPress = () => {
-          handlePress(route.key, route.name, route.params, isFocused);
-        };
+        const onPress = () => debouncedHandler(route, isFocused);
 
         const onLongPress = () => {
-          handleLongPress(route.key);
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.name,
+          });
         };
         return (
           <TabBarItem
