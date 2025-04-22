@@ -106,23 +106,15 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             text: '刷新成功',
             icon: 'success',
           });
-
+          backHeight.value = withTiming(0, {
+            duration: 500,
+          });
           // 使用 setTimeout 来延迟动画开始时间
           setTimeout(() => {
-            // 使用单个动画来完成高度变化，避免多个动画导致的闪烁
-            // 使用更短的动画时间，减少延迟感
-            backHeight.value = withTiming(
-              0,
-              {
-                duration: 200, // 使用更短的动画时间
-              },
-              () => {
-                // 在动画完成后重置状态
-                refreshTextState.value = 'pull';
-                isRefreshing.value = false;
-              }
-            );
-          }, 200); // 减少延迟时间
+            // 在动画完成后重置状态
+            refreshTextState.value = 'pull';
+            isRefreshing.value = false;
+          }, 2000); // 减少延迟时间
         },
         () => {
           // 请求失败后立即显示提示，提高响应速度
@@ -131,22 +123,15 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             icon: 'fail',
           });
 
+          backHeight.value = withTiming(0, {
+            duration: 500,
+          });
           // 使用 setTimeout 来延迟动画开始时间
           setTimeout(() => {
-            // 使用单个动画来完成高度变化，避免多个动画导致的闪烁
-            // 使用更短的动画时间，减少延迟感
-            backHeight.value = withTiming(
-              0,
-              {
-                duration: 200, // 使用更短的动画时间
-              },
-              () => {
-                // 在动画完成后重置状态
-                refreshTextState.value = 'pull';
-                isRefreshing.value = false;
-              }
-            );
-          }, 200); // 减少延迟时间
+            // 在动画完成后重置状态
+            refreshTextState.value = 'pull';
+            isRefreshing.value = false;
+          }, 2000); // 减少延迟时间
         }
       );
     };
@@ -201,7 +186,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             );
 
             // 只有当高度变化超过 2px 时才更新，减少小幅度频繁更新
-            if (Math.abs(newHeight - backHeight.value) >= 2) {
+            if (Math.abs(newHeight - backHeight.value) >= 0.2) {
               backHeight.value = newHeight;
             }
 
@@ -210,10 +195,8 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               dampedTranslation > REFRESH_THRESHOLD &&
               refreshTextState.value !== 'release'
             ) {
-              isTriggered.value = true;
               refreshTextState.value = 'release';
               // 当进入松手刷新状态时，将高度固定为 REFRESH_THRESHOLD
-              backHeight.value = REFRESH_THRESHOLD;
             } else if (
               dampedTranslation <= REFRESH_THRESHOLD &&
               refreshTextState.value === 'release'
@@ -240,7 +223,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       // 缓存当前值，减少重复访问
       prevTranslateX.value = event.absoluteX;
       shouldRefresh.value = true;
-      const isCurrentlyTriggered = isTriggered.value;
 
       // 如果是向上滑动，确保刷新提示框高度重置
       if (
@@ -259,7 +241,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       const dampedTranslation = event.translationY * 0.7;
 
       if (
-        isCurrentlyTriggered &&
         dampedTranslation > REFRESH_THRESHOLD &&
         dampedTranslation >= MIN_PULL_THRESHOLD
       ) {
@@ -268,6 +249,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         refreshTextState.value = 'refreshing';
         // 设置正在刷新状态，禁用滚动
         isRefreshing.value = true;
+        isTriggered.value = true;
 
         // 直接设置固定高度，不使用动画，避免高度变化
         // 确保与松手刷新状态的高度一致
@@ -281,7 +263,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         refreshTextState.value = 'pull';
         // 使用更短的动画时间，减少延迟感
         backHeight.value = withTiming(0, {
-          duration: 50,
+          duration: 100,
         });
         // 确保刷新状态被重置，即使用户取消了刷新
         isRefreshing.value = false;
@@ -386,37 +368,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       });
 
     // Create animated styles for various components
-
-    // Animated style for refresh header height - 优化性能
-    const refreshHeaderStyle = useAnimatedStyle(() => {
-      // 使用缓存来减少计算
-      const currentHeight = backHeight.value;
-      const isCurrentlyRefreshing = isRefreshing.value;
-
-      // 在刷新状态下保持固定高度，避免闪烁
-      if (isCurrentlyRefreshing) {
-        return {
-          height: REFRESH_THRESHOLD,
-          // 使用 translateY 来强制硬件加速
-          transform: [{ translateY: 0 }],
-          opacity: 1,
-        };
-      }
-
-      // 对于安卓，使用离散的高度值来减少闪烁
-      // 将高度四舍五入到最接近的 4px 值，减少频繁更新
-      const height = Math.floor(currentHeight / 4) * 4;
-
-      // 使用阈值来减少状态更新
-      const opacity = height <= 0 ? 0 : 1;
-
-      return {
-        height,
-        // 使用 translateY 来强制硬件加速
-        transform: [{ translateY: 0 }],
-        opacity,
-      };
-    }, []);
 
     // Animated style for corner top position
     const cornerTopStyle = useAnimatedStyle(() => {
@@ -527,10 +478,13 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       >
         <Animated.View
           style={[
-            refreshHeaderStyle,
             {
               width: '100%',
               zIndex: 21,
+              height: backHeight,
+              // 使用 translateY 来强制硬件加速
+              transform: [{ translateY: 0 }],
+              opacity: 1,
               backgroundColor: commonColors.purple,
               justifyContent: 'center',
               alignItems: 'center',
