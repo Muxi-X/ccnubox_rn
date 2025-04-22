@@ -43,7 +43,6 @@ const TabBar: FC<BottomTabBarProps> = props => {
       target: routeKey,
     });
   }, 100);
-
   return (
     <ColorTransitionView
       configurableThemeName="navbar_background_style"
