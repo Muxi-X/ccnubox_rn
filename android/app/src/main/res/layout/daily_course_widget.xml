@@ -1,54 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg">
+
     <TextView
         android:id="@+id/widget_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#000"
+        android:padding="8dp" />
+
+    <ListView
+        android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#333333"
-        android:gravity="center"
-        android:layout_marginBottom="8dp"
-        android:text="第6周星期六"/>
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp" />
 
-    <!-- 课程项模板 -->
     <LinearLayout
-        android:id="@+id/course_item"
+        android:id="@+id/layout_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="4dp"
-        android:layout_marginBottom="4dp">
-
+        android:gravity="center"
+        android:padding="16dp"
+        android:orientation="vertical">
         <TextView
-            android:id="@+id/course_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="#000000"
-            android:maxLines="1"
-            android:text="高等数学"
-            android:ellipsize="end"/>
-
-        <TextView
-            android:id="@+id/course_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="8:00-9:35"
-            android:textColor="#666666"
-            android:layout_marginTop="2dp"/>
-
-        <TextView
-            android:id="@+id/course_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="教学楼101"
-            android:textColor="#666666"
-            android:layout_marginTop="2dp"/>
+            android:text="今天没有课哦~"
+            android:textColor="#AAA"/>
     </LinearLayout>
-
 </LinearLayout>
