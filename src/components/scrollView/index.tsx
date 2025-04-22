@@ -114,7 +114,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               duration: 300,
             });
             refreshTextState.value = 'pull';
-            runOnJS(Toast.fail)('刷新失败');
+            runOnJS(Toast.show)({ text: '刷新失败', icon: 'fail' });
           }, 1000);
         }
       );
