@@ -4,7 +4,12 @@ import { type ComponentProps } from 'react';
 
 export function TabBarIcon({
   style,
+  name = 'home', // 提供默认图标名称
   ...rest
 }: IconProps<ComponentProps<typeof AntdIcons>['name']>) {
-  return <AntdIcons style={[style]} {...rest} />;
+  // 确保 name 是有效的
+  if (!name) {
+    name = 'home';
+  }
+  return <AntdIcons style={[style]} name={name} {...rest} />;
 }

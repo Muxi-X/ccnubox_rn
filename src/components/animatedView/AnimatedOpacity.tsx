@@ -48,9 +48,13 @@ const AnimatedOpacity = ({
   });
   useEffect(() => {
     if (typeof onAnimationEnd === 'function') {
-      runOnJS(onAnimationEnd)();
+      try {
+        runOnJS(onAnimationEnd)();
+      } catch (error) {
+        // 忽略动画结束回调中的错误
+      }
     }
-  }, [sharedOpacity.value, onAnimationEnd]);
+  }, [onAnimationEnd]);
   return (
     <Animated.View style={[opacityStyle, style]} {...restProps}>
       {children}
