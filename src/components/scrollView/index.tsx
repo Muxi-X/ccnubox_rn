@@ -215,7 +215,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     const contentMarginStyle = useAnimatedStyle(() => {
       return {
         marginLeft: cornerWidth.value,
-        marginTop: cornerHeight.value,
       };
     }, []);
 
@@ -234,12 +233,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       };
     }, []);
 
-    // Animated style for sticky left top position
-    const stickyLeftTopStyle = useAnimatedStyle(() => {
-      return {
-        top: cornerHeight.value,
-      };
-    }, []);
     // For the sticky top, we only want horizontal scrolling, not vertical
     const animatedOnlyX = useAnimatedStyle(() => ({
       transform: [{ translateX: translateX.value }],
@@ -334,7 +327,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             style={[
               styles.stickyLeft,
               { height: containerSize.height },
-              stickyLeftTopStyle,
               animatedOnlyY,
             ]}
           >
@@ -382,7 +374,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   stickyTop: {
-    position: 'absolute',
+    position: 'relative',
     overflow: 'hidden',
     top: 0,
     left: 0,
@@ -399,14 +391,6 @@ const styles = StyleSheet.create({
   stickyContent: {
     flexShrink: 0,
     flexGrow: 0,
-  },
-  box: {
-    height: 200,
-    backgroundColor: '#000',
-    marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
   },
   text: {
     fontSize: 18,
