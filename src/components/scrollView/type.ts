@@ -54,7 +54,7 @@ export interface ScrollableViewProps {
   /**
    * 左上角样式
    */
-  conrerStyle?: StyleProps;
+  cornerStyle?: StyleProps;
   /**
    * 是否可折叠
    */
