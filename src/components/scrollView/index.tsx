@@ -32,7 +32,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       stickyLeft,
       children,
       style,
-      conrerStyle,
+      cornerStyle,
       onRefresh,
       collapsable,
       enableScrolling = true, // 默认启用滚动
@@ -219,7 +219,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     }, []);
 
     // Animated style for corner dimensions
-    const cornerStyle = useAnimatedStyle(() => {
+    const defaultCornerStyle = useAnimatedStyle(() => {
       return {
         height: cornerHeight.value,
         width: cornerWidth.value,
@@ -303,13 +303,14 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         <Animated.View
           style={[
             cornerStyle,
+            defaultCornerStyle,
             cornerTopStyle,
             {
               position: 'absolute',
               left: 0,
               backgroundColor: commonColors.gray,
               zIndex: 20,
-              ...conrerStyle,
+              ...cornerStyle,
             },
           ]}
         ></Animated.View>

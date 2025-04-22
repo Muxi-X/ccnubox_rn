@@ -277,7 +277,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           stickyTop={<StickyTop />}
           ref={imageRef}
           collapsable={false}
-          conrerStyle={{
+          cornerStyle={{
             backgroundColor:
               themeName === 'light' ? commonColors.gray : commonColors.black,
           }}
