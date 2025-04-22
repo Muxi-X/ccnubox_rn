@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import React, { memo, useEffect, useState } from 'react';
 import {
   LayoutChangeEvent,
@@ -20,7 +19,7 @@ import { ScrollableViewProps } from '@/components/scrollView/type';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
-import Modal from '../modal';
+import Toast from '../toast';
 
 const REFRESH_THRESHOLD = 100; // 触发刷新的阈值
 
@@ -32,7 +31,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       stickyLeft,
       children,
       style,
-      conrerStyle,
+      cornerStyle,
       onRefresh,
       collapsable,
       enableScrolling = true, // 默认启用滚动
@@ -102,9 +101,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               duration: 300,
             });
             refreshTextState.value = 'pull';
-            Modal.show({
-              title: '刷新成功',
-              mode: 'middle',
+            Toast.show({
+              text: '刷新成功',
+              icon: 'success',
             });
           }, 1000);
         },
@@ -187,6 +186,21 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         isTriggered.value = false;
       });
 
+    // Create animated styles for various components
+
+    // Animated style for refresh header height
+    const refreshHeaderStyle = useAnimatedStyle(() => {
+      return {
+        height: backHeight.value,
+      };
+    }, []);
+
+    // Animated style for corner top position
+    const cornerTopStyle = useAnimatedStyle(() => {
+      return {
+        top: backHeight.value,
+      };
+    }, []);
     const animatedStyle = useAnimatedStyle(() => {
       return {
         transform: [
@@ -195,11 +209,39 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         ],
       };
     }, []);
+
+    // Animated style for content margins
+    const contentMarginStyle = useAnimatedStyle(() => {
+      return {
+        marginLeft: cornerWidth.value,
+      };
+    }, []);
+
+    // Animated style for corner dimensions
+    const defaultCornerStyle = useAnimatedStyle(() => {
+      return {
+        height: cornerHeight.value,
+        width: cornerWidth.value,
+      };
+    }, []);
+
+    // Animated style for sticky top margin
+    const stickyTopMarginStyle = useAnimatedStyle(() => {
+      return {
+        marginLeft: cornerWidth.value,
+      };
+    }, []);
+
+    // For the sticky top, we only want horizontal scrolling, not vertical
     const animatedOnlyX = useAnimatedStyle(() => ({
       transform: [{ translateX: translateX.value }],
+      zIndex: 10, // Ensure it stays on top
     }));
+
+    // For the sticky left, we only want vertical scrolling, not horizontal
     const animatedOnlyY = useAnimatedStyle(() => ({
       transform: [{ translateY: translateY.value }],
+      zIndex: 9, // Ensure it stays on top but below the corner
     }));
     const handleChildLayout = (event: LayoutChangeEvent) => {
       const { layout } = event.nativeEvent;
@@ -227,14 +269,16 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         pointerEvents="box-none"
       >
         <Animated.View
-          style={{
-            height: backHeight,
-            width: '100%',
-            zIndex: 21,
-            backgroundColor: commonColors.purple,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          style={[
+            refreshHeaderStyle,
+            {
+              width: '100%',
+              zIndex: 21,
+              backgroundColor: commonColors.purple,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          ]}
         >
           <Text style={{ color: commonColors.white }}>
             <RefreshText />
@@ -243,8 +287,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         {/* sticky top */}
         <Animated.View
           style={[
-            styles.stickyContent,
-            { width: containerSize.width, marginLeft: cornerWidth },
+            styles.stickyTop,
+            { width: containerSize.width },
+            stickyTopMarginStyle,
             animatedOnlyX,
           ]}
           onLayout={layout => {
@@ -255,16 +300,18 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         </Animated.View>
         {/* corner */}
         <Animated.View
-          style={{
-            height: cornerHeight,
-            width: cornerWidth,
-            position: 'absolute',
-            top: backHeight,
-            left: 0,
-            backgroundColor: commonColors.gray,
-            zIndex: 20,
-            ...conrerStyle,
-          }}
+          style={[
+            cornerStyle,
+            defaultCornerStyle,
+            cornerTopStyle,
+            {
+              position: 'absolute',
+              left: 0,
+              backgroundColor: commonColors.gray,
+              zIndex: 20,
+              ...cornerStyle,
+            },
+          ]}
         ></Animated.View>
         <Animated.View
           style={{
@@ -285,8 +332,8 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           >
             {stickyLeft}
           </Animated.View>
-          <View
-            style={[styles.wrapper]}
+          <Animated.View
+            style={[styles.wrapper, contentMarginStyle]}
             onLayout={event => {
               const { layout } = event.nativeEvent;
               setWrapperSize(layout);
@@ -299,7 +346,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
                   React.cloneElement(children, { onLayout: handleChildLayout })}
               </Animated.View>
             </GestureDetector>
-          </View>
+          </Animated.View>
         </Animated.View>
         {/* sticky bottom */}
       </View>
@@ -320,30 +367,23 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   stickyTop: {
-    position: 'absolute',
+    position: 'relative',
     overflow: 'hidden',
     top: 0,
     left: 0,
-    zIndex: 5,
+    zIndex: 10,
   },
   stickyLeft: {
-    position: 'relative',
+    position: 'absolute',
     top: 0,
     left: 0,
     flexShrink: 0,
     flexGrow: 0,
+    zIndex: 9,
   },
   stickyContent: {
     flexShrink: 0,
     flexGrow: 0,
-  },
-  box: {
-    height: 200,
-    backgroundColor: '#000',
-    marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
   },
   text: {
     fontSize: 18,
