@@ -154,32 +154,22 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       // 缓存当前值，减少重复访问
       const currentTranslateY = translateY.value;
       const shouldAllowRefresh = shouldRefresh.value;
-      const isAlreadyTriggered = isTriggered.value;
-
       // 检查是否是向上滑动或者不在顶部
       // 这是修复刷新提示框在向上滑动时高度不会还原的关键
       if (event.translationY <= 0 || currentTranslateY !== 0) {
-        // 如果是向上滑动且刷新提示框高度大于0，则立即重置高度
-        if (backHeight.value > 0 && !isRefreshing.value) {
-          backHeight.value = 0;
-          // 同时重置文本状态
-          if (refreshTextState.value !== 'pull') {
-            refreshTextState.value = 'pull';
-          }
+        if (refreshTextState.value !== 'pull') {
+          refreshTextState.value = 'pull';
         }
         return; // 提前返回，不执行后续逻辑
       }
-
       // 只有在顶部且向下拉动时才处理刷新
-      if (shouldAllowRefresh) {
-        if (!isAlreadyTriggered) {
+      if (currentTranslateY === 0) {
+        if (shouldAllowRefresh) {
           // 添加阻尼效果，使用更小的系数来减少移动敏感度
           const dampedTranslation = event.translationY * 0.7;
-
           // 使用阈值来减少更新频率
           // 只有当下拉距离超过最小阈值时才显示刷新指示器
           if (dampedTranslation >= MIN_PULL_THRESHOLD) {
-            // 使用离散值来减少更新频率
             const newHeight = Math.min(
               Math.floor((dampedTranslation - MIN_PULL_THRESHOLD) / 2) * 2,
               REFRESH_THRESHOLD
@@ -239,7 +229,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
 
       // 使用更小的阻尼系数，减少敏感度
       const dampedTranslation = event.translationY * 0.7;
-
       if (
         dampedTranslation > REFRESH_THRESHOLD &&
         dampedTranslation >= MIN_PULL_THRESHOLD
@@ -251,10 +240,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         isRefreshing.value = true;
         isTriggered.value = true;
 
-        // 直接设置固定高度，不使用动画，避免高度变化
-        // 确保与松手刷新状态的高度一致
-        backHeight.value = REFRESH_THRESHOLD;
-
         // 使用 runOnJS 在 JS 线程上调用回调，避免阻塞 UI 线程
         runOnJS(onReachTopEnd)();
       } else if (backHeight.value > 0) {
@@ -263,7 +248,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         refreshTextState.value = 'pull';
         // 使用更短的动画时间，减少延迟感
         backHeight.value = withTiming(0, {
-          duration: 100,
+          duration: 400,
         });
         // 确保刷新状态被重置，即使用户取消了刷新
         isRefreshing.value = false;
@@ -306,11 +291,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           }
         }
 
-        // 检测横向滑动是否过大，使用更大的阈值减少误触发
-        if (Math.abs(event.absoluteX - prevTranslateX.value) > 80) {
-          shouldRefresh.value = false;
-        }
-
         // 处理下拉刷新
         handlePullToRefresh(event);
 
@@ -349,11 +329,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             ) * 2;
 
           // 只有当位移变化超过 2px 时才更新，减少小幅度频繁更新
-          if (Math.abs(newTranslateX - translateX.value) >= 2) {
+          if (Math.abs(newTranslateX - translateX.value) >= 0.2) {
             translateX.value = newTranslateX;
           }
 
-          if (Math.abs(newTranslateY - translateY.value) >= 2) {
+          if (Math.abs(newTranslateY - translateY.value) >= 0.2) {
             translateY.value = newTranslateY;
           }
         }
@@ -361,7 +341,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       .onEnd(event => {
         'worklet';
         // 在刷新状态下不处理滑动结束
-        if (isRefreshing.value) {
+        if (!shouldRefresh.value || isRefreshing.value) {
           return;
         }
         handleRefreshComplete(event);
