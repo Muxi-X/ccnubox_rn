@@ -1,9 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
-import {
-  GestureUpdateEvent,
-  PanGestureHandlerEventPayload,
-} from 'react-native-gesture-handler';
-import { StyleProps } from 'react-native-reanimated';
+import { ViewStyle } from 'react-native';
 
 /**
  * ScrollViewProps
@@ -14,7 +10,7 @@ export interface ScrollableViewProps {
    * 滚动监听
    * @param evt
    */
-  onScroll?: (evt: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
+  onScroll?: (event: { translationX: number; translationY: number }) => void;
   /**
    * 滚动到最上端监听
    */
@@ -50,11 +46,11 @@ export interface ScrollableViewProps {
   /**
    * 样式
    */
-  style?: StyleProps;
+  style?: ViewStyle;
   /**
    * 左上角样式
    */
-  cornerStyle?: StyleProps;
+  cornerStyle?: ViewStyle;
   /**
    * 是否可折叠
    */
