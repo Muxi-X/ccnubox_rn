@@ -166,17 +166,16 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       if (currentTranslateY === 0) {
         if (shouldAllowRefresh) {
           // 添加阻尼效果，使用更小的系数来减少移动敏感度
-          const dampedTranslation = event.translationY * 0.7;
+          const dampedTranslation = event.translationY * 0.4;
           // 使用阈值来减少更新频率
           // 只有当下拉距离超过最小阈值时才显示刷新指示器
           if (dampedTranslation >= MIN_PULL_THRESHOLD) {
             const newHeight = Math.min(
-              Math.floor((dampedTranslation - MIN_PULL_THRESHOLD) / 2) * 2,
+              dampedTranslation - MIN_PULL_THRESHOLD,
               REFRESH_THRESHOLD
             );
-
-            // 只有当高度变化超过 2px 时才更新，减少小幅度频繁更新
-            if (Math.abs(newHeight - backHeight.value) >= 0.2) {
+            // // 只有当高度变化超过 2px 时才更新，减少小幅度频繁更新
+            if (Math.abs(newHeight - backHeight.value) >= 2) {
               backHeight.value = newHeight;
             }
 
@@ -295,7 +294,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         handlePullToRefresh(event);
 
         // 只有启用滚动时才处理滚动
-        if (enableScrolling) {
+        if (enableScrolling && !backHeight.value) {
           // 缓存当前值，减少重复计算
           const currentStartX = startX.value;
           const currentStartY = startY.value;
