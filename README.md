@@ -1,3 +1,72 @@
+# Hadoop Docker Cluster
+
+This repository contains configurations to set up a basic Hadoop cluster using Docker. The cluster includes:
+
+- NameNode (HDFS master)
+- DataNode (HDFS worker)
+- ResourceManager (YARN master)
+- NodeManager (YARN worker)
+
+## Prerequisites
+
+- Docker and Docker Compose installed on your system
+- Sufficient system resources (at least 8GB RAM and 4 CPU cores recommended)
+
+## Getting Started
+
+1. Clone this repository
+2. Start the Hadoop cluster:
+   ```
+   docker-compose up -d
+   ```
+3. Verify the cluster is running:
+   ```
+   docker-compose ps
+   ```
+
+## Accessing Services
+
+- HDFS NameNode UI: http://localhost:9870
+- YARN ResourceManager UI: http://localhost:8088
+
+## Basic HDFS Commands
+
+You can run HDFS commands by executing them in the NameNode container:
+
+```bash
+# List files in HDFS
+docker exec -it namenode hdfs dfs -ls /
+
+# Create a directory in HDFS
+docker exec -it namenode hdfs dfs -mkdir /data
+
+# Upload a file to HDFS
+docker exec -it namenode hdfs dfs -put /path/to/local/file /data/
+
+# Read a file from HDFS
+docker exec -it namenode hdfs dfs -cat /data/file
+```
+
+## Stopping the Cluster
+
+To stop the cluster:
+
+```
+docker-compose down
+```
+
+To stop the cluster and remove volumes (all data will be lost):
+
+```
+docker-compose down -v
+```
+
+## Notes
+
+- Data is persisted using Docker volumes (hadoop_namenode and hadoop_datanode)
+- The cluster is configured with minimal settings for demonstration purposes
+- For production use, additional configuration would be required
+
 # ccnubox_rn
 
 华师匣子rn版
