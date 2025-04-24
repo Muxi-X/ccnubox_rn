@@ -17,7 +17,7 @@ import AnimatedOpacity from '../animatedView/AnimatedOpacity';
 import AnimatedScale from '../animatedView/AnimatedScale';
 
 const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
-  const { isFocused, onPress, onLongPress, label, iconName } = props;
+  const { isFocused, onPress, onLongPress, label = '', iconName } = props;
   const iconStyle = useVisualScheme(
     state => state.currentStyle?.navbar_icon_active_style
   ) as TextStyle;
