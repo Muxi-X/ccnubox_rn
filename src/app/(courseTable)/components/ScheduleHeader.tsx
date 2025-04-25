@@ -59,7 +59,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
             ]}
           />
         </TouchableOpacity>
-        <Text
+        {/* <Text
           style={[
             commonStyles.fontLight,
             commonStyles.fontSmall,
@@ -70,7 +70,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
           ]}
         >
           当前周设置为{currentWeek}
-        </Text>
+        </Text> */}
       </View>
     </>
   );
