@@ -5,8 +5,8 @@ export interface TabBarItemProps extends SinglePageType {
    * 是否为当前选中
    */
   isFocused: boolean;
-  onPress?: (e: any) => void;
-  onLongPress?: (e: any) => void;
+  onPress?: (_e: any) => void;
+  onLongPress?: (_e: any) => void;
   /**
    * 展示文本
    */

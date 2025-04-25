@@ -12,7 +12,7 @@ import useVisualScheme from '@/store/visualScheme';
 import { statusImage } from '@/constants/toast';
 import { commonColors, commonStyles } from '@/styles/common';
 
-const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
+const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   visible: initVisible = false,
   currentKey,
   icon,

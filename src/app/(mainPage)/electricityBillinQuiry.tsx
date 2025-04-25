@@ -339,7 +339,7 @@ const ElectricityBillinQuiry = () => {
     setAddress(val.value);
   };
   const handlePickerChange = (val: any) => {
-    console.log(val);
+    //console.log(val);
     setPickerValue(val);
   };
 

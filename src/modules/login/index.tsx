@@ -46,13 +46,13 @@ const LoginPage: FC = () => {
       Toast.fail('请先阅读隐私条例', 2);
       return;
     }
-    console.log(userInfo);
+    //console.log(userInfo);
     try {
       const response = await request.post('/users/login_ccnu', userInfo, {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        console.log(response.headers);
+        //  console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
         router.navigate('/(tabs)');
@@ -61,7 +61,7 @@ const LoginPage: FC = () => {
       if (error instanceof AxiosError && error.response?.status === 401) {
         Toast.fail('账号密码有误', 2);
       }
-      console.error('注册请求失败:', error);
+      //  console.error('注册请求失败:', error);
     }
     setLoginTriggered(false);
   };

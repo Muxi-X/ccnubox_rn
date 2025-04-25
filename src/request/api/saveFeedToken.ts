@@ -6,7 +6,7 @@ export const saveFeedToken = async (data: any) => {
     const response = await request.post('/feed/changeFeedAllowList', data);
     return response.data;
   } catch (error) {
-    console.error('获取订阅消息出错:', error);
+    //console.error('获取订阅消息出错:', error);
     throw error;
   }
 };
