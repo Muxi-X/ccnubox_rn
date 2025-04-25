@@ -6,10 +6,10 @@ export const clearFeedEvents = async () => {
     const response = await request.post('/feed/clearFeedEvent', {
       status: 'all',
     });
-    console.log('clear', response);
+    //console.log('clear', response);
     return response.data;
   } catch (error) {
-    console.error('清除订阅事件出错:', error);
+    //console.error('清除订阅事件出错:', error);
     throw error;
   }
 };

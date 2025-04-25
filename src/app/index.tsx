@@ -10,7 +10,7 @@ import { setupMockServer } from '@/mock/server';
 const Index = () => {
   useEffect(() => {
     if (__DEV__) {
-      console.log('mock server setup');
+      //console.log('mock server setup');
       setupMockServer();
     }
   });

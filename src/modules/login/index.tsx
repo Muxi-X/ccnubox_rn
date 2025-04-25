@@ -1,5 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import { AxiosError } from 'axios';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
@@ -36,19 +37,22 @@ const LoginPage: FC = () => {
       Toast.fail('请先阅读隐私条例');
       return;
     }
-    console.log(userInfo);
+    //console.log(userInfo);
     try {
       const response = await axiosInstance.post('/users/login_ccnu', userInfo, {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        console.log(response.headers);
+        //  console.log(response.headers);
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
         router.navigate('/(tabs)');
       }
     } catch (error) {
-      console.error('注册请求失败:1111111', error);
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        Toast.fail('账号密码有误', 2);
+      }
+      // console.error('注册请求失败:', error);
     }
     setLoginTriggered(true);
     setTimeout(() => {

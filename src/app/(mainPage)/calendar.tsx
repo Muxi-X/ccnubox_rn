@@ -47,7 +47,7 @@ const AndroidCalendar: React.FC = () => {
        */
       setSource(response.uri);
     } catch (err) {
-      console.warn(err);
+      //console.warn(err);
     } finally {
       setDownloading(false);
     }
