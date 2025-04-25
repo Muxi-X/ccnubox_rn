@@ -181,12 +181,13 @@ const Timetable: React.FC<CourseTableProps> = ({
     };
   }, []);
 
-  // 计算课程表内容的memoized函数
-  const generateTimetableContent = React.useCallback(() => {
+  // 计算课程表内容的memoized值
+  const { timetableMatrix, courses } = React.useMemo(() => {
     // 时刻表
-    const timetableMatrix = timeSlots.map(() =>
-      Array(daysOfWeek.length).fill(null)
-    );
+    const timetableMatrix: ({
+      classname: string;
+      timeSpan: number;
+    } | null)[][] = timeSlots.map(() => Array(daysOfWeek.length).fill(null));
     const courses: CourseTransferType[] = [];
     // 先按时间槽和日期分组课程
     const coursesBySlot = new Map();
@@ -251,12 +252,11 @@ const Timetable: React.FC<CourseTableProps> = ({
       }
     }
     return { timetableMatrix, courses };
-  }, [data, currentWeek]); // 只在data或currentWeek改变时重新计算
+  }, [data, currentWeek]); // 只在data或currentWeek改变时重新计算，返回memoized结果
 
   // 内容部分
   const content = useDeferredValue(
     React.useMemo(() => {
-      const { timetableMatrix, courses } = generateTimetableContent();
       return (
         <View
           style={[
@@ -267,23 +267,28 @@ const Timetable: React.FC<CourseTableProps> = ({
             },
           ]}
         >
-          {timetableMatrix?.map((row, rowIndex) => (
+          {timetableMatrix.map((row, rowIndex: number) => (
             <View key={rowIndex} style={styles.row}>
-              {row.map((subject, colIndex) => (
-                <View
-                  key={colIndex}
-                  style={[
-                    styles.cell,
-                    currentStyle?.schedule_border_style,
-                    {
-                      // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
-                      // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                      borderBottomWidth:
-                        (rowIndex + 1) % courseCollapse ? 0 : 1,
-                    },
-                  ]}
-                ></View>
-              ))}
+              {row.map(
+                (
+                  subject: { classname: string; timeSpan: number } | null,
+                  colIndex: number
+                ) => (
+                  <View
+                    key={colIndex}
+                    style={[
+                      styles.cell,
+                      currentStyle?.schedule_border_style,
+                      {
+                        // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
+                        // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
+                        borderBottomWidth:
+                          (rowIndex + 1) % courseCollapse ? 0 : 1,
+                      },
+                    ]}
+                  ></View>
+                )
+              )}
             </View>
           ))}
           {/* 课程内容 */}
@@ -292,7 +297,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           ))}
         </View>
       );
-    }, [generateTimetableContent, currentStyle])
+    }, [timetableMatrix, courses, currentStyle])
   );
 
   // 创建完整课表内容的视图，用于截图
