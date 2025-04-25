@@ -14,9 +14,9 @@ import { ScaleAnimationProps } from './types';
  * @returns ReactElement
  */
 const AnimatedScale = ({
-  // 输出范围大小
-  outputRange = [0.8, 1.2],
-  duration = 350,
+  // Reduce animation range and duration for snappier tab switches
+  outputRange = [0.95, 1.05],
+  duration = 200,
   trigger = true,
   delay = 0,
   children,
@@ -26,11 +26,20 @@ const AnimatedScale = ({
 }: ScaleAnimationProps) => {
   const scale = useSharedValue(0);
   useEffect(() => {
-    scale.value = withDelay(delay, withSpring(trigger ? 1 : 0, { duration }));
+    scale.value = withDelay(
+      delay,
+      withSpring(trigger ? 1 : 0, {
+        mass: 0.5,
+        stiffness: 120,
+        damping: 12,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+      })
+    );
   }, [scale, duration, trigger, delay]);
   const ScaleAnimation = useAnimatedStyle(() => {
     const scaleValue = interpolate(scale.value, [0, 1], outputRange);
-    const top = interpolate(scale.value, [0, 1], [0, 8]);
+    const top = interpolate(scale.value, [0, 1], [0, 4]);
     return {
       transform: [
         {

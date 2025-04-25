@@ -1,3 +1,4 @@
+import * as SystemUI from 'expo-system-ui';
 import { create } from 'zustand';
 
 import { layoutMap } from '@/styles';
@@ -36,6 +37,11 @@ const useVisualScheme = create<visualSchemeType>(set => ({
     }),
   changeTheme: themeName =>
     set(state => {
+      if (themeName === 'dark') {
+        SystemUI.setBackgroundColorAsync('#242424');
+      } else {
+        SystemUI.setBackgroundColorAsync('white');
+      }
       const { layouts, layoutName } = state;
       const currentTheme = layouts.get(layoutName)![
         themeName
