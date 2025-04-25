@@ -63,27 +63,15 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerBackVisible: false,
-              contentStyle:
-                useVisualScheme.getState().currentStyle?.background_style,
+              headerShown: false,
+              animation: 'ios',
             }}
           >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="(courseTable)"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="auth"
-              options={{ headerShown: false }}
-            ></Stack.Screen>
-            <Stack.Screen
-              name="(mainPage)"
-              options={{ headerShown: false }}
-            ></Stack.Screen>
-            <Stack.Screen
-              name="(setting)"
-              options={{ headerShown: false }}
-            ></Stack.Screen>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(courseTable)" />
+            <Stack.Screen name="auth"></Stack.Screen>
+            <Stack.Screen name="(mainPage)"></Stack.Screen>
+            <Stack.Screen name="(setting)"></Stack.Screen>
           </Stack>
           {/* portal */}
           <PortalRoot ref={portalRef} />

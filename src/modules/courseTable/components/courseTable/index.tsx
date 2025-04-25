@@ -37,6 +37,64 @@ import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
+// 课程内容组件
+const CourseContent: React.FC<CourseTransferType> = memo(
+  function CourseContent(props) {
+    const {
+      classroom,
+      courseName,
+      teacher,
+      isThisWeek,
+      week_duration,
+      credit,
+      class_when,
+      date,
+    } = props;
+    const CourseItem = useThemeBasedComponents(
+      state => state.currentComponents?.course_item
+    );
+
+    return (
+      <>
+        <Pressable
+          style={{
+            position: 'absolute',
+            width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
+            zIndex: 99,
+            height: 'auto',
+            top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
+            left:
+              COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
+          }}
+          onPress={() => {
+            Modal.show({
+              children: (
+                <ModalContent
+                  class_when={class_when}
+                  isThisWeek={isThisWeek}
+                  courseName={courseName}
+                  teacher={teacher}
+                  classroom={classroom}
+                  week_duration={week_duration}
+                  credit={credit}
+                  date={date}
+                ></ModalContent>
+              ),
+              mode: 'middle',
+              confirmText: '退出',
+              cancelText: '编辑',
+              onConfirm: () => {},
+              onCancel: () => {},
+            });
+          }}
+        >
+          {CourseItem && <CourseItem {...props}></CourseItem>}
+        </Pressable>
+      </>
+    );
+  }
+);
+
 const Timetable: React.FC<CourseTableProps> = ({
   data,
   currentWeek,
@@ -123,76 +181,82 @@ const Timetable: React.FC<CourseTableProps> = ({
     };
   }, []);
 
-  // 内容部分
-  const content = useDeferredValue(
-    (() => {
-      // 时刻表
-      const timetableMatrix = timeSlots.map(() =>
-        Array(daysOfWeek.length).fill(null)
-      );
-      const courses: CourseTransferType[] = [];
-      // 先按时间槽和日期分组课程
-      const coursesBySlot = new Map();
-      data.forEach((course: courseType) => {
-        const {
+  // 计算课程表内容的memoized值
+  const { timetableMatrix, courses } = React.useMemo(() => {
+    // 时刻表
+    const timetableMatrix: ({
+      classname: string;
+      timeSpan: number;
+    } | null)[][] = timeSlots.map(() => Array(daysOfWeek.length).fill(null));
+    const courses: CourseTransferType[] = [];
+    // 先按时间槽和日期分组课程
+    const coursesBySlot = new Map();
+    data.forEach((course: courseType) => {
+      const {
+        id,
+        day,
+        teacher,
+        where,
+        class_when,
+        classname,
+        weeks,
+        week_duration,
+        credit,
+      } = course;
+      const timeSpan = class_when
+        .split('-')
+        .map(Number)
+        .reduce((a: number, b: number) => b - a + 1);
+      const rowIndex = Number(class_when.split('-')[0]) - 1;
+      const colIndex = day - 1;
+      const key = `${rowIndex}-${colIndex}`;
+
+      if (rowIndex !== -1 && colIndex !== -1) {
+        if (!coursesBySlot.has(key)) {
+          coursesBySlot.set(key, []);
+        }
+        coursesBySlot.get(key).push({
           id,
-          day,
+          courseName: classname,
+          timeSpan,
           teacher,
-          where,
-          class_when,
-          classname,
+          date: daysOfWeek[colIndex],
+          classroom: where,
+          rowIndex,
+          colIndex,
           weeks,
+          isThisWeek: weeks.includes(currentWeek),
           week_duration,
           credit,
-        } = course;
-        const timeSpan = class_when
-          .split('-')
-          .map(Number)
-          .reduce((a: number, b: number) => b - a + 1);
-        const rowIndex = Number(class_when.split('-')[0]) - 1;
-        const colIndex = day - 1;
-        const key = `${rowIndex}-${colIndex}`;
-
-        if (rowIndex !== -1 && colIndex !== -1) {
-          if (!coursesBySlot.has(key)) {
-            coursesBySlot.set(key, []);
-          }
-          coursesBySlot.get(key).push({
-            id,
-            courseName: classname,
-            timeSpan,
-            teacher,
-            date: daysOfWeek[colIndex],
-            classroom: where,
-            rowIndex,
-            colIndex,
-            weeks,
-            isThisWeek: weeks.includes(currentWeek),
-            week_duration,
-            credit,
-            class_when,
-          });
-        }
-      });
-
-      // 遍历每个时间槽，选择正确的课程显示
-      for (const [key, slotCourses] of coursesBySlot) {
-        const [rowIndex, colIndex] = key.split('-').map(Number);
-
-        // 找到当前周应该显示的课程
-        const courseToShow =
-          slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
-            course.weeks.includes(currentWeek)
-          ) || slotCourses[0];
-
-        if (courseToShow) {
-          timetableMatrix[rowIndex][colIndex] = {
-            classname: courseToShow.courseName,
-            timeSpan: courseToShow.timeSpan,
-          };
-          courses.push(courseToShow);
-        }
+          class_when,
+        });
       }
+    });
+
+    // 遍历每个时间槽，选择正确的课程显示
+    for (const [key, slotCourses] of coursesBySlot) {
+      const [rowIndex, colIndex] = key.split('-').map(Number);
+
+      // 找到当前周应该显示的课程
+      const courseToShow =
+        slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
+          course.weeks.includes(currentWeek)
+        ) || slotCourses[0];
+
+      if (courseToShow) {
+        timetableMatrix[rowIndex][colIndex] = {
+          classname: courseToShow.courseName,
+          timeSpan: courseToShow.timeSpan,
+        };
+        courses.push(courseToShow);
+      }
+    }
+    return { timetableMatrix, courses };
+  }, [data, currentWeek]); // 只在data或currentWeek改变时重新计算，返回memoized结果
+
+  // 内容部分
+  const content = useDeferredValue(
+    React.useMemo(() => {
       return (
         <View
           style={[
@@ -203,33 +267,39 @@ const Timetable: React.FC<CourseTableProps> = ({
             },
           ]}
         >
-          {timetableMatrix?.map((row, rowIndex) => (
+          {timetableMatrix.map((row, rowIndex: number) => (
             <View key={rowIndex} style={styles.row}>
-              {row.map((subject, colIndex) => (
-                <View
-                  key={colIndex}
-                  style={[
-                    styles.cell,
-                    currentStyle?.schedule_border_style,
-                    {
-                      // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
-                      // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                      borderBottomWidth:
-                        (rowIndex + 1) % courseCollapse ? 0 : 1,
-                    },
-                  ]}
-                ></View>
-              ))}
+              {row.map(
+                (
+                  subject: { classname: string; timeSpan: number } | null,
+                  colIndex: number
+                ) => (
+                  <View
+                    key={colIndex}
+                    style={[
+                      styles.cell,
+                      currentStyle?.schedule_border_style,
+                      {
+                        // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
+                        // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
+                        borderBottomWidth:
+                          (rowIndex + 1) % courseCollapse ? 0 : 1,
+                      },
+                    ]}
+                  ></View>
+                )
+              )}
             </View>
           ))}
           {/* 课程内容 */}
           {courses.map(item => (
-            <Content key={item.id} {...item}></Content>
+            <CourseContent key={item.id} {...item} />
           ))}
         </View>
       );
-    })()
+    }, [timetableMatrix, courses, currentStyle])
   );
+
   // 创建完整课表内容的视图，用于截图
   const fullTableContent = (
     <View
@@ -307,6 +377,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     </View>
   );
 };
+
 interface ModalContentProps {
   courseName: string;
   teacher: string;
@@ -318,129 +389,76 @@ interface ModalContentProps {
   date: string;
 }
 
-export const ModalContent: React.FC<ModalContentProps> = props => {
-  const {
-    courseName,
-    teacher,
-    classroom,
-    isThisWeek,
-    week_duration,
-    credit,
-    class_when,
-    date,
-  } = props;
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+const ModalContent: React.FC<ModalContentProps> = memo(
+  function ModalContent(props) {
+    const {
+      courseName,
+      teacher,
+      classroom,
+      isThisWeek,
+      week_duration,
+      credit,
+      class_when,
+      date,
+    } = props;
+    const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  return (
-    <View style={[styles.modalContainer, currentStyle?.background_style]}>
-      <View style={styles.modalHeader}>
-        <ThemeChangeText style={styles.modalTitle}>
-          {courseName}
-        </ThemeChangeText>
-        {!isThisWeek && (
-          <View style={styles.notThisWeekTag}>
-            <Text style={styles.notThisWeekText}>非本周</Text>
+    return (
+      <View style={[styles.modalContainer, currentStyle?.background_style]}>
+        <View style={styles.modalHeader}>
+          <ThemeChangeText style={styles.modalTitle}>
+            {courseName}
+          </ThemeChangeText>
+          {!isThisWeek && (
+            <View style={styles.notThisWeekTag}>
+              <Text style={styles.notThisWeekText}>非本周</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.modalSubtitle}>{credit}学分</Text>
+
+        <View style={styles.modalInfoGrid}>
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>📅</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              {week_duration}
+            </Text>
           </View>
-        )}
+
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>🕒</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              周{date}
+              {class_when}节
+            </Text>
+          </View>
+
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>👨‍🏫</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              {teacher}
+            </Text>
+          </View>
+
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>🏢</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              {classroom}
+            </Text>
+          </View>
+        </View>
       </View>
-      <Text style={styles.modalSubtitle}>{credit}学分</Text>
-
-      <View style={styles.modalInfoGrid}>
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>📅</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            {week_duration}
-          </Text>
-        </View>
-
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>🕒</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            周{date}
-            {class_when}节
-          </Text>
-        </View>
-
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>👨‍🏫</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            {teacher}
-          </Text>
-        </View>
-
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>🏢</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            {classroom}
-          </Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-export const Content: React.FC<CourseTransferType> = props => {
-  const {
-    classroom,
-    courseName,
-    teacher,
-    isThisWeek,
-    week_duration,
-    credit,
-    class_when,
-    date,
-  } = props;
-  const CourseItem = useThemeBasedComponents(
-    state => state.currentComponents?.course_item
-  );
-
-  return (
-    <>
-      <Pressable
-        style={{
-          position: 'absolute',
-          width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-          zIndex: 99,
-          height: 'auto',
-          top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
-          left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
-        }}
-        onPress={() => {
-          Modal.show({
-            children: (
-              <ModalContent
-                class_when={class_when}
-                isThisWeek={isThisWeek}
-                courseName={courseName}
-                teacher={teacher}
-                classroom={classroom}
-                week_duration={week_duration}
-                credit={credit}
-                date={date}
-              ></ModalContent>
-            ),
-            mode: 'middle',
-            confirmText: '退出',
-            cancelText: '编辑',
-
-            onConfirm: () => {},
-            onCancel: () => {},
-          });
-        }}
-      >
-        {CourseItem && <CourseItem {...props}></CourseItem>}
-      </Pressable>
-    </>
-  );
-};
+    );
+  }
+);
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
