@@ -116,7 +116,7 @@ const CourseTablePage: FC = () => {
         setCourseData(courses);
       }
     } catch (error) {
-      console.error('onTimetableRefresh error:', error);
+      throw Error(`onTimetableRefresh error: ${error}`);
     }
   };
 
