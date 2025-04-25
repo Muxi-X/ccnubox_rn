@@ -101,7 +101,7 @@ export const ManualAdd = (props: AddComponentProps) => {
           type="primary"
           style={styles.button}
           onPress={() => {
-            console.log(`${buttonText} 按钮被点击`);
+            //console.log(`${buttonText} 按钮被点击`);
           }}
         >
           {buttonText}

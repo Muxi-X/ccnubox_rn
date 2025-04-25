@@ -6,7 +6,7 @@ export const queryGradeAll = async () => {
     const response = await axiosInstance.get(`/grade/getGradeScore`);
     return response.data;
   } catch (error) {
-    console.error('queryGradeAll 查询成绩接口出错:', error);
+    //console.error('queryGradeAll 查询成绩接口出错:', error);
     throw error;
   }
 };
