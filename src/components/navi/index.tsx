@@ -51,7 +51,7 @@ const TabBar: FC<BottomTabBarProps> = props => {
           ? options.tabBarLabel
           : options?.title !== undefined
             ? options.title
-            : route.name;
+            : null;
 
       const isFocused = state?.index === index;
       const onPress = () => debouncedHandler(route, isFocused);
