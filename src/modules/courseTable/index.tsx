@@ -58,7 +58,8 @@ const CourseTablePage: FC = () => {
         const data = JSON.parse(dataString);
         return Array.isArray(data) ? data : null;
       } catch (error) {
-        console.error('解析缓存数据失败:', error);
+        //console.error('解析缓存数据失败:', error);
+        throw error;
       }
     }
     return null;
@@ -116,7 +117,8 @@ const CourseTablePage: FC = () => {
         setCourseData(courses);
       }
     } catch (error) {
-      console.error('onTimetableRefresh error:', error);
+      throw error;
+      //console.error('onTimetableRefresh error:', error);
     }
   };
 

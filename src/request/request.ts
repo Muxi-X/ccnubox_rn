@@ -21,7 +21,7 @@ async function getStoredToken(): Promise<string> {
     // 如果短 token 不存在，尝试刷新
     return await refreshToken();
   } catch (error) {
-    console.error('获取 token 失败:', error);
+    //console.error('获取 token 失败:', error);
     throw new Error('token不存在');
   }
 }
@@ -41,14 +41,14 @@ async function refreshToken(): Promise<string> {
 
     if (response.status === 200 || response.status === 201) {
       const newShortToken = response.headers['x-jwt-token'];
-      console.log(newShortToken);
+      //   console.log(newShortToken);
       setItem('shortToken', newShortToken);
       return newShortToken;
     }
 
     throw new Error('刷新短 token 失败');
   } catch (error) {
-    console.error('刷新短 token 失败:', error);
+    //  console.error('刷新短 token 失败:', error);
     throw error;
   }
 }
@@ -64,7 +64,7 @@ axiosInstance.interceptors.request.use(
           config.headers['Authorization'] = `Bearer ${token}`;
         }
       } catch (error) {
-        console.error('token 缺失:', error);
+        throw Error('token不存在');
       }
     }
     return config;
@@ -81,8 +81,8 @@ axiosInstance.interceptors.response.use(
       case 200:
         return response;
       case 401:
-        console.error('token过期');
-        break;
+        throw new Error('token过期');
+      //  break;
       case 403:
         Toast.show({ text: '无权限' });
         break;
@@ -102,12 +102,12 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers['Authorization'] = `Bearer ${newShortToken}`;
         return axiosInstance(originalRequest); // 重新发送请求
       } catch (refreshError) {
-        console.error('刷新 token 失败:', refreshError);
+        //    console.error('刷新 token 失败:', refreshError);
         router.replace('/auth/login');
       }
     }
 
-    console.error('Error response:', error);
+    //   console.error('Error response:', error);
     return Promise.reject(error);
   }
 );

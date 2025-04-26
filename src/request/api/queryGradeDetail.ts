@@ -8,7 +8,7 @@ export const queryGradeDetail = async (queryParams: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error('查询成绩接口出错:', error);
+    //console.error('查询成绩接口出错:', error);
     throw error;
   }
 };
