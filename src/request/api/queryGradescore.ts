@@ -5,7 +5,7 @@ export const queryGradeScore = async () => {
   try {
     return await request.get('/grade/getGradeScore');
   } catch (error) {
-    console.error('查询当前周接口出错:', error);
+    //console.error('查询当前周接口出错:', error);
     throw error;
   }
 };

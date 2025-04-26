@@ -208,8 +208,8 @@ const ScoreCalculation: React.FC = () => {
         }
         setLoading(false);
       })
-      .catch(error => {
-        console.error('获取成绩失败:', error);
+      .catch(_error => {
+        //console.error('获取成绩失败:', error);
         setLoading(false);
       });
   }, [yearNum, semesterNum]);

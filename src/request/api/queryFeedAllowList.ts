@@ -6,7 +6,7 @@ export const queryFeedAllowList = async () => {
     const response = await request.get('/feed/getFeedAllowList', {});
     return response.data;
   } catch (error) {
-    console.error('获取订阅消息出错:', error);
+    //console.error('获取订阅消息出错:', error);
     throw error;
   }
 };
