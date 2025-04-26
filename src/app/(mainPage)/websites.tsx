@@ -46,7 +46,7 @@ const Websites = () => {
 
   useEffect(() => {
     queryWebsites()
-      .then(res => {
+      .then((res: any) => {
         setWebsites(res.data.websites);
       })
       .catch(error => {

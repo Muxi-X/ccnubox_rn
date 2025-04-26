@@ -85,7 +85,7 @@ function Departments() {
 
   useEffect(() => {
     queryDepartmentInformation()
-      .then(res => {
+      .then((res: any) => {
         setDepartments(res.data.departments);
       })
       .catch(err => {

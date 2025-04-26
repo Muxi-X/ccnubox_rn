@@ -219,4 +219,4 @@ const request = {
   },
 };
 
-export { axiosInstance, request };
+export { request };

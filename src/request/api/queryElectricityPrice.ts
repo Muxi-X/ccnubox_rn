@@ -1,16 +1,15 @@
 import { request } from '../request';
 
 interface QueryParams {
-  area: string;
-  building: string;
-  room: string;
+  room_id: string;
 }
 
 // 查询电费接口封装函数
 const queryElectricityPrice = async (queryParams: QueryParams) => {
   try {
-    const response = await request.get('/elecprice/check', {
+    const response = await request.get('/elecprice/getPrice', {
       query: queryParams,
+      header: { Authorization: '' },
     });
     return response.data;
   } catch (error) {

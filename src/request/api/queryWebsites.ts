@@ -1,9 +1,8 @@
-import { axiosInstance } from '../request';
+import { request } from '../request';
 
 const queryWebsites = async () => {
   try {
-    const response = await axiosInstance.get(`/website/getWebsites`);
-    return response.data;
+    return await request.get(`/website/getWebsites`);
   } catch (error) {
     throw error;
   }
