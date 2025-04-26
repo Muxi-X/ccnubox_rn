@@ -6,6 +6,8 @@ import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import { log } from '@/utils/logger';
+
 import { WeekSelectorProps } from '../courseTable/type';
 
 const WeekSelector: FC<WeekSelectorProps> = ({
@@ -32,7 +34,10 @@ const WeekSelector: FC<WeekSelectorProps> = ({
             {[...Array(20)].map((_, i) => (
               <Pressable
                 key={i}
-                onPress={() => onWeekSelect(i + 1)}
+                onPress={() => {
+                  onWeekSelect(i + 1);
+                  log.info('选择周次', i + 1);
+                }}
                 style={[
                   styles.weekButton,
                   {
