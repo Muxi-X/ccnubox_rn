@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
@@ -19,7 +19,6 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 
   return (
     <>
-      {/* Week selector floating window */}
       {showWeekPicker && (
         <View
           style={[
@@ -116,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WeekSelector;
+export default memo(WeekSelector);

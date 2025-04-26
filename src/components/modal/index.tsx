@@ -60,10 +60,9 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
     // FIX_ME： 由于rn自带modal不支持获取动画结束时间
     // 因此这里采取定时器的方案
     // 过一秒后清除动画
-    //requestAnimationFrame优化一下
     setTimeout(() => {
       currentKey && deleteChildren(currentKey);
-    }, 500);
+    }, 1000);
   };
   const modalContent = useMemo(() => {
     return (
@@ -78,9 +77,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
         {title && (
           <View style={[styles.title]}>
             {typeof title === 'string' ? (
-              <Text
-                style={[commonStyles.fontExtraLarge, currentStyle?.text_style]}
-              >
+              <Text style={[commonStyles.fontLarge, currentStyle?.text_style]}>
                 {title}
               </Text>
             ) : (
@@ -90,7 +87,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
         )}
         <View style={styles.modalChildren}>
           {typeof children === 'string' ? (
-            <Text style={[currentStyle?.text_style, commonStyles.fontLarge]}>
+            <Text style={[currentStyle?.text_style, commonStyles.fontMedium]}>
               {children}
             </Text>
           ) : (
@@ -290,7 +287,7 @@ const styles = StyleSheet.create({
     color: commonColors.purple,
   },
   modalContent: {
-    width: '94%',
+    width: '80%',
     borderRadius: 20,
     margin: 20,
     marginBottom: 10,
