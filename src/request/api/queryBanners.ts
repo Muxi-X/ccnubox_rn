@@ -1,9 +1,8 @@
-import { axiosInstance } from '../request';
+import { request } from '../request';
 
 const queryBanners = async () => {
   try {
-    const response = await axiosInstance.get(`/banner/getBanners`);
-    return response.data;
+    return await request.get(`/banner/getBanners`);
   } catch (error) {
     throw error;
   }

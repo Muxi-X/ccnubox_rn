@@ -1,9 +1,8 @@
-import { axiosInstance } from '../request';
+import { request } from '../request';
 
 const queryDepartmentInformation = async () => {
   try {
-    const response = await axiosInstance.get(`/department/getDepartments`); // 等待请求完成
-    return response.data;
+    return await request.get(`/department/getDepartments`); // 等待请求完成
   } catch (error) {
     throw error;
   }
