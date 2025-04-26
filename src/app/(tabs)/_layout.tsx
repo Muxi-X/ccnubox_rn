@@ -18,7 +18,7 @@ export default function TabLayout() {
       return (
         <Tabs.Screen
           name={name}
-          key={keyGenerator.next().value as number}
+          key={keyGenerator.next().value as unknown as number}
           options={{
             title: title,
             headerTitle:

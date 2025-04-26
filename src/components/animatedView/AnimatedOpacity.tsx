@@ -14,7 +14,7 @@ import { OpacityAnimationProps } from './types';
  * @returns ReactElement
  */
 const AnimatedOpacity = ({
-  duration = 350,
+  duration = 150,
   trigger = true,
   children,
   style,
@@ -29,7 +29,11 @@ const AnimatedOpacity = ({
       sharedOpacity.value = withDelay(
         delay,
         withSpring(toVisible ? 1 : 0, {
-          duration,
+          mass: 0.5,
+          stiffness: 100,
+          damping: 10,
+          restDisplacementThreshold: 0.01,
+          restSpeedThreshold: 0.01,
         })
       );
     }
@@ -48,9 +52,13 @@ const AnimatedOpacity = ({
   });
   useEffect(() => {
     if (typeof onAnimationEnd === 'function') {
-      runOnJS(onAnimationEnd)();
+      try {
+        runOnJS(onAnimationEnd)();
+      } catch (error) {
+        // 忽略动画结束回调中的错误
+      }
     }
-  }, [sharedOpacity.value, onAnimationEnd]);
+  }, [onAnimationEnd]);
   return (
     <Animated.View style={[opacityStyle, style]} {...restProps}>
       {children}
