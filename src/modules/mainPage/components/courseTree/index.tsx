@@ -1,6 +1,13 @@
-import { Icon } from '@ant-design/react-native';
+import { Icon, Toast } from '@ant-design/react-native';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import Image from '@/components/image';
 
@@ -22,40 +29,47 @@ const CourseTree = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [list, setList] = useState<ParentCourseNode[]>([]);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    queryGradeScore().then(res => {
-      if (res.code === 0 && res.data?.type_of_grade_scores) {
-        const typeOfGradeScores = res.data.type_of_grade_scores;
-        let totalCredits = 0;
+    setLoading(true);
+    queryGradeScore()
+      .then(res => {
+        if (res.code === 0 && res.data?.type_of_grade_scores) {
+          const typeOfGradeScores = res.data.type_of_grade_scores;
+          let totalCredits = 0;
 
-        const data = typeOfGradeScores.map(group => {
-          const gradeScoreList = group.grade_score_list || [];
-          const groupCredits = gradeScoreList.reduce(
-            (sum, course) => sum + (course.xf || 0),
-            0
-          );
-          totalCredits += groupCredits;
+          const data = typeOfGradeScores.map(group => {
+            const gradeScoreList = group.grade_score_list || [];
+            const groupCredits = gradeScoreList.reduce(
+              (sum, course) => sum + (course.xf || 0),
+              0
+            );
+            totalCredits += groupCredits;
 
-          return {
-            title: group.kcxzmc || '未知课程类型',
-            credits: groupCredits,
-            children: gradeScoreList.map(course => ({
-              title: course.kcmc || '未知课程',
-              credits: course.xf || 0,
-            })),
-          };
-        });
+            return {
+              title: group.kcxzmc || '未知课程类型',
+              credits: groupCredits,
+              children: gradeScoreList.map(course => ({
+                title: course.kcmc || '未知课程',
+                credits: course.xf || 0,
+              })),
+            };
+          });
 
-        // Filter out any invalid data
-        const validData = data.filter(
-          item => item.title && item.children.every(child => child.title)
-        ) as ParentCourseNode[];
+          // Filter out any invalid data
+          const validData = data.filter(
+            item => item.title && item.children.every(child => child.title)
+          ) as ParentCourseNode[];
 
-        setTotal(totalCredits);
-        setList(validData);
-      }
-    });
+          setTotal(totalCredits);
+          setList(validData);
+        }
+      })
+      .catch(() => {
+        Toast.fail('获取已修学分失败');
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handlePanelChange = (key: string) => {
@@ -125,34 +139,43 @@ const CourseTree = () => {
       ]}
     >
       <View style={[styles.header, currentStyle?.background_style]}>
-        <View style={[styles.node, styles.titleBorder]}>
-          <View style={styles.nodeLeft}>
-            <Image
-              style={{ width: 35, height: 35 }}
-              source={require('../../../../assets/images/flag.png')}
-            />
-            <Text
-              style={[
-                styles.nodeText,
-                styles.titleText,
-                currentStyle?.text_style,
-              ]}
-            >
-              全部已修学分
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#7878F8" />
+            <Text style={[styles.loadingText, currentStyle?.text_style]}>
+              加载中...
             </Text>
           </View>
-          <View style={styles.nodeRight}>
-            <Text
-              style={[
-                styles.nodeScore,
-                styles.titleText,
-                currentStyle?.text_style,
-              ]}
-            >
-              {total.toFixed(1)} 学分
-            </Text>
+        ) : (
+          <View style={[styles.node, styles.titleBorder]}>
+            <View style={styles.nodeLeft}>
+              <Image
+                style={{ width: 35, height: 35 }}
+                source={require('../../../../assets/images/flag.png')}
+              />
+              <Text
+                style={[
+                  styles.nodeText,
+                  styles.titleText,
+                  currentStyle?.text_style,
+                ]}
+              >
+                全部已修学分
+              </Text>
+            </View>
+            <View style={styles.nodeRight}>
+              <Text
+                style={[
+                  styles.nodeScore,
+                  styles.titleText,
+                  currentStyle?.text_style,
+                ]}
+              >
+                {total.toFixed(1)} 学分
+              </Text>
+            </View>
           </View>
-        </View>
+        )}
       </View>
       <View style={styles.content}>
         <ScrollView style={{ maxHeight: '80%' }}>
@@ -225,6 +248,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     flexDirection: 'column',
     color: '#ABAAAA',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#666',
   },
 });
 

@@ -174,7 +174,6 @@ const ScoreCalculation: React.FC = () => {
       xnm: yearNum,
     })
       .then(res => {
-        console.log(res.data);
         if (res.data?.grades) {
           interface Grade {
             Kclbmc: string;
