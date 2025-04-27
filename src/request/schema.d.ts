@@ -320,7 +320,6 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          /** @description 年份 */
           year: number;
         };
         header?: never;
@@ -405,7 +404,7 @@ export interface paths {
     put?: never;
     /**
      * 获取消费记录
-     * @description 获取用户消费记录，student_id, start_time, type 必须存在，type 分为 "card"（实体卡）与 "virtual"（虚拟卡）
+     * @description 【弃用】获取用户消费记录，student_id, start_time, type 必须存在，type 分为 "card"（实体卡）与 "virtual"（虚拟卡）
      */
     post: {
       parameters: {
@@ -459,8 +458,8 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 删除用户的key
-     * @description 记录用户的key
+     * 记录用户的key
+     * @description 【弃用】记录用户的key
      */
     post: {
       parameters: {
@@ -513,7 +512,7 @@ export interface paths {
     put?: never;
     /**
      * 更新用户的key
-     * @description 更新用户的key
+     * @description 【弃用】更新用户的key
      */
     post: {
       parameters: {
@@ -707,12 +706,10 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          /** @description 学年 */
-          year: string;
-          /** @description 学期 */
-          semester: string;
-          /** @description 是否强制从华师获取最新版本 */
           refresh: boolean;
+          semester: string;
+          /** @description 学年,格式为"2024"代表"2024-2025学年"` */
+          year: string;
         };
         header: {
           /** @description Bearer Token */
@@ -721,12 +718,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      /** @description 获取课表请求参数 */
-      requestBody: {
-        content: {
-          '*/*': components['schemas']['class.GetClassListRequest'];
-        };
-      };
+      requestBody?: never;
       responses: {
         /** @description 成功返回课表 */
         200: {
@@ -763,10 +755,10 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          /** @description 学年 */
-          year: string;
-          /** @description 学期 */
+          /** @description 学期,格式为"1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
           semester: string;
+          /** @description 学年,格式为"2024"代表"2024-2025学年" */
+          year: string;
         };
         header: {
           /** @description Bearer Token */
@@ -854,17 +846,21 @@ export interface paths {
     };
     /**
      * 搜索课程
-     * @description 根据关键词[教师或者课程名]搜索课程
+     * @description 根据关键词[教师或者课程名]搜索课程,**注意,但当返回的结果数量大于page_size时,代表还有下一页**,最开始请求的是第一页
      */
     get: {
       parameters: {
         query: {
-          /** @description 学年 */
-          year: string;
-          /** @description 学期 */
-          semester: string;
-          /** @description 搜索关键词 */
+          /** @description 页码 */
+          page: number;
+          /** @description 每页大小 */
+          page_size: number;
+          /** @description 搜索关键词,匹配的是课程名称和教师姓名 */
           searchKeyWords: string;
+          /** @description 学期,格式为"1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
+          semester: string;
+          /** @description 学年,格式为"2024"代表"2024-2025学年" */
+          year: string;
         };
         header: {
           /** @description Bearer Token */
@@ -1017,7 +1013,10 @@ export interface paths {
     delete: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1058,7 +1057,10 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1101,7 +1103,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1146,7 +1151,10 @@ export interface paths {
     delete: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1199,10 +1207,13 @@ export interface paths {
      */
     get: {
       parameters: {
-        query?: {
-          area_name?: string;
+        query: {
+          area_name: string;
         };
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1253,10 +1264,13 @@ export interface paths {
      */
     get: {
       parameters: {
-        query?: {
-          room_id?: string;
+        query: {
+          room_id: string;
         };
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1307,11 +1321,14 @@ export interface paths {
      */
     get: {
       parameters: {
-        query?: {
-          architecture_id?: string;
-          floor?: string;
+        query: {
+          architecture_id: string;
+          floor: string;
         };
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1363,7 +1380,10 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1416,7 +1436,10 @@ export interface paths {
     put: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1474,7 +1497,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1527,7 +1553,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1578,7 +1607,10 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1628,7 +1660,10 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1678,7 +1713,10 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1739,7 +1777,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1803,7 +1844,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1856,7 +1900,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1909,7 +1956,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -1962,7 +2012,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -2337,9 +2390,11 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          /** @description 学年号（如 2023 表示 2023~2024 学年） */
+          /** @description 是否强制刷新,可选字段 */
+          refresh?: boolean;
+          /** @description 学年名:例如2023表示2023~2024学年 */
           xnm: number;
-          /** @description 学期号（1 表示第一学期，2 表示第二学期） */
+          /** @description 学期名:0表示所有学期,1表示第一学期,2表示第二学期,3表示第三学期 */
           xqm: number;
         };
         header?: never;
@@ -2476,7 +2531,7 @@ export interface paths {
     };
     /**
      * 获取静态资源[精确名称]
-     * @description 根据静态资源名称获取静态资源的内容。
+     * @description 【弃用】根据静态资源名称获取静态资源的内容。
      */
     get: {
       parameters: {
@@ -2520,7 +2575,7 @@ export interface paths {
     };
     /**
      * 获取静态资源[标签匹配]
-     * @description 根据静labels匹配合适的静态资源
+     * @description 【弃用】根据静labels匹配合适的静态资源
      */
     get: {
       parameters: {
@@ -2566,7 +2621,7 @@ export interface paths {
     put?: never;
     /**
      * 保存静态内容
-     * @description 保存静态内容
+     * @description 【弃用】保存静态内容
      */
     post: {
       parameters: {
@@ -2893,31 +2948,31 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     'banner.Banner': {
-      id?: number;
-      picture_link?: string;
-      web_link?: string;
+      id: number;
+      picture_link: string;
+      web_link: string;
     };
     'banner.DelBannerRequest': {
-      id?: number;
+      id: number;
     };
     'banner.GetBannersResponse': {
-      banners?: components['schemas']['banner.Banner'][];
+      banners: components['schemas']['banner.Banner'][];
     };
     'banner.SaveBannerRequest': {
-      id?: number;
-      picture_link?: string;
-      web_link?: string;
+      id: number;
+      picture_link: string;
+      web_link: string;
     };
     'calendar.DelCalendarRequest': {
-      year?: number;
+      year: number;
     };
     'calendar.GetCalendarResponse': {
-      link?: string;
-      year?: number;
+      link: string;
+      year: number;
     };
     'calendar.SaveCalendarRequest': {
-      link?: string;
-      year?: number;
+      link: string;
+      year: number;
     };
     'card.GetRecordOfConsumptionRequest': {
       key?: string;
@@ -2945,83 +3000,80 @@ export interface components {
       /** @description 学分 */
       credit?: number;
       /** @description 星期几 */
-      day?: number;
+      day: number;
       /** @description 第几节 '形如 "1-3","1-1"' */
-      dur_class?: string;
+      dur_class: string;
       /** @description 课程名称 */
-      name?: string;
+      name: string;
       /** @description 学期 */
-      semester?: string;
+      semester: string;
       /** @description 教师 */
-      teacher?: string;
+      teacher: string;
       /** @description 哪些周 */
-      weeks?: number[];
+      weeks: number[];
       /** @description 地点 */
-      where?: string;
+      where: string;
       /** @description 学年 */
-      year?: string;
+      year: string;
     };
     'class.ClassInfo': {
       /** @description 上课是第几节（如1-2,3-4） */
-      class_when?: string;
+      class_when: string;
       /** @description 课程名称 */
-      classname?: string;
+      classname: string;
       /** @description 学分 */
-      credit?: number;
+      credit: number;
       /** @description 星期几 */
-      day?: number;
+      day: number;
       /** @description 集合了课程信息的字符串，便于标识（课程ID） */
-      id?: string;
+      id: string;
       /** @description 学期 */
-      semester?: string;
+      semester: string;
       /** @description 任课教师 */
-      teacher?: string;
+      teacher: string;
       /** @description 上课的周数 */
-      week_duration?: string;
+      week_duration: string;
       /** @description 哪些周 */
-      weeks?: number[];
+      weeks: number[];
       /** @description 上课地点 */
-      where?: string;
+      where: string;
       /** @description 学年 */
-      year?: string;
+      year: string;
     };
     'class.DeleteClassRequest': {
       /** @description 要被删的课程id */
-      id?: string;
+      id: string;
       /** @description 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
-      semester?: string;
+      semester: string;
       /** @description 学年  "2024" -> 代表"2024-2025学年" */
-      year?: string;
-    };
-    'class.GetClassListRequest': {
-      refresh?: boolean;
-      semester?: string;
-      year?: string;
+      year: string;
     };
     'class.GetClassListResp': {
-      classes?: components['schemas']['class.ClassInfo'][];
+      classes: components['schemas']['class.ClassInfo'][];
+      /** @description 上次刷新时间的时间戳,上海时区 */
+      last_refresh_time: number;
     };
     'class.GetRecycleBinClassInfosResp': {
-      classInfos?: components['schemas']['class.ClassInfo'][];
+      classInfos: components['schemas']['class.ClassInfo'][];
     };
     'class.GetSchoolDayResp': {
-      holiday_time?: number;
-      school_time?: number;
+      holiday_time: number;
+      school_time: number;
     };
     'class.RecoverClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
-      classId?: string;
+      classId: string;
       /** @description 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
-      semester?: string;
+      semester: string;
       /** @description 学年  "2024" 代表"2024-2025学年" */
-      year?: string;
+      year: string;
     };
     'class.SearchClassResp': {
-      classInfos?: components['schemas']['class.ClassInfo'][];
+      classInfos: components['schemas']['class.ClassInfo'][];
     };
     'class.UpdateClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
-      classId?: string;
+      classId: string;
       /** @description 学分 */
       credit?: number;
       /** @description 星期几 */
@@ -3031,7 +3083,7 @@ export interface components {
       /** @description 课程名称 */
       name?: string;
       /** @description 学期 */
-      semester?: string;
+      semester: string;
       /** @description 教师 */
       teacher?: string;
       /** @description 哪些周 */
@@ -3039,7 +3091,7 @@ export interface components {
       /** @description 地点 */
       where?: string;
       /** @description 学年 */
-      year?: string;
+      year: string;
     };
     'classroom.ClassroomAvailableStat': {
       /** @description 空闲情况（与sections一一对应） */
@@ -3052,140 +3104,140 @@ export interface components {
       stat?: components['schemas']['classroom.ClassroomAvailableStat'][];
     };
     'department.DelDepartmentRequest': {
-      id?: number;
+      id: number;
     };
     'department.Department': {
-      id?: number;
-      name?: string;
-      phone?: string;
-      place?: string;
-      time?: string;
+      id: number;
+      name: string;
+      phone: string;
+      place: string;
+      time: string;
     };
     'department.GetDepartmentsResponse': {
-      departments?: components['schemas']['department.Department'][];
+      departments: components['schemas']['department.Department'][];
     };
     'department.SaveDepartmentRequest': {
-      id?: number;
-      name?: string;
-      phone?: string;
-      place?: string;
-      time?: string;
+      id: number;
+      name: string;
+      phone: string;
+      place: string;
+      time: string;
     };
     'elecprice.Architecture': {
-      architecture_id?: string;
-      architecture_name?: string;
-      base_floor?: string;
-      top_floor?: string;
+      architecture_id: string;
+      architecture_name: string;
+      base_floor: string;
+      top_floor: string;
     };
     'elecprice.CancelStandardRequest': {
-      room_id?: string;
+      room_id: string;
     };
     'elecprice.GetArchitectureResponse': {
-      architecture_list?: components['schemas']['elecprice.Architecture'][];
+      architecture_list: components['schemas']['elecprice.Architecture'][];
     };
     'elecprice.GetPriceResponse': {
-      price?: components['schemas']['elecprice.Price'];
+      price: components['schemas']['elecprice.Price'];
     };
     'elecprice.GetRoomInfoResponse': {
-      room_list?: components['schemas']['elecprice.Room'][];
+      room_list: components['schemas']['elecprice.Room'][];
     };
     'elecprice.GetStandardListResponse': {
-      standard_list?: components['schemas']['elecprice.StandardResp'][];
+      standard_list: components['schemas']['elecprice.StandardResp'][];
     };
     'elecprice.Price': {
-      remain_money?: string;
-      yesterday_use_money?: string;
-      yesterday_use_value?: string;
+      remain_money: string;
+      yesterday_use_money: string;
+      yesterday_use_value: string;
     };
     'elecprice.Room': {
-      room_id?: string;
-      room_name?: string;
+      room_id: string;
+      room_name: string;
     };
     'elecprice.SetStandardRequest': {
-      limit?: number;
-      room_id?: string;
-      room_name?: string;
+      limit: number;
+      room_id: string;
+      room_name: string;
     };
     'elecprice.StandardResp': {
-      limit?: number;
-      room_name?: string;
+      limit: number;
+      room_name: string;
     };
     'feed.ChangeFeedAllowListReq': {
-      energy?: boolean;
-      grade?: boolean;
-      holiday?: boolean;
-      muxi?: boolean;
+      energy: boolean;
+      grade: boolean;
+      holiday: boolean;
+      muxi: boolean;
     };
     'feed.ClearFeedEventReq': {
       /** @description 如果feedid和status都被填写了,那么就会清除当前的feedid代表的feed消息且状态为设置的status的 */
-      feed_id?: number;
+      feed_id: number;
       /** @description 有三个可选字段all表示清除所有消息,read表示清除所有已读消息,unread表示清除所有未读消息 */
-      status?: string;
+      status: string;
     };
     'feed.FeedEventVO': {
-      content?: string;
+      content: string;
       /** @description Unix时间戳 */
-      created_at?: number;
-      extend_fields?: {
+      created_at: number;
+      extend_fields: {
         [key: string]: string;
       };
-      id?: number;
-      read?: boolean;
-      title?: string;
-      type?: string;
+      id: number;
+      read: boolean;
+      title: string;
+      type: string;
     };
     'feed.GetFeedAllowListResp': {
-      energy?: boolean;
-      grade?: boolean;
-      holiday?: boolean;
-      muxi?: boolean;
+      energy: boolean;
+      grade: boolean;
+      holiday: boolean;
+      muxi: boolean;
     };
     'feed.GetFeedEventsResp': {
       feed_events?: components['schemas']['feed.FeedEventVO'][];
     };
     'feed.GetToBePublicMuxiOfficialMSGResp': {
-      msg_list?: components['schemas']['feed.MuxiOfficialMSG'][];
+      msg_list: components['schemas']['feed.MuxiOfficialMSG'][];
     };
     'feed.MuxiOfficialMSG': {
-      content?: string;
+      content: string;
       /** @description 自定义拓展字段 */
-      extend_fields?: {
+      extend_fields: {
         [key: string]: string;
       };
-      id?: string;
+      id: string;
       /** @description 发布的时间 */
-      public_time?: number;
-      title?: string;
+      public_time: number;
+      title: string;
     };
     'feed.PublicMuxiOfficialMSGReq': {
-      content?: string;
-      extend_fields?: {
+      content: string;
+      extend_fields: {
         [key: string]: string;
       };
       /** @description 延迟多久发布(单位是秒) */
-      later_time?: number;
-      title?: string;
+      later_time: number;
+      title: string;
     };
     'feed.PublicMuxiOfficialMSGResp': {
-      content?: string;
-      extend_fields?: {
+      content: string;
+      extend_fields: {
         [key: string]: string;
       };
-      id?: string;
-      public_time?: string;
-      title?: string;
+      id: string;
+      public_time: string;
+      title: string;
     };
     'feed.ReadFeedEventReq': {
-      feed_id?: number;
+      feed_id: number;
     };
     'feed.RemoveFeedTokenReq': {
-      token?: string;
+      token: string;
     };
     'feed.SaveFeedTokenReq': {
-      token?: string;
+      token: string;
     };
     'feed.StopMuxiOfficialMSGReq': {
-      id?: string;
+      id: string;
     };
     'feedback_help.ChangeQuestionReq': {
       answer?: string;
@@ -3219,65 +3271,65 @@ export interface components {
     };
     'grade.GetGradeByTermResp': {
       /** @description 课程信息 */
-      grades?: components['schemas']['grade.Grade'][];
+      grades: components['schemas']['grade.Grade'][];
     };
     'grade.GetGradeScoreResp': {
-      type_of_grade_scores?: components['schemas']['grade.TypeOfGradeScore'][];
+      type_of_grade_scores: components['schemas']['grade.TypeOfGradeScore'][];
     };
     'grade.Grade': {
       /** @description 课程类别名称 */
-      Kclbmc?: string;
+      Kclbmc: string;
       /** @description 最终成绩 */
-      cj?: number;
+      cj: number;
       /** @description 期末成绩分数 */
-      finalGrade?: number;
+      finalGrade: number;
       /** @description /期末成绩占比 */
-      finalGradePercent?: string;
+      finalGradePercent: string;
       /** @description 绩点 */
-      jd?: number;
+      jd: number;
       /** @description 课程标记(主修/辅修) */
-      kcbj?: string;
+      kcbj: string;
       /** @description 课程名称 */
-      kcmc?: string;
+      kcmc: string;
       /** @description 课程性质名称 */
-      kcxzmc?: string;
+      kcxzmc: string;
       /** @description 平时成绩分数 */
-      regularGrade?: number;
+      regularGrade: number;
       /** @description 平时成绩占比 */
-      regularGradePercent?: string;
+      regularGradePercent: string;
       /** @description 学分 */
-      xf?: number;
+      xf: number;
     };
     'grade.GradeScore': {
       /** @description 课程名称 */
-      kcmc?: string;
+      kcmc: string;
       /** @description 学分 */
-      xf?: number;
+      xf: number;
     };
     'grade.TypeOfGradeScore': {
-      grade_score_list?: components['schemas']['grade.GradeScore'][];
+      grade_score_list: components['schemas']['grade.GradeScore'][];
       /** @description 课程性质名称 */
-      kcxzmc?: string;
+      kcxzmc: string;
     };
     'infoSum.DelInfoSumRequest': {
-      id?: number;
+      id: number;
     };
     'infoSum.GetInfoSumsResponse': {
-      info_sums?: components['schemas']['infoSum.InfoSum'][];
+      info_sums: components['schemas']['infoSum.InfoSum'][];
     };
     'infoSum.InfoSum': {
-      description?: string;
-      id?: number;
-      image?: string;
-      link?: string;
-      name?: string;
+      description: string;
+      id: number;
+      image: string;
+      link: string;
+      name: string;
     };
     'infoSum.SaveInfoSumRequest': {
-      description?: string;
-      id?: number;
-      image?: string;
-      link?: string;
-      name?: string;
+      description: string;
+      id: number;
+      image: string;
+      link: string;
+      name: string;
     };
     'static.GetStaticByLabelsResp': {
       statics?: components['schemas']['static.StaticVo'][];
@@ -3302,8 +3354,8 @@ export interface components {
     };
     'user.LoginByCCNUReq': {
       /** @description 密码 */
-      password?: string;
-      student_id?: string;
+      password: string;
+      student_id: string;
     };
     'web.Response': {
       code?: number;
@@ -3311,24 +3363,24 @@ export interface components {
       msg?: string;
     };
     'website.DelWebsiteRequest': {
-      id?: number;
+      id: number;
     };
     'website.GetWebsitesResponse': {
-      websites?: components['schemas']['website.Website'][];
+      websites: components['schemas']['website.Website'][];
     };
     'website.SaveWebsiteRequest': {
-      description?: string;
-      id?: number;
-      image?: string;
-      link?: string;
-      name?: string;
+      description: string;
+      id: number;
+      image: string;
+      link: string;
+      name: string;
     };
     'website.Website': {
-      description?: string;
-      id?: number;
-      image?: string;
-      link?: string;
-      name?: string;
+      description: string;
+      id: number;
+      image: string;
+      link: string;
+      name: string;
     };
   };
   responses: never;

@@ -9,5 +9,5 @@ package.json
 pnpm-lock.yaml
 node_modules
 # ./ to ensure not ignore files in subdir
-./android
-./ios
+android/
+ios/

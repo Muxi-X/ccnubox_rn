@@ -1,7 +1,7 @@
-import { request } from '../request';
+import { request } from '@/request';
 
-//修改订阅消息白名单
-export const changeFeedAllowList = async (data: any) => {
+//保存feedtoken
+export const saveFeedToken = async (data: any) => {
   try {
     const response = await request.post('/feed/changeFeedAllowList', data);
     return response.data;
@@ -11,4 +11,4 @@ export const changeFeedAllowList = async (data: any) => {
   }
 };
 
-export default changeFeedAllowList;
+export default saveFeedToken;
