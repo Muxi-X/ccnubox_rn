@@ -14,7 +14,7 @@ export const queryCourseTable = async (queryParams: QueryParams) => {
       header: { Authorization: '' },
     });
   } catch (error) {
-    console.error('查询课表接口出错:', error);
+    //console.error('查询课表接口出错:', error);
     throw error;
   }
 };

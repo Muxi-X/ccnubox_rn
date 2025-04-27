@@ -9,7 +9,7 @@ import { CourseTransferType } from '@/modules/courseTable/components/courseTable
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;
   const { currentStyle } = useVisualScheme();
-  console.log('CourseItems', props);
+  //console.log('CourseItems', props);
   return (
     <View
       style={{

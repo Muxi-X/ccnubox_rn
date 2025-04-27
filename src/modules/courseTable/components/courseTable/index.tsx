@@ -358,7 +358,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
-              console.error('刷新失败:', error);
+              //console.error('刷新失败:', error);
               handleFail();
             } finally {
               setIsFetching(false);
@@ -494,7 +494,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
 
         setDates(weekDates);
       } catch (error) {
-        console.error('计算日期失败:', error);
+        throw new Error('计算日期失败');
       }
     };
 

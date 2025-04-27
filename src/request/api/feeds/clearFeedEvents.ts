@@ -7,10 +7,10 @@ export const clearFeedEvents = async () => {
       status: 'all',
       feed_id: 0,
     });
-    console.log('clear', response);
+    //console.log('clear', response);
     return response.data;
   } catch (error) {
-    console.error('清除订阅事件出错:', error);
+    //console.error('清除订阅事件出错:', error);
     throw error;
   }
 };

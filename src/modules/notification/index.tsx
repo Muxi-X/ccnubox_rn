@@ -21,7 +21,7 @@ const NotificationPage: FC = () => {
 
   const fetchToken = async () => {
     const token = await getItem('pushToken');
-    console.log(token);
+    //console.log(token);
     setPushToken(token);
   };
 
@@ -36,7 +36,7 @@ const NotificationPage: FC = () => {
 
   useEffect(() => {
     if (pushToken) {
-      console.log(pushToken);
+      //console.log(pushToken);
 
       saveFeedToken(pushToken);
     }

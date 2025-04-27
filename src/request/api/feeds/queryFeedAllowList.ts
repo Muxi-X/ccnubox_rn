@@ -8,7 +8,7 @@ export const queryFeedAllowList = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('获取订阅消息出错:', error);
+    //console.error('获取订阅消息出错:', error);
     throw error;
   }
 };
