@@ -13,8 +13,8 @@ import {
 import useVisualScheme from '@/store/visualScheme';
 
 import { FeedIconList } from '@/constants/notificationItem';
-import changeFeedAllowList from '@/request/api/changeFeedAllowList';
-import queryFeedAllowList from '@/request/api/queryFeedAllowList';
+import { changeFeedAllowList, queryFeedAllowList } from '@/request/api/feeds';
+
 interface NotiPickerProps {
   visible: boolean;
   setVisible: (_visible: boolean) => void;

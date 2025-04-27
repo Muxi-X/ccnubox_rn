@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 //获取订阅消息
 export const queryFeedEvents = async () => {

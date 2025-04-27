@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 // 成绩查询详细
 export const queryGradeDetail = async (queryParams: any) => {

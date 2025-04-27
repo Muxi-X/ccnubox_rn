@@ -11,7 +11,10 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryElectricityPrice, setElectricityPrice } from '@/request/api';
+import {
+  queryElectricityPrice,
+  setElectricityPrice,
+} from '@/request/api/electricity';
 
 const ElectricityBillBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -30,7 +33,7 @@ const ElectricityBillBalance = () => {
   useEffect(() => {
     const params = {
       building: building as string,
-      room: room as string,
+      room_id: room as string,
       area: area as string,
     };
     console.log(params, 'params');

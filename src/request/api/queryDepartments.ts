@@ -1,6 +1,6 @@
-import { request } from '../request';
+import { request } from '@/request';
 
-const queryDepartmentInformation = async () => {
+const queryDepartments = async () => {
   try {
     return await request.get(`/department/getDepartments`); // 等待请求完成
   } catch (error) {
@@ -8,4 +8,4 @@ const queryDepartmentInformation = async () => {
   }
 };
 
-export default queryDepartmentInformation;
+export default queryDepartments;

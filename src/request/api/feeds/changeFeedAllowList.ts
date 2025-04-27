@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 //修改订阅消息白名单
 export const changeFeedAllowList = async (data: any) => {

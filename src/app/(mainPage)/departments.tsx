@@ -14,7 +14,7 @@ import Toast from '@/components/toast';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryDepartmentInformation } from '@/request/api';
+import { queryDepartments } from '@/request/api';
 import { openPhoneNumber } from '@/utils/handleOpenURL';
 
 interface DepartmentInformation {
@@ -84,7 +84,7 @@ function Departments() {
   const [departments, setDepartments] = useState<DepartmentInformation[]>([]);
 
   useEffect(() => {
-    queryDepartmentInformation()
+    queryDepartments()
       .then((res: any) => {
         setDepartments(res.data.departments);
       })

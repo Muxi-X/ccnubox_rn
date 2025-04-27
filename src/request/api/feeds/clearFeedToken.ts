@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 //删除feedtoken
 export const clearFeedToken = async (token: string) => {
