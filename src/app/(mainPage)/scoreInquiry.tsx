@@ -1,6 +1,6 @@
 import { Tabs } from '@ant-design/react-native';
 import * as React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -16,40 +16,13 @@ const ScoreInquiry = () => {
     <View style={[styles.container, currentStyle?.background_style]}>
       <Tabs
         tabs={tabs}
-        renderTabBar={tabProps => (
-          <View style={styles.navbar}>
-            {tabProps.tabs.map((tab, i) => (
-              <TouchableOpacity
-                key={tab.key || i}
-                onPress={() => {
-                  const { goToTab, onTabClick } = tabProps;
-                  // tslint:disable-next-line:no-unused-expression
-                  onTabClick && onTabClick(tabs[i], i);
-                  // tslint:disable-next-line:no-unused-expression
-                  goToTab && goToTab(i);
-                }}
-                style={[
-                  styles.navbarItem,
-                  tabProps.activeTab === i ? styles.activeBar : {},
-                ]}
-              >
-                <Text
-                  style={[
-                    currentStyle?.text_style,
-                    styles.navbarText,
-                    tabProps.activeTab === i
-                      ? {
-                          color: '#9379F6',
-                        }
-                      : {},
-                  ]}
-                >
-                  {tab.title}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
+        tabBarTextStyle={{ fontSize: 18, fontWeight: 500 }}
+        tabBarActiveTextColor="#9379F6"
+        tabBarUnderlineStyle={{
+          backgroundColor: '#9379F6',
+          marginHorizontal: '10%',
+          width: '30%',
+        }}
       >
         <View style={styles.content}>
           <CheckGrades />
@@ -73,33 +46,5 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: 20,
     paddingHorizontal: 20,
-  },
-  navbar: {
-    height: 60,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    fontSize: 24,
-    // marginBottom: 20,
-  },
-  activeBar: {
-    color: '#9379F6',
-    borderBottomWidth: 3,
-    borderColor: '#9379F6',
-  },
-  navbarText: {
-    fontSize: 18,
-    paddingHorizontal: 15,
-    textAlign: 'center',
-  },
-  navbarItem: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    marginHorizontal: 20,
-    borderBottomWidth: 3,
-    borderColor: 'transparent',
   },
 });

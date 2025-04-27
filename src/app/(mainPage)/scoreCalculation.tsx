@@ -175,21 +175,8 @@ const ScoreCalculation: React.FC = () => {
     })
       .then(res => {
         if (res.data?.grades) {
-          interface Grade {
-            Kclbmc: string;
-            cj: number;
-            finalGrade: number;
-            finalGradePercent: string;
-            jd: number;
-            kcbj: string;
-            kcmc: string;
-            kcxzmc: string;
-            regularGrade: number;
-            regularGradePercent: string;
-            xf: number;
-          }
-          const transformedData = (res.data.grades as Grade[]).map(
-            (grade: Grade, index: number) => ({
+          const transformedData = res.data.grades.map(
+            (grade, index: number) => ({
               title: grade.kcmc,
               key: index.toString(),
               credit: grade.xf,
