@@ -26,8 +26,9 @@ const Login: FC = () => {
     >
       <LinearGradient colors={['#7B6EF1', '#7FB4FB']} style={styles.bg}>
         <AnimatedFade
+          duration={100}
           direction="vertical"
-          distance={20}
+          distance={12}
           toVisible={!isKeyboardShow}
         >
           <Text

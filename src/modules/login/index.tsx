@@ -15,6 +15,7 @@ import Button from '@/components/button';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonStyles } from '@/styles/common';
+import { log } from '@/utils/logger';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -61,7 +62,7 @@ const LoginPage: FC = () => {
       if (error instanceof AxiosError && error.response?.status === 401) {
         Toast.fail('账号密码有误', 2);
       }
-      console.error('注册请求失败:', error);
+      log.error('注册请求失败:', error);
     }
     setLoginTriggered(false);
   };
