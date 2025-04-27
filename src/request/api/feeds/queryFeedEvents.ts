@@ -1,9 +1,11 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 //获取订阅消息
 export const queryFeedEvents = async () => {
   try {
-    const response = await request.get('/feed/getFeedEvents', {});
+    const response = await request.get('/feed/getFeedEvents', {
+      header: { Authorization: '' },
+    });
     // console.log('getevent', response);
     return response.data?.feed_events;
   } catch (error) {
