@@ -15,7 +15,7 @@ import Modal from '@/components/modal';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeDetail } from '@/request/api';
+import { queryGradeDetail } from '@/request/api/grade';
 import { percent2px } from '@/utils';
 
 interface GradeDetails {

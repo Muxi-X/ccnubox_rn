@@ -7,7 +7,7 @@ import View from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 import useWeekStore from '@/store/weekStore';
 
-import { queryCourseTable, queryCurrentWeek } from '@/request/api';
+import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
 
 import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';

@@ -6,7 +6,7 @@ import Image from '@/components/image';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeScore } from '@/request/api';
+import { queryGradeScore } from '@/request/api/grade';
 
 interface BaseCourseNode {
   title: string;

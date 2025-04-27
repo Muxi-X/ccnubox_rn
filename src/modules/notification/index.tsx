@@ -9,7 +9,7 @@ import { EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
 import { FeedIconList } from '@/constants/notificationItem';
-import saveFeedToken from '@/request/api/saveFeedToken';
+import { saveFeedToken } from '@/request/api/feeds';
 
 const NotificationPage: FC = () => {
   const currentStyles = useVisualScheme(state => state.currentStyle);

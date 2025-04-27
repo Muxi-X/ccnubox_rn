@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 //保存feedtoken
 export const saveFeedToken = async (data: any) => {

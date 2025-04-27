@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/request';
 
 //标记已读
 export const readFeedEvent = async (feed_id: number) => {

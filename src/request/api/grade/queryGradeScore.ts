@@ -1,5 +1,5 @@
 // 查询当前周
-import { request } from '@/request/request';
+import { request } from '@/request';
 
 export const queryGradeScore = async () => {
   try {
