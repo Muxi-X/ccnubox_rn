@@ -15,7 +15,7 @@ import Modal from '@/components/modal';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryGradeDetail } from '@/request/api';
+import { queryGradeDetail } from '@/request/api/grade';
 import { percent2px } from '@/utils';
 
 interface GradeDetails {
@@ -174,28 +174,20 @@ const ScoreCalculation: React.FC = () => {
       xnm: yearNum,
     })
       .then(res => {
-        if (res?.Grades) {
-          interface Grade {
-            Kcmc: string;
-            Xf: number;
-            Cj: string | number;
-            RegularGrade: string | number;
-            FinalGrade: string | number;
-            Jd: number;
-          }
-          const transformedData = (res.Grades as Grade[]).map(
-            (grade: Grade, index: number) => ({
-              title: grade.Kcmc,
+        if (res.data?.grades) {
+          const transformedData = res.data.grades.map(
+            (grade, index: number) => ({
+              title: grade.kcmc,
               key: index.toString(),
-              credit: grade.Xf,
-              score: grade.Cj,
+              credit: grade.xf,
+              score: grade.cj,
               details: {
-                usualGrade: grade.RegularGrade,
-                finalGrade: grade.FinalGrade,
-                allGrade: Number(grade.Cj),
-                credit: grade.Xf,
-                score: grade.Jd,
-                creditScore: grade.Xf * grade.Jd,
+                usualGrade: grade.regularGrade,
+                finalGrade: grade.finalGrade,
+                allGrade: Number(grade.cj),
+                credit: grade.xf,
+                score: grade.jd,
+                creditScore: grade.xf * grade.jd,
               },
             })
           );

@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { create } from 'zustand';
 
-import queryFeedEvents from '@/request/api/queryFeedEvents';
-import readFeedEvent from '@/request/api/readFeedEvent';
+import { queryFeedEvents, readFeedEvent } from '@/request/api/feeds';
 
 interface ExtendFields {
   test?: string;

@@ -61,7 +61,7 @@ const LoginPage: FC = () => {
       if (error instanceof AxiosError && error.response?.status === 401) {
         Toast.fail('账号密码有误', 2);
       }
-      console.error('注册请求失败:', error);
+      // console.error('注册请求失败:', error);
     }
     setLoginTriggered(false);
   };

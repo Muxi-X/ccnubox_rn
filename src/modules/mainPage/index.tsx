@@ -12,7 +12,7 @@ import ThemeChangeView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
-import queryBanners from '@/request/api/queryBanners';
+import { queryBanners } from '@/request/api';
 import { commonColors } from '@/styles/common';
 import { keyGenerator, percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
@@ -31,9 +31,8 @@ const IndexPage: FC = () => {
   const [data, setData] =
     useState<MainPageGridDataType[]>(mainPageApplications);
 
-  const loadBanners = async () => {
-    const res = await queryBanners();
-    if (res?.code === 0 && res.data?.banners) {
+  useEffect(() => {
+    queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(
           (banner: { picture_link: string; web_link: string }) => ({
@@ -42,11 +41,7 @@ const IndexPage: FC = () => {
           })
         )
       );
-    }
-  };
-
-  useEffect(() => {
-    loadBanners();
+    });
   }, []);
 
   const render = ({
