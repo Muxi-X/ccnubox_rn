@@ -32,7 +32,7 @@ function CheckUpdate(): React.ReactNode {
         title: '检测到更新',
         children: '是否更新',
         onConfirm: () => {
-          Updates.fetchUpdateAsync().then(r => console.log(r));
+          Updates.fetchUpdateAsync().then(_r => {});
         },
       });
   }, [isUpdateAvailable]);

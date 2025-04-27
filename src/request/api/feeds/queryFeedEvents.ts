@@ -9,7 +9,7 @@ export const queryFeedEvents = async () => {
     // console.log('getevent', response);
     return response.data?.feed_events;
   } catch (error) {
-    console.error('获取订阅消息出错:', error);
+    //console.error('获取订阅消息出错:', error);
     throw error;
   }
 };

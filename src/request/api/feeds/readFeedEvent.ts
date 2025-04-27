@@ -8,7 +8,7 @@ export const readFeedEvent = async (feed_id: number) => {
     });
     return response.data;
   } catch (error) {
-    console.error('删除出错:', error);
+    //console.error('删除出错:', error);
     throw error;
   }
 };
