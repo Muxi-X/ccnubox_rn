@@ -1,9 +1,8 @@
-// import { request } from '../request';
+// import { request } from '@/request';
 
 // const setElectricityPrice = async (setParams: any) => {
 //   try {
-//     const response = await request.post('/elecprice/set', setParams);
-//     return response.data;
+//     return await request.post('/elecprice/setStandard', setParams);
 //   } catch (error) {
 //     console.error('设置电费接口出错:', error);
 //     throw error;
