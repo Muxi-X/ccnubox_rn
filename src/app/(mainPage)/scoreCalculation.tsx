@@ -174,28 +174,34 @@ const ScoreCalculation: React.FC = () => {
       xnm: yearNum,
     })
       .then(res => {
-        if (res?.Grades) {
+        console.log(res.data);
+        if (res.data?.grades) {
           interface Grade {
-            Kcmc: string;
-            Xf: number;
-            Cj: string | number;
-            RegularGrade: string | number;
-            FinalGrade: string | number;
-            Jd: number;
+            Kclbmc: string;
+            cj: number;
+            finalGrade: number;
+            finalGradePercent: string;
+            jd: number;
+            kcbj: string;
+            kcmc: string;
+            kcxzmc: string;
+            regularGrade: number;
+            regularGradePercent: string;
+            xf: number;
           }
-          const transformedData = (res.Grades as Grade[]).map(
+          const transformedData = (res.data.grades as Grade[]).map(
             (grade: Grade, index: number) => ({
-              title: grade.Kcmc,
+              title: grade.kcmc,
               key: index.toString(),
-              credit: grade.Xf,
-              score: grade.Cj,
+              credit: grade.xf,
+              score: grade.cj,
               details: {
-                usualGrade: grade.RegularGrade,
-                finalGrade: grade.FinalGrade,
-                allGrade: Number(grade.Cj),
-                credit: grade.Xf,
-                score: grade.Jd,
-                creditScore: grade.Xf * grade.Jd,
+                usualGrade: grade.regularGrade,
+                finalGrade: grade.finalGrade,
+                allGrade: Number(grade.cj),
+                credit: grade.xf,
+                score: grade.jd,
+                creditScore: grade.xf * grade.jd,
               },
             })
           );

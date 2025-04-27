@@ -2390,6 +2390,8 @@ export interface paths {
     get: {
       parameters: {
         query: {
+          /** @description 是否强制刷新,可选字段 */
+          refresh?: boolean;
           /** @description 学年名:例如2023表示2023~2024学年 */
           xnm: number;
           /** @description 学期名:0表示所有学期,1表示第一学期,2表示第二学期,3表示第三学期 */
@@ -3048,6 +3050,8 @@ export interface components {
     };
     'class.GetClassListResp': {
       classes: components['schemas']['class.ClassInfo'][];
+      /** @description 上次刷新时间的时间戳,上海时区 */
+      last_refresh_time: number;
     };
     'class.GetRecycleBinClassInfosResp': {
       classInfos: components['schemas']['class.ClassInfo'][];
