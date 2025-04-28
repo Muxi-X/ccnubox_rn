@@ -3,8 +3,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Href, router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-import useWeekStore from '@/store/weekStore';
 
 import { tooltipActions } from '@/constants/courseTableApplications';
 import { commonStyles } from '@/styles/common';
@@ -12,7 +12,7 @@ import globalEventBus from '@/utils/eventBus';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   // const [showWeekPicker, setShowWeekPicker] = React.useState(false);
-  const { currentWeek, showWeekPicker, setShowWeekPicker } = useWeekStore();
+  const { currentWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
 
   return (
     <>
