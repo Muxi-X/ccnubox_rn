@@ -1,8 +1,6 @@
-import { Href, Redirect, SplashScreen } from 'expo-router';
+import { Href, Redirect } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 import { useEffect, useState } from 'react';
-
-import useCourse from '@/store/course';
 
 import { setupMockServer } from '@/mock/server';
 
@@ -11,7 +9,6 @@ import { setupMockServer } from '@/mock/server';
 // 详情见 issue: https://github.com/expo/router/issues/763#issuecomment-1635316964
 const Index = () => {
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
-  const hydrated = useCourse(state => state.hydrated);
 
   useEffect(() => {
     if (__DEV__) {
@@ -19,11 +16,10 @@ const Index = () => {
       setupMockServer();
     }
 
-    const init = async () => {
+    const checkFirstLaunch = async () => {
       const firstLaunch = getItem('firstLaunch');
       const token = getItem('longToken');
 
-      if (hydrated) await SplashScreen.hideAsync();
       if (!token) {
         if (firstLaunch === null) {
           // 是首次启动，设置标记并跳转到guide
@@ -39,9 +35,8 @@ const Index = () => {
       }
     };
 
-    SplashScreen.preventAutoHideAsync();
-    init();
-  }, [hydrated]);
+    checkFirstLaunch();
+  }, []);
 
   if (!initialRoute) {
     return null;
