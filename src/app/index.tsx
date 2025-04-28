@@ -23,6 +23,7 @@ const Index = () => {
       const firstLaunch = getItem('firstLaunch');
       const token = getItem('longToken');
 
+      // 等待 AsyncStorage 加载
       if (hydrated) await SplashScreen.hideAsync();
       if (!token) {
         if (firstLaunch === null) {

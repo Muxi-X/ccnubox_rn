@@ -9,6 +9,8 @@ interface CourseState {
   setHydrated: (hydrated: boolean) => void;
   courses: courseType[];
   updateCourses: (courses: courseType[]) => void;
+  addCourse: (course: courseType) => void;
+  deleteCourse: (course: courseType) => void;
 }
 
 const useCourse = create<CourseState>()(
@@ -19,6 +21,14 @@ const useCourse = create<CourseState>()(
         setHydrated: (hydrated: boolean) => set({ hydrated }),
         courses: [],
         updateCourses: (courses: courseType[]) => set({ courses }),
+        addCourse: (course: courseType) => {
+          set(state => ({ courses: [...state.courses, course] }));
+        },
+        deleteCourse: (course: courseType) => {
+          set(state => ({
+            courses: state.courses.filter(c => c.id !== course.id),
+          }));
+        },
       };
     },
     {
