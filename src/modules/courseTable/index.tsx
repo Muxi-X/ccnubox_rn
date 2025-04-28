@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as SecureStore from 'expo-secure-store';
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useEffect } from 'react';
 
 import View from '@/components/view';
 
+import useCourse from '@/store/course';
 import useVisualScheme from '@/store/visualScheme';
 import useWeekStore from '@/store/weekStore';
 
@@ -16,7 +16,7 @@ import WeekSelector from './components/weekSelector';
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const [courseData, setCourseData] = useState<courseType[]>([]);
+  const { courses, updateCourses } = useCourse();
   const { currentWeek, setCurrentWeek, showWeekPicker, setShowWeekPicker } =
     useWeekStore();
 
@@ -51,31 +51,31 @@ const CourseTablePage: FC = () => {
   };
 
   // 读取缓存的课表数据
-  const getCachedCourseTable = async (): Promise<courseType[] | null> => {
-    const dataString = await AsyncStorage.getItem('course_table');
-    if (dataString) {
-      try {
-        const data = JSON.parse(dataString);
-        return Array.isArray(data) ? data : null;
-      } catch (error) {
-        //console.error('解析缓存数据失败:', error);
-        throw error;
-      }
-    }
-    return null;
-  };
+  // const getCachedCourseTable = async (): Promise<courseType[] | null> => {
+  //   const dataString = await AsyncStorage.getItem('course_table');
+  //   if (dataString) {
+  //     try {
+  //       const data = JSON.parse(dataString);
+  //       return Array.isArray(data) ? data : null;
+  //     } catch (error) {
+  //       //console.error('解析缓存数据失败:', error);
+  //       throw error;
+  //     }
+  //   }
+  //   return null;
+  // };
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = async (forceRefresh: boolean = false) => {
     try {
       // 如果不需要强制刷新，则先尝试从缓存中读取课表数据
-      if (!forceRefresh) {
-        const cachedData = await getCachedCourseTable();
-        if (cachedData && cachedData.length > 0) {
-          setCourseData(cachedData);
-          return;
-        }
-      }
+      // if (!forceRefresh) {
+      //   const cachedData = await getCachedCourseTable();
+      //   if (cachedData && cachedData.length > 0) {
+      //     updateCourses(cachedData);
+      //     return;
+      //   }
+      // }
 
       // 获取开学时间（用于计算当前周和学期信息）
       const schoolTime = await getCachedSchoolTime(forceRefresh);
@@ -113,8 +113,8 @@ const CourseTablePage: FC = () => {
       if (res?.code === 0) {
         const courses = res.data?.classes as courseType[];
         // 缓存课表
-        await AsyncStorage.setItem('course_table', JSON.stringify(courses));
-        setCourseData(courses);
+        // await AsyncStorage.setItem('course_table', JSON.stringify(courses));
+        updateCourses(courses);
       }
     } catch (error) {
       throw error;
@@ -138,7 +138,7 @@ const CourseTablePage: FC = () => {
       style={[{ height: '95%', width: '100%' }, currentStyle?.background_style]}
     >
       <CourseTable
-        data={courseData}
+        data={courses}
         onTimetableRefresh={onTimetableRefresh}
         currentWeek={currentWeek}
       />
