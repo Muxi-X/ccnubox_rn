@@ -3,6 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Href, router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
+import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -11,14 +12,14 @@ import { commonStyles } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
 export const ScheduleHeaderTitle: React.FC = () => {
-  // const [showWeekPicker, setShowWeekPicker] = React.useState(false);
+  const { lastUpdate } = useCourse();
   const { currentWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
 
   return (
     <>
       <View
         style={{
-          width: '60%',
+          width: '80%',
           margin: 'auto',
         }}
       >
@@ -32,7 +33,6 @@ export const ScheduleHeaderTitle: React.FC = () => {
           }}
           onPress={() => {
             // console.log('选择周次');
-            // setShowWeekPicker(!showWeekPicker);
             setShowWeekPicker(!showWeekPicker);
           }}
         >
@@ -59,7 +59,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
             ]}
           />
         </TouchableOpacity>
-        {/* <Text
+        <Text
           style={[
             commonStyles.fontLight,
             commonStyles.fontSmall,
@@ -69,8 +69,8 @@ export const ScheduleHeaderTitle: React.FC = () => {
             },
           ]}
         >
-          当前周设置为{currentWeek}
-        </Text> */}
+          上次更新时间{new Date(lastUpdate * 1000).toLocaleDateString()}
+        </Text>
       </View>
     </>
   );
