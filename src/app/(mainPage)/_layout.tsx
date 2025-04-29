@@ -19,10 +19,12 @@ export default function Layout() {
     <View style={[styles.container]}>
       <Stack
         screenOptions={{
+          headerStyle: { backgroundColor: 'white' },
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackVisible: false,
           headerTitleAlign: 'center',
+          headerShadowVisible: false,
         }}
       >
         {mainPageApplications

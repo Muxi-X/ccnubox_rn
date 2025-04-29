@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
+import LottieView from 'lottie-react-native';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
@@ -74,6 +75,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     const refreshTextState = useSharedValue<RefreshState>('pull');
     const isTriggered = useSharedValue(false); // 是否已触发刷新
     const isRefreshing = useSharedValue(false); // 是否正在刷新中，用于禁用滚动
+    const animationRef = useRef<LottieView>(null);
 
     useEffect(() => {
       isAtTop.value && onReachTopEnd();
@@ -109,12 +111,17 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           backHeight.value = withTiming(0, {
             duration: 500,
           });
+          animationRef.current?.pause();
           // 使用 setTimeout 来延迟动画开始时间
           setTimeout(() => {
-            // 在动画完成后重置状态
-            refreshTextState.value = 'pull';
-            isRefreshing.value = false;
-          }, 2000); // 减少延迟时间
+            // 使用 runOnJS 在 JS 线程更新状态
+            runOnJS(() => {
+              refreshTextState.value = 'pull';
+              isRefreshing.value = false;
+              animationRef.current?.reset();
+              // 确保动画停止
+            })();
+          }, 500);
         },
         () => {
           // 请求失败后立即显示提示，提高响应速度
@@ -126,12 +133,16 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           backHeight.value = withTiming(0, {
             duration: 500,
           });
+          animationRef.current?.pause();
           // 使用 setTimeout 来延迟动画开始时间
           setTimeout(() => {
-            // 在动画完成后重置状态
-            refreshTextState.value = 'pull';
-            isRefreshing.value = false;
-          }, 2000); // 减少延迟时间
+            // 使用 runOnJS 在 JS 线程更新状态
+            runOnJS(() => {
+              refreshTextState.value = 'pull';
+              isRefreshing.value = false;
+              animationRef.current?.reset();
+            })();
+          }, 500);
         }
       );
     };
@@ -150,7 +161,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       if (isRefreshing.value) {
         return;
       }
-
       // 缓存当前值，减少重复访问
       const currentTranslateY = translateY.value;
       const shouldAllowRefresh = shouldRefresh.value;
@@ -401,41 +411,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       const { layout } = event.nativeEvent;
       setContainerSize(layout);
     };
-
-    // 使用状态文本映射，避免频繁计算和更新
-    const refreshTextMap = {
-      pull: '下拉刷新课表',
-      pullMore: '继续下拉刷新课表',
-      release: '松开即可刷新',
-      refreshing: '刷新中...',
-    };
-
-    // 创建文本状态的动画样式 - 优化性能
-    const textOpacityStyle = useAnimatedStyle(() => {
-      // 缓存当前值，减少重复访问
-      const currentRefreshState = refreshTextState.value;
-      const currentHeight = backHeight.value;
-
-      // 当处于刷新状态时，始终保持完全不透明
-      if (currentRefreshState === 'refreshing') {
-        return { opacity: 1 };
+    useEffect(() => {
+      if (isRefreshing.value) {
+        translateY.value = 0;
       }
-
-      // 使用离散的不透明度值，减少频繁更新
-      // 只使用三个不透明度级别，避免微小变化
-      const ratio = currentHeight / (REFRESH_THRESHOLD * 0.7);
-      let opacity;
-
-      if (ratio < 0.2) {
-        opacity = 0.4; // 最小不透明度
-      } else if (ratio < 0.6) {
-        opacity = 0.7; // 中等不透明度
-      } else {
-        opacity = 1; // 完全不透明
-      }
-
-      return { opacity };
-    }, []);
+    }, [isRefreshing.value]);
 
     // 创建指针事件样式，在刷新状态下禁用交互 - 优化性能
     const pointerEventsStyle = useAnimatedStyle(() => {
@@ -447,6 +427,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         pointerEvents: isCurrentlyRefreshing ? 'none' : ('auto' as any),
       };
     }, []);
+    useEffect(() => {
+      if (isRefreshing.value) {
+        animationRef.current?.play(90, 110);
+      }
+    }, [isRefreshing.value]);
 
     return (
       <View
@@ -465,21 +450,23 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               // 使用 translateY 来强制硬件加速
               transform: [{ translateY: 0 }],
               opacity: 1,
-              backgroundColor: commonColors.purple,
+              backgroundColor: '#A49DFB',
               justifyContent: 'center',
               alignItems: 'center',
             },
           ]}
         >
-          <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
-            {refreshTextState.value === 'refreshing'
-              ? refreshTextMap.refreshing
-              : refreshTextState.value === 'release'
-                ? refreshTextMap.release
-                : backHeight.value > REFRESH_THRESHOLD * 0.5
-                  ? refreshTextMap.pullMore
-                  : refreshTextMap.pull}
-          </Animated.Text>
+          <LottieView
+            ref={animationRef}
+            source={require('@/animation/renovate.json')}
+            style={[styles.lottieAnimation]}
+            loop
+            progress={
+              !isRefreshing.value
+                ? Math.min(backHeight.value / REFRESH_THRESHOLD, 1)
+                : undefined
+            }
+          />
         </Animated.View>
         {/* sticky top */}
         <Animated.View
@@ -554,6 +541,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
 ScrollLikeView.displayName = 'ScrollLikeView';
 
 const styles = StyleSheet.create({
+  lottieAnimation: {
+    width: 200,
+    height: 200,
+    backgroundColor: 'transparent',
+  },
   largeWrapper: {
     flex: 1,
     overflow: 'visible', // 确保内容不被裁剪
@@ -584,11 +576,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-  },
-  refreshText: {
-    color: commonColors.white,
-    fontSize: 14,
-    fontWeight: '500',
   },
 });
 
