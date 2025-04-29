@@ -7,7 +7,7 @@ import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const mainPageApplications: MainPageGridDataType[] = [
   {
-    title: '成绩',
+    title: '查算学分绩',
     name: 'scoreInquiry',
     imageUrl: Platform.select({
       ios: require('../assets/images/icons/ios/grades.png'),
