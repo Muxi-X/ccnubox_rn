@@ -25,7 +25,9 @@ export const commonStyles = StyleSheet.create({
   TabBarPadding: {
     marginHorizontal: 30,
   },
-  courseTableDividerLine: {},
+  courseTableDividerLine: {
+    color: '#f7f7f7',
+  },
 });
 
 export const commonColors: Partial<ColorType> = {
