@@ -13,6 +13,10 @@ interface CourseState {
   deleteCourse: (course: courseType) => void;
   lastUpdate: number;
   setLastUpdate: (time: number) => void;
+  holidayTime: number;
+  setHolidayTime: (_time: number) => void;
+  schoolTime: number;
+  setSchoolTime: (_time: number) => void;
 }
 
 const useCourse = create<CourseState>()(
@@ -33,6 +37,10 @@ const useCourse = create<CourseState>()(
         },
         lastUpdate: 0,
         setLastUpdate: (time: number) => set({ lastUpdate: time }),
+        holidayTime: 0,
+        setHolidayTime: (_time: number) => set({ holidayTime: _time }),
+        schoolTime: 0,
+        setSchoolTime: (_time: number) => set({ schoolTime: _time }),
       };
     },
     {
