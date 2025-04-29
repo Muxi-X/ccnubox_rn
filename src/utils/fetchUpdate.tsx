@@ -11,23 +11,24 @@ import updateInfo from '../assets/data/updateInfo.json';
 
 /* 显示更新模态框 */
 const showUpdateModal = (updateInfo: any) => {
+  const handleConfirm = async () => {
+    try {
+      const res = await Updates.fetchUpdateAsync();
+      if (res.isNew) {
+        alert('更新成功，即将重启应用');
+        await Updates.reloadAsync();
+      } else {
+        alert('没有新更新');
+      }
+    } catch (error) {
+      alert('更新失败，请稍后重试');
+    }
+  };
   Modal.show({
     confirmText: '更新',
     mode: 'middle',
     onConfirm() {
-      async () => {
-        try {
-          const res = await Updates.fetchUpdateAsync();
-          if (res.isNew) {
-            alert('更新成功，即将重启应用');
-            await Updates.reloadAsync();
-          } else {
-            alert('没有新更新');
-          }
-        } catch (error) {
-          alert('更新失败，请稍后重试');
-        }
-      };
+      handleConfirm();
     },
     children: (
       <View style={styles.modalContent}>

@@ -4,9 +4,8 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
-import clearFeedEvents from '@/request/api/clearFeedEvents';
+import { clearFeedEvents } from '@/request/api/feeds';
 
-// import clearFeedEvents from '@/request/api/clearFeedEvents';
 interface ClearModalProps {
   // feedId: number;
   clearVisible: boolean;

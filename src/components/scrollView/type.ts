@@ -14,7 +14,7 @@ export interface ScrollableViewProps {
    * 滚动监听
    * @param evt
    */
-  onScroll?: (evt: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
+  onScroll?: (_evt: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   /**
    * 滚动到最上端监听
    */
@@ -44,8 +44,8 @@ export interface ScrollableViewProps {
    */
   onRefresh?: (
     /** 刷新失败与否 callback */
-    handleSuccess: () => void,
-    handleFail: () => void
+    _handleSuccess: () => void,
+    _handleFail: () => void
   ) => void;
   /**
    * 样式

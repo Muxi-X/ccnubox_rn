@@ -18,8 +18,8 @@ import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-import useWeekStore from '@/store/weekStore';
 
 import {
   COURSE_HEADER_HEIGHT,
@@ -358,7 +358,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
-              console.error('刷新失败:', error);
+              //console.error('刷新失败:', error);
               handleFail();
             } finally {
               setIsFetching(false);
@@ -462,7 +462,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { currentWeek } = useWeekStore();
+  const { currentWeek } = useTimeStore();
   const [dates, setDates] = useState<string[]>([]);
 
   useEffect(() => {
@@ -494,7 +494,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
 
         setDates(weekDates);
       } catch (error) {
-        console.error('计算日期失败:', error);
+        throw new Error('计算日期失败');
       }
     };
 

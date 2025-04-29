@@ -12,8 +12,8 @@ function Help() {
         placeholder="请输入问题"
         value={value}
         onChange={value => setValue(value)}
-        onSubmit={value => {
-          console.log(value);
+        onSubmit={_value => {
+          //console.log(value);
           setValue('');
         }}
       />
