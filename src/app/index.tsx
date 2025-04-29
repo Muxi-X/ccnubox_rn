@@ -3,6 +3,7 @@ import { getItem } from 'expo-secure-store';
 import { useEffect } from 'react';
 
 import { setupMockServer } from '@/mock/server';
+import globalEventBus from '@/utils/eventBus';
 
 // 由于 expo 没有 initialRoutes
 // 重定向到 tabs
@@ -14,6 +15,7 @@ const Index = () => {
       setupMockServer();
     }
   });
+  globalEventBus.emit('updateCourseData');
   const token = getItem('longToken');
   if (!token) {
     return <Redirect href="/auth/login"></Redirect>;
