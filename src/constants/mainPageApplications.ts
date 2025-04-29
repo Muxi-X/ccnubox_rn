@@ -133,4 +133,14 @@ export const mainPageApplications: MainPageGridDataType[] = [
     key: 'grid-12',
     href: '/site' as Href,
   },
+  {
+    title: '更多',
+    name: 'more',
+    imageUrl: Platform.select({
+      ios: require('../assets/images/icons/ios/more.png'),
+      android: require('../assets/images/icons/android/more.png'),
+    }),
+    key: 'grid-13',
+    href: '/more' as Href,
+  },
 ];
