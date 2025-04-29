@@ -21,7 +21,7 @@ const handleOpenURL = async (url: string, appName: string) => {
     }
     await Linking.openURL(url);
   } catch (error) {
-    console.error('打开链接时出错:', error);
+    //console.error('打开链接时出错:', error);
     if (error instanceof Error) {
       if (error.message.includes('scheme')) {
         Toast.show({ text: `请先安装${appName}` });

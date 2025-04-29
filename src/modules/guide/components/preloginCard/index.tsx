@@ -1,4 +1,5 @@
 import { Icon, Toast } from '@ant-design/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { FC, useEffect, useState } from 'react';
@@ -60,6 +61,7 @@ export const PreLoginCard: FC = () => {
   }));
   const handleStart = () => {
     router.navigate('/auth/login');
+    AsyncStorage.setItem('firstLaunch', 'true');
   };
   useEffect(() => {
     setActiveContentIndex(activeIndex);

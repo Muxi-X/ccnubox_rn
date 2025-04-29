@@ -46,11 +46,11 @@ const Websites = () => {
 
   useEffect(() => {
     queryWebsites()
-      .then(res => {
+      .then((res: any) => {
         setWebsites(res.data.websites);
       })
-      .catch(error => {
-        console.error(error);
+      .catch(_error => {
+        //console.error(error);
       });
   }, []);
 
