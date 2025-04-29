@@ -18,8 +18,8 @@ import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-import useWeekStore from '@/store/weekStore';
 
 import {
   COURSE_HEADER_HEIGHT,
@@ -464,7 +464,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { currentWeek } = useWeekStore();
+  const { currentWeek } = useTimeStore();
   const [dates, setDates] = useState<string[]>([]);
 
   useEffect(() => {
