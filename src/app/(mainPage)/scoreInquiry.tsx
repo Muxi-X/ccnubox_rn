@@ -7,7 +7,7 @@ import useVisualScheme from '@/store/visualScheme';
 import CheckGrades from '@/modules/mainPage/components/checkgrades';
 import CourseTree from '@/modules/mainPage/components/courseTree';
 
-const tabs = [{ title: '查询学分绩' }, { title: '已修学分' }];
+const tabs = [{ title: '查算学分绩' }, { title: '已修学分' }];
 
 const ScoreInquiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
