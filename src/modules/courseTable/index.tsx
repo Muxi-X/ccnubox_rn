@@ -1,4 +1,4 @@
-import { FC, memo, useEffect } from 'react';
+import { FC, memo, useCallback, useEffect } from 'react';
 
 import View from '@/components/view';
 
@@ -60,29 +60,35 @@ const CourseTablePage: FC = () => {
   } = useTimeStore();
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
-  const onTimetableRefresh = async (forceRefresh: boolean = false) => {
-    try {
-      const startTimestamp = schoolTime * 1000;
-      const { semester, year } = computeSemesterAndYear(startTimestamp);
+  const onTimetableRefresh = useCallback(
+    async (forceRefresh: boolean = false) => {
+      try {
+        const { semester, year } = computeSemesterAndYear(schoolTime);
 
-      // 使用计算得到的学期和年份
-      const res = await queryCourseTable({
-        semester,
-        year,
-        refresh: forceRefresh,
-      });
+        // 使用计算得到的学期和年份
+        const res = await queryCourseTable({
+          semester,
+          year,
+          refresh: forceRefresh,
+        });
 
-      if (res?.code === 0 && res.data?.classes && res.data.last_refresh_time) {
-        const courses = res.data.classes as courseType[];
-        // 缓存课表
-        updateCourses(courses);
-        setLastUpdate(res.data.last_refresh_time);
+        if (
+          res?.code === 0 &&
+          res.data?.classes &&
+          res.data.last_refresh_time
+        ) {
+          const courses = res.data.classes as courseType[];
+          // 缓存课表
+          updateCourses(courses);
+          setLastUpdate(res.data.last_refresh_time);
+        }
+      } catch (error) {
+        throw error;
+        //console.error('onTimetableRefresh error:', error);
       }
-    } catch (error) {
-      throw error;
-      //console.error('onTimetableRefresh error:', error);
-    }
-  };
+    },
+    [schoolTime]
+  );
 
   useEffect(() => {
     (async () => {
