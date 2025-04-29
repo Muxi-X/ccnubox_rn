@@ -48,7 +48,7 @@ const computeSemesterAndYear = (startTimestamp: number) => {
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const { courses, updateCourses } = useCourse();
+  const { courses, updateCourses, setLastUpdate } = useCourse();
   const {
     currentWeek,
     setCurrentWeek,
@@ -62,7 +62,7 @@ const CourseTablePage: FC = () => {
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = async (forceRefresh: boolean = false) => {
     try {
-      const startTimestamp = Number(schoolTime) * 1000;
+      const startTimestamp = schoolTime * 1000;
       const { semester, year } = computeSemesterAndYear(startTimestamp);
 
       // 使用计算得到的学期和年份
@@ -72,10 +72,11 @@ const CourseTablePage: FC = () => {
         refresh: forceRefresh,
       });
 
-      if (res?.code === 0 && res.data?.classes) {
+      if (res?.code === 0 && res.data?.classes && res.data.last_refresh_time) {
         const courses = res.data.classes as courseType[];
         // 缓存课表
         updateCourses(courses);
+        setLastUpdate(res.data.last_refresh_time);
       }
     } catch (error) {
       throw error;
