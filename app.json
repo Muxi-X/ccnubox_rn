@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "ccnu_coursetable",
+    "name": "华师匣子",
     "slug": "ccnucoursetable",
     "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/mx-logo.png",
+    "icon": "./src/assets/images/logo.png",
     "scheme": "wx6220588048f6e417",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
@@ -14,7 +14,7 @@
       "src/assets/fonts"
     ],
     "splash": {
-      "image": "./src/assets/images/mx-logo.png",
+      "image": "./src/assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -33,10 +33,6 @@
     },
     "android": {
       "versionCode": 2,
-      "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/mx-logo.png",
-        "backgroundColor": "#ffffff"
-      },
       "permissions": [
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
@@ -49,7 +45,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./src/assets/images/mx-logo.png"
+      "favicon": "./src/assets/images/logo.png"
     },
     "plugins": [
       "expo-router",
