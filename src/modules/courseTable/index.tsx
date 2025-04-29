@@ -108,7 +108,6 @@ const CourseTablePage: FC = () => {
         log.error('Failed to fetch current week:', err);
       }
     };
-
     fetchCurrentWeek();
   }, [setSchoolTime, setHolidayTime, setCurrentWeek]);
 
