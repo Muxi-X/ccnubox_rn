@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'ccnu_coursetable'
+rootProject.name = '华师匣子'
 
 dependencyResolutionManagement {
   versionCatalogs {
