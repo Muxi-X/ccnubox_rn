@@ -62,8 +62,10 @@ const IndexPage: FC = () => {
     return (
       <TouchableOpacity onPress={handlePress}>
         <View style={styles.item} key={key}>
-          <Skeleton style={styles.item}>
-            <Image source={imageUrl}></Image>
+          <Skeleton>
+            <View style={styles.itemImage}>
+              <Image source={imageUrl}></Image>
+            </View>
           </Skeleton>
           <Skeleton>
             <Text style={styles.itemText}>{title}</Text>
@@ -147,15 +149,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  bannerItem: {
-    width: '95%',
-    height: 120,
-    borderRadius: 10,
-    // backgroundColor: commonColors.purple,
+  itemImage: {
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemText: {
     fontSize: 14,
     marginTop: 6,
     color: commonColors.darkGray,
+  },
+  bannerItem: {
+    width: '95%',
+    height: 120,
+    borderRadius: 10,
   },
 });
