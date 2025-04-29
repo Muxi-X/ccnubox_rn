@@ -7,6 +7,7 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';
@@ -48,16 +49,16 @@ const computeSemesterAndYear = (startTimestamp: number) => {
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const { courses, updateCourses, setLastUpdate } = useCourse();
   const {
-    currentWeek,
-    setCurrentWeek,
-    showWeekPicker,
-    setShowWeekPicker,
+    courses,
+    updateCourses,
+    setLastUpdate,
     setHolidayTime,
     schoolTime,
     setSchoolTime,
-  } = useTimeStore();
+  } = useCourse();
+  const { currentWeek, setCurrentWeek, showWeekPicker, setShowWeekPicker } =
+    useTimeStore();
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
@@ -83,25 +84,40 @@ const CourseTablePage: FC = () => {
           setLastUpdate(res.data.last_refresh_time);
         }
       } catch (error) {
-        throw error;
-        //console.error('onTimetableRefresh error:', error);
+        log.error('Failed to refresh timetable:', error);
       }
     },
-    [schoolTime]
+    [schoolTime, updateCourses, setLastUpdate]
   );
 
+  // 获取当前周数
   useEffect(() => {
-    (async () => {
-      // 刷新开学时间
-      const res = await queryCurrentWeek();
-      if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
-        setSchoolTime(res.data.school_time);
-        setHolidayTime(res.data.holiday_time);
-        setCurrentWeek(computeWeekNumber(schoolTime));
+    const fetchCurrentWeek = async () => {
+      try {
+        const res = await queryCurrentWeek();
+        if (
+          res?.code === 0 &&
+          res.data?.school_time &&
+          res.data?.holiday_time
+        ) {
+          setSchoolTime(res.data.school_time);
+          setHolidayTime(res.data.holiday_time);
+          setCurrentWeek(computeWeekNumber(res.data.school_time));
+        }
+      } catch (err) {
+        log.error('Failed to fetch current week:', err);
       }
-      await onTimetableRefresh();
-    })();
-  }, []);
+    };
+
+    fetchCurrentWeek();
+  }, [setSchoolTime, setHolidayTime, setCurrentWeek]);
+
+  // 刷新课表数据
+  useEffect(() => {
+    if (schoolTime) {
+      onTimetableRefresh();
+    }
+  }, [schoolTime, onTimetableRefresh]);
 
   return (
     <View
