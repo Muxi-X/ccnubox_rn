@@ -11,6 +11,8 @@ interface CourseState {
   updateCourses: (courses: courseType[]) => void;
   addCourse: (course: courseType) => void;
   deleteCourse: (course: courseType) => void;
+  lastUpdate: number;
+  setLastUpdate: (time: number) => void;
 }
 
 const useCourse = create<CourseState>()(
@@ -29,6 +31,8 @@ const useCourse = create<CourseState>()(
             courses: state.courses.filter(c => c.id !== course.id),
           }));
         },
+        lastUpdate: 0,
+        setLastUpdate: (time: number) => set({ lastUpdate: time }),
       };
     },
     {
