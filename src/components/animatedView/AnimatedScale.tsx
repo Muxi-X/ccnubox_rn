@@ -50,7 +50,7 @@ const AnimatedScale = ({
     };
   });
   useEffect(() => {
-    if (typeof onAnimationEnd === 'function') {
+    if (scale.value === 1 && typeof onAnimationEnd === 'function') {
       runOnJS(onAnimationEnd)();
     }
   }, [scale.value, onAnimationEnd]);

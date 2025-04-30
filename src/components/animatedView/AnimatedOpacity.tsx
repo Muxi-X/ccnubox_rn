@@ -1,6 +1,5 @@
 import { memo, useEffect } from 'react';
 import Animated, {
-  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -39,26 +38,18 @@ const AnimatedOpacity = ({
     }
   }, [sharedOpacity, duration, trigger, toVisible, delay]);
   const opacityStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      sharedOpacity.value,
-      toVisible ? [0, 1] : [1, 0],
-      toVisible ? [0, 1] : [1, 0]
-    );
+    const opacity = sharedOpacity.value;
+    if (
+      ((opacity === 1 && toVisible) || (!opacity && !toVisible)) &&
+      typeof onAnimationEnd === 'function'
+    )
+      runOnJS(onAnimationEnd)();
 
     return {
       // styles
       opacity,
     };
   });
-  useEffect(() => {
-    if (typeof onAnimationEnd === 'function') {
-      try {
-        runOnJS(onAnimationEnd)();
-      } catch (error) {
-        // 忽略动画结束回调中的错误
-      }
-    }
-  }, [onAnimationEnd]);
   return (
     <Animated.View style={[opacityStyle, style]} {...restProps}>
       {children}
