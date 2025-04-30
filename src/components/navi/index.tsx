@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     bottom: 0,
-    paddingVertical: 15,
+    paddingVertical: 12, // 从15改为8
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderCurve: 'continuous',

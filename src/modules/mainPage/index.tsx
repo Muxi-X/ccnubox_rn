@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { FC, memo, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -44,34 +44,18 @@ const IndexPage: FC = () => {
     });
   }, []);
 
-  const render = ({
-    key,
-    title,
-    href,
-    action,
-    imageUrl,
-  }: MainPageGridDataType) => {
-    const handlePress = () => {
-      if (href) {
-        router.navigate(href);
-      }
-      if (action) {
-        action();
-      }
-    };
+  const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
     return (
-      <TouchableOpacity onPress={handlePress}>
-        <View style={styles.item} key={key}>
-          <Skeleton>
-            <View style={styles.itemImage}>
-              <Image source={imageUrl}></Image>
-            </View>
-          </Skeleton>
-          <Skeleton>
-            <Text style={styles.itemText}>{title}</Text>
-          </Skeleton>
-        </View>
-      </TouchableOpacity>
+      <View style={styles.item} key={key}>
+        <Skeleton>
+          <View style={styles.itemImage}>
+            <Image source={imageUrl}></Image>
+          </View>
+        </Skeleton>
+        <Skeleton>
+          <Text style={styles.itemText}>{title}</Text>
+        </Skeleton>
+      </View>
     );
   };
 
@@ -112,6 +96,14 @@ const IndexPage: FC = () => {
       </Skeleton>
       {/* 功能列表 */}
       <DraggableGrid
+        onItemPress={data => {
+          if (data.href) {
+            router.push(data.href);
+          }
+          if (data.action) {
+            data.action();
+          }
+        }}
         numColumns={3}
         renderItem={render}
         data={data}

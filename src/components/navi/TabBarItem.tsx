@@ -30,7 +30,7 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
   const IconComponent = useMemo(
     () => (
       <TabBarIcon
-        size={28}
+        size={24}
         // @ts-ignore
         name={iconName}
         color={color}
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 4,
+    gap: 2,
   },
   icon: {
     display: 'flex',
@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 2,
+    marginTop: 1,
   },
 });
