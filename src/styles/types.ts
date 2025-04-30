@@ -43,6 +43,7 @@ export type ColorType = Record<
   | 'blue'
   | 'yellow'
   | 'purple'
+  | 'lightPurple'
   | 'black'
   | 'green'
   | 'gray'
