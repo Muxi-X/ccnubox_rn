@@ -1,6 +1,9 @@
 import { Href, useRouter } from 'expo-router';
+import { deleteItemAsync } from 'expo-secure-store';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import Modal from '@/components/modal';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -8,17 +11,33 @@ interface ItemProps {
   icon: { uri: string };
   text: string;
   url: Href<string>;
+  name?: string;
 }
-function SettingItem({ icon, text, url }: ItemProps) {
+function SettingItem({ icon, text, url, name }: ItemProps) {
   const currentScheme = useVisualScheme(state => state.currentStyle);
   const navigation = useRouter();
+
+  const handlePress = () => {
+    if (name === 'exit') {
+      Modal.show({
+        mode: 'middle',
+        title: '退出登录',
+        children: '确定要退出登录吗？',
+        confirmText: '确定',
+        cancelText: '取消',
+        onConfirm: () => {
+          deleteItemAsync('longToken').then(() => {
+            navigation.replace('/auth/login');
+          });
+        },
+      });
+    } else {
+      navigation.navigate(url);
+    }
+  };
+
   return (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => {
-        navigation.navigate(url);
-      }}
-    >
+    <TouchableOpacity style={styles.itemContainer} onPress={handlePress}>
       <View style={styles.iconContainer}>
         <Image source={icon} style={styles.icon} />
       </View>
