@@ -1,36 +1,25 @@
-import { Tabs } from '@ant-design/react-native';
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
+
+import TabBar from '@/components/tabbar';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import CheckGrades from '@/modules/mainPage/components/checkgrades';
 import CourseTree from '@/modules/mainPage/components/courseTree';
 
-const tabs = [{ title: '查算学分绩' }, { title: '已修学分' }];
+const navText = ['查算学分绩', '已修学分'];
 
 const ScoreInquiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const [pattern, setPattern] = React.useState(0);
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      <Tabs
-        tabs={tabs}
-        tabBarTextStyle={{ fontSize: 18, fontWeight: 500 }}
-        tabBarActiveTextColor="#9379F6"
-        tabBarUnderlineStyle={{
-          backgroundColor: '#9379F6',
-          marginHorizontal: '10%',
-          width: '30%',
-        }}
-      >
-        <View style={styles.content}>
-          <CheckGrades />
-        </View>
-        <View style={styles.content}>
-          <CourseTree />
-        </View>
-      </Tabs>
+      <TabBar pattern={pattern} setPattern={setPattern} navText={navText} />
+      <View style={styles.content}>
+        {pattern === 0 ? <CheckGrades /> : <CourseTree />}
+      </View>
     </View>
   );
 };
@@ -40,11 +29,11 @@ export default ScoreInquiry;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
     backgroundColor: '#FFF',
   },
   content: {
-    paddingVertical: 20,
+    flex: 1,
+    paddingVertical: 10,
     paddingHorizontal: 20,
   },
 });

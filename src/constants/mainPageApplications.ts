@@ -1,6 +1,24 @@
 import { Href } from 'expo-router';
 import { Platform } from 'react-native';
 
+import AndroidCardSvg from '@/assets/images/icons/android/card.svg';
+import AndroidDateSvg from '@/assets/images/icons/android/date.svg';
+import AndroidEnergySvg from '@/assets/images/icons/android/energy.svg';
+import AndroidGradesSvg from '@/assets/images/icons/android/grades.svg';
+import AndroidInformationSvg from '@/assets/images/icons/android/information.svg';
+import AndroidMapSvg from '@/assets/images/icons/android/map.svg';
+import AndroidMoreSvg from '@/assets/images/icons/android/more.svg';
+import AndroidSiteSvg from '@/assets/images/icons/android/site.svg';
+import AndroidWebSvg from '@/assets/images/icons/android/web.svg';
+import IosCardSvg from '@/assets/images/icons/ios/card.svg';
+import IosDateSvg from '@/assets/images/icons/ios/date.svg';
+import IosEnergySvg from '@/assets/images/icons/ios/energy.svg';
+import IosGradesSvg from '@/assets/images/icons/ios/grades.svg';
+import IosInformationSvg from '@/assets/images/icons/ios/information.svg';
+import IosMapSvg from '@/assets/images/icons/ios/map.svg';
+import IosMoreSvg from '@/assets/images/icons/ios/more.svg';
+import IosSiteSvg from '@/assets/images/icons/ios/site.svg';
+import IosWebSvg from '@/assets/images/icons/ios/web.svg';
 import { handleOpenURL } from '@/utils';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
@@ -9,10 +27,11 @@ export const mainPageApplications: MainPageGridDataType[] = [
   {
     title: '查算学分绩',
     name: 'scoreInquiry',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/grades.png'),
-      android: require('../assets/images/icons/android/grades.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosGradesSvg,
+        android: AndroidGradesSvg,
+      }) || AndroidGradesSvg,
     key: 'grid-1',
     href: '/scoreInquiry',
   },
@@ -20,29 +39,32 @@ export const mainPageApplications: MainPageGridDataType[] = [
     title: '电费',
     name: 'electricity',
     href: '/electricity',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/energy.png'),
-      android: require('../assets/images/icons/android/energy.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosEnergySvg,
+        android: AndroidEnergySvg,
+      }) || AndroidEnergySvg,
     key: 'grid-2',
   },
   {
     title: '地图',
     name: 'map',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/map.png'),
-      android: require('../assets/images/icons/android/map.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosMapSvg,
+        android: AndroidMapSvg,
+      }) || AndroidMapSvg,
     key: 'grid-3',
     href: '/map' as Href,
   },
   {
     title: '校园卡',
     name: 'schoolCard',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/card.png'),
-      android: require('../assets/images/icons/android/card.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosCardSvg,
+        android: AndroidCardSvg,
+      }) || AndroidCardSvg,
     key: 'grid-4',
     action: () =>
       handleOpenURL(
@@ -73,30 +95,33 @@ export const mainPageApplications: MainPageGridDataType[] = [
   {
     title: '部门信息',
     name: 'departments',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/information.png'),
-      android: require('../assets/images/icons/android/information.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosInformationSvg,
+        android: AndroidInformationSvg,
+      }) || AndroidInformationSvg,
     key: 'grid-7',
     href: '/departments' as Href,
   },
   {
     title: '校历',
     name: 'calendar',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/date.png'),
-      android: require('../assets/images/icons/android/date.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosDateSvg,
+        android: AndroidDateSvg,
+      }) || AndroidDateSvg,
     key: 'grid-8',
     href: '/calendar' as Href,
   },
   {
     title: '常用网站',
     name: 'websites',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/web.png'),
-      android: require('../assets/images/icons/android/web.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosWebSvg,
+        android: AndroidWebSvg,
+      }) || AndroidWebSvg,
     key: 'grid-9',
     href: '/websites' as Href,
   },
@@ -126,20 +151,22 @@ export const mainPageApplications: MainPageGridDataType[] = [
   {
     title: '座位预约',
     name: 'site',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/site.png'),
-      android: require('../assets/images/icons/android/site.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosSiteSvg,
+        android: AndroidSiteSvg,
+      }) || AndroidSiteSvg,
     key: 'grid-12',
     href: '/site' as Href,
   },
   {
     title: '更多',
     name: 'more',
-    imageUrl: Platform.select({
-      ios: require('../assets/images/icons/ios/more.png'),
-      android: require('../assets/images/icons/android/more.png'),
-    }),
+    imageUrl:
+      Platform.select({
+        ios: IosMoreSvg,
+        android: AndroidMoreSvg,
+      }) || AndroidMoreSvg,
     key: 'grid-13',
     href: '/more' as Href,
   },
