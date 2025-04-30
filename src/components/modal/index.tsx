@@ -57,12 +57,6 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   const handleClose = () => {
     setVisible(false);
     onClose && onClose();
-    // FIX_ME： 由于rn自带modal不支持获取动画结束时间
-    // 因此这里采取定时器的方案
-    // 过一秒后清除动画
-    setTimeout(() => {
-      currentKey && deleteChildren(currentKey);
-    }, 1000);
   };
   const modalContent = useMemo(() => {
     return (
@@ -147,7 +141,15 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
     );
   }, [children, mode]);
   return (
-    <ModalBack visible={visible} style={{ zIndex: currentKey }}>
+    <ModalBack
+      visible={visible}
+      style={{ zIndex: currentKey }}
+      onAnimationEnd={() => {
+        setTimeout(() => {
+          currentKey && deleteChildren(currentKey);
+        }, 500);
+      }}
+    >
       <View
         style={[
           styles.modalOverlay,
@@ -234,13 +236,24 @@ export const ModalTrigger: React.FC<ModalTriggerProps> = props => {
 };
 
 export const ModalBack: FC<
-  { children?: ReactElement; visible: boolean } & ViewProps
-> = ({ children, style, visible }) => {
+  {
+    children?: ReactElement;
+    visible: boolean;
+    onAnimationEnd?: () => void;
+  } & ViewProps
+> = ({ children, style, visible, onAnimationEnd }) => {
+  const [displayMode, setDisplayMode] = useState<'flex' | 'none'>(
+    visible ? 'flex' : 'none'
+  );
   return (
     <>
       <AnimatedOpacity
         duration={500}
         toVisible={visible}
+        onAnimationEnd={() => {
+          onAnimationEnd && onAnimationEnd();
+          setDisplayMode(visible ? 'flex' : 'none');
+        }}
         style={[
           {
             flex: 1,
@@ -249,7 +262,7 @@ export const ModalBack: FC<
             height: percent2px(110, 'height'),
             // height: '100%',
             position: 'absolute',
-            display: visible ? 'flex' : 'none',
+            display: displayMode,
             top: 0,
           },
           style,

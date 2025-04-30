@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
+import LottieView from 'lottie-react-native';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
@@ -24,8 +25,6 @@ import Toast from '../toast';
 const REFRESH_THRESHOLD = 100;
 /** 下拉刷新回弹动画时间 */
 const REFRESH_BACK_ANIMATION_TIME = 500;
-/** 最小下拉触发阈值 */
-const MIN_PULL_THRESHOLD = 30;
 
 /**
  * 刷新状态
@@ -79,6 +78,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     const refreshTextState = useSharedValue<RefreshState>('pull');
     const isTriggered = useSharedValue(false); // 是否已触发刷新
     const isRefreshing = useSharedValue(false); // 是否正在刷新中，用于禁用滚动
+    const animationRef = useRef<LottieView | null>(null);
 
     // 监听重置滚动位置的事件
     useEffect(() => {
@@ -148,12 +148,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 添加阻尼效果，使用更小的系数来减少移动敏感度
         const dampedTranslation = event.translationY * 0.4;
         // 只有当下拉距离超过最小阈值时才显示刷新指示器
-        if (dampedTranslation >= MIN_PULL_THRESHOLD) {
+        if (dampedTranslation >= 0) {
           isAtTop.value = true;
-          const newHeight = Math.min(
-            dampedTranslation - MIN_PULL_THRESHOLD,
-            REFRESH_THRESHOLD
-          );
+          const newHeight = Math.min(dampedTranslation, REFRESH_THRESHOLD);
           backHeight.value = newHeight;
           // 未达到阈值一半, 展示下拉
           if (newHeight < REFRESH_THRESHOLD / 2) {
@@ -173,9 +170,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             refreshTextState.value = 'release';
             return;
           }
-        } else if (backHeight.value > 0) {
-          // 如果下拉距离小于最小阈值，不显示刷新指示器
-          backHeight.value = 0;
         }
       }
     };
@@ -187,7 +181,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       if (isRefreshing.value) {
         return;
       }
-
       // 缓存当前值
       prevTranslateX.value = event.absoluteX;
       shouldRefresh.value = true;
@@ -211,7 +204,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 设置正在刷新状态，禁用滚动
         isRefreshing.value = true;
         isTriggered.value = true;
-
         // 使用 runOnJS 在 JS 线程上调用回调，避免阻塞 UI 线程
         runOnJS(onReachTopEnd)();
       } else if (backHeight.value > 0) {
@@ -222,6 +214,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         backHeight.value = withTiming(0, {
           duration: 400,
         });
+        isAtTop.value = false;
         // 确保刷新状态被重置，即使用户取消了刷新
         isRefreshing.value = false;
       }
@@ -237,6 +230,8 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         if (isRefreshing.value) {
           return;
         }
+        startX.value = translateX.value;
+        startY.value = translateY.value;
       })
       .onUpdate(event => {
         'worklet';
@@ -263,11 +258,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         handlePullToRefresh(event);
 
         // 只有启用滚动时才处理滚动
-        if (enableScrolling && !isAtTop.value) {
+        if (enableScrolling && backHeight.value === 0) {
           const newTranslateX = Math.min(
             0,
             Math.max(
-              startX.value + event.translationX,
+              startX.value + Math.floor(event.translationX),
               wrapperSize.width - containerSize.width
             )
           );
@@ -275,7 +270,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           const newTranslateY = Math.min(
             0,
             Math.max(
-              startY.value + event.translationY,
+              startY.value + Math.floor(event.translationY),
               wrapperSize.height - containerSize.height
             )
           );
@@ -330,7 +325,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         marginLeft: cornerWidth.value,
       };
     }, []);
-
     // For the sticky top, we only want horizontal scrolling, not vertical
     const animatedOnlyX = useAnimatedStyle(() => ({
       transform: [{ translateX: translateX.value }],
@@ -361,6 +355,15 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         opacity: interpolate(backHeight.value, [0, REFRESH_THRESHOLD], [0, 1]),
       };
     }, []);
+    useEffect(() => {
+      if (isRefreshing.value) {
+        animationRef.current?.play(90, 110);
+      } else {
+        animationRef.current?.reset();
+        animationRef.current?.play(0, 110);
+        animationRef.current?.pause();
+      }
+    }, [isRefreshing.value]);
 
     return (
       <View
@@ -376,15 +379,26 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               width: '100%',
               zIndex: 21,
               height: backHeight,
-              // 使用 translateY 来强制硬件加速
-              transform: [{ translateY: 0 }],
               opacity: 1,
-              backgroundColor: commonColors.purple,
-              justifyContent: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: commonColors.lightPurple,
+              overflow: 'hidden',
               alignItems: 'center',
             },
           ]}
         >
+          <LottieView
+            source={require('@/animation/renovate.json')}
+            style={[styles.lottieAnimation]}
+            loop={isRefreshing.value}
+            ref={animationRef}
+            progress={
+              isRefreshing.value
+                ? undefined
+                : backHeight.value / REFRESH_THRESHOLD
+            }
+          />
           <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
             {refreshTextMap[refreshTextState.value]}
           </Animated.Text>
@@ -497,6 +511,14 @@ const styles = StyleSheet.create({
     color: commonColors.white,
     fontSize: 14,
     fontWeight: '500',
+    marginTop: -24,
+  },
+  lottieAnimation: {
+    width: 180,
+    height: 180,
+    margin: -40,
+    elevation: 20,
+    backgroundColor: 'transparent',
   },
 });
 
