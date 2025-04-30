@@ -43,13 +43,19 @@ const IndexPage: FC = () => {
     });
   }, []);
 
+  const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
+    if (typeof imageUrl === 'function') {
+      const SvgComponent = imageUrl;
+      return <SvgComponent width={50} height={50} />;
+    }
+    return <Image source={imageUrl} />;
+  };
+
   const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
         <Skeleton>
-          <View style={styles.itemImage}>
-            <Image source={imageUrl}></Image>
-          </View>
+          <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
         </Skeleton>
         <Skeleton>
           <Text style={styles.itemText}>{title}</Text>
