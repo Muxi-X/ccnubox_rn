@@ -89,28 +89,6 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
           )}
         </View>
         <View style={styles.bottomChoice}>
-          <TouchableOpacity onPress={handleConfirm}>
-            <View
-              style={
-                !isBottomMode && {
-                  ...styles.confirmViewStyle,
-                  ...styles.buttonStyle,
-                }
-              }
-            >
-              <Text
-                style={[
-                  styles.bottomChoiceText,
-                  !isBottomMode && currentStyle?.text_style,
-                  isBottomMode
-                    ? commonStyles.fontLarge
-                    : commonStyles.fontMedium,
-                ]}
-              >
-                {confirmText ?? '确认'}
-              </Text>
-            </View>
-          </TouchableOpacity>
           {/* showCancel 决定是否显示取消按钮 */}
           {showCancel && (
             <TouchableOpacity onPress={handleCancel}>
@@ -136,6 +114,28 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
               </View>
             </TouchableOpacity>
           )}
+          <TouchableOpacity onPress={handleConfirm}>
+            <View
+              style={
+                !isBottomMode && {
+                  ...styles.confirmViewStyle,
+                  ...styles.buttonStyle,
+                }
+              }
+            >
+              <Text
+                style={[
+                  styles.bottomChoiceText,
+                  !isBottomMode && currentStyle?.text_style,
+                  isBottomMode
+                    ? commonStyles.fontLarge
+                    : commonStyles.fontMedium,
+                ]}
+              >
+                {confirmText ?? '确认'}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </>
     );

@@ -1,15 +1,35 @@
-import AntdIcons from '@expo/vector-icons/AntDesign';
-import { type IconProps } from '@expo/vector-icons/build/createIconSet';
-import { type ComponentProps } from 'react';
+import React from 'react';
+import { ColorValue, ViewStyle } from 'react-native';
+
+// 导入所有SVG图标
+import CalendarIcon from '@/assets/icons/calendar.svg';
+import HomeIcon from '@/assets/icons/home.svg';
+import SettingIcon from '@/assets/icons/setting.svg';
+
+const icons = {
+  calendar: CalendarIcon,
+  home: HomeIcon,
+  setting: SettingIcon,
+};
+
+interface TabBarIconProps {
+  style?: ViewStyle;
+  name?: keyof typeof icons;
+  size?: number;
+  color?: ColorValue;
+}
 
 export function TabBarIcon({
   style,
-  name = 'home', // 提供默认图标名称
-  ...rest
-}: IconProps<ComponentProps<typeof AntdIcons>['name']>) {
-  // 确保 name 是有效的
-  if (!name) {
-    name = 'home';
+  name = 'home',
+  size = 24,
+  color = 'black',
+}: TabBarIconProps) {
+  const Icon = icons[name];
+  if (!Icon) {
+    console.warn(`Icon ${name} not found`);
+    return null;
   }
-  return <AntdIcons style={[style]} name={name} {...rest} />;
+
+  return <Icon width={size} height={size} color={color} style={style} />;
 }

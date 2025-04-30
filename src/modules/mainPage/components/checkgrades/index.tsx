@@ -201,6 +201,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingHorizontal: 14,
     paddingVertical: 10,
+    height: 70,
+    alignItems: 'center',
   },
   itemBorder: {
     borderBottomWidth: 1,

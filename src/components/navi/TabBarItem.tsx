@@ -30,7 +30,7 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
   const IconComponent = useMemo(
     () => (
       <TabBarIcon
-        size={28}
+        size={24}
         // @ts-ignore
         name={iconName}
         color={color}
@@ -48,7 +48,7 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
     >
       <AnimatedScale trigger={isFocused}>{IconComponent}</AnimatedScale>
 
-      <AnimatedOpacity trigger toVisible={!isFocused}>
+      <AnimatedOpacity trigger>
         <Text style={[{ color: color }, styles.text]}>{label}</Text>
       </AnimatedOpacity>
     </Pressable>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 4,
+    gap: 2,
   },
   icon: {
     display: 'flex',
@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 2,
+    marginTop: 1,
   },
 });
