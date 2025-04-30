@@ -349,7 +349,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           collapsable={false}
           cornerStyle={{
             backgroundColor:
-              themeName === 'light' ? commonColors.gray : commonColors.black,
+              themeName === 'light'
+                ? commonColors.lightGray
+                : commonColors.black,
           }}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
