@@ -79,7 +79,7 @@ export const colorOptions = [
     label: '日',
   },
   {
-    color: '#808080',
+    color: '#D6D6D6',
     label: '无',
   },
 ];

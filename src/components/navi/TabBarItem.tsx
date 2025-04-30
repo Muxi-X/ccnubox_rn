@@ -48,7 +48,7 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
     >
       <AnimatedScale trigger={isFocused}>{IconComponent}</AnimatedScale>
 
-      <AnimatedOpacity trigger toVisible={!isFocused}>
+      <AnimatedOpacity trigger>
         <Text style={[{ color: color }, styles.text]}>{label}</Text>
       </AnimatedOpacity>
     </Pressable>
