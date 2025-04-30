@@ -13,7 +13,6 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
 import { queryBanners } from '@/request/api';
-import { commonColors } from '@/styles/common';
 import { keyGenerator, percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
 
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 14,
     marginTop: 6,
-    color: commonColors.darkGray,
+    color: '#969696',
   },
   bannerItem: {
     width: '95%',

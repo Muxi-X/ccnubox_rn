@@ -5,10 +5,10 @@ import { ColorType } from '@/styles/types';
 /** 与主题无关通用样式 */
 export const commonStyles = StyleSheet.create({
   fontExtraLarge: {
-    fontSize: 26,
+    fontSize: 24,
   },
   fontLarge: {
-    fontSize: 24,
+    fontSize: 22,
   },
   fontMedium: {
     fontSize: 16,
@@ -34,7 +34,7 @@ export const commonColors: Partial<ColorType> = {
   white: '#fff',
   lightGray: '#F5F5F5',
   gray: '#E1E2F1',
-  darkGray: '#a0a0a0',
+  darkGray: '#969696',
   purple: '#7B71F1',
   lightDark: '#444',
   black: '#242424',
