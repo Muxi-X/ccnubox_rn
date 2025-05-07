@@ -10,6 +10,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -79,6 +80,8 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     const isTriggered = useSharedValue(false); // 是否已触发刷新
     const isRefreshing = useSharedValue(false); // 是否正在刷新中，用于禁用滚动
     const animationRef = useRef<LottieView | null>(null);
+    const lastProgress = useRef<number>(0);
+    const [isRefreshingState, setIsRefreshingState] = useState(false);
 
     // 监听重置滚动位置的事件
     useEffect(() => {
@@ -355,22 +358,56 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         opacity: interpolate(backHeight.value, [0, REFRESH_THRESHOLD], [0, 1]),
       };
     }, []);
+
+    // 监听刷新状态变化
+    useAnimatedReaction(
+      () => isRefreshing.value,
+      result => {
+        runOnJS(setIsRefreshingState)(result);
+      },
+      []
+    );
+
+    // 监听下拉进度
+    const pullProgress = useSharedValue(0);
+    useAnimatedReaction(
+      () => {
+        return backHeight.value / REFRESH_THRESHOLD;
+      },
+      result => {
+        pullProgress.value = result;
+      },
+      []
+    );
+
+    // 在 JS 线程中处理动画
     useEffect(() => {
-      if (isRefreshing.value) {
+      if (isRefreshingState) {
+        // 刷新状态：循环播放特定帧
         animationRef.current?.play(90, 110);
       } else {
+        // 非刷新状态：重置动画
         animationRef.current?.reset();
-        animationRef.current?.play(0, 110);
-        animationRef.current?.pause();
       }
-    }, [isRefreshing.value]);
+    }, [isRefreshingState]);
+    useEffect(() => {
+      if (!isRefreshingState) {
+        const targetFrame = Math.floor(pullProgress.value * 90);
+        const currentFrame = Math.floor(lastProgress.current * 90);
+
+        if (targetFrame !== currentFrame) {
+          animationRef.current?.play(currentFrame, targetFrame);
+          animationRef.current?.pause();
+          lastProgress.current = pullProgress.value;
+        }
+      }
+    }, [pullProgress.value, isRefreshingState]);
 
     return (
       <View
         style={[styles.largeWrapper, style]}
         ref={ref}
         collapsable={collapsable}
-        // 确保内容不被裁剪
         pointerEvents="box-none"
       >
         <Animated.View
@@ -391,13 +428,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           <LottieView
             source={require('@/animation/renovate.json')}
             style={[styles.lottieAnimation]}
-            loop={isRefreshing.value}
+            loop={isRefreshingState}
             ref={animationRef}
-            progress={
-              isRefreshing.value
-                ? undefined
-                : backHeight.value / REFRESH_THRESHOLD
-            }
+            speed={1}
           />
           <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
             {refreshTextMap[refreshTextState.value]}
