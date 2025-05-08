@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
-    paddingBottom: 40,
+    paddingBottom: 20,
   },
   courseWrapperStyle: {
     position: 'relative',

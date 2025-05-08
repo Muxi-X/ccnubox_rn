@@ -45,7 +45,6 @@ const LoginPage: FC = () => {
     }
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例', 2);
-      return;
     }
     //console.log(userInfo);
     try {
