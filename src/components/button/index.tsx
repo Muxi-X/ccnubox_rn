@@ -11,26 +11,32 @@ import { commonColors } from '@/styles/common';
 const Button: FC<ButtonProps> = ({
   isLoading = false,
   onPress,
+  text_style,
   style,
   children,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <RectButton
-      activeOpacity={0.7}
-      underlayColor={commonColors.gray}
-      style={[styles.rect_button, style]}
-      onPress={onPress}
+      rippleColor={commonColors.lightPurple}
+      activeOpacity={0.6}
+      style={[
+        styles.rect_button,
+        currentStyle?.button_style,
+        { opacity: isLoading ? 0.4 : 1 },
+        style,
+      ]}
+      onPress={(...props) => {
+        !isLoading && onPress?.(...props);
+      }}
     >
-      <View
-        accessible={!isLoading}
-        accessibilityRole="button"
-        style={[styles.button, currentStyle?.button_style]}
-      >
+      <View accessible accessibilityRole="button" style={[styles.button]}>
         {isLoading && (
           <ActivityIndicator color="#fff" style={{ marginRight: 5 }} /> // 加载指示器
         )}
-        <Text style={currentStyle?.button_text_style}>{children}</Text>
+        <Text style={[currentStyle?.button_text_style, text_style]}>
+          {children}
+        </Text>
       </View>
     </RectButton>
   );
@@ -41,13 +47,13 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     overflow: 'hidden',
-    borderRadius: 5,
   },
   button: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    borderRadius: 6,
   },
 });
 

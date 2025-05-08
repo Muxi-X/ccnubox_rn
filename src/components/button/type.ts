@@ -1,3 +1,4 @@
+import { StyleProp, TextStyle } from 'react-native';
 import { RectButtonProps } from 'react-native-gesture-handler';
 
 export interface ButtonProps extends RectButtonProps {
@@ -9,4 +10,8 @@ export interface ButtonProps extends RectButtonProps {
    * button 里展示的内容
    */
   children?: string;
+  /**
+   * 文字样式
+   */
+  text_style?: StyleProp<TextStyle>;
 }

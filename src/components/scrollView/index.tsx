@@ -20,6 +20,7 @@ import { ScrollableViewProps } from '@/components/scrollView/type';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
+import Divider from '../divider';
 import Toast from '../toast';
 /** 触发刷新的阈值 */
 const REFRESH_THRESHOLD = 100;
@@ -131,10 +132,10 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       );
     };
     const animationRefChange = () => {
-      const currentFrame = Math.min(
+      animationRef.current?.play(
+        (backHeight.value / REFRESH_THRESHOLD) * 110,
         (backHeight.value / REFRESH_THRESHOLD) * 110
       );
-      animationRef.current?.play(currentFrame, currentFrame);
     };
 
     // 处理下拉刷新逻辑 - 优化性能
@@ -150,7 +151,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         return;
       }
       // 只有在顶部且向下拉动时才处理刷新
-      if (translateY.value === 0 && shouldRefresh.value) {
+      if (translateY.value === 0 && shouldRefresh.value && startY.value === 0) {
         // 添加阻尼效果，使用更小的系数来减少移动敏感度
         const dampedTranslation = event.translationY * 0.4;
         // 只有当下拉距离超过最小阈值时才显示刷新指示器
@@ -290,6 +291,13 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         if (!shouldRefresh.value || isRefreshing.value) {
           return;
         }
+        if (
+          wrapperSize.height - translateY.value - containerSize.height >=
+          -60
+        ) {
+          translateY.value = withTiming(translateY.value + 60);
+        }
+
         handleRefreshComplete(event);
       });
 
@@ -441,7 +449,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         ></Animated.View>
         <Animated.View
           style={{
-            flexDirection: 'row',
+            flexDirection: 'column',
             flex: 1,
           }}
         >
@@ -473,8 +481,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
               </Animated.View>
             </GestureDetector>
           </Animated.View>
+          {/* sticky bottom */}
+          <View style={{ width: '100%', height: 60 }}>
+            <Divider>别闹, 学霸也是要睡觉的</Divider>
+          </View>
         </Animated.View>
-        {/* sticky bottom */}
       </View>
     );
   }
@@ -486,6 +497,7 @@ const styles = StyleSheet.create({
   largeWrapper: {
     flex: 1,
     overflow: 'visible', // 确保内容不被裁剪
+    flexDirection: 'column',
   },
   wrapper: {
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
