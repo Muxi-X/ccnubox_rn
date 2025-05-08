@@ -48,7 +48,9 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
   },
   deleteChildren: key => {
     const { elements, updateFromElements } = get();
+    console.log('ele', elements);
     delete elements[key];
+
     updateFromElements();
   },
 }));
