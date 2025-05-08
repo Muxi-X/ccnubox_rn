@@ -2383,25 +2383,25 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    get?: never;
+    put?: never;
     /**
      * 查询按学年和学期的成绩
-     * @description 根据学年号和学期号获取用户的成绩
+     * @description 根据学年号和学期号获取用户的成绩,为了方便前端发送请求改成post了
      */
-    get: {
+    post: {
       parameters: {
-        query: {
-          /** @description 是否强制刷新,可选字段 */
-          refresh?: boolean;
-          /** @description 学年名:例如2023表示2023~2024学年 */
-          xnm: number;
-          /** @description 学期名:0表示所有学期,1表示第一学期,2表示第二学期,3表示第三学期 */
-          xqm: number;
-        };
+        query?: never;
         header?: never;
         path?: never;
         cookie?: never;
       };
-      requestBody?: never;
+      /** @description 获取学年和学期的成绩请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['grade.GetGradeByTermReq'];
+        };
+      };
       responses: {
         /** @description 成功返回学年和学期的成绩信息 */
         200: {
@@ -2425,8 +2425,6 @@ export interface paths {
         };
       };
     };
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2573,10 +2571,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /**
-     * 获取静态资源[标签匹配]
-     * @description 【弃用】根据静labels匹配合适的静态资源
-     */
+    /** 获取静态资源[标签匹配] */
     get: {
       parameters: {
         query: {
@@ -2959,7 +2954,8 @@ export interface components {
       banners: components['schemas']['banner.Banner'][];
     };
     'banner.SaveBannerRequest': {
-      id: number;
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
       picture_link: string;
       web_link: string;
     };
@@ -3117,7 +3113,8 @@ export interface components {
       departments: components['schemas']['department.Department'][];
     };
     'department.SaveDepartmentRequest': {
-      id: number;
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
       name: string;
       phone: string;
       place: string;
@@ -3269,6 +3266,14 @@ export interface components {
       if_over?: boolean;
       question_id?: number;
     };
+    'grade.GetGradeByTermReq': {
+      /** @description 课程种类筛选,有如下类型:专业主干课程,通识选修课,通识必修课,个性发展课程,通识核心课等 */
+      kcxzmcs?: string[];
+      /** @description 是否强制刷新,可选字段 */
+      refresh?: boolean;
+      /** @description 学期筛选,格式为2024-1表示2024~2025学年第一学期 */
+      terms?: string[];
+    };
     'grade.GetGradeByTermResp': {
       /** @description 课程信息 */
       grades: components['schemas']['grade.Grade'][];
@@ -3299,6 +3304,10 @@ export interface components {
       regularGradePercent: string;
       /** @description 学分 */
       xf: number;
+      /** @description 学年 */
+      xnm: number;
+      /** @description 学期 */
+      xqm: number;
     };
     'grade.GradeScore': {
       /** @description 课程名称 */
@@ -3326,7 +3335,8 @@ export interface components {
     };
     'infoSum.SaveInfoSumRequest': {
       description: string;
-      id: number;
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
       image: string;
       link: string;
       name: string;
@@ -3370,7 +3380,8 @@ export interface components {
     };
     'website.SaveWebsiteRequest': {
       description: string;
-      id: number;
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
       image: string;
       link: string;
       name: string;

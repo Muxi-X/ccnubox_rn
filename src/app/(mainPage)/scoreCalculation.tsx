@@ -46,9 +46,7 @@ const ScoreCalculation: React.FC = () => {
   const [gradeData, setGradeData] = useState<GradeData[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const { year, semester } = useLocalSearchParams();
-  const yearNum = Number(year);
-  const semesterNum = Number(semester);
+  const { courseType, semester } = useLocalSearchParams();
 
   const handleCourseSelection = (course: GradeData) => {
     const newSelection = new Set([...selectedCourses]);
@@ -170,8 +168,8 @@ const ScoreCalculation: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     queryGradeDetail({
-      xqm: semesterNum,
-      xnm: yearNum,
+      kcxzmcs: JSON.parse(courseType as string),
+      terms: JSON.parse(semester as string),
     })
       .then(res => {
         if (res.data?.grades) {
@@ -204,7 +202,7 @@ const ScoreCalculation: React.FC = () => {
         //console.error('获取成绩失败:', error);
         setLoading(false);
       });
-  }, [yearNum, semesterNum]);
+  }, [semester, courseType]);
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
@@ -220,7 +218,7 @@ const ScoreCalculation: React.FC = () => {
             />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, currentStyle?.text_style]}>
-            {yearNum}学年
+            成绩
           </Text>
         </View>
         <View style={styles.headerRight}>
