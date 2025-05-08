@@ -145,9 +145,10 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
       visible={visible}
       style={{ zIndex: currentKey }}
       onAnimationEnd={() => {
-        setTimeout(() => {
-          currentKey && deleteChildren(currentKey);
-        }, 500);
+        !visible &&
+          setTimeout(() => {
+            currentKey && deleteChildren(currentKey);
+          }, 500);
       }}
     >
       <View

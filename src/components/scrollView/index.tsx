@@ -1,5 +1,5 @@
 import LottieView from 'lottie-react-native';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
@@ -130,6 +130,12 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         }
       );
     };
+    const animationRefChange = () => {
+      const currentFrame = Math.min(
+        (backHeight.value / REFRESH_THRESHOLD) * 110
+      );
+      animationRef.current?.play(currentFrame, currentFrame);
+    };
 
     // 处理下拉刷新逻辑 - 优化性能
     const handlePullToRefresh = (event: any) => {
@@ -152,6 +158,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           isAtTop.value = true;
           const newHeight = Math.min(dampedTranslation, REFRESH_THRESHOLD);
           backHeight.value = newHeight;
+          runOnJS(animationRefChange)();
           // 未达到阈值一半, 展示下拉
           if (newHeight < REFRESH_THRESHOLD / 2) {
             refreshTextState.value = 'pull';
@@ -256,7 +263,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
 
         // 处理下拉刷新
         handlePullToRefresh(event);
-
         // 只有启用滚动时才处理滚动
         if (enableScrolling && backHeight.value === 0) {
           const newTranslateX = Math.min(
@@ -364,6 +370,17 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         animationRef.current?.pause();
       }
     }, [isRefreshing.value]);
+    const icon = useMemo(
+      () => (
+        <LottieView
+          source={require('@/animation/renovate.json')}
+          style={[styles.lottieAnimation]}
+          loop={isRefreshing.value}
+          ref={animationRef}
+        />
+      ),
+      [isRefreshing.value, animationRef, backHeight.value]
+    );
 
     return (
       <View
@@ -388,17 +405,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             },
           ]}
         >
-          <LottieView
-            source={require('@/animation/renovate.json')}
-            style={[styles.lottieAnimation]}
-            loop={isRefreshing.value}
-            ref={animationRef}
-            progress={
-              isRefreshing.value
-                ? undefined
-                : backHeight.value / REFRESH_THRESHOLD
-            }
-          />
+          {icon}
           <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
             {refreshTextMap[refreshTextState.value]}
           </Animated.Text>

@@ -1,8 +1,9 @@
 import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
+import * as Haptics from 'expo-haptics';
 import { Stack } from 'expo-router';
 import React, { RefObject, useCallback, useEffect, useRef } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 
@@ -15,6 +16,7 @@ import { usePortalStore } from '@/store/portal';
 import useScraper from '@/store/scraper';
 import useVisualScheme from '@/store/visualScheme';
 
+import { commonColors } from '@/styles/common';
 import { fetchUpdate } from '@/utils';
 
 export default function RootLayout() {
@@ -53,7 +55,15 @@ export default function RootLayout() {
     <>
       {/* Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删  */}
       {/* FIX_ME 自建 portal 组件，支持自定义 Toast Modal */}
-      <Provider>
+      <Provider
+        theme={{
+          brand_primary: commonColors.purple,
+        }}
+        onHaptics={() =>
+          Platform.OS !== 'web' &&
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
+      >
         {/* 手势检测 */}
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Scraper
