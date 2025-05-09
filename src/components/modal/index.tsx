@@ -140,17 +140,16 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
       </>
     );
   }, [children, mode]);
+  useEffect(() => {
+    if (!visible) {
+      let timer = setTimeout(() => {
+        currentKey !== undefined && deleteChildren(currentKey);
+        clearTimeout(timer);
+      }, 500);
+    }
+  }, [visible, currentKey]);
   return (
-    <ModalBack
-      visible={visible}
-      style={{ zIndex: currentKey }}
-      onAnimationEnd={() => {
-        // !visible &&
-        setTimeout(() => {
-          currentKey && deleteChildren(currentKey);
-        }, 500);
-      }}
-    >
+    <ModalBack visible={visible} style={{ zIndex: currentKey }}>
       <View
         style={[
           styles.modalOverlay,
@@ -240,20 +239,21 @@ export const ModalBack: FC<
   {
     children?: ReactElement;
     visible: boolean;
-    onAnimationEnd?: () => void;
+    onAnimationEnd?: (visible: boolean) => void;
   } & ViewProps
 > = ({ children, style, visible, onAnimationEnd }) => {
   const [displayMode, setDisplayMode] = useState<'flex' | 'none'>(
     visible ? 'flex' : 'none'
   );
+  if (displayMode === 'none') return <></>;
   return (
     <>
       <AnimatedOpacity
         duration={500}
         toVisible={visible}
         onAnimationEnd={() => {
-          onAnimationEnd && onAnimationEnd();
           setDisplayMode(visible ? 'flex' : 'none');
+          onAnimationEnd && onAnimationEnd(visible);
         }}
         style={[
           {

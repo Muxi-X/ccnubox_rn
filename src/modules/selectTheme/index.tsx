@@ -45,9 +45,6 @@ export default function SelectTheme() {
           style={[
             currentStyle?.button_style,
             { width: '40%', borderRadius: 10, marginRight: 10 },
-            isApplied('android')
-              ? { backgroundColor: 'purple' }
-              : { backgroundColor: 'white' },
           ]}
           onPress={() => {
             if (!isApplied('android')) {
@@ -97,9 +94,6 @@ export default function SelectTheme() {
           style={[
             currentStyle?.button_style,
             { width: '40%', borderRadius: 10, marginRight: 10 },
-            isApplied('ios')
-              ? { backgroundColor: 'purple' }
-              : { backgroundColor: 'white' },
           ]}
           onPress={() => {
             if (!isApplied('ios')) {
