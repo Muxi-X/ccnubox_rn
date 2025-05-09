@@ -1,13 +1,14 @@
-import { Tooltip } from '@ant-design/react-native';
+// import { Tooltip } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Href, router } from 'expo-router';
+// import { Href, router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
-import { tooltipActions } from '@/constants/courseTableApplications';
+import ScreenShotIcon from '@/assets/icons/screenshot.svg';
+// import { tooltipActions } from '@/constants/courseTableApplications';
 import { commonStyles } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -92,7 +93,20 @@ export const ScheduleHeaderRight: React.FC = () => {
         alignItems: 'center',
       }}
     >
-      <MaterialIcons
+      <TouchableOpacity
+        style={[
+          useVisualScheme.getState().currentStyle?.header_text_style,
+          {
+            paddingRight: 10,
+          },
+        ]}
+        onPress={() => {
+          globalEventBus.emit('SaveImageShot');
+        }}
+      >
+        <ScreenShotIcon />
+      </TouchableOpacity>
+      {/* <MaterialIcons
         name="delete-sweep"
         size={24}
         style={[
@@ -101,7 +115,7 @@ export const ScheduleHeaderRight: React.FC = () => {
             paddingRight: 10,
           },
         ]}
-      />
+      /> 
       <View>
         <Tooltip.Menu
           actions={tooltipActions}
@@ -134,7 +148,7 @@ export const ScheduleHeaderRight: React.FC = () => {
             />
           </TouchableOpacity>
         </Tooltip.Menu>
-      </View>
+      </View> */}
     </View>
   );
 };
