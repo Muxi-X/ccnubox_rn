@@ -102,6 +102,7 @@ const Timetable: React.FC<CourseTableProps> = ({
 }) => {
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
+  const [snapshot, setSnapShot] = useState(false);
   const { currentStyle, themeName } = useVisualScheme(
     ({ currentStyle, themeName }) => ({ currentStyle, themeName })
   );
@@ -123,6 +124,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           return;
         }
       }
+      setSnapShot(true);
       // 确保截图前视图已完全渲染
       setTimeout(async () => {
         try {
@@ -131,7 +133,6 @@ const Timetable: React.FC<CourseTableProps> = ({
 
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
-
           // 使用完整课表内容的引用而不是滚动视图
           const snapshot = await makeImageFromView(fullTableRef);
           if (!snapshot) {
@@ -139,6 +140,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               text: '截图失败',
               icon: 'fail',
             });
+            setSnapShot(false);
             return;
           }
 
@@ -162,14 +164,17 @@ const Timetable: React.FC<CourseTableProps> = ({
               text: '截图成功',
               icon: 'success',
             });
+            setSnapShot(false);
           }
         } catch (error) {
           Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+          setSnapShot(false);
           return;
         }
       }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
       Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
+      setSnapShot(false);
     }
   };
 
@@ -340,8 +345,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         {/* 用于截图的完整课表内容 */}
-        {fullTableContent}
-
+        {snapshot && fullTableContent}
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}

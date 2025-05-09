@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { Image, Text } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
 import Button from '@/components/button';
-// eslint-disable-next-line import/no-duplicates
 import ThemeBasedView from '@/components/view';
-// eslint-disable-next-line import/no-duplicates,no-duplicate-imports
-import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
-
 export default function SelectStyle() {
   const { currentStyle, themeName, changeTheme } = useVisualScheme(
     ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
@@ -42,13 +38,7 @@ export default function SelectStyle() {
           深夜模式
         </Text>
         <Button
-          style={[
-            currentStyle?.button_style,
-            { width: '40%', borderRadius: 10, marginRight: 10 },
-            isApplied('dark')
-              ? { backgroundColor: 'purple' }
-              : { backgroundColor: 'white' },
-          ]}
+          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
           onPress={() => {
             if (!isApplied('dark')) {
               changeTheme(themeName === 'dark' ? 'light' : 'dark');
@@ -88,16 +78,10 @@ export default function SelectStyle() {
             },
           ]}
         >
-          原版
+          普通模式
         </Text>
         <Button
-          style={[
-            currentStyle?.button_style,
-            { width: '40%', borderRadius: 10, marginRight: 10 },
-            isApplied('ios')
-              ? { backgroundColor: 'purple' }
-              : { backgroundColor: 'white' },
-          ]}
+          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
           onPress={() => {
             if (!isApplied('light')) {
               changeTheme(themeName === 'dark' ? 'light' : 'dark');

@@ -15,7 +15,7 @@ const CheckGrades = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [selectedCourseType, setSelectedCourseType] = useState<
     (number | string)[]
-  >([COURSE_TYPE_OPTIONS[0].value]);
+  >(COURSE_TYPE_OPTIONS.map(option => option.value));
   const [selectedSemester, setSelectedSemester] = useState<(number | string)[]>(
     [semesterOptions[0][0].value]
   );
