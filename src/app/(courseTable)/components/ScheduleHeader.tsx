@@ -16,63 +16,70 @@ export const ScheduleHeaderTitle: React.FC = () => {
   const { currentWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
 
   return (
-    <>
-      <View
+    <View
+      style={{
+        width: '100%',
+        margin: 'auto',
+      }}
+    >
+      <TouchableOpacity
         style={{
-          width: '80%',
-          margin: 'auto',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+        }}
+        onPress={() => {
+          // console.log('选择周次');
+          setShowWeekPicker(!showWeekPicker);
         }}
       >
-        <TouchableOpacity
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-          }}
-          onPress={() => {
-            // console.log('选择周次');
-            setShowWeekPicker(!showWeekPicker);
-          }}
-        >
-          <Text
-            style={[
-              commonStyles.fontLarge,
-              useVisualScheme.getState().currentStyle?.header_text_style,
-              {
-                textAlign: 'center',
-              },
-            ]}
-          >
-            第{currentWeek}周
-          </Text>
-          <MaterialIcons
-            name="arrow-forward-ios"
-            size={20}
-            style={[
-              useVisualScheme.getState().currentStyle?.header_text_style,
-              {
-                transform: [{ rotate: '90deg' }],
-                marginLeft: 4,
-              },
-            ]}
-          />
-        </TouchableOpacity>
         <Text
           style={[
-            commonStyles.fontLight,
-            commonStyles.fontSmall,
-            useVisualScheme.getState().currentStyle?.schedule_week_text_style,
+            commonStyles.fontLarge,
+            useVisualScheme.getState().currentStyle?.header_text_style,
             {
               textAlign: 'center',
             },
           ]}
         >
-          上次更新时间{new Date(lastUpdate * 1000).toLocaleDateString()}
+          第{currentWeek}周
         </Text>
-      </View>
-    </>
+        <MaterialIcons
+          name="arrow-forward-ios"
+          size={20}
+          style={[
+            useVisualScheme.getState().currentStyle?.header_text_style,
+            {
+              transform: [{ rotate: '90deg' }],
+              marginLeft: 4,
+            },
+          ]}
+        />
+      </TouchableOpacity>
+      <Text
+        style={[
+          commonStyles.fontLight,
+          commonStyles.fontSmall,
+          useVisualScheme.getState().currentStyle?.schedule_week_text_style,
+          {
+            textAlign: 'center',
+          },
+        ]}
+      >
+        上次更新时间：
+        {new Date(lastUpdate * 1000).toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        })}
+      </Text>
+    </View>
   );
 };
 
