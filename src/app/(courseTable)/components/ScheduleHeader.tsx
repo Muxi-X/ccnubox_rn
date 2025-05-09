@@ -97,7 +97,8 @@ export const ScheduleHeaderRight: React.FC = () => {
         style={[
           useVisualScheme.getState().currentStyle?.header_text_style,
           {
-            paddingRight: 10,
+            // paddingLeft: 50,
+            paddingRight: 50,
           },
         ]}
         onPress={() => {
