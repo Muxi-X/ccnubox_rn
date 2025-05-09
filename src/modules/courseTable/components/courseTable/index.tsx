@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeImageFromView } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
@@ -17,6 +16,7 @@ import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
+import useCourse from '@/store/course';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
@@ -469,21 +469,21 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { currentWeek } = useTimeStore();
+  const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
   useEffect(() => {
     const calculateDates = async () => {
       try {
-        // 从缓存中获取开学时间
-        const schoolTime = await AsyncStorage.getItem('school_time');
-        if (!schoolTime) return;
+        if (!schoolTime) {
+          return;
+        }
 
         // 计算开学日期
-        const startTimestamp = Number(schoolTime) * 1000;
+        const startTimestamp = schoolTime * 1000;
         const startDate = new Date(startTimestamp);
 
         // 计算当前周的第一天（周一）
-        // 开学日期是第1周的第1天，所以需要计算当前周的第1天
         const daysToAdd = (currentWeek - 1) * 7;
         const currentWeekStartDate = new Date(startDate);
         currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
@@ -493,11 +493,10 @@ export const StickyTop: React.FC = memo(function StickyTop() {
         for (let i = 0; i < 7; i++) {
           const date = new Date(currentWeekStartDate);
           date.setDate(currentWeekStartDate.getDate() + i);
-          const month = date.getMonth() + 1; // 月份从0开始
+          const month = date.getMonth() + 1;
           const day = date.getDate();
           weekDates.push(`${month}/${day}`);
         }
-
         setDates(weekDates);
       } catch (error) {
         throw new Error('计算日期失败');
@@ -505,7 +504,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     };
 
     calculateDates();
-  }, [currentWeek]);
+  }, [currentWeek, schoolTime]);
 
   return (
     <View style={styles.header}>
