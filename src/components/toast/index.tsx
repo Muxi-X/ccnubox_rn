@@ -19,6 +19,7 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   currentKey,
   icon,
   text,
+  duration = 2000,
 }) => {
   const [visible, setVisible] = useState<boolean>(initVisible);
   const deleteChildren = usePortalStore(state => state.deleteChildren);
@@ -37,7 +38,7 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
         clearTimeout(backTimer);
         Promise.resolve(currentKey && deleteChildren(currentKey));
       }, DURATION * 0.8);
-    }, 2000);
+    }, duration);
   }, [initVisible]);
   return (
     <>
@@ -70,7 +71,7 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
               style={[
                 useVisualScheme.getState().currentStyle?.text_style,
                 commonStyles.fontLarge,
-                { color: commonColors.darkGray },
+                { color: commonColors.darkGray, textAlign: 'center' },
               ]}
             >
               {text}

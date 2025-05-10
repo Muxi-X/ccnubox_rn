@@ -1,4 +1,4 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+// import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as React from 'react';
 import { Text } from 'react-native';
 
@@ -39,16 +39,16 @@ export const tabConfig: SinglePageType[] = [
         华师匣子
       </Text>
     ),
-    headerRight: () => (
-      <MaterialIcons
-        name="menu"
-        size={24}
-        style={[
-          commonStyles.TabBarPadding,
-          useVisualScheme.getState().currentStyle?.header_text_style,
-        ]}
-      />
-    ),
+    // headerRight: () => (
+    //   <MaterialIcons
+    //     name="menu"
+    //     size={24}
+    //     style={[
+    //       commonStyles.TabBarPadding,
+    //       useVisualScheme.getState().currentStyle?.header_text_style,
+    //     ]}
+    //   />
+    // ),
   },
   {
     name: 'schedule',

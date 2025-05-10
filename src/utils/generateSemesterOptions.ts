@@ -1,3 +1,5 @@
+import { getItem } from 'expo-secure-store';
+
 import { PickerDataType } from '@/components/picker/types';
 
 /**
@@ -12,15 +14,17 @@ import { PickerDataType } from '@/components/picker/types';
  * // ]]
  */
 export const generateSemesterOptions = (): PickerDataType => {
+  const userInfo = getItem('userInfo');
+  const lastYear = JSON.parse(userInfo as string).student_id.slice(0, 4);
   const currentYear = new Date().getFullYear() - 1;
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const options = [];
 
   // Determine if current time is first or second semester
   // Assuming first semester is March-August (month 3-8), second is September-February
-  const currentSemester = currentMonth >= 3 && currentMonth <= 8 ? 2 : 1;
+  const currentSemester = currentMonth >= 3 && currentMonth <= 8 ? 1 : 2;
 
-  for (let year = 2021; year <= currentYear; year++) {
+  for (let year = lastYear; year <= currentYear; year++) {
     // For current year, only add semesters that have passed
     if (year === currentYear) {
       options.push({

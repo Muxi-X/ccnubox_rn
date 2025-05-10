@@ -14,8 +14,8 @@
       "src/assets/fonts"
     ],
     "splash": {
-      "image": "./src/assets/images/logo.png",
-      "resizeMode": "contain",
+      "image": "./src/assets/images/splash.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {

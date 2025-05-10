@@ -192,6 +192,7 @@ const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     height: windowHeight,
+    paddingVertical: 20,
   },
   header: {
     backgroundColor: '#fff',
