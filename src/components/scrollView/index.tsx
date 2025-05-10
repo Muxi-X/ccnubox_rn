@@ -119,8 +119,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         () => {
           // 请求成功后立即显示提示，提高响应速度
           Toast.show({
-            text: '刷新成功',
+            text: '后续学校课表数据可能发生变化 请以教务系统为准',
             icon: 'success',
+            duration: 1000,
           });
           closeRefresh();
         },

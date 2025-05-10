@@ -17,7 +17,7 @@ export default function SelectStyle() {
   );
   const isApplied = (layout: string) => layout === themeName;
   return (
-    <ThemeBasedView style={{ flex: 1 }}>
+    <ThemeBasedView style={{ flex: 1, paddingVertical: 20 }}>
       <View
         style={{
           flexDirection: 'row',
