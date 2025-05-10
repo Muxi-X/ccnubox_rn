@@ -4,9 +4,9 @@ import { Appearance, Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import globalEventBus from '@/eventBus';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
-import { EventBus } from '@/utils';
 
 import { visualSchemeType } from './types';
 
@@ -24,8 +24,8 @@ const useVisualScheme = create<visualSchemeType>()(
             LayoutName,
             LayoutType
           >;
-          EventBus.emit('layoutSet');
-          EventBus.emit('layoutChange', state.layoutName);
+          globalEventBus.emit('layoutSet');
+          globalEventBus.emit('layoutChange', state.layoutName);
           return {
             ...state,
             currentStyle: layoutMap[state.layoutName][
@@ -66,7 +66,7 @@ const useVisualScheme = create<visualSchemeType>()(
           const newStyle = layouts.get(layoutName)![
             themeName
           ] as SingleThemeType;
-          EventBus.emit('layoutChange', layoutName);
+          globalEventBus.emit('layoutChange', layoutName);
           return {
             ...state,
             currentStyle: newStyle ?? currentStyle,

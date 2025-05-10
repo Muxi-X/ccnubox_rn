@@ -9,8 +9,8 @@ import useVisualScheme from '@/store/visualScheme';
 
 import ScreenShotIcon from '@/assets/icons/screenshot.svg';
 // import { tooltipActions } from '@/constants/courseTableApplications';
+import globalEventBus from '@/eventBus';
 import { commonStyles } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();

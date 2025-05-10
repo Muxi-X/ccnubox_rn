@@ -5,7 +5,7 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { handleCopy } from '@/utils';
+import handleCopy from '@/utils/handleCopy';
 
 function About() {
   const number = '576225292';
