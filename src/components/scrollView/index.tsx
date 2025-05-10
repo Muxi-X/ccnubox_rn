@@ -1,13 +1,14 @@
-import React, { memo, useEffect, useState } from 'react';
+import LottieView from 'lottie-react-native';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -19,14 +20,24 @@ import { ScrollableViewProps } from '@/components/scrollView/type';
 import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
 
+import Divider from '../divider';
 import Toast from '../toast';
+/** 触发刷新的阈值 */
+const REFRESH_THRESHOLD = 100;
+/** 下拉刷新回弹动画时间 */
+const REFRESH_BACK_ANIMATION_TIME = 500;
 
-const REFRESH_THRESHOLD = 100; // 触发刷新的阈值
+/**
+ * 刷新状态
+ * 'pull': 下拉状态
+ * 'release': 可释放刷新状态
+ * 'refreshing': 正在刷新状态
+ */
+type RefreshState = 'pull' | 'release' | 'refreshing' | 'pullMore';
 
 const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
   (props, ref) => {
     const {
-      onScrollToBottom,
       stickyTop,
       stickyLeft,
       children,
@@ -47,7 +58,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     // 下拉刷新背景高度
     const backHeight = useSharedValue(0);
     const isAtTop = useSharedValue(false);
-    const isAtBottom = useSharedValue(false);
     // 当前 touchEvent 是否满足触发 refresh 的条件
     // 如果横向滑动太大,则不触发 refresh, 重新 touch 以触发下一次
     const shouldRefresh = useSharedValue(true);
@@ -66,13 +76,10 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       height: 0,
     });
     // 使用共享值来控制文字状态，减少重渲染
-    const refreshTextState = useSharedValue('pull'); // 'pull' | 'release' | 'refreshing'
+    const refreshTextState = useSharedValue<RefreshState>('pull');
     const isTriggered = useSharedValue(false); // 是否已触发刷新
-
-    useEffect(() => {
-      isAtTop.value && onReachTopEnd();
-      isAtBottom.value && onReachBottomEnd();
-    }, [isAtTop.value, isAtBottom.value]);
+    const isRefreshing = useSharedValue(false); // 是否正在刷新中，用于禁用滚动
+    const animationRef = useRef<LottieView | null>(null);
 
     // 监听重置滚动位置的事件
     useEffect(() => {
@@ -88,119 +95,216 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         globalEventBus.off('ResetScrollPosition', resetScrollPosition);
       };
     }, []);
+    const lottieProgress = () => {
+      animationRef.current?.play(90, 110);
+    };
 
     // 监听边界事件
     const onReachTopEnd = () => {
       if (!onRefresh) return;
-
+      /** 收起 refresh 动画 */
+      const closeRefresh = () => {
+        backHeight.value = withTiming(0, {
+          duration: REFRESH_BACK_ANIMATION_TIME,
+        });
+        // 在动画完成后重置状态
+        refreshTextState.value = 'pull';
+        // 使用 setTimeout 来延迟动画开始时间
+        setTimeout(() => {
+          isRefreshing.value = false;
+          isAtTop.value = false;
+        }, REFRESH_BACK_ANIMATION_TIME); // 减少延迟时间
+      };
       onRefresh(
         () => {
-          // 请求成功后等待1秒再重置
-          setTimeout(() => {
-            backHeight.value = withTiming(0, {
-              duration: 300,
-            });
-            refreshTextState.value = 'pull';
-            Toast.show({
-              text: '刷新成功',
-              icon: 'success',
-            });
-          }, 1000);
+          // 请求成功后立即显示提示，提高响应速度
+          Toast.show({
+            text: '后续学校课表数据可能发生变化 请以教务系统为准',
+            icon: 'success',
+            duration: 1000,
+          });
+          closeRefresh();
         },
         () => {
-          // 请求失败后等待1秒再重置
-          setTimeout(() => {
-            backHeight.value = withTiming(0, {
-              duration: 300,
-            });
-            refreshTextState.value = 'pull';
-            runOnJS(Toast.fail)('刷新失败');
-          }, 1000);
+          // 请求失败后立即显示提示，提高响应速度
+          Toast.show({
+            text: '刷新失败',
+            icon: 'fail',
+          });
+          closeRefresh();
         }
       );
     };
-
-    const onReachBottomEnd = () => {
-      onScrollToBottom && onScrollToBottom();
+    const animationRefChange = () => {
+      animationRef.current?.play(
+        (backHeight.value / REFRESH_THRESHOLD) * 110,
+        (backHeight.value / REFRESH_THRESHOLD) * 110
+      );
     };
 
+    // 处理下拉刷新逻辑 - 优化性能
+    const handlePullToRefresh = (event: any) => {
+      'worklet';
+      // 在刷新状态下不处理下拉刷新，避免高度闪烁
+      if (isRefreshing.value) {
+        return;
+      }
+      // 检查是否是向上滑动或者不在顶部
+      if (event.translationY <= 0 || translateY.value !== 0) {
+        refreshTextState.value = 'pull';
+        return;
+      }
+      // 只有在顶部且向下拉动时才处理刷新
+      if (translateY.value === 0 && shouldRefresh.value && startY.value === 0) {
+        // 添加阻尼效果，使用更小的系数来减少移动敏感度
+        const dampedTranslation = event.translationY * 0.4;
+        // 只有当下拉距离超过最小阈值时才显示刷新指示器
+        if (dampedTranslation >= 0) {
+          isAtTop.value = true;
+          const newHeight = Math.min(dampedTranslation, REFRESH_THRESHOLD);
+          backHeight.value = newHeight;
+          runOnJS(animationRefChange)();
+          // 未达到阈值一半, 展示下拉
+          if (newHeight < REFRESH_THRESHOLD / 2) {
+            refreshTextState.value = 'pull';
+            return;
+          }
+          // 达到阈值一半, 展示继续下拉
+          if (
+            newHeight >= REFRESH_THRESHOLD / 2 &&
+            newHeight < REFRESH_THRESHOLD
+          ) {
+            refreshTextState.value = 'pullMore';
+            return;
+          }
+          // 当拉动超过阈值时，更新状态为[松手]
+          if (newHeight === REFRESH_THRESHOLD) {
+            refreshTextState.value = 'release';
+            return;
+          }
+        }
+      }
+    };
+
+    // 处理刷新完成逻辑 - 优化性能
+    const handleRefreshComplete = (event: any) => {
+      'worklet';
+      // 在刷新状态下不处理手势结束，避免不必要的计算
+      if (isRefreshing.value) {
+        return;
+      }
+      // 缓存当前值
+      prevTranslateX.value = event.absoluteX;
+      shouldRefresh.value = true;
+
+      // 如果是向上滑动，确保刷新提示框高度重置
+      if (
+        event.translationY <= 0 &&
+        backHeight.value > 0 &&
+        !isRefreshing.value
+      ) {
+        // 立即重置高度，不使用动画，避免延迟
+        backHeight.value = 0;
+        refreshTextState.value = 'pull';
+        isTriggered.value = false;
+        return;
+      }
+      if (refreshTextState.value === 'release') {
+        // 触发刷新，保持指示器在阈值位置
+        // 先设置状态，再设置高度，避免安卓上的闪烁
+        refreshTextState.value = 'refreshing';
+        // 设置正在刷新状态，禁用滚动
+        isRefreshing.value = true;
+        isTriggered.value = true;
+        runOnJS(lottieProgress)();
+        // 使用 runOnJS 在 JS 线程上调用回调，避免阻塞 UI 线程
+        runOnJS(onReachTopEnd)();
+      } else if (backHeight.value > 0) {
+        // 只有当高度大于 0 时才需要重置，避免不必要的更新
+        // 重置状态
+        refreshTextState.value = 'pull';
+        // 使用更短的动画时间，减少延迟感
+        backHeight.value = withTiming(0, {
+          duration: 400,
+        });
+        isAtTop.value = false;
+        // 确保刷新状态被重置，即使用户取消了刷新
+        isRefreshing.value = false;
+      }
+      isTriggered.value = false;
+    };
+
+    // 创建动态手势处理器，在刷新状态下禁用滚动 - 优化性能
     const panGesture = Gesture.Pan()
+      .minDistance(2)
       .onStart(() => {
+        'worklet';
+        // 在刷新状态下不允许开始新的滑动
+        if (isRefreshing.value) {
+          return;
+        }
         startX.value = translateX.value;
         startY.value = translateY.value;
       })
       .onUpdate(event => {
         'worklet';
-        if (Math.abs(event.absoluteX - prevTranslateX.value) > 60) {
-          shouldRefresh.value = false;
+
+        // 在刷新状态下不处理滑动更新
+        if (isRefreshing.value) {
+          return;
         }
+
+        // 如果是向上滑动，确保刷新提示框高度重置
+        // 这是修复刷新提示框在向上滑动时高度不会还原的关键
         if (
-          translateY.value === 0 &&
-          event.translationY > 0 &&
-          shouldRefresh.value
+          event.translationY < 0 &&
+          backHeight.value > 0 &&
+          !isRefreshing.value
         ) {
-          if (!isTriggered.value) {
-            backHeight.value = Math.min(event.translationY, REFRESH_THRESHOLD);
-            if (event.translationY > REFRESH_THRESHOLD) {
-              isTriggered.value = true;
-              refreshTextState.value = 'release';
-            }
+          backHeight.value = 0;
+          if (refreshTextState.value !== 'pull') {
+            refreshTextState.value = 'pull';
           }
         }
 
-        if (translateY.value !== 0) {
-          backHeight.value = 0;
-        }
-
+        // 处理下拉刷新
+        handlePullToRefresh(event);
         // 只有启用滚动时才处理滚动
-        if (enableScrolling) {
-          // 正常滚动处理
-          translateX.value = Math.min(
+        if (enableScrolling && backHeight.value === 0) {
+          const newTranslateX = Math.min(
             0,
             Math.max(
-              startX.value + event.translationX,
+              startX.value + Math.floor(event.translationX),
               wrapperSize.width - containerSize.width
             )
           );
-          translateY.value = Math.min(
+
+          const newTranslateY = Math.min(
             0,
             Math.max(
-              startY.value + event.translationY,
+              startY.value + Math.floor(event.translationY),
               wrapperSize.height - containerSize.height
             )
           );
+          translateX.value = newTranslateX;
+          translateY.value = newTranslateY;
         }
       })
       .onEnd(event => {
-        prevTranslateX.value = event.absoluteX;
-        shouldRefresh.value = true;
-        if (isTriggered.value) {
-          // 触发时保持在阈值位置，等待请求完成
-          refreshTextState.value = 'refreshing';
-          backHeight.value = withTiming(REFRESH_THRESHOLD);
-          runOnJS(onReachTopEnd)();
-        } else {
-          // 如果没触发刷新，直接重置
-          backHeight.value = withTiming(0);
+        'worklet';
+        // 在刷新状态下不处理滑动结束
+        if (!shouldRefresh.value || isRefreshing.value) {
+          return;
         }
-        isTriggered.value = false;
+        if (
+          wrapperSize.height - translateY.value - containerSize.height >=
+          -60
+        ) {
+          translateY.value = withTiming(translateY.value + 60);
+        }
+
+        handleRefreshComplete(event);
       });
-
-    // Create animated styles for various components
-
-    // Animated style for refresh header height
-    const refreshHeaderStyle = useAnimatedStyle(() => {
-      return {
-        height: backHeight.value,
-      };
-    }, []);
-
-    // Animated style for corner top position
-    const cornerTopStyle = useAnimatedStyle(() => {
-      return {
-        top: backHeight.value,
-      };
-    }, []);
     const animatedStyle = useAnimatedStyle(() => {
       return {
         transform: [
@@ -231,7 +335,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         marginLeft: cornerWidth.value,
       };
     }, []);
-
     // For the sticky top, we only want horizontal scrolling, not vertical
     const animatedOnlyX = useAnimatedStyle(() => ({
       transform: [{ translateX: translateX.value }],
@@ -243,22 +346,29 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       transform: [{ translateY: translateY.value }],
       zIndex: 9, // Ensure it stays on top but below the corner
     }));
+    // For the sticky left, we only want vertical scrolling, not horizontal
+    const refreshHeight = useAnimatedStyle(() => ({
+      transform: [{ translateY: backHeight.value }],
+    }));
     const handleChildLayout = (event: LayoutChangeEvent) => {
       const { layout } = event.nativeEvent;
       setContainerSize(layout);
     };
 
-    // 使用普通的 Text 组件而不是 Animated.Text
-    const RefreshText = () => {
-      switch (refreshTextState.value) {
-        case 'release':
-          return '松开即可刷新';
-        case 'refreshing':
-          return '刷新中...';
-        default:
-          return '下拉刷新课表';
-      }
+    // 使用状态文本映射，避免频繁计算和更新
+    const refreshTextMap: Record<RefreshState, string> = {
+      pull: '下拉刷新课表',
+      pullMore: '继续下拉刷新课表',
+      release: '松开即可刷新',
+      refreshing: '刷新中...',
     };
+
+    // 创建文本状态的动画样式 - 优化性能
+    const textOpacityStyle = useAnimatedStyle(() => {
+      return {
+        opacity: interpolate(backHeight.value, [0, REFRESH_THRESHOLD], [0, 1]),
+      };
+    }, []);
 
     return (
       <View
@@ -270,85 +380,101 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       >
         <Animated.View
           style={[
-            refreshHeaderStyle,
             {
               width: '100%',
-              zIndex: 21,
-              backgroundColor: commonColors.purple,
-              justifyContent: 'center',
+              zIndex: -1,
+              height: REFRESH_THRESHOLD,
+              opacity: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: commonColors.lightPurple,
+              overflow: 'hidden',
               alignItems: 'center',
-            },
-          ]}
-        >
-          <Text style={{ color: commonColors.white }}>
-            <RefreshText />
-          </Text>
-        </Animated.View>
-        {/* sticky top */}
-        <Animated.View
-          style={[
-            styles.stickyTop,
-            { width: containerSize.width },
-            stickyTopMarginStyle,
-            animatedOnlyX,
-          ]}
-          onLayout={layout => {
-            cornerHeight.value = layout.nativeEvent.layout.height;
-          }}
-        >
-          {stickyTop}
-        </Animated.View>
-        {/* corner */}
-        <Animated.View
-          style={[
-            cornerStyle,
-            defaultCornerStyle,
-            cornerTopStyle,
-            {
               position: 'absolute',
-              left: 0,
-              backgroundColor: commonColors.gray,
-              zIndex: 20,
-              ...cornerStyle,
+              elevation: 5,
             },
           ]}
-        ></Animated.View>
-        <Animated.View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-          }}
         >
-          {/* stickyLeft */}
+          <LottieView
+            source={require('@/animation/renovate.json')}
+            style={[styles.lottieAnimation]}
+            loop={true}
+            ref={animationRef}
+          />
+          <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
+            {refreshTextMap[refreshTextState.value]}
+          </Animated.Text>
+        </Animated.View>
+        <Animated.View style={[refreshHeight, { flex: 1 }]}>
+          {/* sticky top */}
           <Animated.View
-            onLayout={layout => {
-              cornerWidth.value = layout.nativeEvent.layout.width;
-            }}
             style={[
-              styles.stickyLeft,
-              { height: containerSize.height },
-              animatedOnlyY,
+              styles.stickyTop,
+              { width: containerSize.width },
+              stickyTopMarginStyle,
+              animatedOnlyX,
             ]}
-          >
-            {stickyLeft}
-          </Animated.View>
-          <Animated.View
-            style={[styles.wrapper, contentMarginStyle]}
-            onLayout={event => {
-              const { layout } = event.nativeEvent;
-              setWrapperSize(layout);
+            onLayout={layout => {
+              cornerHeight.value = layout.nativeEvent.layout.height;
             }}
           >
-            <GestureDetector gesture={panGesture}>
-              <Animated.View style={[animatedStyle]}>
-                {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
-                {children &&
-                  React.cloneElement(children, { onLayout: handleChildLayout })}
-              </Animated.View>
-            </GestureDetector>
+            {stickyTop}
+          </Animated.View>
+          {/* corner */}
+          <Animated.View
+            style={[
+              defaultCornerStyle,
+              {
+                position: 'absolute',
+                left: 0,
+                backgroundColor: commonColors.gray,
+                zIndex: 20,
+                ...cornerStyle,
+              },
+            ]}
+          ></Animated.View>
+          <Animated.View
+            style={{
+              flexDirection: 'column',
+              flex: 1,
+            }}
+          >
+            {/* stickyLeft */}
+            <Animated.View
+              onLayout={layout => {
+                cornerWidth.value = layout.nativeEvent.layout.width;
+              }}
+              style={[
+                styles.stickyLeft,
+                { height: containerSize.height },
+                animatedOnlyY,
+              ]}
+            >
+              {stickyLeft}
+            </Animated.View>
+            <Animated.View
+              style={[styles.wrapper, contentMarginStyle]}
+              onLayout={event => {
+                const { layout } = event.nativeEvent;
+                setWrapperSize(layout);
+              }}
+            >
+              <GestureDetector gesture={panGesture}>
+                <Animated.View style={[animatedStyle]}>
+                  {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
+                  {children &&
+                    React.cloneElement(children, {
+                      onLayout: handleChildLayout,
+                    })}
+                </Animated.View>
+              </GestureDetector>
+            </Animated.View>
+            {/* sticky bottom */}
+            <View style={{ width: '100%', height: 60 }}>
+              <Divider>别闹, 学霸也是要睡觉的</Divider>
+            </View>
           </Animated.View>
         </Animated.View>
-        {/* sticky bottom */}
       </View>
     );
   }
@@ -360,6 +486,7 @@ const styles = StyleSheet.create({
   largeWrapper: {
     flex: 1,
     overflow: 'visible', // 确保内容不被裁剪
+    flexDirection: 'column',
   },
   wrapper: {
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
@@ -390,6 +517,16 @@ const styles = StyleSheet.create({
   },
   refreshText: {
     color: commonColors.white,
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: -24,
+  },
+  lottieAnimation: {
+    width: 180,
+    height: 180,
+    margin: -40,
+    elevation: 20,
+    backgroundColor: 'transparent',
   },
 });
 

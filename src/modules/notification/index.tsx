@@ -9,7 +9,7 @@ import { EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
 import { FeedIconList } from '@/constants/notificationItem';
-import saveFeedToken from '@/request/api/saveFeedToken';
+import { saveFeedToken } from '@/request/api/feeds';
 
 const NotificationPage: FC = () => {
   const currentStyles = useVisualScheme(state => state.currentStyle);
@@ -21,7 +21,7 @@ const NotificationPage: FC = () => {
 
   const fetchToken = async () => {
     const token = await getItem('pushToken');
-    console.log(token);
+    //console.log(token);
     setPushToken(token);
   };
 
@@ -36,7 +36,7 @@ const NotificationPage: FC = () => {
 
   useEffect(() => {
     if (pushToken) {
-      console.log(pushToken);
+      //console.log(pushToken);
 
       saveFeedToken(pushToken);
     }

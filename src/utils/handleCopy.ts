@@ -14,6 +14,6 @@ const handleCopy = (text: string) => {
       showCancel: false,
     });
   });
-  console.log('复制文本为：' + text);
+  //console.log('复制文本为：' + text);
 };
 export default handleCopy;

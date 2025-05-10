@@ -76,14 +76,14 @@ export const tooltipActions: Action[] = [
     ),
     text: <TextNode text="课表截图" />,
   },
-  {
-    key: 'changeYear',
-    icon: (
-      <Image
-        style={styles.tooltipImage}
-        source={require('@/assets/images/change-year.png')}
-      />
-    ),
-    text: <TextNode text="切换学年" />,
-  },
+  // {
+  //   key: 'changeYear',
+  //   icon: (
+  //     <Image
+  //       style={styles.tooltipImage}
+  //       source={require('@/assets/images/change-year.png')}
+  //     />
+  //   ),
+  //   text: <TextNode text="切换学年" />,
+  // },
 ];

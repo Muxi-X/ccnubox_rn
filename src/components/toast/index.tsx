@@ -12,11 +12,14 @@ import useVisualScheme from '@/store/visualScheme';
 import { statusImage } from '@/constants/toast';
 import { commonColors, commonStyles } from '@/styles/common';
 
-const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
+const DURATION = 400;
+
+const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   visible: initVisible = false,
   currentKey,
   icon,
   text,
+  duration = 2000,
 }) => {
   const [visible, setVisible] = useState<boolean>(initVisible);
   const deleteChildren = usePortalStore(state => state.deleteChildren);
@@ -28,12 +31,14 @@ const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
     // FIX_ME: 与 Modal 同样
     // 没有动画结束监听函数
     // 目前是定时删除
-    setTimeout(() => {
+    const animTimer = setTimeout(() => {
       setVisible(false);
-      setTimeout(() => {
-        currentKey && deleteChildren(currentKey);
-      }, 1000);
-    }, 2000);
+      const backTimer = setTimeout(() => {
+        clearTimeout(animTimer);
+        clearTimeout(backTimer);
+        Promise.resolve(currentKey && deleteChildren(currentKey));
+      }, DURATION * 0.8);
+    }, duration);
   }, [initVisible]);
   return (
     <>
@@ -45,8 +50,8 @@ const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
             onPress={handleClose}
           ></TouchableOpacity>
           <AnimatedScale
-            duration={400}
-            outputRange={[0.6, 1]}
+            duration={DURATION}
+            outputRange={[0.2, 1]}
             trigger={visible}
             style={styles.toastContent}
           >
@@ -66,7 +71,7 @@ const Toast: FC<ToastProps> & { show: (props: ToastProps) => void } = ({
               style={[
                 useVisualScheme.getState().currentStyle?.text_style,
                 commonStyles.fontLarge,
-                { color: commonColors.darkGray },
+                { color: commonColors.darkGray, textAlign: 'center' },
               ]}
             >
               {text}

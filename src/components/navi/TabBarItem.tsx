@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC, memo, useMemo } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -16,43 +16,53 @@ import { TabBarItemProps } from './types';
 import AnimatedOpacity from '../animatedView/AnimatedOpacity';
 import AnimatedScale from '../animatedView/AnimatedScale';
 
-const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
+const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
   const { isFocused, onPress, onLongPress, label = '', iconName } = props;
   const iconStyle = useVisualScheme(
     state => state.currentStyle?.navbar_icon_active_style
   ) as TextStyle;
-  const color = isFocused ? iconStyle?.color : TABBAR_COLOR.PRIMARY;
+
+  const color = useMemo(
+    () => (isFocused ? iconStyle?.color : TABBAR_COLOR.PRIMARY),
+    [isFocused, iconStyle?.color]
+  );
+
+  const IconComponent = useMemo(
+    () => (
+      <TabBarIcon
+        size={24}
+        // @ts-ignore
+        name={iconName}
+        color={color}
+        style={styles.icon}
+      />
+    ),
+    [iconName, color]
+  );
+
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
       style={[styles.container]}
     >
-      <AnimatedScale trigger={isFocused}>
-        <TabBarIcon
-          size={28}
-          // @ts-ignore
-          name={iconName}
-          color={color}
-          style={styles.icon}
-        ></TabBarIcon>
-      </AnimatedScale>
+      <AnimatedScale trigger={isFocused}>{IconComponent}</AnimatedScale>
 
-      <AnimatedOpacity trigger toVisible={!isFocused}>
+      <AnimatedOpacity trigger>
         <Text style={[{ color: color }, styles.text]}>{label}</Text>
       </AnimatedOpacity>
     </Pressable>
   );
-};
+});
 
-export default TabBarItem;
+export default TabBarItem as FC<TabBarItemProps & ViewProps>;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 4,
+    gap: 2,
   },
   icon: {
     display: 'flex',
@@ -62,6 +72,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 2,
+    marginTop: 1,
   },
 });

@@ -1,5 +1,5 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { FC, useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 
 import useDebounce from '@/hooks/useDebounce';
@@ -35,48 +35,54 @@ const TabBar: FC<BottomTabBarProps> = props => {
     [navigation]
   );
 
-  const debouncedHandler = useDebounce(handlePress, 300);
+  // Reduce debounce time for more responsive tab switching while still preventing double-taps
+  const debouncedHandler = useDebounce(handlePress, 100);
+  // Memoize tab items to prevent unnecessary re-renders
+  const tabItems = React.useMemo(() => {
+    return state.routes.map((route, index) => {
+      if (!route || !route.key || !descriptors || !descriptors[route.key]) {
+        return null;
+      }
+
+      const { options } = descriptors[route.key];
+      const iconName = tabConfig[index]?.iconName;
+      const label =
+        options?.tabBarLabel !== undefined
+          ? options.tabBarLabel
+          : options?.title !== undefined
+            ? options.title
+            : null;
+
+      const isFocused = state?.index === index;
+      const onPress = () => debouncedHandler(route, isFocused);
+
+      const onLongPress = () => {
+        navigation.emit({
+          type: 'tabLongPress',
+          target: route.name,
+        });
+      };
+
+      return (
+        <TabBarItem
+          key={route.name}
+          onPress={onPress}
+          onLongPress={onLongPress}
+          isFocused={isFocused}
+          name={route.name}
+          iconName={iconName}
+          label={label as string}
+        />
+      );
+    });
+  }, [state.routes, state.index, descriptors, debouncedHandler]);
+
   return (
     <ColorTransitionView
       configurableThemeName="navbar_background_style"
       style={[styles.tabbar, navbarStyle]}
     >
-      {state.routes.map((route, index) => {
-        if (!route || !route.key || !descriptors || !descriptors[route.key]) {
-          // Skip rendering this tab item if route or descriptor is missing
-          return null;
-        }
-
-        const { options } = descriptors[route.key];
-        const iconName = tabConfig[index]?.iconName;
-        const label =
-          options?.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options?.title !== undefined
-              ? options.title
-              : route.name;
-
-        const isFocused = state?.index === index;
-        const onPress = () => debouncedHandler(route, isFocused);
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.name,
-          });
-        };
-        return (
-          <TabBarItem
-            key={route.name}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            isFocused={isFocused}
-            name={route.name}
-            iconName={iconName}
-            label={label as string}
-          />
-        );
-      })}
+      {tabItems}
     </ColorTransitionView>
   );
 };
@@ -92,9 +98,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     bottom: 0,
-    paddingVertical: 15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    paddingVertical: 12, // 从15改为8
+    // borderTopLeftRadius: 20,
+    // borderTopRightRadius: 20,
     borderCurve: 'continuous',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 10 },

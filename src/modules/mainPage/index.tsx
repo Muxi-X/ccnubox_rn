@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { FC, memo, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -12,8 +12,7 @@ import ThemeChangeView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
-import queryBanners from '@/request/api/queryBanners';
-import { commonColors } from '@/styles/common';
+import { queryBanners } from '@/request/api';
 import { keyGenerator, percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
 
@@ -31,9 +30,8 @@ const IndexPage: FC = () => {
   const [data, setData] =
     useState<MainPageGridDataType[]>(mainPageApplications);
 
-  const loadBanners = async () => {
-    const res = await queryBanners();
-    if (res?.code === 0 && res.data?.banners) {
+  useEffect(() => {
+    queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(
           (banner: { picture_link: string; web_link: string }) => ({
@@ -42,39 +40,27 @@ const IndexPage: FC = () => {
           })
         )
       );
-    }
-  };
-
-  useEffect(() => {
-    loadBanners();
+    });
   }, []);
 
-  const render = ({
-    key,
-    title,
-    href,
-    action,
-    imageUrl,
-  }: MainPageGridDataType) => {
-    const handlePress = () => {
-      if (href) {
-        router.navigate(href);
-      }
-      if (action) {
-        action();
-      }
-    };
+  const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
+    if (typeof imageUrl === 'function') {
+      const SvgComponent = imageUrl;
+      return <SvgComponent width={50} height={50} />;
+    }
+    return <Image source={imageUrl} />;
+  };
+
+  const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
     return (
-      <TouchableOpacity onPress={handlePress}>
-        <View style={styles.item} key={key}>
-          <Skeleton style={styles.item}>
-            <Image source={imageUrl}></Image>
-          </Skeleton>
-          <Skeleton>
-            <Text style={styles.itemText}>{title}</Text>
-          </Skeleton>
-        </View>
-      </TouchableOpacity>
+      <View style={styles.item} key={key}>
+        <Skeleton>
+          <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
+        </Skeleton>
+        <Skeleton>
+          <Text style={styles.itemText}>{title}</Text>
+        </Skeleton>
+      </View>
     );
   };
 
@@ -115,6 +101,14 @@ const IndexPage: FC = () => {
       </Skeleton>
       {/* 功能列表 */}
       <DraggableGrid
+        onItemPress={data => {
+          if (data.href) {
+            router.push(data.href);
+          }
+          if (data.action) {
+            data.action();
+          }
+        }}
         numColumns={3}
         renderItem={render}
         data={data}
@@ -152,15 +146,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  bannerItem: {
-    width: '95%',
-    height: 120,
-    borderRadius: 10,
-    // backgroundColor: commonColors.purple,
+  itemImage: {
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemText: {
     fontSize: 14,
     marginTop: 6,
-    color: commonColors.darkGray,
+    color: '#969696',
+  },
+  bannerItem: {
+    width: '95%',
+    height: 120,
+    borderRadius: 10,
   },
 });

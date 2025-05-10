@@ -39,7 +39,7 @@ export const preloginGuide: { title: string; content: ReactElement }[] = [
           '分管本科生院学工部的',
           '“网络技术中心”',
         ]}
-        extraNodes={<Text>6666</Text>}
+        // extraNodes={<Text>6666</Text>}
       />
     ),
   },

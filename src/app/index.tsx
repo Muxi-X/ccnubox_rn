@@ -1,6 +1,8 @@
-import { Redirect } from 'expo-router';
-import { getItem } from 'expo-secure-store';
+import { Redirect, SplashScreen } from 'expo-router';
+import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
+
+import useCourse from '@/store/course';
 
 import { setupMockServer } from '@/mock/server';
 
@@ -8,17 +10,44 @@ import { setupMockServer } from '@/mock/server';
 // 重定向到 tabs
 // 详情见 issue: https://github.com/expo/router/issues/763#issuecomment-1635316964
 const Index = () => {
+  const [initialRoute, setInitialRoute] = React.useState<string | null>(null);
+  const hydrated = useCourse(state => state.hydrated);
+
   React.useEffect(() => {
     if (__DEV__) {
-      console.log('mock server setup');
+      //console.log('mock server setup');
       setupMockServer();
     }
-  });
 
-  const token = getItem('longToken');
+    const init = async () => {
+      const firstLaunch = getItem('firstLaunch');
 
-  if (!token) {
-    return <Redirect href="/auth/login"></Redirect>;
+      const token = getItem('longToken');
+
+      // 等待 AsyncStorage 加载
+      if (hydrated) await SplashScreen.hideAsync();
+
+      if (!token) {
+        if (firstLaunch === null) {
+          // 是首次启动，设置标记并跳转到guide
+          setItem('firstLaunch', 'false');
+          setInitialRoute('/auth/guide');
+        } else {
+          // 不是首次启动但没有token，去登录
+          setInitialRoute('/auth/login');
+        }
+      } else {
+        // 有token直接进入主页
+        setInitialRoute('/(tabs)');
+      }
+    };
+
+    SplashScreen.preventAutoHideAsync();
+    init();
+  }, [hydrated]);
+
+  if (!initialRoute) {
+    return null;
   }
 
   return <Redirect href="/(tabs)"></Redirect>;

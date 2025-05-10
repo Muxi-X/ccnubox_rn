@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeImageFromView } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
@@ -17,9 +16,10 @@ import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
+import useCourse from '@/store/course';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-import useWeekStore from '@/store/weekStore';
 
 import {
   COURSE_HEADER_HEIGHT,
@@ -37,6 +37,64 @@ import { commonColors } from '@/styles/common';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
+// 课程内容组件
+const CourseContent: React.FC<CourseTransferType> = memo(
+  function CourseContent(props) {
+    const {
+      classroom,
+      courseName,
+      teacher,
+      isThisWeek,
+      week_duration,
+      credit,
+      class_when,
+      date,
+    } = props;
+    const CourseItem = useThemeBasedComponents(
+      state => state.currentComponents?.course_item
+    );
+
+    return (
+      <>
+        <Pressable
+          style={{
+            position: 'absolute',
+            width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
+            zIndex: 99,
+            height: 'auto',
+            top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
+            left:
+              COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
+          }}
+          onPress={() => {
+            Modal.show({
+              children: (
+                <ModalContent
+                  class_when={class_when}
+                  isThisWeek={isThisWeek}
+                  courseName={courseName}
+                  teacher={teacher}
+                  classroom={classroom}
+                  week_duration={week_duration}
+                  credit={credit}
+                  date={date}
+                ></ModalContent>
+              ),
+              mode: 'middle',
+              // confirmText: '退出',
+              // cancelText: '编辑',
+              // onConfirm: () => {},
+              // onCancel: () => {},
+            });
+          }}
+        >
+          {CourseItem && <CourseItem {...props}></CourseItem>}
+        </Pressable>
+      </>
+    );
+  }
+);
+
 const Timetable: React.FC<CourseTableProps> = ({
   data,
   currentWeek,
@@ -44,6 +102,7 @@ const Timetable: React.FC<CourseTableProps> = ({
 }) => {
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
+  const [snapshot, setSnapShot] = useState(false);
   const { currentStyle, themeName } = useVisualScheme(
     ({ currentStyle, themeName }) => ({ currentStyle, themeName })
   );
@@ -65,6 +124,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           return;
         }
       }
+      setSnapShot(true);
       // 确保截图前视图已完全渲染
       setTimeout(async () => {
         try {
@@ -73,7 +133,6 @@ const Timetable: React.FC<CourseTableProps> = ({
 
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
-
           // 使用完整课表内容的引用而不是滚动视图
           const snapshot = await makeImageFromView(fullTableRef);
           if (!snapshot) {
@@ -81,6 +140,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               text: '截图失败',
               icon: 'fail',
             });
+            setSnapShot(false);
             return;
           }
 
@@ -104,14 +164,17 @@ const Timetable: React.FC<CourseTableProps> = ({
               text: '截图成功',
               icon: 'success',
             });
+            setSnapShot(false);
           }
         } catch (error) {
           Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+          setSnapShot(false);
           return;
         }
       }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
       Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
+      setSnapShot(false);
     }
   };
 
@@ -123,76 +186,82 @@ const Timetable: React.FC<CourseTableProps> = ({
     };
   }, []);
 
-  // 内容部分
-  const content = useDeferredValue(
-    (() => {
-      // 时刻表
-      const timetableMatrix = timeSlots.map(() =>
-        Array(daysOfWeek.length).fill(null)
-      );
-      const courses: CourseTransferType[] = [];
-      // 先按时间槽和日期分组课程
-      const coursesBySlot = new Map();
-      data.forEach((course: courseType) => {
-        const {
+  // 计算课程表内容的memoized值
+  const { timetableMatrix, courses } = React.useMemo(() => {
+    // 时刻表
+    const timetableMatrix: ({
+      classname: string;
+      timeSpan: number;
+    } | null)[][] = timeSlots.map(() => Array(daysOfWeek.length).fill(null));
+    const courses: CourseTransferType[] = [];
+    // 先按时间槽和日期分组课程
+    const coursesBySlot = new Map();
+    data.forEach((course: courseType) => {
+      const {
+        id,
+        day,
+        teacher,
+        where,
+        class_when,
+        classname,
+        weeks,
+        week_duration,
+        credit,
+      } = course;
+      const timeSpan = class_when
+        .split('-')
+        .map(Number)
+        .reduce((a: number, b: number) => b - a + 1);
+      const rowIndex = Number(class_when.split('-')[0]) - 1;
+      const colIndex = day - 1;
+      const key = `${rowIndex}-${colIndex}`;
+
+      if (rowIndex !== -1 && colIndex !== -1) {
+        if (!coursesBySlot.has(key)) {
+          coursesBySlot.set(key, []);
+        }
+        coursesBySlot.get(key).push({
           id,
-          day,
+          courseName: classname,
+          timeSpan,
           teacher,
-          where,
-          class_when,
-          classname,
+          date: daysOfWeek[colIndex],
+          classroom: where,
+          rowIndex,
+          colIndex,
           weeks,
+          isThisWeek: weeks.includes(currentWeek),
           week_duration,
           credit,
-        } = course;
-        const timeSpan = class_when
-          .split('-')
-          .map(Number)
-          .reduce((a: number, b: number) => b - a + 1);
-        const rowIndex = Number(class_when.split('-')[0]) - 1;
-        const colIndex = day - 1;
-        const key = `${rowIndex}-${colIndex}`;
-
-        if (rowIndex !== -1 && colIndex !== -1) {
-          if (!coursesBySlot.has(key)) {
-            coursesBySlot.set(key, []);
-          }
-          coursesBySlot.get(key).push({
-            id,
-            courseName: classname,
-            timeSpan,
-            teacher,
-            date: daysOfWeek[colIndex],
-            classroom: where,
-            rowIndex,
-            colIndex,
-            weeks,
-            isThisWeek: weeks.includes(currentWeek),
-            week_duration,
-            credit,
-            class_when,
-          });
-        }
-      });
-
-      // 遍历每个时间槽，选择正确的课程显示
-      for (const [key, slotCourses] of coursesBySlot) {
-        const [rowIndex, colIndex] = key.split('-').map(Number);
-
-        // 找到当前周应该显示的课程
-        const courseToShow =
-          slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
-            course.weeks.includes(currentWeek)
-          ) || slotCourses[0];
-
-        if (courseToShow) {
-          timetableMatrix[rowIndex][colIndex] = {
-            classname: courseToShow.courseName,
-            timeSpan: courseToShow.timeSpan,
-          };
-          courses.push(courseToShow);
-        }
+          class_when,
+        });
       }
+    });
+
+    // 遍历每个时间槽，选择正确的课程显示
+    for (const [key, slotCourses] of coursesBySlot) {
+      const [rowIndex, colIndex] = key.split('-').map(Number);
+
+      // 找到当前周应该显示的课程
+      const courseToShow =
+        slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
+          course.weeks.includes(currentWeek)
+        ) || slotCourses[0];
+
+      if (courseToShow) {
+        timetableMatrix[rowIndex][colIndex] = {
+          classname: courseToShow.courseName,
+          timeSpan: courseToShow.timeSpan,
+        };
+        courses.push(courseToShow);
+      }
+    }
+    return { timetableMatrix, courses };
+  }, [data, currentWeek]); // 只在data或currentWeek改变时重新计算，返回memoized结果
+
+  // 内容部分
+  const content = useDeferredValue(
+    React.useMemo(() => {
       return (
         <View
           style={[
@@ -203,33 +272,39 @@ const Timetable: React.FC<CourseTableProps> = ({
             },
           ]}
         >
-          {timetableMatrix?.map((row, rowIndex) => (
+          {timetableMatrix.map((row, rowIndex: number) => (
             <View key={rowIndex} style={styles.row}>
-              {row.map((subject, colIndex) => (
-                <View
-                  key={colIndex}
-                  style={[
-                    styles.cell,
-                    currentStyle?.schedule_border_style,
-                    {
-                      // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
-                      // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                      borderBottomWidth:
-                        (rowIndex + 1) % courseCollapse ? 0 : 1,
-                    },
-                  ]}
-                ></View>
-              ))}
+              {row.map(
+                (
+                  subject: { classname: string; timeSpan: number } | null,
+                  colIndex: number
+                ) => (
+                  <View
+                    key={colIndex}
+                    style={[
+                      styles.cell,
+                      currentStyle?.schedule_border_style,
+                      {
+                        // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
+                        // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
+                        borderBottomWidth:
+                          (rowIndex + 1) % courseCollapse ? 0 : 1,
+                      },
+                    ]}
+                  ></View>
+                )
+              )}
             </View>
           ))}
           {/* 课程内容 */}
           {courses.map(item => (
-            <Content key={item.id} {...item}></Content>
+            <CourseContent key={item.id} {...item} />
           ))}
         </View>
       );
-    })()
+    }, [timetableMatrix, courses, currentStyle])
   );
+
   // 创建完整课表内容的视图，用于截图
   const fullTableContent = (
     <View
@@ -270,8 +345,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         {/* 用于截图的完整课表内容 */}
-        {fullTableContent}
-
+        {snapshot && fullTableContent}
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
@@ -279,7 +353,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           collapsable={false}
           cornerStyle={{
             backgroundColor:
-              themeName === 'light' ? commonColors.gray : commonColors.black,
+              themeName === 'light'
+                ? commonColors.lightGray
+                : commonColors.black,
           }}
           onRefresh={async (handleSuccess, handleFail) => {
             try {
@@ -288,7 +364,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               await onTimetableRefresh(true);
               handleSuccess();
             } catch (error) {
-              console.error('刷新失败:', error);
+              //console.error('刷新失败:', error);
               handleFail();
             } finally {
               setIsFetching(false);
@@ -307,6 +383,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     </View>
   );
 };
+
 interface ModalContentProps {
   courseName: string;
   teacher: string;
@@ -318,148 +395,95 @@ interface ModalContentProps {
   date: string;
 }
 
-export const ModalContent: React.FC<ModalContentProps> = props => {
-  const {
-    courseName,
-    teacher,
-    classroom,
-    isThisWeek,
-    week_duration,
-    credit,
-    class_when,
-    date,
-  } = props;
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+const ModalContent: React.FC<ModalContentProps> = memo(
+  function ModalContent(props) {
+    const {
+      courseName,
+      teacher,
+      classroom,
+      isThisWeek,
+      week_duration,
+      credit,
+      class_when,
+      date,
+    } = props;
+    const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  return (
-    <View style={[styles.modalContainer, currentStyle?.background_style]}>
-      <View style={styles.modalHeader}>
-        <ThemeChangeText style={styles.modalTitle}>
-          {courseName}
-        </ThemeChangeText>
-        {!isThisWeek && (
-          <View style={styles.notThisWeekTag}>
-            <Text style={styles.notThisWeekText}>非本周</Text>
+    return (
+      <View style={[styles.modalContainer, currentStyle?.background_style]}>
+        <View style={styles.modalHeader}>
+          <ThemeChangeText style={styles.modalTitle}>
+            {courseName}
+          </ThemeChangeText>
+          {!isThisWeek && (
+            <View style={styles.notThisWeekTag}>
+              <Text style={styles.notThisWeekText}>非本周</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.modalSubtitle}>{credit}学分</Text>
+
+        <View style={styles.modalInfoGrid}>
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>📅</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              {week_duration}
+            </Text>
           </View>
-        )}
+
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>🕒</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              周{date}
+              {class_when}节
+            </Text>
+          </View>
+
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>👨‍🏫</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              {teacher}
+            </Text>
+          </View>
+
+          <View style={styles.modalInfoItem}>
+            <View style={styles.modalInfoIcon}>
+              <Text style={styles.iconText}>🏢</Text>
+            </View>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+              {classroom}
+            </Text>
+          </View>
+        </View>
       </View>
-      <Text style={styles.modalSubtitle}>{credit}学分</Text>
-
-      <View style={styles.modalInfoGrid}>
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>📅</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            {week_duration}
-          </Text>
-        </View>
-
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>🕒</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            周{date}
-            {class_when}节
-          </Text>
-        </View>
-
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>👨‍🏫</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            {teacher}
-          </Text>
-        </View>
-
-        <View style={styles.modalInfoItem}>
-          <View style={styles.modalInfoIcon}>
-            <Text style={styles.iconText}>🏢</Text>
-          </View>
-          <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
-            {classroom}
-          </Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-export const Content: React.FC<CourseTransferType> = props => {
-  const {
-    classroom,
-    courseName,
-    teacher,
-    isThisWeek,
-    week_duration,
-    credit,
-    class_when,
-    date,
-  } = props;
-  const CourseItem = useThemeBasedComponents(
-    state => state.currentComponents?.course_item
-  );
-
-  return (
-    <>
-      <Pressable
-        style={{
-          position: 'absolute',
-          width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-          zIndex: 99,
-          height: 'auto',
-          top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
-          left: COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
-        }}
-        onPress={() => {
-          Modal.show({
-            children: (
-              <ModalContent
-                class_when={class_when}
-                isThisWeek={isThisWeek}
-                courseName={courseName}
-                teacher={teacher}
-                classroom={classroom}
-                week_duration={week_duration}
-                credit={credit}
-                date={date}
-              ></ModalContent>
-            ),
-            mode: 'middle',
-            confirmText: '退出',
-            cancelText: '编辑',
-
-            onConfirm: () => {},
-            onCancel: () => {},
-          });
-        }}
-      >
-        {CourseItem && <CourseItem {...props}></CourseItem>}
-      </Pressable>
-    </>
-  );
-};
+    );
+  }
+);
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { currentWeek } = useWeekStore();
+  const { currentWeek } = useTimeStore();
+  const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
   useEffect(() => {
     const calculateDates = async () => {
       try {
-        // 从缓存中获取开学时间
-        const schoolTime = await AsyncStorage.getItem('school_time');
-        if (!schoolTime) return;
+        if (!schoolTime) {
+          return;
+        }
 
         // 计算开学日期
-        const startTimestamp = Number(schoolTime) * 1000;
+        const startTimestamp = schoolTime * 1000;
         const startDate = new Date(startTimestamp);
 
         // 计算当前周的第一天（周一）
-        // 开学日期是第1周的第1天，所以需要计算当前周的第1天
         const daysToAdd = (currentWeek - 1) * 7;
         const currentWeekStartDate = new Date(startDate);
         currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
@@ -469,19 +493,18 @@ export const StickyTop: React.FC = memo(function StickyTop() {
         for (let i = 0; i < 7; i++) {
           const date = new Date(currentWeekStartDate);
           date.setDate(currentWeekStartDate.getDate() + i);
-          const month = date.getMonth() + 1; // 月份从0开始
+          const month = date.getMonth() + 1;
           const day = date.getDate();
           weekDates.push(`${month}/${day}`);
         }
-
         setDates(weekDates);
       } catch (error) {
-        console.error('计算日期失败:', error);
+        throw new Error('计算日期失败');
       }
     };
 
     calculateDates();
-  }, [currentWeek]);
+  }, [currentWeek, schoolTime]);
 
   return (
     <View style={styles.header}>
@@ -547,6 +570,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
+    paddingBottom: 20,
   },
   courseWrapperStyle: {
     position: 'relative',

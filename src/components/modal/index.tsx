@@ -57,13 +57,11 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   const handleClose = () => {
     setVisible(false);
     onClose && onClose();
-    // FIX_ME： 由于rn自带modal不支持获取动画结束时间
-    // 因此这里采取定时器的方案
-    // 过一秒后清除动画
-    setTimeout(() => {
-      currentKey && deleteChildren(currentKey);
-    }, 1000);
   };
+  const showButtons = useMemo(() => {
+    return confirmText || onConfirm || (showCancel && (cancelText || onCancel));
+  }, [confirmText, onConfirm, showCancel, cancelText, onCancel]);
+
   const modalContent = useMemo(() => {
     return (
       <>
@@ -94,58 +92,79 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             children
           )}
         </View>
-        <View style={styles.bottomChoice}>
-          <TouchableOpacity onPress={handleConfirm}>
-            <View
-              style={
-                !isBottomMode && {
-                  ...styles.confirmViewStyle,
-                  ...styles.buttonStyle,
-                }
-              }
-            >
-              <Text
-                style={[
-                  styles.bottomChoiceText,
-                  !isBottomMode && currentStyle?.text_style,
-                  isBottomMode
-                    ? commonStyles.fontLarge
-                    : commonStyles.fontMedium,
-                ]}
-              >
-                {confirmText ?? '确认'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          {/* showCancel 决定是否显示取消按钮 */}
-          {showCancel && (
-            <TouchableOpacity onPress={handleCancel}>
-              <View
-                style={
-                  !isBottomMode && {
-                    ...styles.cancelViewStyle,
-                    ...styles.buttonStyle,
+        {showButtons && (
+          <View style={styles.bottomChoice}>
+            {/* showCancel 决定是否显示取消按钮 */}
+            {showCancel && (cancelText || onCancel) && (
+              <TouchableOpacity onPress={handleCancel}>
+                <View
+                  style={
+                    !isBottomMode && {
+                      ...styles.cancelViewStyle,
+                      ...styles.buttonStyle,
+                    }
                   }
-                }
-              >
-                <Text
-                  style={[
-                    styles.bottomChoiceText,
-                    !isBottomMode && currentStyle?.text_style,
-                    isBottomMode
-                      ? commonStyles.fontLarge
-                      : commonStyles.fontMedium,
-                  ]}
                 >
-                  {cancelText ?? '取消'}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        </View>
+                  <Text
+                    style={[
+                      styles.bottomChoiceText,
+                      !isBottomMode && currentStyle?.text_style,
+                      isBottomMode
+                        ? commonStyles.fontLarge
+                        : commonStyles.fontMedium,
+                    ]}
+                  >
+                    {cancelText ?? '取消'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            {(confirmText || onConfirm) && (
+              <TouchableOpacity onPress={handleConfirm}>
+                <View
+                  style={
+                    !isBottomMode && {
+                      ...styles.confirmViewStyle,
+                      ...styles.buttonStyle,
+                    }
+                  }
+                >
+                  <Text
+                    style={[
+                      styles.bottomChoiceText,
+                      !isBottomMode && currentStyle?.text_style,
+                      isBottomMode
+                        ? commonStyles.fontLarge
+                        : commonStyles.fontMedium,
+                    ]}
+                  >
+                    {confirmText ?? '确认'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </>
     );
-  }, [children, mode]);
+  }, [
+    children,
+    mode,
+    showButtons,
+    showCancel,
+    cancelText,
+    onCancel,
+    confirmText,
+    onConfirm,
+  ]);
+  useEffect(() => {
+    if (!visible) {
+      let timer = setTimeout(() => {
+        currentKey !== undefined && deleteChildren(currentKey);
+        clearTimeout(timer);
+      }, 500);
+    }
+  }, [visible, currentKey]);
   return (
     <ModalBack visible={visible} style={{ zIndex: currentKey }}>
       <View
@@ -234,13 +253,25 @@ export const ModalTrigger: React.FC<ModalTriggerProps> = props => {
 };
 
 export const ModalBack: FC<
-  { children?: ReactElement; visible: boolean } & ViewProps
-> = ({ children, style, visible }) => {
+  {
+    children?: ReactElement;
+    visible: boolean;
+    onAnimationEnd?: (visible: boolean) => void;
+  } & ViewProps
+> = ({ children, style, visible, onAnimationEnd }) => {
+  const [displayMode, setDisplayMode] = useState<'flex' | 'none'>(
+    visible ? 'flex' : 'none'
+  );
+  if (displayMode === 'none') return <></>;
   return (
     <>
       <AnimatedOpacity
         duration={500}
         toVisible={visible}
+        onAnimationEnd={() => {
+          setDisplayMode(visible ? 'flex' : 'none');
+          onAnimationEnd && onAnimationEnd(visible);
+        }}
         style={[
           {
             flex: 1,
@@ -249,7 +280,7 @@ export const ModalBack: FC<
             height: percent2px(110, 'height'),
             // height: '100%',
             position: 'absolute',
-            display: visible ? 'flex' : 'none',
+            display: displayMode,
             top: 0,
           },
           style,
