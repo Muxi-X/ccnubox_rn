@@ -3,6 +3,8 @@
  */
 import { Dimensions } from 'react-native';
 
+import { percent2px } from '@/utils/percent2px';
+
 const windowWidth = Dimensions.get('window').width;
 export const COURSE_ITEM_WIDTH = (windowWidth - 50) / 5;
 /**
@@ -12,11 +14,11 @@ export const COURSE_HEADER_HEIGHT = 40;
 /**
  * 课程高度
  */
-export const COURSE_ITEM_HEIGHT = 70;
+export const COURSE_ITEM_HEIGHT = percent2px(8, 'height');
 /**
  * 时间栏宽度（高度和课程一样）
  */
-export const TIME_WIDTH = 50;
+export const TIME_WIDTH = percent2px(16);
 /**
  * 一周天数
  */
@@ -77,7 +79,7 @@ export const colorOptions = [
     label: '日',
   },
   {
-    color: '#808080',
+    color: '#D6D6D6',
     label: '无',
   },
 ];

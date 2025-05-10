@@ -5,9 +5,9 @@
  * 16代表第三学期
  */
 export enum semesterMap {
-  first = 3,
-  second = 12,
-  third = 16,
+  _first = 3,
+  _second = 12,
+  _third = 16,
 }
 export const scrapeLogin = (username = '', password = '') => {
   return `

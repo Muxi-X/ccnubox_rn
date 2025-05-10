@@ -9,14 +9,14 @@ export const SettingItems: SettingItem[] = [
     text: '个性化',
     url: '/(setting)/theme',
   },
-  {
-    title: '分享',
-    name: 'share',
-    id: 2,
-    icon: require('@/assets/images/share.png'),
-    text: '分享',
-    url: '/(setting)/share',
-  },
+  // {
+  //   title: '分享',
+  //   name: 'share',
+  //   id: 2,
+  //   icon: require('@/assets/images/share.png'),
+  //   text: '分享',
+  //   url: '/(setting)/share',
+  // },
   {
     title: '检查更新',
     name: 'checkUpdate',

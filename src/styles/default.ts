@@ -48,7 +48,7 @@ export const defaultStyles = generateStyleSheet({
       backgroundColor: '#fff',
     },
     schedule_border_style: {
-      borderColor: '#E1E2F1',
+      borderColor: '#F7F7F7',
     },
     schedule_item_background_style: {
       backgroundColor: '#F7F5FD',

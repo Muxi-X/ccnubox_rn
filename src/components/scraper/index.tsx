@@ -1,3 +1,4 @@
+import { getItem } from 'expo-secure-store';
 import React, { forwardRef } from 'react';
 import { View } from 'react-native';
 import WebView from 'react-native-webview';
@@ -22,11 +23,23 @@ import { scrapeLogin } from '@/constants/scraper';
  */
 const Scraper = forwardRef<WebView | null, ScraperProps>(
   ({ onMessage }, ref) => {
-    const secretUserName = '2023122691';
-    const secretPassword = 'zhao1638678192%';
+    // const userInfo = getItem('userInfo');
+    // const { student_id, password } = JSON.parse(userInfo as string);
+    // const secretUserName = '2023122691';
+    // const secretPassword = 'zhao1638678192%';
+    let student_id = '';
+    let password = '';
+    const userInfo = getItem('userInfo');
+    if (userInfo) {
+      student_id = JSON.parse(userInfo as string)?.student_id;
+      password = JSON.parse(userInfo as string)?.password;
+    } else {
+      student_id = '2023122691';
+      password = 'zhao1638678192%';
+    }
+    // const { student_id, password } = JSON.parse(userInfo as string);
 
-    const runFirst = scrapeLogin(secretUserName, secretPassword);
-
+    const runFirst = scrapeLogin(student_id, password);
     return (
       <View style={{ width: 0, height: 0 }}>
         <WebView

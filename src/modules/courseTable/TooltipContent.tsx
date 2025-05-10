@@ -30,12 +30,12 @@ export const addItem: addItemType[] = [
     text: '切换当前周',
     // url: '/(courseTable)/changeWeek',
   },
-  {
-    id: 4,
-    icon: require('@/assets/images/change-year.png'),
-    text: '切换学年',
-    // url: '/(courseTable)/changeYear',
-  },
+  // {
+  //   id: 4,
+  //   icon: require('@/assets/images/change-year.png'),
+  //   text: '切换学年',
+  //   // url: '/(courseTable)/changeYear',
+  // },
 ];
 
 export const TooltipContent = () => {

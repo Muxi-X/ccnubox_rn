@@ -20,21 +20,21 @@ export type visualSchemeType = {
   /** 当前样式表 */
   currentStyle: SingleThemeType | null;
   /** 更改主题 */
-  changeTheme: (name: ThemeName) => void;
+  changeTheme: (_name: ThemeName) => void;
   /** 更改布局 ios | android */
-  changeLayout: (type: LayoutName) => void;
+  changeLayout: (_type: LayoutName) => void;
   /** 注册style中样式 */
   init: () => void;
-  removeLayouts: (name: LayoutName) => void;
+  removeLayouts: (_name: LayoutName) => void;
 };
 
 export type scraperType = {
   /* webview 的 ref */
   ref: MutableRefObject<WebView<{}> | undefined> | null;
   /* 注入的 js */
-  injectJavaScript: (injected: string) => void;
+  injectJavaScript: (_injected: string) => void;
   /* 设置 ref */
-  setRef: (newRef: MutableRefObject<WebView<{}> | undefined> | null) => void;
+  setRef: (_newRef: MutableRefObject<WebView<{}> | undefined> | null) => void;
 };
 
 /** theme based components */
@@ -44,9 +44,9 @@ export type ThemeBasedComponentsType = {
   /** 目前的可替换组件 */
   currentComponents: ThemeBasedComponentRecord | null;
   /** 设置 components */
-  setComponents: (components: ThemeBasedComponentMap) => void;
+  setComponents: (_components: ThemeBasedComponentMap) => void;
   /** 改变布局时，更改当前选择组件 */
-  changeComponents: (layoutName: LayoutName) => void;
+  changeComponents: (_layoutName: LayoutName) => void;
 };
 
 /** portal */
@@ -56,13 +56,13 @@ export interface PortalStore {
   /* 当前 portal 下挂载的节点数 */
   elements: Record<number, ReactElement>;
   /* 设置 portal 的 ref */
-  setPortalRef: (ref: React.RefObject<any>) => void;
+  setPortalRef: (_ref: React.RefObject<any>) => void;
   /* 更新 portal 组件的值 */
-  updateChildren: (key: number, props: any) => void;
+  updateChildren: (_key: number, _props: any) => void;
   /* 在 portal 下挂载节点，可选 portalType，用于辨识节点类型，暂时没有用到，返回对应 key 值 */
-  appendChildren: (newChildren: ReactElement, portalType?: string) => number;
+  appendChildren: (_newChildren: ReactElement, _portalType?: string) => number;
   /* 通过 key 删除节点，每个 portal 下的组件都会接收到一个 currentKey 参数，代表当前 key 值 */
-  deleteChildren: (key: number) => void;
+  deleteChildren: (_key: number) => void;
   /* 通过 elements 遍历得出 portal 下真正的节点结构 */
   updateFromElements: () => void;
 }

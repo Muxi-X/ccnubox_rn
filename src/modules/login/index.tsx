@@ -1,5 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
@@ -13,8 +14,8 @@ import Button from '@/components/button';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { axiosInstance } from '@/request/request';
 import { commonStyles } from '@/styles/common';
+import { log } from '@/utils/logger';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -28,32 +29,42 @@ const LoginPage: FC = () => {
     password: '',
     student_id: '',
   });
+  // use custom axios instance to avoid global error handler
+  const request = axios.create({
+    baseURL: process.env.EXPO_PUBLIC_API_URL,
+    adapter: axios.defaults.adapter,
+  });
   const handleViewPassword = () => {
     setPasswordVisibility(!isPasswordShow);
   };
   const handleLogin = async () => {
-    if (!privacyChecked) {
-      Toast.fail('请先阅读隐私条例');
-      return;
+    setLoginTriggered(true);
+
+    if (!userInfo.student_id || !userInfo.password) {
+      Toast.fail('请输入账号密码', 2);
     }
-    console.log(userInfo);
+    if (!privacyChecked) {
+      Toast.fail('请先阅读隐私条例', 2);
+    }
+    //console.log(userInfo);
     try {
-      const response = await axiosInstance.post('/users/login_ccnu', userInfo, {
+      const response = await request.post('/users/login_ccnu', userInfo, {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        console.log(response.headers);
+        //  console.log(response.headers);
+        setItem('userInfo', JSON.stringify(userInfo));
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
         router.navigate('/(tabs)');
       }
     } catch (error) {
-      console.error('注册请求失败:1111111', error);
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        Toast.fail('账号密码有误', 2);
+      }
+      log.error('注册请求失败:', error);
     }
-    setLoginTriggered(true);
-    setTimeout(() => {
-      setLoginTriggered(false);
-    }, 3000);
+    setLoginTriggered(false);
   };
   const onCheckPrivacy = (e: OnChangeParams) => {
     setPrivacyChecked(e.target.checked);

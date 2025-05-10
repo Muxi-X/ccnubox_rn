@@ -27,7 +27,7 @@ export type ConfigurableThemeNames =
   | 'information_text_style';
 /** 完整 layout 应有配置类型 */
 export type LayoutType = {
-  [key in ThemeName]: Partial<ThemeType>;
+  [_key in ThemeName]: Partial<ThemeType>;
 };
 /** 单个布局配置类型 */
 export type ThemeType = Record<ThemeName, SingleThemeType>;
@@ -43,6 +43,7 @@ export type ColorType = Record<
   | 'blue'
   | 'yellow'
   | 'purple'
+  | 'lightPurple'
   | 'black'
   | 'green'
   | 'gray'

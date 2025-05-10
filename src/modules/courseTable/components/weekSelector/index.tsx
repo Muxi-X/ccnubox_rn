@@ -1,10 +1,12 @@
-import { FC } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { FC, memo } from 'react';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
-import ThemeChangeText from '@/components/text';
+// import ThemeChangeText from '@/components/text';
 import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import { log } from '@/utils/logger';
 
 import { WeekSelectorProps } from '../courseTable/type';
 
@@ -17,7 +19,6 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 
   return (
     <>
-      {/* Week selector floating window */}
       {showWeekPicker && (
         <View
           style={[
@@ -32,7 +33,10 @@ const WeekSelector: FC<WeekSelectorProps> = ({
             {[...Array(20)].map((_, i) => (
               <Pressable
                 key={i}
-                onPress={() => onWeekSelect(i + 1)}
+                onPress={() => {
+                  onWeekSelect(i + 1);
+                  log.info('选择周次', i + 1);
+                }}
                 style={[
                   styles.weekButton,
                   {
@@ -44,19 +48,20 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   },
                 ]}
               >
-                <ThemeChangeText
+                <Text
                   style={[
                     styles.weekButtonText,
                     {
                       color:
                         currentWeek === i + 1
                           ? '#FFFFFF'
-                          : currentStyle?.schedule_text_style?.color,
+                          : currentStyle?.schedule_text_style?.color ||
+                            '#000000',
                     },
                   ]}
                 >
                   {i + 1}
-                </ThemeChangeText>
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -111,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WeekSelector;
+export default memo(WeekSelector);

@@ -1,6 +1,5 @@
 import { memo, useEffect } from 'react';
 import Animated, {
-  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -14,7 +13,7 @@ import { OpacityAnimationProps } from './types';
  * @returns ReactElement
  */
 const AnimatedOpacity = ({
-  duration = 350,
+  duration = 150,
   trigger = true,
   children,
   style,
@@ -29,32 +28,28 @@ const AnimatedOpacity = ({
       sharedOpacity.value = withDelay(
         delay,
         withSpring(toVisible ? 1 : 0, {
-          duration,
+          mass: 0.5,
+          stiffness: 100,
+          damping: 10,
+          restDisplacementThreshold: 0.01,
+          restSpeedThreshold: 0.01,
         })
       );
     }
   }, [sharedOpacity, duration, trigger, toVisible, delay]);
   const opacityStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      sharedOpacity.value,
-      toVisible ? [0, 1] : [1, 0],
-      toVisible ? [0, 1] : [1, 0]
-    );
+    const opacity = sharedOpacity.value;
+    if (
+      ((opacity === 1 && toVisible) || (!opacity && !toVisible)) &&
+      typeof onAnimationEnd === 'function'
+    )
+      runOnJS(onAnimationEnd)();
 
     return {
       // styles
       opacity,
     };
   });
-  useEffect(() => {
-    if (typeof onAnimationEnd === 'function') {
-      try {
-        runOnJS(onAnimationEnd)();
-      } catch (error) {
-        // 忽略动画结束回调中的错误
-      }
-    }
-  }, [onAnimationEnd]);
   return (
     <Animated.View style={[opacityStyle, style]} {...restProps}>
       {children}
