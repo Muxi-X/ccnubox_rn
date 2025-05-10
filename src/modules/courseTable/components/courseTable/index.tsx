@@ -81,10 +81,10 @@ const CourseContent: React.FC<CourseTransferType> = memo(
                 ></ModalContent>
               ),
               mode: 'middle',
-              confirmText: '退出',
-              cancelText: '编辑',
-              onConfirm: () => {},
-              onCancel: () => {},
+              // confirmText: '退出',
+              // cancelText: '编辑',
+              // onConfirm: () => {},
+              // onCancel: () => {},
             });
           }}
         >

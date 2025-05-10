@@ -58,6 +58,10 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
     setVisible(false);
     onClose && onClose();
   };
+  const showButtons = useMemo(() => {
+    return confirmText || onConfirm || (showCancel && (cancelText || onCancel));
+  }, [confirmText, onConfirm, showCancel, cancelText, onCancel]);
+
   const modalContent = useMemo(() => {
     return (
       <>
@@ -88,58 +92,71 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             children
           )}
         </View>
-        <View style={styles.bottomChoice}>
-          {/* showCancel 决定是否显示取消按钮 */}
-          {showCancel && (
-            <TouchableOpacity onPress={handleCancel}>
-              <View
-                style={
-                  !isBottomMode && {
-                    ...styles.cancelViewStyle,
-                    ...styles.buttonStyle,
+        {showButtons && (
+          <View style={styles.bottomChoice}>
+            {/* showCancel 决定是否显示取消按钮 */}
+            {showCancel && (cancelText || onCancel) && (
+              <TouchableOpacity onPress={handleCancel}>
+                <View
+                  style={
+                    !isBottomMode && {
+                      ...styles.cancelViewStyle,
+                      ...styles.buttonStyle,
+                    }
                   }
-                }
-              >
-                <Text
-                  style={[
-                    styles.bottomChoiceText,
-                    !isBottomMode && currentStyle?.text_style,
-                    isBottomMode
-                      ? commonStyles.fontLarge
-                      : commonStyles.fontMedium,
-                  ]}
                 >
-                  {cancelText ?? '取消'}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity onPress={handleConfirm}>
-            <View
-              style={
-                !isBottomMode && {
-                  ...styles.confirmViewStyle,
-                  ...styles.buttonStyle,
-                }
-              }
-            >
-              <Text
-                style={[
-                  styles.bottomChoiceText,
-                  !isBottomMode && currentStyle?.text_style,
-                  isBottomMode
-                    ? commonStyles.fontLarge
-                    : commonStyles.fontMedium,
-                ]}
-              >
-                {confirmText ?? '确认'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+                  <Text
+                    style={[
+                      styles.bottomChoiceText,
+                      !isBottomMode && currentStyle?.text_style,
+                      isBottomMode
+                        ? commonStyles.fontLarge
+                        : commonStyles.fontMedium,
+                    ]}
+                  >
+                    {cancelText ?? '取消'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            {(confirmText || onConfirm) && (
+              <TouchableOpacity onPress={handleConfirm}>
+                <View
+                  style={
+                    !isBottomMode && {
+                      ...styles.confirmViewStyle,
+                      ...styles.buttonStyle,
+                    }
+                  }
+                >
+                  <Text
+                    style={[
+                      styles.bottomChoiceText,
+                      !isBottomMode && currentStyle?.text_style,
+                      isBottomMode
+                        ? commonStyles.fontLarge
+                        : commonStyles.fontMedium,
+                    ]}
+                  >
+                    {confirmText ?? '确认'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </>
     );
-  }, [children, mode]);
+  }, [
+    children,
+    mode,
+    showButtons,
+    showCancel,
+    cancelText,
+    onCancel,
+    confirmText,
+    onConfirm,
+  ]);
   useEffect(() => {
     if (!visible) {
       let timer = setTimeout(() => {
