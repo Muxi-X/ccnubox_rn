@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import TabBar from '@/components/tabbar';
+import TabBar from '@/components/tabs';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -9,21 +9,22 @@ import { ManualAdd } from './components/ManualAdd';
 import { SearchAdd } from './components/SearchAdd';
 
 export default function AddCourse() {
-  const [pattern, setPattern] = React.useState(0);
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
       <TabBar
-        navText={['自主添加', '搜索添加']}
-        pattern={pattern}
-        setPattern={setPattern}
+        tabs={[
+          {
+            title: '自主添加',
+          },
+          {
+            title: '搜索添加',
+          },
+        ]}
       />
-      {pattern === 0 ? (
-        <ManualAdd pageText="course" buttonText="添加课程" />
-      ) : (
-        <SearchAdd />
-      )}
+      <ManualAdd pageText="course" buttonText="添加课程" />
+      <SearchAdd />
     </View>
   );
 }
