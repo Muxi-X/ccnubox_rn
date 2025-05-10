@@ -17,8 +17,8 @@ import Animated, {
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
 
+import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 import Divider from '../divider';
 import Toast from '../toast';

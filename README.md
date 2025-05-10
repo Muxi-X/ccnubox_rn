@@ -140,7 +140,7 @@ export const commonColors: Partial<ColorType> = {
 ```ts
 // default.ts
 import { SubThemeType } from '@/styles/types';
-import { geneStyleSheet } from '@/utils/geneStyleSheet';
+import { geneStyleSheet } from '@/utils';
 
 const defaultCommonStyles: Partial<SubThemeType> = {};
 
