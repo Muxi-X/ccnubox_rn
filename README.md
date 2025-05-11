@@ -340,6 +340,10 @@ export interface ScrollableViewProps {
 
 ```bash
   pnpm run build
+	# 单独触发 Android 平台打包
+	eas build -p android
+	# 单独触发 production 分支打包
+	eas build -e production
 ```
 
 ## update（热更新）
