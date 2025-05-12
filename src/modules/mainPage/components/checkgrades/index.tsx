@@ -17,7 +17,7 @@ const CheckGrades = () => {
     (number | string)[]
   >(COURSE_TYPE_OPTIONS.map(option => option.value));
   const [selectedSemester, setSelectedSemester] = useState<(number | string)[]>(
-    [semesterOptions[0][0].value]
+    semesterOptions.flatMap(option => option.map(item => item.value))
   );
   const SemesterPickerTrigger = (
     <View style={[styles.item, styles.itemBorder]}>

@@ -1,3 +1,4 @@
+import * as Application from 'expo-application';
 import * as Updates from 'expo-updates';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -9,6 +10,7 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 function CheckUpdate(): React.ReactNode {
+  const version = Application.nativeApplicationVersion;
   const [loading, setLoading] = useState(false);
   const { currentStyle } = useVisualScheme(
     ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
@@ -44,7 +46,7 @@ function CheckUpdate(): React.ReactNode {
           style={styles.icon}
         />
         <Text style={styles.appName}>华师匣子</Text>
-        <Text style={styles.version}>版本 2.5.13</Text>
+        <Text style={styles.version}>版本 {version}</Text>
         <Button
           style={[
             currentStyle?.button_style,

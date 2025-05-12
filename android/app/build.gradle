@@ -120,7 +120,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
-        versionName "1.1.0"
+        versionName "3.0.0"
         manifestPlaceholders = [
             JPUSH_APPKEY: "3fdd1ecdd0325fa2a197df7e",
             JPUSH_CHANNEL: "course_box"

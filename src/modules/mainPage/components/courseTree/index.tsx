@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -87,14 +88,16 @@ const CourseTree = () => {
 
     return (
       <View key={index}>
-        <View style={[styles.node, currentStyle?.background_style]}>
+        <TouchableOpacity
+          style={[styles.node, currentStyle?.background_style]}
+          onPress={() => handlePanelChange(item.title)}
+        >
           <View style={styles.nodeLeft}>
             {hasChildren && (
               <Icon
                 name={isActive ? 'caret-down' : 'caret-right'}
                 size={27}
                 color="#9379F6"
-                onPress={() => handlePanelChange(item.title)}
               />
             )}
             <Text
@@ -118,7 +121,7 @@ const CourseTree = () => {
               {item.credits} 学分
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
         {/* 子项渲染 */}
         {isActive && item.children && item.children.length > 0 && (
           <View style={styles.subNode}>

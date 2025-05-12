@@ -50,6 +50,7 @@ const CourseContent: React.FC<CourseTransferType> = memo(
       class_when,
       date,
     } = props;
+
     const CourseItem = useThemeBasedComponents(
       state => state.currentComponents?.course_item
     );

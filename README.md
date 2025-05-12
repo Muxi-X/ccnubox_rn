@@ -336,6 +336,12 @@ export interface ScrollableViewProps {
 
 # 常用指令
 
+## env
+
+```bash
+eas env:pull # 运行后可以选择 development 或 production 环境
+```
+
 ## build（打包->注入极光推送sdk->部署到expo）
 
 ```bash
@@ -356,6 +362,12 @@ eas update --branch production --message "wdigets test_1"
 
 ```bash
 npx openapi-typescript src/request/openapi.yaml -o src/request/schema.d.ts
+```
+
+## 修改资源文件
+
+```bash
+pnpm exec expo prebuild # 生成资源文件供原生 app 打包
 ```
 
 # 更新须知

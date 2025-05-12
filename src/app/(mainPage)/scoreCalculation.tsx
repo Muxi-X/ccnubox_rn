@@ -157,8 +157,12 @@ const ScoreCalculation: React.FC = () => {
             <Text style={styles.resultTitle}>计算结果</Text>
           </View>
           <View style={styles.resultContent}>
-            <Text style={styles.resultScore}>{averageScore}</Text>
-            <Text style={styles.resultLabel}>平时学分绩</Text>
+            <Text style={[styles.resultScore, currentStyle?.text_style]}>
+              {averageScore}
+            </Text>
+            <Text style={[styles.resultLabel, currentStyle?.text_style]}>
+              平时学分绩
+            </Text>
           </View>
         </View>
       ),
