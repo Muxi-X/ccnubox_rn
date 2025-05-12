@@ -85,7 +85,15 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
         )}
         <View style={styles.modalChildren}>
           {typeof children === 'string' ? (
-            <Text style={[currentStyle?.text_style, commonStyles.fontMedium]}>
+            <Text
+              style={[
+                currentStyle?.text_style,
+                commonStyles.fontMedium,
+                {
+                  paddingVertical: 15,
+                },
+              ]}
+            >
               {children}
             </Text>
           ) : (

@@ -95,7 +95,6 @@ export const ScheduleHeaderRight: React.FC = () => {
     >
       <TouchableOpacity
         style={[
-          useVisualScheme.getState().currentStyle?.header_text_style,
           {
             // paddingLeft: 50,
             paddingRight: 50,

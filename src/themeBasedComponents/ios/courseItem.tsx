@@ -31,7 +31,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           },
         ]}
       >
-        <Text style={styles.cellText} ellipsizeMode="tail" numberOfLines={4}>{courseName}</Text>
+        <Text style={styles.cellText} ellipsizeMode="tail" numberOfLines={3}>{courseName}</Text>
       </View>
       <View
         style={[
