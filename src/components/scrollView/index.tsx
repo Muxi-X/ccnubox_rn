@@ -396,7 +396,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           ]}
         >
           <LottieView
-            source={require('@/animation/renovate.json')}
+            source={require('@/assets/animation/renovate.json')}
             style={[styles.lottieAnimation]}
             loop={true}
             ref={animationRef}
