@@ -33,16 +33,19 @@ const CheckGrades = () => {
             color: currentStyle?.text_style?.color,
           }}
         >
-          选择学期
+          选择学期（已选{selectedSemester.length}个）
         </Text>
-        <Text style={{ color: '#969696', fontSize: 12, width: 260 }}>
+        <Text
+          style={{ color: '#969696', fontSize: 12, width: 260 }}
+          numberOfLines={2}
+        >
           {selectedSemester
             .map(
               semester =>
                 semesterOptions[0].find(option => option.value === semester)
                   ?.label
             )
-            .join(',')}
+            .join('，')}
         </Text>
       </View>
     </View>
@@ -67,7 +70,7 @@ const CheckGrades = () => {
           选择课程种类
         </Text>
         <Text style={{ color: '#969696', fontSize: 12, width: 260 }}>
-          {selectedCourseType.join(',')}
+          {selectedCourseType.join('，')}
         </Text>
       </View>
     </View>
