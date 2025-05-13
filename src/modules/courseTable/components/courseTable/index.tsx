@@ -658,7 +658,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     borderRadius: 12,
-    backgroundColor: '#fff',
+    overflow: 'hidden',
   },
   modalHeader: {
     flexDirection: 'row',

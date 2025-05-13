@@ -8,6 +8,8 @@ import useVisualScheme from '@/store/visualScheme';
 import { mainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils';
 
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
+
 export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
@@ -29,6 +31,10 @@ export default function Layout() {
       >
         {mainPageApplications
           .filter(app => app.href)
+          .concat({
+            title: '常用网站',
+            name: 'webview',
+          } as MainPageGridDataType)
           .map(config => (
             <Stack.Screen
               key={keyGenerator.next().value as unknown as number}

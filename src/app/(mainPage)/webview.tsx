@@ -1,0 +1,61 @@
+import { ActivityIndicator } from '@ant-design/react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { getItem } from 'expo-secure-store';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import WebView from 'react-native-webview';
+
+import { ossLoginAndNavigate } from '@/constants/scraper';
+import { commonColors } from '@/styles/common';
+
+export default function ClassRoom() {
+  const [loading, setLoading] = useState(true);
+  const { link } = useLocalSearchParams();
+  let student_id = '';
+  let password = '';
+  const userInfo = getItem('userInfo');
+  if (userInfo) {
+    student_id = JSON.parse(userInfo as string)?.student_id;
+    password = JSON.parse(userInfo as string)?.password;
+  }
+  const login = ossLoginAndNavigate(student_id, password);
+
+  return (
+    <>
+      <WebView
+        javaScriptEnabled
+        injectedJavaScript={login}
+        injectedJavaScriptForMainFrameOnly={false}
+        style={styles.container}
+        onMessage={event => {
+          if (event.nativeEvent.data === '_pageLoaded') {
+            setLoading(false);
+          }
+        }}
+        source={{ uri: atob(link as string) }}
+      />
+      {loading && (
+        <View style={styles.loadingView}>
+          <ActivityIndicator color={commonColors.purple} size="large" />
+        </View>
+      )}
+    </>
+  );
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  loadingView: {
+    position: 'absolute',
+    zIndex: 2,
+    display: 'flex',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+});

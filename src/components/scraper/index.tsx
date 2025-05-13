@@ -23,10 +23,6 @@ import { scrapeLogin } from '@/constants/scraper';
  */
 const Scraper = forwardRef<WebView | null, ScraperProps>(
   ({ onMessage }, ref) => {
-    // const userInfo = getItem('userInfo');
-    // const { student_id, password } = JSON.parse(userInfo as string);
-    // const secretUserName = '2023122691';
-    // const secretPassword = 'zhao1638678192%';
     let student_id = '';
     let password = '';
     const userInfo = getItem('userInfo');
@@ -37,7 +33,6 @@ const Scraper = forwardRef<WebView | null, ScraperProps>(
       student_id = '2023122691';
       password = 'zhao1638678192%';
     }
-    // const { student_id, password } = JSON.parse(userInfo as string);
 
     const runFirst = scrapeLogin(student_id, password);
     return (
