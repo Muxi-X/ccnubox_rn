@@ -157,7 +157,7 @@ export const mainPageApplications: MainPageGridDataType[] = [
         android: AndroidSiteSvg,
       }) || AndroidSiteSvg,
     key: 'grid-12',
-    href: '/site' as Href,
+    href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=http://kjyy.ccnu.edu.cn/loginall.aspx?page=&pageId=1053906&wfwfid=1740&websiteId=548973')}` as Href,
   },
   {
     title: '更多',
