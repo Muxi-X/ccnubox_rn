@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import {
+  BackHandler,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -53,6 +54,17 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   }));
   useEffect(() => {
     setVisible(initVisible);
+    const backAction = () => {
+      setVisible(false);
+      return true; // 阻止默认返回行为
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
   }, [initVisible]);
   const handleClose = () => {
     setVisible(false);
@@ -228,8 +240,6 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
  */
 Modal.show = props => {
   const { appendChildren } = usePortalStore.getState();
-  console.log('trihggerd');
-
   return appendChildren(<Modal {...props}></Modal>, 'modal');
 };
 /**
