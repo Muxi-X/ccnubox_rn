@@ -170,7 +170,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
       let timer = setTimeout(() => {
         currentKey !== undefined && deleteChildren(currentKey);
         clearTimeout(timer);
-      }, 500);
+      }, 200);
     }
   }, [visible, currentKey]);
   return (
@@ -228,6 +228,8 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
  */
 Modal.show = props => {
   const { appendChildren } = usePortalStore.getState();
+  console.log('trihggerd');
+
   return appendChildren(<Modal {...props}></Modal>, 'modal');
 };
 /**
