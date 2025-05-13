@@ -1,4 +1,4 @@
-import { Redirect, SplashScreen } from 'expo-router';
+import { Href, Redirect, SplashScreen } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
 
@@ -50,6 +50,6 @@ const Index = () => {
     return null;
   }
 
-  return <Redirect href="/(tabs)"></Redirect>;
+  return <Redirect href={initialRoute as Href}></Redirect>;
 };
 export default Index;

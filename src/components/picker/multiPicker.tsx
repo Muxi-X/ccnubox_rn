@@ -1,9 +1,11 @@
 import { Checkbox, List, ListProps } from '@ant-design/react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
 import { DatePickerProps, PickerDataType } from '@/components/picker/types';
+
+import useVisualScheme from '@/store/visualScheme';
 
 const CheckboxItem = Checkbox.CheckboxItem;
 
@@ -123,6 +125,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   pickedItems,
   ...props
 }) => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const plainOptions = data[0];
   const [checkedList, setCheckedList] = React.useState(
     pickedItems ?? new Set([])
@@ -169,25 +172,51 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
           indeterminate={indeterminate}
           onChange={onCheckAllChange}
           checked={checkAll}
-          styles={{ Item: { backgroundColor: 'rgba(0,0,0,0)' } }}
+          styles={{
+            Item: {
+              borderRadius: 5,
+              margin: 2,
+              backgroundColor: 'rgba(0,0,0,0)',
+            },
+            Line: {
+              borderWidth: 0,
+            },
+          }}
         >
-          全选
+          <Text
+            style={{
+              color: currentStyle?.text_style?.color,
+              fontSize: 14,
+            }}
+          >
+            全选
+          </Text>
         </CheckboxItem>
         <>
           {plainOptions.map(a => (
             <CheckboxItem
               key={a.value}
+              onChange={onChange.bind(this, a.value)}
+              checked={checkedList.has(a.value)}
               styles={{
                 Item: {
                   borderRadius: 5,
                   margin: 2,
                   backgroundColor: 'rgba(0,0,0,0)',
                 },
+                Line: {
+                  borderWidth: 0,
+                },
               }}
-              onChange={onChange.bind(this, a.value)}
-              checked={checkedList.has(a.value)}
             >
-              {a.label}
+              <Text
+                style={{
+                  color: currentStyle?.text_style?.color,
+                  fontSize: 14,
+                }}
+              >
+                {a.label}
+              </Text>
             </CheckboxItem>
           ))}
         </>
