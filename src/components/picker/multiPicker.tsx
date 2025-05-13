@@ -167,7 +167,18 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       automaticallyAdjustContentInsets={false}
       showsHorizontalScrollIndicator={false}
     >
-      <List {...props}>
+      <List
+        {...props}
+        styles={{
+          Body: {
+            borderColor: '#e0e0e0',
+            borderTopWidth: 2,
+          },
+          BodyBottomLine: {
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+          },
+        }}
+      >
         <CheckboxItem
           indeterminate={indeterminate}
           onChange={onCheckAllChange}
@@ -179,7 +190,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
               backgroundColor: 'rgba(0,0,0,0)',
             },
             Line: {
-              borderWidth: 0,
+              borderColor: 'rgba(0, 0, 0, 0)',
             },
           }}
         >
@@ -205,7 +216,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
                   backgroundColor: 'rgba(0,0,0,0)',
                 },
                 Line: {
-                  borderWidth: 0,
+                  borderColor: 'rgba(0, 0, 0, 0)',
                 },
               }}
             >
