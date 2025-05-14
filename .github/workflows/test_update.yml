@@ -3,6 +3,8 @@ description: Release ota updates on updateInfo.json change
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'src/assets/data/updateInfo.json'
 
