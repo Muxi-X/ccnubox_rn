@@ -5,6 +5,7 @@ import * as React from 'react';
 import useCourse from '@/store/course';
 
 import { setupMockServer } from '@/mock/server';
+import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 
 // 由于 expo 没有 initialRoutes
 // 重定向到 tabs
@@ -24,6 +25,8 @@ const Index = () => {
 
       const token = getItem('longToken');
 
+      // 设置全局错误处理器
+      setupGlobalErrorHandler();
       // 等待 AsyncStorage 加载
       if (hydrated) await SplashScreen.hideAsync();
 

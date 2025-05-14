@@ -21,6 +21,7 @@ export default function TabLayout() {
           key={keyGenerator.next().value as unknown as number}
           options={{
             title: title,
+            lazy: false,
             headerTitle:
               headerTitle ??
               (() => (
