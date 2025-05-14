@@ -2481,7 +2481,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/metrics/:eventName': {
+  '/metrics/:type/:name': {
     parameters: {
       query?: never;
       header?: never;
@@ -2492,7 +2492,7 @@ export interface paths {
     put?: never;
     /**
      * 用于打点的路由
-     * @description 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/kstack)表示跳转访问课栈,使用这一路由必须携带Auth请求头
+     * @description 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/banner/xxx)表示跳转banner的xxx页面,使用这一路由必须携带Auth请求头
      */
     post: {
       parameters: {
@@ -2501,7 +2501,12 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: never;
+      /** @description 打点附带的信息,将会计入日志 */
+      requestBody: {
+        content: {
+          '*/*': components['schemas']['metrics.MetricsReq'];
+        };
+      };
       responses: {
         /** @description 成功 */
         200: {
@@ -3340,6 +3345,12 @@ export interface components {
       image: string;
       link: string;
       name: string;
+    };
+    'metrics.MetricsReq': {
+      /** @description 错误等级,分为info,error,warn,debug四个等级 */
+      level?: string;
+      /** @description 错误信息 */
+      msg?: string;
     };
     'static.GetStaticByLabelsResp': {
       statics?: components['schemas']['static.StaticVo'][];
