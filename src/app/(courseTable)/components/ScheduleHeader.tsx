@@ -85,6 +85,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
 };
 
 export const ScheduleHeaderRight: React.FC = () => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <View
       style={{
@@ -97,14 +98,14 @@ export const ScheduleHeaderRight: React.FC = () => {
         style={[
           {
             // paddingLeft: 50,
-            paddingRight: 50,
+            paddingRight: 20,
           },
         ]}
         onPress={() => {
           globalEventBus.emit('SaveImageShot');
         }}
       >
-        <ScreenShotIcon />
+        <ScreenShotIcon color={currentStyle?.text_style?.color} />
       </TouchableOpacity>
       {/* <MaterialIcons
         name="delete-sweep"

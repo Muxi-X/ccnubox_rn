@@ -41,6 +41,9 @@
       "channel": "production",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "image": "macos-sequoia-15.3-xcode-16.2"
       }
     }
   },
