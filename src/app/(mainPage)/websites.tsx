@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -13,7 +14,6 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
-import handleOpenURL from '@/utils/handleOpenURL';
 
 interface PopularWebsite {
   description: string;
@@ -27,11 +27,12 @@ type ItemProps = { title: string; _url: string; link: string };
 
 const WebsiteItem = ({ title, _url, link }: ItemProps) => {
   const currentVisualScheme = useVisualScheme(state => state.currentStyle);
+  const router = useRouter();
 
   return (
     <Pressable
       style={styles.item}
-      onPress={() => handleOpenURL(link, '网站应用')}
+      onPress={() => router.navigate(`/(mainPage)/webview?link=${btoa(link)}`)}
     >
       <Image source={{ uri: _url }} style={styles.image} />
       <Text style={[styles.title, currentVisualScheme?.text_style]}>

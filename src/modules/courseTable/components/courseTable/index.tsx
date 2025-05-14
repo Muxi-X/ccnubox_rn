@@ -32,8 +32,8 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -50,6 +50,7 @@ const CourseContent: React.FC<CourseTransferType> = memo(
       class_when,
       date,
     } = props;
+
     const CourseItem = useThemeBasedComponents(
       state => state.currentComponents?.course_item
     );
@@ -81,10 +82,10 @@ const CourseContent: React.FC<CourseTransferType> = memo(
                 ></ModalContent>
               ),
               mode: 'middle',
-              confirmText: '退出',
-              cancelText: '编辑',
-              onConfirm: () => {},
-              onCancel: () => {},
+              // confirmText: '退出',
+              // cancelText: '编辑',
+              // onConfirm: () => {},
+              // onCancel: () => {},
             });
           }}
         >
@@ -657,7 +658,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     borderRadius: 12,
-    backgroundColor: '#fff',
+    overflow: 'hidden',
   },
   modalHeader: {
     flexDirection: 'row',

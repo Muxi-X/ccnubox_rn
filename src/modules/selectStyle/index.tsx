@@ -73,7 +73,7 @@ export default function SelectStyle() {
           style={[
             currentStyle?.text_style,
             {
-              fontSize: 16,
+              fontSize: 18,
               paddingLeft: 40,
             },
           ]}
