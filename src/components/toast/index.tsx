@@ -21,6 +21,7 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   text,
   duration = 2000,
 }) => {
+  const currentVisualScheme = useVisualScheme(state => state.currentStyle);
   const [visible, setVisible] = useState<boolean>(initVisible);
   const deleteChildren = usePortalStore(state => state.deleteChildren);
   const handleClose = () => {
@@ -53,7 +54,10 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
             duration={DURATION}
             outputRange={[0.2, 1]}
             trigger={visible}
-            style={styles.toastContent}
+            style={[
+              styles.toastContent,
+              currentVisualScheme?.modal_background_style,
+            ]}
           >
             {icon && (
               <Image
