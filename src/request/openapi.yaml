@@ -1519,13 +1519,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-  /metrics/:eventName:
+  /metrics/:type/:name:
     post:
       tags:
       - metrics
       summary: 用于打点的路由
-      description: "用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/kstack)表示\
-        跳转访问课栈,使用这一路由必须携带Auth请求头"
+      description: "用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/banner/xxx)表\
+        示跳转banner的xxx页面,使用这一路由必须携带Auth请求头"
+      requestBody:
+        description: "打点附带的信息,将会计入日志"
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/metrics.MetricsReq'
+        required: true
       responses:
         "200":
           description: 成功
@@ -1533,6 +1540,7 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/web.Response'
+      x-codegen-request-body-name: data
   /statics:
     get:
       tags:
@@ -2625,6 +2633,15 @@ components:
           type: string
         name:
           type: string
+    metrics.MetricsReq:
+      type: object
+      properties:
+        level:
+          type: string
+          description: "错误等级,分为info,error,warn,debug四个等级"
+        msg:
+          type: string
+          description: 错误信息
     static.GetStaticByLabelsResp:
       type: object
       properties:
