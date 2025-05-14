@@ -12,7 +12,7 @@ export enum semesterMap {
 export const scrapeLogin = (username = '', password = '') => {
   return `
         (() => {
-          if (location.href.includes('login')) {
+          if (location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
             const usernameInput = document.getElementById('yhm')
             const passwordInput = document.getElementById('mm')
             const hidePasswordInput = document.getElementById('hidMm')
@@ -93,3 +93,28 @@ export const scrapeCourse = (year: number, semester: semesterMap) => {
     true;
     `;
 };
+
+export const ossLoginAndNavigate = (username: string, password: string) => `
+(() => {
+  if(location.href.includes('kickout')) {
+    alert('您的账号在别处登录, 正在重新登录中...')
+    window.location.href = 'https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fsso%2Fpziotlogin';
+  }
+  // 研究生登录
+  if(location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
+    ${scrapeLogin()}
+  }
+  if (location.href.includes('cas/login')) {
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    if(!usernameInput || !passwordInput) {
+      return;
+    }
+    const loginButton = document.getElementsByClassName('btn-submit')[0];
+    usernameInput.value = '${username}';
+    passwordInput.value = '${password}';
+    loginButton.click();
+  }
+  window.ReactNativeWebView.postMessage('_pageLoaded')
+})();
+true;`;

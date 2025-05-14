@@ -1,5 +1,5 @@
 import LottieView from 'lottie-react-native';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
@@ -17,8 +17,8 @@ import Animated, {
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
 
+import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 import Divider from '../divider';
 import Toast from '../toast';
@@ -95,6 +95,9 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         globalEventBus.off('ResetScrollPosition', resetScrollPosition);
       };
     }, []);
+    const lottieProgress = () => {
+      animationRef.current?.play(90, 110);
+    };
 
     // 监听边界事件
     const onReachTopEnd = () => {
@@ -104,10 +107,10 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         backHeight.value = withTiming(0, {
           duration: REFRESH_BACK_ANIMATION_TIME,
         });
+        // 在动画完成后重置状态
+        refreshTextState.value = 'pull';
         // 使用 setTimeout 来延迟动画开始时间
         setTimeout(() => {
-          // 在动画完成后重置状态
-          refreshTextState.value = 'pull';
           isRefreshing.value = false;
           isAtTop.value = false;
         }, REFRESH_BACK_ANIMATION_TIME); // 减少延迟时间
@@ -213,6 +216,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 设置正在刷新状态，禁用滚动
         isRefreshing.value = true;
         isTriggered.value = true;
+        runOnJS(lottieProgress)();
         // 使用 runOnJS 在 JS 线程上调用回调，避免阻塞 UI 线程
         runOnJS(onReachTopEnd)();
       } else if (backHeight.value > 0) {
@@ -301,15 +305,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
 
         handleRefreshComplete(event);
       });
-
-    // Create animated styles for various components
-
-    // Animated style for corner top position
-    const cornerTopStyle = useAnimatedStyle(() => {
-      return {
-        top: backHeight.value,
-      };
-    }, []);
     const animatedStyle = useAnimatedStyle(() => {
       return {
         transform: [
@@ -351,6 +346,10 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       transform: [{ translateY: translateY.value }],
       zIndex: 9, // Ensure it stays on top but below the corner
     }));
+    // For the sticky left, we only want vertical scrolling, not horizontal
+    const refreshHeight = useAnimatedStyle(() => ({
+      transform: [{ translateY: backHeight.value }],
+    }));
     const handleChildLayout = (event: LayoutChangeEvent) => {
       const { layout } = event.nativeEvent;
       setContainerSize(layout);
@@ -370,26 +369,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         opacity: interpolate(backHeight.value, [0, REFRESH_THRESHOLD], [0, 1]),
       };
     }, []);
-    useEffect(() => {
-      if (isRefreshing.value) {
-        animationRef.current?.play(90, 110);
-      } else {
-        animationRef.current?.reset();
-        animationRef.current?.play(0, 110);
-        animationRef.current?.pause();
-      }
-    }, [isRefreshing.value]);
-    const icon = useMemo(
-      () => (
-        <LottieView
-          source={require('@/animation/renovate.json')}
-          style={[styles.lottieAnimation]}
-          loop={isRefreshing.value}
-          ref={animationRef}
-        />
-      ),
-      [isRefreshing.value, animationRef, backHeight.value]
-    );
 
     return (
       <View
@@ -403,89 +382,98 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
           style={[
             {
               width: '100%',
-              zIndex: 21,
-              height: backHeight,
+              zIndex: -1,
+              height: REFRESH_THRESHOLD,
               opacity: 1,
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: commonColors.lightPurple,
               overflow: 'hidden',
               alignItems: 'center',
+              position: 'absolute',
+              elevation: 5,
             },
           ]}
         >
-          {icon}
+          <LottieView
+            source={require('@/assets/animation/renovate.json')}
+            style={[styles.lottieAnimation]}
+            loop={true}
+            ref={animationRef}
+          />
           <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
             {refreshTextMap[refreshTextState.value]}
           </Animated.Text>
         </Animated.View>
-        {/* sticky top */}
-        <Animated.View
-          style={[
-            styles.stickyTop,
-            { width: containerSize.width },
-            stickyTopMarginStyle,
-            animatedOnlyX,
-          ]}
-          onLayout={layout => {
-            cornerHeight.value = layout.nativeEvent.layout.height;
-          }}
-        >
-          {stickyTop}
-        </Animated.View>
-        {/* corner */}
-        <Animated.View
-          style={[
-            cornerStyle,
-            defaultCornerStyle,
-            cornerTopStyle,
-            {
-              position: 'absolute',
-              left: 0,
-              backgroundColor: commonColors.gray,
-              zIndex: 20,
-              ...cornerStyle,
-            },
-          ]}
-        ></Animated.View>
-        <Animated.View
-          style={{
-            flexDirection: 'column',
-            flex: 1,
-          }}
-        >
-          {/* stickyLeft */}
+        <Animated.View style={[refreshHeight, { flex: 1 }]}>
+          {/* sticky top */}
           <Animated.View
-            onLayout={layout => {
-              cornerWidth.value = layout.nativeEvent.layout.width;
-            }}
             style={[
-              styles.stickyLeft,
-              { height: containerSize.height },
-              animatedOnlyY,
+              styles.stickyTop,
+              { width: containerSize.width },
+              stickyTopMarginStyle,
+              animatedOnlyX,
             ]}
-          >
-            {stickyLeft}
-          </Animated.View>
-          <Animated.View
-            style={[styles.wrapper, contentMarginStyle]}
-            onLayout={event => {
-              const { layout } = event.nativeEvent;
-              setWrapperSize(layout);
+            onLayout={layout => {
+              cornerHeight.value = layout.nativeEvent.layout.height;
             }}
           >
-            <GestureDetector gesture={panGesture}>
-              <Animated.View style={[animatedStyle]}>
-                {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
-                {children &&
-                  React.cloneElement(children, { onLayout: handleChildLayout })}
-              </Animated.View>
-            </GestureDetector>
+            {stickyTop}
           </Animated.View>
-          {/* sticky bottom */}
-          <View style={{ width: '100%', height: 60 }}>
-            <Divider>别闹, 学霸也是要睡觉的</Divider>
-          </View>
+          {/* corner */}
+          <Animated.View
+            style={[
+              defaultCornerStyle,
+              {
+                position: 'absolute',
+                left: 0,
+                backgroundColor: commonColors.gray,
+                zIndex: 20,
+                ...cornerStyle,
+              },
+            ]}
+          ></Animated.View>
+          <Animated.View
+            style={{
+              flexDirection: 'column',
+              flex: 1,
+            }}
+          >
+            {/* stickyLeft */}
+            <Animated.View
+              onLayout={layout => {
+                cornerWidth.value = layout.nativeEvent.layout.width;
+              }}
+              style={[
+                styles.stickyLeft,
+                { height: containerSize.height },
+                animatedOnlyY,
+              ]}
+            >
+              {stickyLeft}
+            </Animated.View>
+            <Animated.View
+              style={[styles.wrapper, contentMarginStyle]}
+              onLayout={event => {
+                const { layout } = event.nativeEvent;
+                setWrapperSize(layout);
+              }}
+            >
+              <GestureDetector gesture={panGesture}>
+                <Animated.View style={[animatedStyle]}>
+                  {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
+                  {children &&
+                    React.cloneElement(children, {
+                      onLayout: handleChildLayout,
+                    })}
+                </Animated.View>
+              </GestureDetector>
+            </Animated.View>
+            {/* sticky bottom */}
+            <View style={{ width: '100%', height: 60 }}>
+              <Divider>别闹, 学霸也是要睡觉的</Divider>
+            </View>
+          </Animated.View>
         </Animated.View>
       </View>
     );

@@ -1,3 +1,4 @@
+import * as Application from 'expo-application';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -5,10 +6,11 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { handleCopy } from '@/utils';
+import handleCopy from '@/utils/handleCopy';
 
 function About() {
-  const number = '576225292';
+  const number = '791185783';
+  const version = Application.nativeApplicationVersion;
   const { currentStyle } = useVisualScheme();
 
   return (
@@ -23,7 +25,7 @@ function About() {
         />
         <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
         <Text style={[styles.version, currentStyle?.text_style]}>
-          版本 2.5.14
+          版本 {version}
         </Text>
       </View>
       <View style={[styles.groupContainer, currentStyle?.background_style]}>
@@ -38,7 +40,7 @@ function About() {
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.groupRow}>
+        {/* <View style={styles.groupRow}>
           <Text style={[styles.groupText, currentStyle?.text_style]}>
             木犀招新群：
           </Text>
@@ -48,7 +50,7 @@ function About() {
           <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>进入华师匣子官网</Text>

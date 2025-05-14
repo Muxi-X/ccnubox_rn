@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import React, { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -31,6 +33,26 @@ const IndexPage: FC = () => {
     useState<MainPageGridDataType[]>(mainPageApplications);
 
   useEffect(() => {
+    const loadSavedOrder = async () => {
+      try {
+        const savedOrder = await AsyncStorage.getItem('@draggable_grid_order');
+        if (savedOrder) {
+          const order = JSON.parse(savedOrder);
+          // Reconstruct full data while preserving original items
+          const newData = order
+            .map(
+              ({ key }: { key: string }) =>
+                mainPageApplications.find(item => item.key === key) || { key }
+            )
+            .filter((item: MainPageGridDataType) => item.key); // Filter out invalid items
+          setData(newData.length ? newData : mainPageApplications);
+        }
+      } catch (e) {
+        console.error('Failed to load grid order', e);
+      }
+    };
+    loadSavedOrder();
+
     queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(
@@ -42,6 +64,14 @@ const IndexPage: FC = () => {
       );
     });
   }, []);
+  const onDragRelease = async (data: any[]) => {
+    setData(data);
+    try {
+      await AsyncStorage.setItem('@draggable_grid_order', JSON.stringify(data));
+    } catch (e) {
+      console.error('Failed to save grid order', e);
+    }
+  };
 
   const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
     if (typeof imageUrl === 'function') {
@@ -110,9 +140,10 @@ const IndexPage: FC = () => {
           }
         }}
         numColumns={3}
+        onDragItemActive={() => Haptics.selectionAsync()}
         renderItem={render}
         data={data}
-        onDragRelease={setData}
+        onDragRelease={onDragRelease}
       ></DraggableGrid>
     </ThemeChangeView>
   );
