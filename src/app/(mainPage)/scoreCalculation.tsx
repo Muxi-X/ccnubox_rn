@@ -84,7 +84,9 @@ const ScoreCalculation: React.FC = () => {
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{course.title}</Text>
+            <Text style={[styles.modalTitle, currentStyle?.text_style]}>
+              {course.title}
+            </Text>
             {/* <Image
               style={styles.modalLogo}
               source={require('../../assets/images/mx-logo.png')}
