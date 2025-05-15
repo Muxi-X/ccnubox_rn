@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 
 import { ModalTriggerProps } from '@/components/modal/types';
 
-type PickerDataType = { value: string | number; label: string }[][];
+export type PickerDataType = { value: string | number; label: string }[][];
 export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
   /** 数据，必须有 label 和 value */
   data?: PickerDataType;

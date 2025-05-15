@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeImageFromView } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
@@ -17,6 +16,7 @@ import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
+import useCourse from '@/store/course';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
@@ -32,8 +32,8 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
-import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -50,6 +50,7 @@ const CourseContent: React.FC<CourseTransferType> = memo(
       class_when,
       date,
     } = props;
+
     const CourseItem = useThemeBasedComponents(
       state => state.currentComponents?.course_item
     );
@@ -81,10 +82,10 @@ const CourseContent: React.FC<CourseTransferType> = memo(
                 ></ModalContent>
               ),
               mode: 'middle',
-              confirmText: '退出',
-              cancelText: '编辑',
-              onConfirm: () => {},
-              onCancel: () => {},
+              // confirmText: '退出',
+              // cancelText: '编辑',
+              // onConfirm: () => {},
+              // onCancel: () => {},
             });
           }}
         >
@@ -102,6 +103,7 @@ const Timetable: React.FC<CourseTableProps> = ({
 }) => {
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
+  const [snapshot, setSnapShot] = useState(false);
   const { currentStyle, themeName } = useVisualScheme(
     ({ currentStyle, themeName }) => ({ currentStyle, themeName })
   );
@@ -123,6 +125,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           return;
         }
       }
+      setSnapShot(true);
       // 确保截图前视图已完全渲染
       setTimeout(async () => {
         try {
@@ -131,7 +134,6 @@ const Timetable: React.FC<CourseTableProps> = ({
 
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
-
           // 使用完整课表内容的引用而不是滚动视图
           const snapshot = await makeImageFromView(fullTableRef);
           if (!snapshot) {
@@ -139,6 +141,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               text: '截图失败',
               icon: 'fail',
             });
+            setSnapShot(false);
             return;
           }
 
@@ -162,14 +165,17 @@ const Timetable: React.FC<CourseTableProps> = ({
               text: '截图成功',
               icon: 'success',
             });
+            setSnapShot(false);
           }
         } catch (error) {
           Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+          setSnapShot(false);
           return;
         }
       }, 500); // 给予足够的时间让视图完全渲染
     } catch (e) {
       Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
+      setSnapShot(false);
     }
   };
 
@@ -340,8 +346,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         {/* 用于截图的完整课表内容 */}
-        {fullTableContent}
-
+        {snapshot && fullTableContent}
         <ScrollableView
           // 上方导航栏
           stickyTop={<StickyTop />}
@@ -465,21 +470,21 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { currentWeek } = useTimeStore();
+  const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
   useEffect(() => {
     const calculateDates = async () => {
       try {
-        // 从缓存中获取开学时间
-        const schoolTime = await AsyncStorage.getItem('school_time');
-        if (!schoolTime) return;
+        if (!schoolTime) {
+          return;
+        }
 
         // 计算开学日期
-        const startTimestamp = Number(schoolTime) * 1000;
+        const startTimestamp = schoolTime * 1000;
         const startDate = new Date(startTimestamp);
 
         // 计算当前周的第一天（周一）
-        // 开学日期是第1周的第1天，所以需要计算当前周的第1天
         const daysToAdd = (currentWeek - 1) * 7;
         const currentWeekStartDate = new Date(startDate);
         currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
@@ -489,11 +494,10 @@ export const StickyTop: React.FC = memo(function StickyTop() {
         for (let i = 0; i < 7; i++) {
           const date = new Date(currentWeekStartDate);
           date.setDate(currentWeekStartDate.getDate() + i);
-          const month = date.getMonth() + 1; // 月份从0开始
+          const month = date.getMonth() + 1;
           const day = date.getDate();
           weekDates.push(`${month}/${day}`);
         }
-
         setDates(weekDates);
       } catch (error) {
         throw new Error('计算日期失败');
@@ -501,7 +505,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     };
 
     calculateDates();
-  }, [currentWeek]);
+  }, [currentWeek, schoolTime]);
 
   return (
     <View style={styles.header}>
@@ -567,7 +571,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
-    paddingBottom: 40,
+    paddingBottom: 20,
   },
   courseWrapperStyle: {
     position: 'relative',
@@ -654,7 +658,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     borderRadius: 12,
-    backgroundColor: '#fff',
+    overflow: 'hidden',
   },
   modalHeader: {
     flexDirection: 'row',

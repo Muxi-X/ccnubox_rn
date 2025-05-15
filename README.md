@@ -140,7 +140,7 @@ export const commonColors: Partial<ColorType> = {
 ```ts
 // default.ts
 import { SubThemeType } from '@/styles/types';
-import { geneStyleSheet } from '@/utils/geneStyleSheet';
+import { geneStyleSheet } from '@/utils';
 
 const defaultCommonStyles: Partial<SubThemeType> = {};
 
@@ -336,10 +336,20 @@ export interface ScrollableViewProps {
 
 # 常用指令
 
+## env
+
+```bash
+eas env:pull # 运行后可以选择 development 或 production 环境
+```
+
 ## build（打包->注入极光推送sdk->部署到expo）
 
 ```bash
   pnpm run build
+	# 单独触发 Android 平台打包
+	eas build -p android
+	# 单独触发 production 分支打包
+	eas build -e production
 ```
 
 ## update（热更新）
@@ -352,6 +362,12 @@ eas update --branch production --message "wdigets test_1"
 
 ```bash
 npx openapi-typescript src/request/openapi.yaml -o src/request/schema.d.ts
+```
+
+## 修改资源文件
+
+```bash
+pnpm exec expo prebuild # 生成资源文件供原生 app 打包
 ```
 
 # 更新须知

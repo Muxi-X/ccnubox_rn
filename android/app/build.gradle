@@ -83,6 +83,11 @@ react {
         /* Autolinking */
         autolinkLibrariesWithApp()
     }
+    //
+    // Added by install-expo-modules
+    entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", rootDir.getAbsoluteFile().getParentFile().getAbsolutePath(), "android", "absolute"].execute(null, rootDir).text.trim())
+    cliFile = new File(["node", "--print", "require.resolve('@expo/cli')"].execute(null, rootDir).text.trim())
+    bundleCommand = "export:embed"
 }
 
 /**
@@ -115,7 +120,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
-        versionName "1.1.0"
+        versionName "3.0.0"
         manifestPlaceholders = [
             JPUSH_APPKEY: "3fdd1ecdd0325fa2a197df7e",
             JPUSH_CHANNEL: "course_box"
