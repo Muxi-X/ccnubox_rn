@@ -5,7 +5,7 @@ import { ColorType } from '@/styles/types';
 /** 与主题无关通用样式 */
 export const commonStyles = StyleSheet.create({
   fontExtraLarge: {
-    fontSize: 24,
+    fontSize: 28,
   },
   fontLarge: {
     fontSize: 22,
@@ -16,8 +16,14 @@ export const commonStyles = StyleSheet.create({
   fontSmall: {
     fontSize: 10,
   },
+  fontExtraBold: {
+    fontWeight: '900',
+  },
   fontBold: {
     fontWeight: 'bold',
+  },
+  fontSemiBold: {
+    fontWeight: '600',
   },
   fontLight: {
     fontWeight: 'light',
