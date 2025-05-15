@@ -36,7 +36,7 @@ const Login: React.FC = () => {
             style={[
               styles.text1,
               commonStyles.fontExtraLarge,
-              commonStyles.fontBold,
+              commonStyles.fontExtraBold,
             ]}
           >
             “需求太多？
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
             style={[
               styles.text2,
               commonStyles.fontExtraLarge,
-              commonStyles.fontBold,
+              commonStyles.fontExtraBold,
             ]}
           >
             用匣子试试！”

@@ -1,5 +1,5 @@
 import { FC, ReactElement } from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils';
@@ -15,16 +15,39 @@ export const GuideContent: FC<{
     >
       {texts.map(text => (
         <Text
-          style={[commonStyles.fontLarge, styles.textStyle]}
+          style={[
+            commonStyles.fontMedium,
+            commonStyles.fontBold,
+            styles.textStyle,
+          ]}
           key={keyGenerator.next().value as unknown as number}
         >
           {text}
         </Text>
       ))}
-      {extraNodes ?? <></>}
+      {extraNodes ?? <View></View>}
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  contentWrap: {
+    display: 'flex',
+    width: '100%',
+    // flex: 1,
+    height: 'auto',
+    alignItems: 'center',
+  },
+  textStyle: {
+    color: '#fff',
+    marginVertical: 6,
+  },
+  logo: {
+    width: 104,
+    height: 101,
+  },
+});
+
 export const preloginGuide: { title: string; content: ReactElement }[] = [
   {
     title: '木犀团队',
@@ -39,7 +62,12 @@ export const preloginGuide: { title: string; content: ReactElement }[] = [
           '分管本科生院学工部的',
           '“网络技术中心”',
         ]}
-        // extraNodes={<Text>6666</Text>}
+        extraNodes={
+          <Image
+            source={require('@/assets/images/muxi.png')}
+            style={styles.logo}
+          />
+        }
       />
     ),
   },
@@ -82,17 +110,3 @@ export const preloginGuide: { title: string; content: ReactElement }[] = [
     ),
   },
 ];
-
-const styles = StyleSheet.create({
-  contentWrap: {
-    display: 'flex',
-    width: '100%',
-    // flex: 1,
-    height: 'auto',
-    alignItems: 'center',
-  },
-  textStyle: {
-    color: '#fff',
-    marginVertical: 6,
-  },
-});
