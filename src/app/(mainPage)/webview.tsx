@@ -3,7 +3,8 @@ import { useLocalSearchParams } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import WebView from 'react-native-webview';
+
+import SafeWebView from '@/components/webview/SafeWebView';
 
 import { ossLoginAndNavigate } from '@/constants/scraper';
 import { commonColors } from '@/styles/common';
@@ -19,10 +20,9 @@ export default function ClassRoom() {
     password = JSON.parse(userInfo as string)?.password;
   }
   const login = ossLoginAndNavigate(student_id, password);
-
   return (
     <>
-      <WebView
+      <SafeWebView
         javaScriptEnabled
         injectedJavaScript={login}
         injectedJavaScriptForMainFrameOnly={false}
@@ -32,7 +32,9 @@ export default function ClassRoom() {
             setLoading(false);
           }
         }}
-        source={{ uri: atob(link as string) }}
+        source={{
+          uri: String(atob(link as string).slice(0, -1)),
+        }}
       />
       {loading && (
         <View style={styles.loadingView}>
