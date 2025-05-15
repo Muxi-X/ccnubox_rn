@@ -1,0 +1,34 @@
+name: Test Update
+description: Release ota updates on updateInfo.json change
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/assets/data/updateInfo.json'
+
+jobs:
+  eas-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: '9.14.4'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install EAS CLI
+        run: pnpm install -g eas-cli
+
+      - name: Run EAS Update
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          eas update --branch test --message "${{ github.event.head_commit.message }}"

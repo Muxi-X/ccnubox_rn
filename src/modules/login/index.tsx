@@ -45,7 +45,6 @@ const LoginPage: FC = () => {
     }
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例', 2);
-      return;
     }
     //console.log(userInfo);
     try {
@@ -54,6 +53,7 @@ const LoginPage: FC = () => {
       });
       if (response.status === 200 || response.status === 201) {
         //  console.log(response.headers);
+        setItem('userInfo', JSON.stringify(userInfo));
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
         router.navigate('/(tabs)');

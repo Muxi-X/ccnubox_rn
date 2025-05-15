@@ -21,7 +21,7 @@ export default function SelectTheme() {
   );
   const isApplied = (layout: string) => layout === layoutName;
   return (
-    <ThemeBasedView style={{ flex: 1 }}>
+    <ThemeBasedView style={{ flex: 1, paddingVertical: 20 }}>
       <View
         style={{
           flexDirection: 'row',
@@ -45,9 +45,6 @@ export default function SelectTheme() {
           style={[
             currentStyle?.button_style,
             { width: '40%', borderRadius: 10, marginRight: 10 },
-            isApplied('android')
-              ? { backgroundColor: 'purple' }
-              : { backgroundColor: 'white' },
           ]}
           onPress={() => {
             if (!isApplied('android')) {
@@ -86,7 +83,7 @@ export default function SelectTheme() {
           style={[
             currentStyle?.text_style,
             {
-              fontSize: 16,
+              fontSize: 18,
               paddingLeft: 40,
             },
           ]}
@@ -97,9 +94,6 @@ export default function SelectTheme() {
           style={[
             currentStyle?.button_style,
             { width: '40%', borderRadius: 10, marginRight: 10 },
-            isApplied('ios')
-              ? { backgroundColor: 'purple' }
-              : { backgroundColor: 'white' },
           ]}
           onPress={() => {
             if (!isApplied('ios')) {

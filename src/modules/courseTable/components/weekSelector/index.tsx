@@ -1,7 +1,7 @@
 import { FC, memo } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
-import ThemeChangeText from '@/components/text';
+// import ThemeChangeText from '@/components/text';
 import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -48,19 +48,20 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   },
                 ]}
               >
-                <ThemeChangeText
+                <Text
                   style={[
                     styles.weekButtonText,
                     {
                       color:
                         currentWeek === i + 1
                           ? '#FFFFFF'
-                          : currentStyle?.schedule_text_style?.color,
+                          : currentStyle?.schedule_text_style?.color ||
+                            '#000000',
                     },
                   ]}
                 >
                   {i + 1}
-                </ThemeChangeText>
+                </Text>
               </Pressable>
             ))}
           </View>

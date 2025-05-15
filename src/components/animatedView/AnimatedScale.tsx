@@ -1,6 +1,5 @@
 import { memo, useEffect } from 'react';
 import Animated, {
-  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -15,7 +14,7 @@ import { ScaleAnimationProps } from './types';
  */
 const AnimatedScale = ({
   // Reduce animation range and duration for snappier tab switches
-  outputRange = [0.95, 1.05],
+  outputRange = [0.9, 1.1],
   duration = 200,
   trigger = true,
   delay = 0,
@@ -24,11 +23,11 @@ const AnimatedScale = ({
   onAnimationEnd,
   ...restProps
 }: ScaleAnimationProps) => {
-  const scale = useSharedValue(0);
+  const scale = useSharedValue(outputRange[0]);
   useEffect(() => {
     scale.value = withDelay(
       delay,
-      withSpring(trigger ? 1 : 0, {
+      withSpring(trigger ? outputRange[1] : outputRange[0], {
         mass: 0.5,
         stiffness: 120,
         damping: 12,
@@ -38,19 +37,19 @@ const AnimatedScale = ({
     );
   }, [scale, duration, trigger, delay]);
   const ScaleAnimation = useAnimatedStyle(() => {
-    const scaleValue = interpolate(scale.value, [0, 1], outputRange);
-    const top = interpolate(scale.value, [0, 1], [0, 4]);
     return {
       transform: [
         {
-          scale: scaleValue,
+          scale: scale.value,
         },
       ],
-      top,
     };
   });
   useEffect(() => {
-    if (scale.value === 1 && typeof onAnimationEnd === 'function') {
+    if (
+      scale.value === outputRange[1] &&
+      typeof onAnimationEnd === 'function'
+    ) {
       runOnJS(onAnimationEnd)();
     }
   }, [scale.value, onAnimationEnd]);

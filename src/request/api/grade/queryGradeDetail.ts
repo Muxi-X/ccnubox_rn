@@ -2,16 +2,14 @@ import { request } from '@/request';
 
 interface QueryParams {
   refresh?: boolean;
-  xqm: number;
-  xnm: number;
+  kcxzmcs: string[];
+  terms: string[];
 }
 
 // 成绩查询详细
 export const queryGradeDetail = async (queryParams: QueryParams) => {
   try {
-    return await request.get('/grade/getGradeByTerm', {
-      query: queryParams,
-    });
+    return await request.post('/grade/getGradeByTerm', { ...queryParams });
   } catch (error) {
     //console.error('查询成绩接口出错:', error);
     throw error;
