@@ -93,27 +93,35 @@ export const scrapeCourse = (year: number, semester: semesterMap) => {
     true;
     `;
 };
-
+/** 本科生登录 */
+export const casLogin = (username: string, password: string) => `
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  if(!usernameInput || !passwordInput) {
+    return;
+  }
+  const loginButton = document.getElementsByClassName('btn-submit')[0];
+  usernameInput.value = '${username}';
+  passwordInput.value = '${password}';
+  loginButton.click();
+`;
 export const ossLoginAndNavigate = (username: string, password: string) => `
 (() => {
   if(location.href.includes('kickout')) {
     alert('您的账号在别处登录, 正在重新登录中...')
     window.location.href = 'https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fsso%2Fpziotlogin';
   }
+  // 缴费平台
+  if (location.href.includes('cwzf')) {
+    alert('该网站密码与匣子不同,请自行填入')
+  }
   // 研究生登录
   if(location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
-    ${scrapeLogin()}
+    ${scrapeLogin(username, password)}
   }
+  // 本科生登录
   if (location.href.includes('cas/login')) {
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    if(!usernameInput || !passwordInput) {
-      return;
-    }
-    const loginButton = document.getElementsByClassName('btn-submit')[0];
-    usernameInput.value = '${username}';
-    passwordInput.value = '${password}';
-    loginButton.click();
+    ${casLogin(username, password)}
   }
   window.ReactNativeWebView.postMessage('_pageLoaded')
 })();
