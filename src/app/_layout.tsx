@@ -9,6 +9,7 @@ import WebView from 'react-native-webview';
 
 import { useJPush } from '@/hooks';
 
+import ErrorBoundary from '@/components/ErrorBoundary';
 import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
 
@@ -76,29 +77,35 @@ export default function RootLayout() {
       >
         {/* 手势检测 */}
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <Scraper
-            ref={ref as React.RefObject<WebView<{}> | null>}
-            onMessage={handleMessage}
-          ></Scraper>
-          <Stack
-            screenOptions={{
-              headerBackVisible: false,
-              headerShown: false,
-              animation: 'ios',
-            }}
-          >
-            {['(tabs)', '(courseTable)', 'auth', '(mainPage)', '(setting)'].map(
-              name => (
+          <ErrorBoundary>
+            <Scraper
+              ref={ref as React.RefObject<WebView<{}> | null>}
+              onMessage={handleMessage}
+            ></Scraper>
+            <Stack
+              screenOptions={{
+                headerBackVisible: false,
+                headerShown: false,
+                animation: 'ios',
+              }}
+            >
+              {[
+                '(tabs)',
+                '(courseTable)',
+                'auth',
+                '(mainPage)',
+                '(setting)',
+              ].map(name => (
                 <Stack.Screen
                   key={name}
                   name={name}
                   options={{ headerShown: false }}
                 />
-              )
-            )}
-          </Stack>
-          {/* portal */}
-          <PortalRoot ref={portalRef} />
+              ))}
+            </Stack>
+            {/* portal */}
+            <PortalRoot ref={portalRef} />
+          </ErrorBoundary>
         </GestureHandlerRootView>
       </Provider>
     </>
