@@ -26,15 +26,11 @@ interface DepartmentInformation {
 }
 
 const Department = ({ info }: { info: DepartmentInformation }) => {
-  const currentVisualScheme = useVisualScheme(state => state.currentStyle);
+  const currentScheme = useVisualScheme(state => state.currentStyle);
 
   return (
-    <View
-      style={[styles.card, currentVisualScheme?.information_background_style]}
-    >
-      <Text
-        style={[styles.title, currentVisualScheme?.information_title_style]}
-      >
+    <View style={[styles.card, currentScheme?.information_background_style]}>
+      <Text style={[styles.title, currentScheme?.information_title_style]}>
         {info.name}
       </Text>
       <TouchableOpacity
@@ -63,18 +59,14 @@ const Department = ({ info }: { info: DepartmentInformation }) => {
           // this icon is not a square, fxxk
           style={{ width: 15, height: 19, marginHorizontal: 2 }}
         ></Image>
-        <Text style={currentVisualScheme?.information_text_style}>
-          {info.place}
-        </Text>
+        <Text style={currentScheme?.information_text_style}>{info.place}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Image
           source={require('@/assets/images/timep.png')}
           style={styles.icon}
         ></Image>
-        <Text style={currentVisualScheme?.information_text_style}>
-          {info.time}
-        </Text>
+        <Text style={currentScheme?.information_text_style}>{info.time}</Text>
       </View>
     </View>
   );

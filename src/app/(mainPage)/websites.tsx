@@ -6,11 +6,10 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useVisualScheme from '@/store/visualScheme';
+import Text from '@/components/text';
 
 import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
@@ -26,7 +25,6 @@ interface PopularWebsite {
 type ItemProps = { title: string; _url: string; link: string };
 
 const WebsiteItem = ({ title, _url, link }: ItemProps) => {
-  const currentVisualScheme = useVisualScheme(state => state.currentStyle);
   const router = useRouter();
 
   return (
@@ -35,9 +33,7 @@ const WebsiteItem = ({ title, _url, link }: ItemProps) => {
       onPress={() => router.navigate(`/(mainPage)/webview?link=${btoa(link)}`)}
     >
       <Image source={{ uri: _url }} style={styles.image} />
-      <Text style={[styles.title, currentVisualScheme?.text_style]}>
-        {title}
-      </Text>
+      <Text style={styles.title}>{title}</Text>
     </Pressable>
   );
 };
@@ -75,7 +71,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    // backgroundColor: '#f9c2ff',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
