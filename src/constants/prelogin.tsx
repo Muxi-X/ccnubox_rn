@@ -1,6 +1,7 @@
 import { FC, ReactElement } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import MuxiSvg from '@/assets/images/muxi.svg';
 import { commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils';
 
@@ -40,11 +41,10 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: '#fff',
-    marginVertical: 6,
+    marginVertical: 8,
   },
   logo: {
-    width: 104,
-    height: 101,
+    paddingVertical: 80,
   },
 });
 
@@ -62,12 +62,7 @@ export const preloginGuide: { title: string; content: ReactElement }[] = [
           '分管本科生院学工部的',
           '“网络技术中心”',
         ]}
-        extraNodes={
-          <Image
-            source={require('@/assets/images/muxi.png')}
-            style={styles.logo}
-          />
-        }
+        extraNodes={<MuxiSvg width={80} height={80} style={styles.logo} />}
       />
     ),
   },
