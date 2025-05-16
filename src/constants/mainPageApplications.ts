@@ -19,7 +19,7 @@ import IosMapSvg from '@/assets/images/icons/ios/map.svg';
 import IosMoreSvg from '@/assets/images/icons/ios/more.svg';
 import IosSiteSvg from '@/assets/images/icons/ios/site.svg';
 import IosWebSvg from '@/assets/images/icons/ios/web.svg';
-import { handleOpenURL } from '@/utils';
+import { handleOpenURL } from '@/utils/handleOpenURL';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
