@@ -5,7 +5,7 @@ export type SinglePageType = {
   /**
    * Tab别名
    */
-  name?: string;
+  name: string;
   /**
    * Tab显示文本
    */

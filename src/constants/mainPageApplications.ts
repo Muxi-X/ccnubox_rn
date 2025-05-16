@@ -150,6 +150,7 @@ export const mainPageApplications: MainPageGridDataType[] = [
   // },
   {
     title: '座位预约',
+    name: 'site',
     imageUrl:
       Platform.select({
         ios: IosSiteSvg,

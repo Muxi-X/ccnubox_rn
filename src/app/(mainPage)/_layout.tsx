@@ -35,43 +35,40 @@ export default function Layout() {
             title: '常用网站',
             name: 'webview',
           } as MainPageGridDataType)
-          .map(config => {
-            if (!config.name) return;
-            return (
-              <Stack.Screen
-                key={keyGenerator.next().value as unknown as number}
-                name={config.name}
-                options={{
-                  headerTitleAlign: 'center',
-                  headerLeft: () => {
-                    return (
-                      <>
-                        {currentComponents && (
-                          <currentComponents.header_left title={config.title} />
-                        )}
-                      </>
-                    );
-                  },
-                  headerTitle: () => (
+          .map(config => (
+            <Stack.Screen
+              key={keyGenerator.next().value as unknown as number}
+              name={config.name}
+              options={{
+                headerTitleAlign: 'center',
+                headerLeft: () => {
+                  return (
                     <>
                       {currentComponents && (
-                        <currentComponents.header_center
-                          title={config.title}
-                        ></currentComponents.header_center>
+                        <currentComponents.header_left title={config.title} />
                       )}
                     </>
-                  ),
-                  headerStyle:
-                    currentStyle?.header_background_style as StyleProp<{
-                      backgroundColor: string | undefined;
-                      flexDirection: 'row';
-                      justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-                      alignItems: 'center';
-                    }>,
-                }}
-              ></Stack.Screen>
-            );
-          })}
+                  );
+                },
+                headerTitle: () => (
+                  <>
+                    {currentComponents && (
+                      <currentComponents.header_center
+                        title={config.title}
+                      ></currentComponents.header_center>
+                    )}
+                  </>
+                ),
+                headerStyle:
+                  currentStyle?.header_background_style as StyleProp<{
+                    backgroundColor: string | undefined;
+                    flexDirection: 'row';
+                    justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+                    alignItems: 'center';
+                  }>,
+              }}
+            ></Stack.Screen>
+          ))}
         <Stack.Screen
           name="scoreCalculation"
           options={{ headerShown: false }}
