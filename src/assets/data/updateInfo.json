@@ -1,8 +1,7 @@
 {
-  "version": "3.0.4",
+  "version": "3.0.5",
   "releaseNotes": [
-		"修复切换页面崩溃的问题",
-		"优化部分样式细节"
+		"优化欢迎页样式"
   ],
   "knownIssues": []
 }
