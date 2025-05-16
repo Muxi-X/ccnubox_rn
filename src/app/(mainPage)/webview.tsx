@@ -19,7 +19,6 @@ export default function ClassRoom() {
     password = JSON.parse(userInfo as string)?.password;
   }
   const login = ossLoginAndNavigate(student_id, password);
-  const uri = String(atob(link as string));
 
   return (
     <>
@@ -33,9 +32,7 @@ export default function ClassRoom() {
             setLoading(false);
           }
         }}
-        source={{
-          uri,
-        }}
+        source={{ uri: atob(link as string) }}
       />
       {loading && (
         <View style={styles.loadingView}>

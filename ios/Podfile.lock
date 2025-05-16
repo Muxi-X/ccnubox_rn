@@ -340,9 +340,9 @@ PODS:
   - hermes-engine (0.74.5):
     - hermes-engine/Pre-built (= 0.74.5)
   - hermes-engine/Pre-built (0.74.5)
-  - JCoreRN (2.2.9):
+  - JCore (2.2.6):
     - React
-  - JPushRN (3.1.6):
+  - JPush (3.1.4):
     - React
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
@@ -1849,8 +1849,8 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - JCoreRN (from `../node_modules/jcore-react-native`)
-  - JPushRN (from `../node_modules/jpush-react-native`)
+  - JCore (from `../node_modules/jcore-react-native`)
+  - JPush (from `../node_modules/jpush-react-native`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -2000,9 +2000,9 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-06-28-RNv0.74.3-7bda0c267e76d11b68a585f84cfdd65000babf85
-  JCoreRN:
+  JCore:
     :path: "../node_modules/jcore-react-native"
-  JPushRN:
+  JPush:
     :path: "../node_modules/jpush-react-native"
   lottie-react-native:
     :path: "../node_modules/lottie-react-native"
@@ -2160,8 +2160,8 @@ SPEC CHECKSUMS:
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
   hermes-engine: 8c1577f3fdb849cbe7729c2e7b5abc4b845e88f8
-  JCoreRN: d33b4cbbdbbd23c9384d9d6f390467bf7d7634ea
-  JPushRN: 6db26c1e45ab94e6527526991fd3ebf6d0d1c75a
+  JCore: 9f3340fc12f1d151913dd875cb30f0cf4f423768
+  JPush: 036fc34a58dc24b3dbe3eb92a08f4bd9e21142ee
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   lottie-ios: e047b1d2e6239b787cc5e9755b988869cf190494
   lottie-react-native: 512df5ab10c1bdb2d2460a45bcb137e5a55d2052

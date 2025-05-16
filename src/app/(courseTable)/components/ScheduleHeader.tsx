@@ -11,6 +11,7 @@ import ScreenShotIcon from '@/assets/icons/screenshot.svg';
 // import { tooltipActions } from '@/constants/courseTableApplications';
 import globalEventBus from '@/eventBus';
 import { commonStyles } from '@/styles/common';
+import { percent2px } from '@/utils';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();
@@ -98,7 +99,7 @@ export const ScheduleHeaderRight: React.FC = () => {
         style={[
           {
             // paddingLeft: 50,
-            paddingRight: 20,
+            paddingRight: percent2px(10),
           },
         ]}
         onPress={() => {

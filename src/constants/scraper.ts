@@ -93,18 +93,7 @@ export const scrapeCourse = (year: number, semester: semesterMap) => {
     true;
     `;
 };
-/** 本科生登录 */
-export const casLogin = (username: string, password: string) => `
-  const usernameInput = document.getElementById('username');
-  const passwordInput = document.getElementById('password');
-  if(!usernameInput || !passwordInput) {
-    return;
-  }
-  const loginButton = document.getElementsByClassName('btn-submit')[0];
-  usernameInput.value = '${username}';
-  passwordInput.value = '${password}';
-  loginButton.click();
-`;
+
 export const ossLoginAndNavigate = (username: string, password: string) => `
 (() => {
   window.originalAlert = window.alert;
@@ -119,11 +108,18 @@ export const ossLoginAndNavigate = (username: string, password: string) => `
   }
   // 研究生登录
   if(location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
-    ${scrapeLogin(username, password)}
+    ${scrapeLogin()}
   }
-  // 本科生登录
   if (location.href.includes('cas/login')) {
-    ${casLogin(username, password)}
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    if(!usernameInput || !passwordInput) {
+      return;
+    }
+    const loginButton = document.getElementsByClassName('btn-submit')[0];
+    usernameInput.value = '${username}';
+    passwordInput.value = '${password}';
+    loginButton.click();
   }
   window.ReactNativeWebView.postMessage('_pageLoaded')
 })();

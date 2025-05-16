@@ -1,5 +1,5 @@
 import LottieView from 'lottie-react-native';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
@@ -10,6 +10,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   runOnJS,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -24,6 +25,8 @@ import Divider from '../divider';
 import Toast from '../toast';
 /** 触发刷新的阈值 */
 const REFRESH_THRESHOLD = 100;
+/** 最小触发阈值 */
+const MIN_THRESHOLD = 20;
 /** 下拉刷新回弹动画时间 */
 const REFRESH_BACK_ANIMATION_TIME = 500;
 const refreshTextMap: Record<RefreshState, string> = {
@@ -84,9 +87,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     const isTriggered = useSharedValue(false); // 是否已触发刷新
     const isRefreshing = useSharedValue(false); // 是否正在刷新中，用于禁用滚动
     const animationRef = useRef<LottieView | null>(null);
-    const refreshText = useMemo(() => {
-      return refreshTextMap[refreshTextState.value];
-    }, [refreshTextState]);
+    const refreshTextProps = useAnimatedProps(() => {
+      return {
+        children: refreshTextMap[refreshTextState.value],
+      };
+    });
     // 监听重置滚动位置的事件
     useEffect(() => {
       const resetScrollPosition = () => {
@@ -107,7 +112,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
 
     // 监听边界事件
     const onReachTopEnd = () => {
-      'worklet';
       if (!onRefresh) return;
       /** 收起 refresh 动画 */
       const closeRefresh = () => {
@@ -118,7 +122,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         refreshTextState.value = 'pull';
         // 使用 setTimeout 来延迟动画开始时间
         setTimeout(() => {
-          'worklet';
           isRefreshing.value = false;
           isAtTop.value = false;
         }, REFRESH_BACK_ANIMATION_TIME); // 减少延迟时间
@@ -167,9 +170,12 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 添加阻尼效果，使用更小的系数来减少移动敏感度
         const dampedTranslation = event.translationY * 0.4;
         // 只有当下拉距离超过最小阈值时才显示刷新指示器
-        if (dampedTranslation >= 0) {
+        if (dampedTranslation >= MIN_THRESHOLD) {
           isAtTop.value = true;
-          const newHeight = Math.min(dampedTranslation, REFRESH_THRESHOLD);
+          const newHeight = Math.min(
+            dampedTranslation - MIN_THRESHOLD,
+            REFRESH_THRESHOLD
+          );
           backHeight.value = newHeight;
           runOnJS(animationRefChange)();
           // 未达到阈值一半, 展示下拉
@@ -378,7 +384,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 确保内容不被裁剪
         pointerEvents="box-none"
       >
-        <View
+        <Animated.View
           style={[
             {
               width: '100%',
@@ -401,10 +407,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             loop={true}
             ref={animationRef}
           />
-          <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
-            {refreshText}
-          </Animated.Text>
-        </View>
+          <Animated.Text
+            style={[styles.refreshText, textOpacityStyle]}
+            animatedProps={refreshTextProps}
+          ></Animated.Text>
+        </Animated.View>
         <Animated.View style={[refreshHeight, { flex: 1 }]}>
           {/* sticky top */}
           <Animated.View
