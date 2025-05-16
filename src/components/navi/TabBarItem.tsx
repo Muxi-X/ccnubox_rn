@@ -13,7 +13,6 @@ import { TABBAR_COLOR } from '@/constants/tabBar';
 
 import { TabBarIcon } from './TabBarIcon';
 import { TabBarItemProps } from './types';
-import AnimatedOpacity from '../animatedView/AnimatedOpacity';
 import AnimatedScale from '../animatedView/AnimatedScale';
 
 const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
@@ -47,10 +46,7 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
       style={[styles.container]}
     >
       <AnimatedScale trigger={isFocused}>{IconComponent}</AnimatedScale>
-
-      <AnimatedOpacity trigger>
-        <Text style={[{ color: color }, styles.text]}>{label}</Text>
-      </AnimatedOpacity>
+      <Text style={[{ color: color }, styles.text]}>{label}</Text>
     </Pressable>
   );
 });

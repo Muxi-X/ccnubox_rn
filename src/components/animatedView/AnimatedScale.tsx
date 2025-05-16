@@ -52,7 +52,7 @@ const AnimatedScale = ({
     ) {
       runOnJS(onAnimationEnd)();
     }
-  }, [scale.value, onAnimationEnd]);
+  }, [scale, onAnimationEnd]);
   return (
     <Animated.View style={[ScaleAnimation, style]} {...restProps}>
       {children}

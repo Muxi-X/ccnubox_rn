@@ -48,12 +48,11 @@ const useThemeChangeStyle = (
   });
 
   useEffect(() => {
+    'worklet';
     const currentColor =
       currentStyle?.[configurableThemeName]?.[styleName] ?? '';
     if (previousColor.value !== currentColor) {
       if (isFocused) {
-        // 当前页面执行动画
-        progress.value = 0;
         progress.value = withTiming(1, { duration: 400 }, () => {
           previousColor.value = currentColor as string;
         });

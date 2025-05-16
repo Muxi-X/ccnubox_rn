@@ -71,7 +71,8 @@ export default function Layout() {
                 }}
               ></Stack.Screen>
             );
-          })}
+          })
+          .filter(item => item)}
         <Stack.Screen
           name="scoreCalculation"
           options={{ headerShown: false }}

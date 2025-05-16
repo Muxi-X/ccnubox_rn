@@ -107,13 +107,15 @@ export const casLogin = (username: string, password: string) => `
 `;
 export const ossLoginAndNavigate = (username: string, password: string) => `
 (() => {
+  window.originalAlert = window.alert;
+  window.alert = () => null;
   if(location.href.includes('kickout')) {
-    alert('您的账号在别处登录, 正在重新登录中...')
+    originalAlert('您的账号在别处登录, 正在重新登录中...')
     window.location.href = 'https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fsso%2Fpziotlogin';
   }
   // 缴费平台
   if (location.href.includes('cwzf')) {
-    alert('该网站密码与匣子不同,请自行填入')
+    originalAlert('该网站登录方式与匣子不同,请自行填入')
   }
   // 研究生登录
   if(location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
