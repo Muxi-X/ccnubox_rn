@@ -1,7 +1,4 @@
 const { getDefaultConfig } = require('expo/metro-config');
-const {
-  wrapWithReanimatedMetroConfig,
-} = require('react-native-reanimated/metro-config');
 module.exports = (async () => {
   const config = await getDefaultConfig(__dirname);
 
@@ -16,5 +13,5 @@ module.exports = (async () => {
     sourceExts: [...config.resolver.sourceExts, 'svg'],
   };
 
-  return wrapWithReanimatedMetroConfig(config);
+  return config;
 })();

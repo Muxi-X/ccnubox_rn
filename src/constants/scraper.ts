@@ -96,6 +96,7 @@ export const scrapeCourse = (year: number, semester: semesterMap) => {
 
 export const ossLoginAndNavigate = (username: string, password: string) => `
 (() => {
+ window.ReactNativeWebView.postMessage('_pageStartLoading')
   window.originalAlert = window.alert;
   window.alert = () => null;
   if(location.href.includes('kickout')) {

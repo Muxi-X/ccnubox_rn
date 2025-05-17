@@ -13,7 +13,7 @@ dependencies:
     version: 2.3.2(react@18.2.0)
   '@ant-design/react-native':
     specifier: ^5.2.3
-    version: 5.4.1(@ant-design/icons-react-native@2.3.2)(@babel/preset-env@7.27.2)(react-dom@18.2.0)(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.16.7)(react-native@0.74.5)(react@18.2.0)
+    version: 5.4.1(@ant-design/icons-react-native@2.3.2)(@babel/preset-env@7.27.2)(react-dom@18.2.0)(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0)
   '@expo/vector-icons':
     specifier: ^14.0.4
     version: 14.1.0(expo-font@12.0.10)(react-native@0.74.5)(react@18.2.0)
@@ -28,7 +28,7 @@ dependencies:
     version: 6.1.18(react-native@0.74.5)(react@18.2.0)
   '@shopify/react-native-skia':
     specifier: ~1.2.3
-    version: 1.2.3(react-native-reanimated@3.16.7)(react-native@0.74.5)(react@18.2.0)
+    version: 1.2.3(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0)
   axios:
     specifier: ^1.7.9
     version: 1.9.0
@@ -76,7 +76,7 @@ dependencies:
     version: 0.28.19(expo@51.0.39)
   expo-router:
     specifier: ^3.5.23
-    version: 3.5.24(expo-constants@16.0.2)(expo-linking@6.3.1)(expo-modules-autolinking@2.1.10)(expo-status-bar@1.12.1)(expo@51.0.39)(react-native-reanimated@3.16.7)(react-native-safe-area-context@4.10.5)(react-native-screens@3.31.1)(react-native@0.74.5)(react@18.2.0)(typescript@5.3.3)
+    version: 3.5.24(expo-constants@16.0.2)(expo-linking@6.3.1)(expo-modules-autolinking@2.1.10)(expo-status-bar@1.12.1)(expo@51.0.39)(react-native-reanimated@3.10.1)(react-native-safe-area-context@4.10.5)(react-native-screens@3.31.1)(react-native@0.74.5)(react@18.2.0)(typescript@5.3.3)
   expo-secure-store:
     specifier: ^13.0.2
     version: 13.0.2(expo@51.0.39)
@@ -126,11 +126,11 @@ dependencies:
     specifier: ^1.6.0
     version: 1.6.0(react-native@0.74.5)
   react-native-reanimated:
-    specifier: ~3.16.0
-    version: 3.16.7(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
+    specifier: ~3.10.1
+    version: 3.10.1(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
   react-native-reanimated-carousel:
     specifier: ^4.0.2
-    version: 4.0.2(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.16.7)(react-native@0.74.5)(react@18.2.0)
+    version: 4.0.2(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0)
   react-native-safe-area-context:
     specifier: 4.10.5
     version: 4.10.5(react-native@0.74.5)(react@18.2.0)
@@ -273,7 +273,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@ant-design/react-native@5.4.1(@ant-design/icons-react-native@2.3.2)(@babel/preset-env@7.27.2)(react-dom@18.2.0)(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.16.7)(react-native@0.74.5)(react@18.2.0):
+  /@ant-design/react-native@5.4.1(@ant-design/icons-react-native@2.3.2)(@babel/preset-env@7.27.2)(react-dom@18.2.0)(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0):
     resolution: {integrity: sha512-ZdfZtyFMZ7OvSmc7EpS7RdOzJnln3TiDtAAYIS9dIOjyH5um0KT4Di2nx7McYCv7qVSr09Dqqc6Xqw6YJdhugg==}
     peerDependencies:
       '@ant-design/icons-react-native': '>= 2.3.2'
@@ -300,7 +300,7 @@ packages:
       react-native-collapsible: 1.6.2(react-native@0.74.5)(react@18.2.0)
       react-native-gesture-handler: 2.16.2(react-native@0.74.5)(react@18.2.0)
       react-native-modal-popover: 2.1.3(react-native@0.74.5)(react@18.2.0)
-      react-native-reanimated: 3.16.7(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
+      react-native-reanimated: 3.10.1(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
       utility-types: 3.11.0
     transitivePeerDependencies:
       - '@babel/preset-env'
@@ -3908,7 +3908,7 @@ packages:
       join-component: 1.1.0
     dev: false
 
-  /@shopify/react-native-skia@1.2.3(react-native-reanimated@3.16.7)(react-native@0.74.5)(react@18.2.0):
+  /@shopify/react-native-skia@1.2.3(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0):
     resolution: {integrity: sha512-gyUD/HGsMyZ+YAoWxVh24HYN5juwC/dZWINL/0sKP7Ttee/0igCRxWPneH1BbVH28dhyf+tvksQNUwpMM3VWbg==}
     hasBin: true
     peerDependencies:
@@ -3924,7 +3924,7 @@ packages:
       canvaskit-wasm: 0.39.1
       react: 18.2.0
       react-native: 0.74.5(@babel/core@7.27.1)(@babel/preset-env@7.27.2)(@types/react@18.2.79)(react@18.2.0)
-      react-native-reanimated: 3.16.7(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
+      react-native-reanimated: 3.10.1(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
       react-reconciler: 0.27.0(react@18.2.0)
     dev: false
 
@@ -8015,7 +8015,7 @@ packages:
       - supports-color
     dev: false
 
-  /expo-router@3.5.24(expo-constants@16.0.2)(expo-linking@6.3.1)(expo-modules-autolinking@2.1.10)(expo-status-bar@1.12.1)(expo@51.0.39)(react-native-reanimated@3.16.7)(react-native-safe-area-context@4.10.5)(react-native-screens@3.31.1)(react-native@0.74.5)(react@18.2.0)(typescript@5.3.3):
+  /expo-router@3.5.24(expo-constants@16.0.2)(expo-linking@6.3.1)(expo-modules-autolinking@2.1.10)(expo-status-bar@1.12.1)(expo@51.0.39)(react-native-reanimated@3.10.1)(react-native-safe-area-context@4.10.5)(react-native-screens@3.31.1)(react-native@0.74.5)(react@18.2.0)(typescript@5.3.3):
     resolution: {integrity: sha512-wFi+PIUrOntF5cgg0PgBMlkxEZlWedIv5dWnPFEzN6Tr3A3bpsqdDLgOEIwvwd+pxn5DLzykTmg9EkQ1pPGspw==}
     peerDependencies:
       '@react-navigation/drawer': ^6.5.8
@@ -8047,7 +8047,7 @@ packages:
       expo-splash-screen: 0.27.7(expo-modules-autolinking@2.1.10)(expo@51.0.39)
       expo-status-bar: 1.12.1
       react-native-helmet-async: 2.0.4(react@18.2.0)
-      react-native-reanimated: 3.16.7(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
+      react-native-reanimated: 3.10.1(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
       react-native-safe-area-context: 4.10.5(react-native@0.74.5)(react@18.2.0)
       react-native-screens: 3.31.1(react-native@0.74.5)(react@18.2.0)
       schema-utils: 4.3.2
@@ -12748,7 +12748,7 @@ packages:
       react-native: 0.74.5(@babel/core@7.27.1)(@babel/preset-env@7.27.2)(@types/react@18.2.79)(react@18.2.0)
     dev: false
 
-  /react-native-reanimated-carousel@4.0.2(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.16.7)(react-native@0.74.5)(react@18.2.0):
+  /react-native-reanimated-carousel@4.0.2(react-native-gesture-handler@2.16.2)(react-native-reanimated@3.10.1)(react-native@0.74.5)(react@18.2.0):
     resolution: {integrity: sha512-vNpCfPlFoOVKHd+oB7B0luoJswp+nyz0NdJD8+LCrf25JiNQXfM22RSJhLaksBHqk3fm8R4fKWPNcfy5w7wL1Q==}
     peerDependencies:
       react: '>=18.0.0'
@@ -12759,11 +12759,11 @@ packages:
       react: 18.2.0
       react-native: 0.74.5(@babel/core@7.27.1)(@babel/preset-env@7.27.2)(@types/react@18.2.79)(react@18.2.0)
       react-native-gesture-handler: 2.16.2(react-native@0.74.5)(react@18.2.0)
-      react-native-reanimated: 3.16.7(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
+      react-native-reanimated: 3.10.1(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0)
     dev: false
 
-  /react-native-reanimated@3.16.7(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0):
-    resolution: {integrity: sha512-qoUUQOwE1pHlmQ9cXTJ2MX9FQ9eHllopCLiWOkDkp6CER95ZWeXhJCP4cSm6AD4jigL5jHcZf/SkWrg8ttZUsw==}
+  /react-native-reanimated@3.10.1(@babel/core@7.27.1)(react-native@0.74.5)(react@18.2.0):
+    resolution: {integrity: sha512-sfxg6vYphrDc/g4jf/7iJ7NRi+26z2+BszPmvmk0Vnrz6FL7HYljJqTf531F1x6tFmsf+FEAmuCtTUIXFLVo9w==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
       react: '*'
@@ -12771,13 +12771,10 @@ packages:
     dependencies:
       '@babel/core': 7.27.1
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-class-properties': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-classes': 7.27.1(@babel/core@7.27.1)
       '@babel/plugin-transform-nullish-coalescing-operator': 7.27.1(@babel/core@7.27.1)
       '@babel/plugin-transform-optional-chaining': 7.27.1(@babel/core@7.27.1)
       '@babel/plugin-transform-shorthand-properties': 7.27.1(@babel/core@7.27.1)
       '@babel/plugin-transform-template-literals': 7.27.1(@babel/core@7.27.1)
-      '@babel/plugin-transform-unicode-regex': 7.27.1(@babel/core@7.27.1)
       '@babel/preset-typescript': 7.27.1(@babel/core@7.27.1)
       convert-source-map: 2.0.0
       invariant: 2.2.4

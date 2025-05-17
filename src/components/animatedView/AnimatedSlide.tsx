@@ -48,7 +48,7 @@ const AnimatedSlideIn: React.FC<SlideInProps> = ({
     if (typeof onAnimationEnd === 'function') {
       runOnJS(onAnimationEnd)();
     }
-  }, [translateY.value, onAnimationEnd]);
+  }, [translateY, onAnimationEnd]);
   return (
     <Animated.View style={[style, animatedStyle]} {...restProps}>
       {children}
