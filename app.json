@@ -36,11 +36,6 @@
       "edgeToEdgeEnabled": true,
       "package": "com.muxixyz.ccnubox"
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./src/assets/images/favicon.png"
-    },
     "plugins": [
       "expo-router",
       [
