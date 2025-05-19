@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -74,6 +75,7 @@ const ScoreCalculation: React.FC = () => {
     setIsPartiallySelected(isPartial);
     setIsAllSelected(selection.size === gradeData.length);
   };
+  const textStyle = currentStyle?.text_style as TextStyle;
 
   const showCourseDetails = (course: GradeData) => {
     setSelectedCourse(course);
@@ -84,7 +86,7 @@ const ScoreCalculation: React.FC = () => {
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, currentStyle?.text_style]}>
+            <Text style={[styles.modalTitle, ]}>
               {course.title}
             </Text>
             {/* <Image
@@ -159,10 +161,10 @@ const ScoreCalculation: React.FC = () => {
             <Text style={styles.resultTitle}>计算结果</Text>
           </View>
           <View style={styles.resultContent}>
-            <Text style={[styles.resultScore, currentStyle?.text_style]}>
+            <Text style={[styles.resultScore, textStyle]}>
               {averageScore}
             </Text>
-            <Text style={[styles.resultLabel, currentStyle?.text_style]}>
+            <Text style={[styles.resultLabel, textStyle]}>
               平时学分绩
             </Text>
           </View>
@@ -223,12 +225,12 @@ const ScoreCalculation: React.FC = () => {
               source={require('../../assets/images/arrow-left.png')}
             />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, currentStyle?.text_style]}>
+          <Text style={[styles.headerTitle, textStyle]}>
             成绩
           </Text>
         </View>
         <View style={styles.headerRight}>
-          <Text style={currentStyle?.text_style}>全选：</Text>
+          <Text style={textStyle}>全选：</Text>
           <TouchableOpacity
             onPress={() => handleSelectAllToggle(!isAllSelected)}
             style={[
@@ -257,7 +259,7 @@ const ScoreCalculation: React.FC = () => {
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#7878F8" />
-          <Text style={[styles.loadingText, currentStyle?.text_style]}>
+          <Text style={[styles.loadingText, textStyle]}>
             加载中...
           </Text>
         </View>
@@ -280,14 +282,14 @@ const ScoreCalculation: React.FC = () => {
                     <View style={styles.courseHeader}>
                       <View style={styles.courseDot} />
                       <Text
-                        style={[styles.courseTitle, currentStyle?.text_style]}
+                        style={[styles.courseTitle, textStyle]}
                       >
                         {course.title}
                       </Text>
                     </View>
                     <View style={styles.courseInfo}>
                       <Text
-                        style={[styles.creditText, currentStyle?.text_style]}
+                        style={[styles.creditText, textStyle]}
                       >
                         学分：{course.credit}
                       </Text>

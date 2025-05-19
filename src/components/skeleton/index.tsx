@@ -1,12 +1,12 @@
 import { useIsFocused } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, {
-  FC,
-  memo,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
+    FC,
+    memo,
+    ReactElement,
+    useEffect,
+    useMemo,
+    useState,
 } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 
@@ -15,8 +15,8 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import globalEventBus from '@/eventBus';
 import { keyGenerator } from '@/utils';
+import globalEventBus from '@/utils/eventBus';
 
 /**
  * 骨架屏组件

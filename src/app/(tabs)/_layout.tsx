@@ -1,12 +1,12 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, TextStyle } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { tabConfig } from '@/constants/tabBar';
 import { keyGenerator } from '@/utils';
 
-import TabBar from '../../components/navi/index';
+import TabBar from '@/components/navi';
 
 import { SinglePageType } from '@/types/tabBarTypes';
 
@@ -25,7 +25,7 @@ export default function TabLayout() {
             headerTitle:
               headerTitle ??
               (() => (
-                <Text style={currentStyle?.header_text_style}>{title}</Text>
+                <Text style={currentStyle?.header_text_style as TextStyle}>{title}</Text>
               )),
             headerRight: headerRight,
             headerLeft: headerLeft,

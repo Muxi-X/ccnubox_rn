@@ -1,32 +1,40 @@
 import LottieView from 'lottie-react-native';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import {
-  LayoutChangeEvent,
-  LayoutRectangle,
-  StyleSheet,
-  View,
+    LayoutChangeEvent,
+    LayoutRectangle,
+    StyleSheet,
+    View,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  interpolate,
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
+    interpolate,
+    runOnJS,
+    useAnimatedProps,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
 } from 'react-native-reanimated';
 
 import { ScrollableViewProps } from '@/components/scrollView/type';
 
-import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import Divider from '../divider';
 import Toast from '../toast';
 /** 触发刷新的阈值 */
 const REFRESH_THRESHOLD = 100;
+/** 最小触发阈值 */
+const MIN_THRESHOLD = 20;
 /** 下拉刷新回弹动画时间 */
 const REFRESH_BACK_ANIMATION_TIME = 500;
-
+const refreshTextMap: Record<RefreshState, string> = {
+  pull: '下拉刷新课表',
+  pullMore: '继续下拉刷新课表',
+  release: '松开即可刷新',
+  refreshing: '刷新中...',
+};
 /**
  * 刷新状态
  * 'pull': 下拉状态
@@ -45,7 +53,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       cornerStyle,
       onRefresh,
       collapsable,
-      enableScrolling = true, // 默认启用滚动
     } = props;
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
@@ -80,7 +87,11 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
     const isTriggered = useSharedValue(false); // 是否已触发刷新
     const isRefreshing = useSharedValue(false); // 是否正在刷新中，用于禁用滚动
     const animationRef = useRef<LottieView | null>(null);
-
+    const refreshTextProps = useAnimatedProps(() => {
+      return {
+        children: refreshTextMap[refreshTextState.value],
+      };
+    });
     // 监听重置滚动位置的事件
     useEffect(() => {
       const resetScrollPosition = () => {
@@ -159,9 +170,12 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 添加阻尼效果，使用更小的系数来减少移动敏感度
         const dampedTranslation = event.translationY * 0.4;
         // 只有当下拉距离超过最小阈值时才显示刷新指示器
-        if (dampedTranslation >= 0) {
+        if (dampedTranslation >= MIN_THRESHOLD) {
           isAtTop.value = true;
-          const newHeight = Math.min(dampedTranslation, REFRESH_THRESHOLD);
+          const newHeight = Math.min(
+            dampedTranslation - MIN_THRESHOLD,
+            REFRESH_THRESHOLD
+          );
           backHeight.value = newHeight;
           runOnJS(animationRefChange)();
           // 未达到阈值一半, 展示下拉
@@ -270,7 +284,7 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
         // 处理下拉刷新
         handlePullToRefresh(event);
         // 只有启用滚动时才处理滚动
-        if (enableScrolling && backHeight.value === 0) {
+        if (true) {
           const newTranslateX = Math.min(
             0,
             Math.max(
@@ -355,14 +369,6 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
       setContainerSize(layout);
     };
 
-    // 使用状态文本映射，避免频繁计算和更新
-    const refreshTextMap: Record<RefreshState, string> = {
-      pull: '下拉刷新课表',
-      pullMore: '继续下拉刷新课表',
-      release: '松开即可刷新',
-      refreshing: '刷新中...',
-    };
-
     // 创建文本状态的动画样式 - 优化性能
     const textOpacityStyle = useAnimatedStyle(() => {
       return {
@@ -401,9 +407,10 @@ const ScrollLikeView = React.forwardRef<View, ScrollableViewProps>(
             loop={true}
             ref={animationRef}
           />
-          <Animated.Text style={[styles.refreshText, textOpacityStyle]}>
-            {refreshTextMap[refreshTextState.value]}
-          </Animated.Text>
+          <Animated.Text
+            style={[styles.refreshText, textOpacityStyle]}
+            animatedProps={refreshTextProps}
+          ></Animated.Text>
         </Animated.View>
         <Animated.View style={[refreshHeight, { flex: 1 }]}>
           {/* sticky top */}

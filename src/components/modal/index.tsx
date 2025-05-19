@@ -4,6 +4,7 @@ import {
   BackHandler,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
   ViewProps,
@@ -20,7 +21,7 @@ import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
-//eslint-disable-next-line no-unused-vars
+ 
 const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   visible: initVisible = true,
   currentKey,
@@ -87,7 +88,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
         {title && (
           <View style={[styles.title]}>
             {typeof title === 'string' ? (
-              <Text style={[commonStyles.fontLarge, currentStyle?.text_style]}>
+              <Text style={[commonStyles.fontLarge, currentStyle?.text_style as TextStyle]}>
                 {title}
               </Text>
             ) : (
@@ -99,7 +100,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
           {typeof children === 'string' ? (
             <Text
               style={[
-                currentStyle?.text_style,
+                currentStyle?.text_style as TextStyle,
                 commonStyles.fontMedium,
                 {
                   paddingVertical: 15,
@@ -128,7 +129,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
                   <Text
                     style={[
                       styles.bottomChoiceText,
-                      !isBottomMode && currentStyle?.text_style,
+                      !isBottomMode && currentStyle?.text_style as TextStyle,
                       isBottomMode
                         ? commonStyles.fontLarge
                         : commonStyles.fontMedium,
@@ -152,7 +153,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
                   <Text
                     style={[
                       styles.bottomChoiceText,
-                      !isBottomMode && currentStyle?.text_style,
+                      !isBottomMode && currentStyle?.text_style as TextStyle,
                       isBottomMode
                         ? commonStyles.fontLarge
                         : commonStyles.fontMedium,

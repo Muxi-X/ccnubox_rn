@@ -77,7 +77,7 @@ const AnimatedFade = ({
       // 使用 runOnJS 来确保 onAnimationEnd 回调在正确的线程上执行
       runOnJS(onAnimationEnd)();
     }
-  }, [opacity.value, onAnimationEnd]);
+  }, [opacity, onAnimationEnd]);
   return (
     <Animated.View style={[FadeAnimation, style]} {...restProps}>
       {children}

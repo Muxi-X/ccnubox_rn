@@ -61,7 +61,7 @@ axiosInstance.interceptors.request.use(
       try {
         const token = await getStoredToken();
         if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+          config.headers['Authorization'] = `Bearer ${token.trim()}`;
         }
       } catch (error) {
         throw Error('token不存在');
@@ -77,6 +77,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   response => {
     requestBus.requestComplete();
+    
     switch (response.status) {
       case 200:
         return response;
@@ -96,9 +97,11 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      router.replace('/auth/login');
       originalRequest._retry = true; // 防止无限循环
       try {
         const newShortToken = await refreshToken();
+        
         originalRequest.headers['Authorization'] = `Bearer ${newShortToken}`;
         return axiosInstance(originalRequest); // 重新发送请求
       } catch (refreshError) {
@@ -185,6 +188,7 @@ async function baseRequest<P extends Path, M extends Method>(
   };
 
   const response = await axiosInstance(axiosConfig);
+  
   return response.data as ResponseData<P, M>;
 }
 

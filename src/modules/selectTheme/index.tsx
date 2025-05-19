@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Image, Text } from 'react-native';
+import { Image, Text, TextStyle } from 'react-native';
 
 import Button from '@/components/button';
 // eslint-disable-next-line import/no-duplicates
 import ThemeBasedView from '@/components/view';
-// eslint-disable-next-line import/no-duplicates,no-duplicate-imports
+// eslint-disable-next-line import/no-duplicates
 import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -32,7 +32,7 @@ export default function SelectTheme() {
       >
         <Text
           style={[
-            currentStyle?.text_style,
+            currentStyle?.text_style as TextStyle,
             {
               fontSize: 18,
               paddingLeft: 40,
@@ -81,7 +81,7 @@ export default function SelectTheme() {
       >
         <Text
           style={[
-            currentStyle?.text_style,
+            currentStyle?.text_style as TextStyle,
             {
               fontSize: 18,
               paddingLeft: 40,
