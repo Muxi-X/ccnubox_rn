@@ -7,6 +7,7 @@ export interface TabBarItemProps extends SinglePageType {
   isFocused: boolean;
   onPress?: (_e: any) => void;
   onLongPress?: (_e: any) => void;
+  iconName?: string;
   /**
    * 展示文本
    */

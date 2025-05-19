@@ -2,10 +2,10 @@ import React, { MutableRefObject, ReactElement } from 'react';
 import WebView from 'react-native-webview';
 
 import {
-  LayoutName,
-  LayoutType,
-  SingleThemeType,
-  ThemeName,
+    LayoutName,
+    LayoutType,
+    SingleThemeType,
+    ThemeName,
 } from '@/styles/types';
 import { ConfigurableComponentName } from '@/themeBasedComponents/type';
 
@@ -42,7 +42,7 @@ export type ThemeBasedComponentsType = {
   /** 所有的可替换组件 */
   themeBasedComponents: ThemeBasedComponentMap;
   /** 目前的可替换组件 */
-  currentComponents: ThemeBasedComponentRecord | null;
+  CurrentComponents: ThemeBasedComponentRecord | null;
   /** 设置 components */
   setComponents: (_components: ThemeBasedComponentMap) => void;
   /** 改变布局时，更改当前选择组件 */

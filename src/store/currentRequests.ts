@@ -1,6 +1,6 @@
 import { CurrentRequestsType } from '@/store/types';
 
-import globalEventBus from '@/eventBus';
+import globalEventBus from '@/utils/eventBus';
 
 /** 当前所有请求监听 */
 const requestBus: CurrentRequestsType = {

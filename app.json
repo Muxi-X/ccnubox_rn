@@ -4,7 +4,7 @@
     "slug": "ccnucoursetable",
     "version": "3.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/logo.png",
+    "icon": "./src/assets/images/icon.png",
     "scheme": "wx6220588048f6e417",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
@@ -13,15 +13,10 @@
       "src/assets/data/",
       "src/assets/fonts"
     ],
-    "splash": {
-      "image": "./src/assets/images/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "7",
+      "buildNumber": "8",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -32,29 +27,29 @@
       }
     },
     "android": {
-      "versionCode": 2,
       "permissions": [
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.ACCESS_NOTIFICATION_POLICY",
         "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
-      "googleServicesFile": "./src/secret/google-services.json",
-      "package": "com.kbkbk.ccnu_coursetable"
+      "edgeToEdgeEnabled": true,
+      "package": "com.muxixyz.ccnubox"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./src/assets/images/logo.png"
+      "favicon": "./src/assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
-      "expo-font",
       [
-        "./plugin.js",
+        "expo-splash-screen",
         {
-          "appKey": "3fdd1ecdd0325fa2a197df7e",
-          "channel": "course_box"
+          "image": "./src/assets/images/splash.png",
+          "resizeMode": "cover",
+          "imageWidth": 300,
+          "backgroundColor": "#7D82F4"
         }
       ],
       [
@@ -64,7 +59,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

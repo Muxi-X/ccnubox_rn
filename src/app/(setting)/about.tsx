@@ -1,6 +1,6 @@
 import * as Application from 'expo-application';
 import * as React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TextStyle, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
 
@@ -12,28 +12,28 @@ function About() {
   const number = '791185783';
   const version = Application.nativeApplicationVersion;
   const { currentStyle } = useVisualScheme();
-
+  const textStyle = currentStyle?.text_style as TextStyle;
   return (
     <ThemeBasedView style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.headerText, currentStyle?.text_style]}>关于</Text>
+        <Text style={[styles.headerText, textStyle]}>关于</Text>
       </View>
       <View style={styles.infoContainer}>
         <Image
           source={require('../../assets/images/mx-logo.png')}
           style={styles.icon}
         />
-        <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
-        <Text style={[styles.version, currentStyle?.text_style]}>
+        <Text style={[styles.appName, textStyle]}>华师匣子</Text>
+        <Text style={[styles.version, textStyle]}>
           版本 {version}
         </Text>
       </View>
       <View style={[styles.groupContainer, currentStyle?.background_style]}>
         <View style={styles.groupRow}>
-          <Text style={[styles.groupText, currentStyle?.text_style]}>
+          <Text style={[styles.groupText, textStyle]}>
             匣子交流群：
           </Text>
-          <Text style={[styles.groupNumber, currentStyle?.text_style]}>
+          <Text style={[styles.groupNumber, textStyle]}>
             {number}
           </Text>
           <TouchableOpacity onPress={() => handleCopy(number)}>

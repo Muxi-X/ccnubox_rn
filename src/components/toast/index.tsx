@@ -1,6 +1,6 @@
 import { View } from '@ant-design/react-native';
 import React, { FC, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, TextStyle, TouchableOpacity } from 'react-native';
 
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import { ModalBack } from '@/components/modal';
@@ -73,7 +73,7 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
             )}
             <Text
               style={[
-                useVisualScheme.getState().currentStyle?.text_style,
+                useVisualScheme.getState().currentStyle?.text_style as TextStyle,
                 commonStyles.fontLarge,
                 { color: commonColors.darkGray, textAlign: 'center' },
               ]}

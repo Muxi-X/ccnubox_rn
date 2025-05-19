@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, TextStyle, View } from 'react-native';
 
 import Button from '@/components/button';
 import ThemeBasedView from '@/components/view';
@@ -28,7 +28,7 @@ export default function SelectStyle() {
       >
         <Text
           style={[
-            currentStyle?.text_style,
+            currentStyle?.text_style as TextStyle,
             {
               fontSize: 18,
               paddingLeft: 40,
@@ -71,7 +71,7 @@ export default function SelectStyle() {
       >
         <Text
           style={[
-            currentStyle?.text_style,
+            currentStyle?.text_style as TextStyle,
             {
               fontSize: 18,
               paddingLeft: 40,

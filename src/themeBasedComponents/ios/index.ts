@@ -6,7 +6,7 @@ import HeaderLeft from '@/themeBasedComponents/ios/headerLeft';
 
 /** ios 可替换组件 */
 export const defaultIOSComponents: ThemeBasedComponentRecord = {
-  header_left: HeaderLeft,
-  header_center: HeaderCenter,
-  course_item: CourseItem,
+  HeaderLeft: HeaderLeft,
+  HeaderCenter: HeaderCenter,
+  CourseItem: CourseItem,
 };

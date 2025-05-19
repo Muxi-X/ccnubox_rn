@@ -1,4 +1,4 @@
-import { generateStyleSheet } from '@/utils';
+import generateStyleSheet from '@/utils/generateStyleSheet';
 
 /** 默认样式 */
 export const defaultStyles = generateStyleSheet({

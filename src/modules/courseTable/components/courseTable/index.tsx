@@ -2,13 +2,14 @@ import { makeImageFromView } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
-  memo,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
+    memo,
+    RefObject,
+    useDeferredValue,
+    useEffect,
+    useRef,
+    useState,
 } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextStyle, View } from 'react-native';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -22,18 +23,18 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
-  COURSE_HEADER_HEIGHT,
-  COURSE_HORIZONTAL_PADDING,
-  COURSE_ITEM_HEIGHT,
-  COURSE_ITEM_WIDTH,
-  COURSE_VERTICAL_PADDING,
-  courseCollapse,
-  daysOfWeek,
-  TIME_WIDTH,
-  timeSlots,
+    COURSE_HEADER_HEIGHT,
+    COURSE_HORIZONTAL_PADDING,
+    COURSE_ITEM_HEIGHT,
+    COURSE_ITEM_WIDTH,
+    COURSE_VERTICAL_PADDING,
+    courseCollapse,
+    daysOfWeek,
+    TIME_WIDTH,
+    timeSlots,
 } from '@/constants/courseTable';
-import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -52,7 +53,7 @@ const CourseContent: React.FC<CourseTransferType> = memo(
     } = props;
 
     const CourseItem = useThemeBasedComponents(
-      state => state.currentComponents?.course_item
+      state => state.CurrentComponents?.CourseItem
     );
 
     return (
@@ -135,7 +136,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
           // 使用完整课表内容的引用而不是滚动视图
-          const snapshot = await makeImageFromView(fullTableRef);
+          const snapshot = await makeImageFromView(fullTableRef as RefObject<View>);
           if (!snapshot) {
             Toast.show({
               text: '截图失败',
@@ -429,7 +430,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>📅</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
               {week_duration}
             </Text>
           </View>
@@ -438,7 +439,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>🕒</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
               周{date}
               {class_when}节
             </Text>
@@ -448,7 +449,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>👨‍🏫</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
               {teacher}
             </Text>
           </View>
@@ -457,7 +458,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>🏢</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
               {classroom}
             </Text>
           </View>

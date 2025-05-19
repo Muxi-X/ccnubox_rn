@@ -7,7 +7,7 @@ interface addItemType {
   id: number;
   icon: any;
   text: string;
-  url?: Href<string>;
+  url?: Href<any>;
   // url: string;
 }
 
@@ -51,7 +51,7 @@ export const TooltipContent = () => {
             switch (item.id) {
               case 1:
               case 2: {
-                navigation.navigate(item.url as Href<string | object>);
+                navigation.navigate(item.url as Href);
                 break;
               }
             }
