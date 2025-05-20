@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 
 /**
  * 使用 WeakMap 实现 EventBus，可解决内存泄漏问题，但我还没测试过

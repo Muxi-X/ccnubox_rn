@@ -12,7 +12,7 @@ const requestBus: CurrentRequestsType = {
   requestComplete() {
     this.resolvedRequestNum++;
     if (this.resolvedRequestNum === this.totalRequestNum) {
-      let currentTotal = this.totalRequestNum;
+      const currentTotal = this.totalRequestNum;
       setTimeout(() => {
         if (this.totalRequestNum === currentTotal) {
           this.totalRequestNum = this.resolvedRequestNum = 0;

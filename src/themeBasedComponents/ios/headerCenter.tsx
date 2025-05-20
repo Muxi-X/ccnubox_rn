@@ -1,3 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import * as React from 'react';
 import {
   StyleSheet,
@@ -6,11 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonStyles } from '@/styles/common';
-import { router } from 'expo-router';
 
 const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
