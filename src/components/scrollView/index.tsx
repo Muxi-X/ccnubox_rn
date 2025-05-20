@@ -281,9 +281,8 @@ const ScrollLikeView = (props: ScrollableViewProps) => {
 
       // 处理下拉刷新
       handlePullToRefresh(event);
-      // 只有启用滚动时才处理滚动
-      if (true) {
-        const newTranslateX = Math.min(
+      // 永远处理滚动, 包括下拉刷新时
+      const newTranslateX = Math.min(
           0,
           Math.max(
             startX.value + Math.floor(event.translationX),
@@ -300,7 +299,6 @@ const ScrollLikeView = (props: ScrollableViewProps) => {
         );
         translateX.value = newTranslateX;
         translateY.value = newTranslateY;
-      }
     })
     .onEnd(event => {
       'worklet';
