@@ -9,7 +9,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
@@ -69,6 +70,7 @@
     "@faker-js/faker": "^9.8.0",
     "@inquirer/prompts": "^7.5.1",
     "@types/react": "~19.0.10",
+    "commitlint": "^19.8.1",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "^10.1.5",
