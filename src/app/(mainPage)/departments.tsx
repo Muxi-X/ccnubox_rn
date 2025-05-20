@@ -30,7 +30,7 @@ const Department = ({ info }: { info: DepartmentInformation }) => {
 
   return (
     <View style={[styles.card, currentScheme?.information_background_style]}>
-      <Text style={[styles.title, currentScheme?.information_title_style]}>
+      <Text style={[styles.title, currentScheme?.information_title_text_style]}>
         {info.name}
       </Text>
       <TouchableOpacity

@@ -1,6 +1,6 @@
 import { Button, Input, WhiteSpace } from '@ant-design/react-native';
 import * as React from 'react';
-import { FlatList, StyleSheet, Text, TextStyle, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import Image from '@/components/image';
 import Picker from '@/components/picker';
@@ -73,7 +73,7 @@ export const ManualAdd = (props: AddComponentProps) => {
                       <Text
                         style={[
                           { fontSize: 16, height: 20 },
-                          currentStyle?.text_style as TextStyle,
+                          currentStyle?.text_style,
                         ]}
                       >
                         {item.title}

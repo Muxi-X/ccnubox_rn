@@ -1,6 +1,6 @@
 import * as Application from 'expo-application';
 import * as React from 'react';
-import { Image, StyleSheet, Text, TextStyle, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
 
@@ -12,7 +12,7 @@ function About() {
   const number = '791185783';
   const version = Application.nativeApplicationVersion;
   const { currentStyle } = useVisualScheme();
-  const textStyle = currentStyle?.text_style as TextStyle;
+  const textStyle = currentStyle?.text_style;
   return (
     <ThemeBasedView style={styles.container}>
       <View style={styles.header}>

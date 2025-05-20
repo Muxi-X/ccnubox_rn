@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, Text, TextStyle } from 'react-native';
+import { Image, Text } from 'react-native';
 
 import Button from '@/components/button';
 // eslint-disable-next-line import/no-duplicates
@@ -32,7 +32,7 @@ export default function SelectTheme() {
       >
         <Text
           style={[
-            currentStyle?.text_style as TextStyle,
+            currentStyle?.text_style,
             {
               fontSize: 18,
               paddingLeft: 40,
@@ -81,7 +81,7 @@ export default function SelectTheme() {
       >
         <Text
           style={[
-            currentStyle?.text_style as TextStyle,
+            currentStyle?.text_style,
             {
               fontSize: 18,
               paddingLeft: 40,

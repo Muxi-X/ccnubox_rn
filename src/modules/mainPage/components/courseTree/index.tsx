@@ -6,7 +6,6 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    TextStyle,
     TouchableOpacity,
     View,
 } from "react-native";
@@ -105,7 +104,7 @@ const CourseTree = () => {
               style={
                 (hasChildren
                   ? [styles.nodeText, currentStyle?.text_style]
-                  : styles.subNodeText) as TextStyle
+                  : styles.subNodeText)
               }
             >
               {item.title}
@@ -116,7 +115,7 @@ const CourseTree = () => {
               style={
                 (hasChildren
                   ? [styles.nodeScore, currentStyle?.text_style]
-                  : styles.nodeSubScore) as TextStyle
+                  : styles.nodeSubScore)
               }
             >
               {item.credits} 学分
@@ -149,7 +148,7 @@ const CourseTree = () => {
             <Text
               style={[
                 styles.loadingText,
-                currentStyle?.text_style as TextStyle,
+                currentStyle?.text_style,
               ]}
             >
               加载中...
@@ -166,7 +165,7 @@ const CourseTree = () => {
                 style={[
                   styles.nodeText,
                   styles.titleText,
-                  currentStyle?.text_style as TextStyle,
+                  currentStyle?.text_style,
                 ]}
               >
                 全部已修学分
@@ -177,7 +176,7 @@ const CourseTree = () => {
                 style={[
                   styles.nodeScore,
                   styles.titleText,
-                  currentStyle?.text_style as TextStyle,
+                  currentStyle?.text_style,
                 ]}
               >
                 {total.toFixed(1)} 学分

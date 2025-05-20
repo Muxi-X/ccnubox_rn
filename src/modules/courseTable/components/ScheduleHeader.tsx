@@ -1,7 +1,7 @@
 // import { Tooltip } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 // import { Href, router } from 'expo-router';
-import { Text, TextStyle, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
@@ -40,7 +40,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
         <Text
           style={[
             commonStyles.fontLarge,
-            useVisualScheme.getState().currentStyle?.header_text_style as TextStyle,
+            useVisualScheme.getState().currentStyle?.header_text_style,
             {
               textAlign: 'center',
             },
@@ -52,7 +52,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
           name="arrow-forward-ios"
           size={20}
           style={[
-            useVisualScheme.getState().currentStyle?.header_text_style as TextStyle,
+            useVisualScheme.getState().currentStyle?.header_text_style,
             {
               transform: [{ rotate: '90deg' }],
               marginLeft: 4,
@@ -64,7 +64,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
         style={[
           commonStyles.fontLight,
           commonStyles.fontSmall,
-          useVisualScheme.getState().currentStyle?.schedule_week_text_style as TextStyle,
+          useVisualScheme.getState().currentStyle?.schedule_week_text_style,
           {
             textAlign: 'center',
           },
