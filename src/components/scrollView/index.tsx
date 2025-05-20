@@ -19,9 +19,9 @@ import Animated, {
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
+import { ScrollableViewProps } from './type';
 import Divider from '../divider';
 import Toast from '../toast';
-import { ScrollableViewProps } from './type';
 /** 触发刷新的阈值 */
 const REFRESH_THRESHOLD = 100;
 /** 最小触发阈值 */
