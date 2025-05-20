@@ -30,7 +30,6 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = (props) => {
     () => (
       <TabBarIcon
         size={24}
-        // @ts-ignore
         name={iconName}
         color={color}
         style={styles.icon}

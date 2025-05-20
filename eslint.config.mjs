@@ -70,6 +70,7 @@ const eslintConfig = [
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'@typescript-eslint/no-unused-vars': 'off',
 			'@typescript-eslint/no-explicit-any': 'off',
+			'@typescript-eslint/no-require-imports': 'off',
 			'unused-imports/no-unused-imports': 'warn',
 			'unused-imports/no-unused-vars': [
 				'warn',
