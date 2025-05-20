@@ -9,7 +9,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { Pressable, StyleSheet, Text, TextStyle, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -430,7 +430,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>📅</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               {week_duration}
             </Text>
           </View>
@@ -439,7 +439,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>🕒</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               周{date}
               {class_when}节
             </Text>
@@ -449,7 +449,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>👨‍🏫</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               {teacher}
             </Text>
           </View>
@@ -458,7 +458,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             <View style={styles.modalInfoIcon}>
               <Text style={styles.iconText}>🏢</Text>
             </View>
-            <Text style={[styles.modalInfoText, currentStyle?.text_style as TextStyle]}>
+            <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               {classroom}
             </Text>
           </View>

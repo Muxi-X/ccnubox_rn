@@ -4,7 +4,6 @@ import {
   BackHandler,
   StyleSheet,
   Text,
-  TextStyle,
   TouchableOpacity,
   View,
   ViewProps,
@@ -88,7 +87,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
         {title && (
           <View style={[styles.title]}>
             {typeof title === 'string' ? (
-              <Text style={[commonStyles.fontLarge, currentStyle?.text_style as TextStyle]}>
+              <Text style={[commonStyles.fontLarge, currentStyle?.text_style]}>
                 {title}
               </Text>
             ) : (
@@ -100,7 +99,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
           {typeof children === 'string' ? (
             <Text
               style={[
-                currentStyle?.text_style as TextStyle,
+                currentStyle?.text_style,
                 commonStyles.fontMedium,
                 {
                   paddingVertical: 15,
@@ -129,7 +128,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
                   <Text
                     style={[
                       styles.bottomChoiceText,
-                      !isBottomMode && currentStyle?.text_style as TextStyle,
+                      !isBottomMode && currentStyle?.text_style,
                       isBottomMode
                         ? commonStyles.fontLarge
                         : commonStyles.fontMedium,
@@ -153,7 +152,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
                   <Text
                     style={[
                       styles.bottomChoiceText,
-                      !isBottomMode && currentStyle?.text_style as TextStyle,
+                      !isBottomMode && currentStyle?.text_style,
                       isBottomMode
                         ? commonStyles.fontLarge
                         : commonStyles.fontMedium,

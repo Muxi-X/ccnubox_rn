@@ -1,6 +1,6 @@
 import { Href, useRouter } from 'expo-router';
 import * as React from 'react';
-import { Image, StyleSheet, Text, TextStyle, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -22,7 +22,7 @@ function SettingItem({ icon, text, url }: ItemProps) {
       <View style={styles.iconContainer}>
         <Image source={icon} style={styles.icon} />
       </View>
-      <Text style={[styles.title, currentScheme?.text_style as TextStyle]}>{text}</Text>
+      <Text style={[styles.title, currentScheme?.text_style]}>{text}</Text>
       <Text style={styles.arrow}>➔</Text>
     </TouchableOpacity>
   );

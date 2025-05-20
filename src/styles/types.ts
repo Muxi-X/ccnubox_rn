@@ -1,4 +1,4 @@
-import { StyleProps } from 'react-native-reanimated';
+import { TextStyle, ViewStyle } from 'react-native';
 /** 布局类型 */
 export type LayoutName = 'android' | 'ios';
 export type ThemeName = 'dark' | 'light';
@@ -23,19 +23,26 @@ export type ConfigurableThemeNames =
   | 'skeleton_background_style'
   | 'navbar_icon_active_style'
   | 'information_background_style'
-  | 'information_title_style'
+  | 'information_title_text_style'
   | 'information_text_style';
+/** 按命名约定分类配置名 */
+type TextStyleNames = Extract<ConfigurableThemeNames, `${string}_text_style` | 'text_style'>;
+type ViewStyleNames = Exclude<ConfigurableThemeNames, TextStyleNames>;
+
+/** 单个 Theme 配置类型（使用精确分类） */
+export type SingleThemeType = {
+  [K in TextStyleNames]?: TextStyle;
+} & {
+  [K in ViewStyleNames]?: ViewStyle;
+};
+
 /** 完整 layout 应有配置类型 */
 export type LayoutType = {
   [_key in ThemeName]: Partial<ThemeType>;
 };
+
 /** 单个布局配置类型 */
 export type ThemeType = Record<ThemeName, SingleThemeType>;
-
-/** 单个 Theme 配置类型 */
-export type SingleThemeType = Partial<
-  Record<ConfigurableThemeNames, StyleProps>
->;
 
 /** 颜色表 */
 export type ColorType = Record<

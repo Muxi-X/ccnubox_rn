@@ -35,7 +35,7 @@ const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
       </TouchableOpacity>
       <Text
         style={[
-          currentStyle?.header_text_style as TextStyle,
+          currentStyle?.header_text_style,
           commonStyles.TabBarPadding,
           commonStyles.fontLarge,
         ]}

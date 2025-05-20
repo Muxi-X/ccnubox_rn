@@ -7,7 +7,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextStyle,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -75,7 +74,7 @@ const ScoreCalculation: React.FC = () => {
     setIsPartiallySelected(isPartial);
     setIsAllSelected(selection.size === gradeData.length);
   };
-  const textStyle = currentStyle?.text_style as TextStyle;
+  const textStyle = currentStyle?.text_style;
 
   const showCourseDetails = (course: GradeData) => {
     setSelectedCourse(course);
