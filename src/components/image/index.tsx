@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import { Image as RNImage,ImageProps } from 'react-native';
+import { ImageProps, Image as RNImage } from 'react-native';
 
 import requestBus from '@/store/currentRequests';
 
@@ -18,15 +18,15 @@ const Image: FC<ImageProps> = ({
   ...props
 }) => {
   const handleLoad = () => {
-    onLoadStart && onLoadStart();
+    if (onLoadStart) onLoadStart();
     requestBus.requestRegister();
   };
   const handleLoadEnd = () => {
-    onLoadEnd && onLoadEnd();
+    if (onLoadEnd) onLoadEnd();
     requestBus.requestComplete();
   };
   const handleErr = (err: any) => {
-    onError && onError(err);
+    if (onError) onError(err);
     requestBus.requestComplete();
   };
   return (

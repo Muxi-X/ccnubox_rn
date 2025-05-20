@@ -80,7 +80,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
     setMultiPickerValue(Array.from(items));
   };
   const handleConfirm = () => {
-    onConfirm && onConfirm(multiPickerValue.map(item => String(item)));
+    if (onConfirm) onConfirm(multiPickerValue.map(item => String(item)));
   };
   return (
     <ModalTrigger
