@@ -30,7 +30,7 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
     get().updateFromElements();
   },
   appendChildren: (newChildren, portalType = 'common') => {
-    let tmpMap: Record<number, ReactElement> = get().elements;
+    const tmpMap: Record<number, ReactElement> = get().elements;
     const { updateFromElements } = get();
     const key = keyGenerator.next().value as unknown as number;
     if (newChildren) {
