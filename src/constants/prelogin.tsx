@@ -1,9 +1,9 @@
 import { FC, ReactElement } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import MuxiSvg from '@/assets/images/muxi.svg';
 import { commonStyles } from '@/styles/common';
 import { keyGenerator } from '@/utils';
-import MuxiSvg from '@/assets/images/muxi.svg';
 
 export const GuideContent: FC<{
   texts: string[];

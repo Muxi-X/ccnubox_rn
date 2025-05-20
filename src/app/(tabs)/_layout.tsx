@@ -1,12 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Text, TextStyle } from 'react-native';
 
+import TabBar from '@/components/navi';
+
 import useVisualScheme from '@/store/visualScheme';
 
 import { tabConfig } from '@/constants/tabBar';
 import { keyGenerator } from '@/utils';
-
-import TabBar from '@/components/navi';
 
 import { SinglePageType } from '@/types/tabBarTypes';
 

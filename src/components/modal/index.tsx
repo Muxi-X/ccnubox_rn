@@ -180,7 +180,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   ]);
   useEffect(() => {
     if (!visible) {
-      let timer = setTimeout(() => {
+      const timer = setTimeout(() => {
         currentKey !== undefined && deleteChildren(currentKey);
         clearTimeout(timer);
       }, 200);
