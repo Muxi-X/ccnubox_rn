@@ -26,7 +26,10 @@ export type ConfigurableThemeNames =
   | 'information_title_text_style'
   | 'information_text_style';
 /** 按命名约定分类配置名 */
-type TextStyleNames = Extract<ConfigurableThemeNames, `${string}_text_style` | 'text_style'>;
+type TextStyleNames = Extract<
+  ConfigurableThemeNames,
+  `${string}_text_style` | 'text_style'
+>;
 type ViewStyleNames = Exclude<ConfigurableThemeNames, TextStyleNames>;
 
 /** 单个 Theme 配置类型（使用精确分类） */

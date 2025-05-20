@@ -1,24 +1,24 @@
-import React, { FC, memo, useMemo } from "react";
+import React, { FC, memo, useMemo } from 'react';
 import {
   Pressable,
   StyleSheet,
   Text,
   TextStyle,
   ViewProps,
-} from "react-native";
+} from 'react-native';
 
-import useVisualScheme from "@/store/visualScheme";
+import useVisualScheme from '@/store/visualScheme';
 
-import { TABBAR_COLOR } from "@/constants/tabBar";
+import { TABBAR_COLOR } from '@/constants/tabBar';
 
-import { TabBarIcon } from "./TabBarIcon";
-import { TabBarItemProps } from "./types";
-import AnimatedScale from "../animatedView/AnimatedScale";
+import { TabBarIcon } from './TabBarIcon';
+import { TabBarItemProps } from './types';
+import AnimatedScale from '../animatedView/AnimatedScale';
 
-const TabBarItem: FC<TabBarItemProps & ViewProps> = (props) => {
-  const { isFocused, onPress, onLongPress, label = "", iconName } = props;
+const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
+  const { isFocused, onPress, onLongPress, label = '', iconName } = props;
   const iconStyle = useVisualScheme(
-    (state) => state.currentStyle?.navbar_icon_active_style
+    state => state.currentStyle?.navbar_icon_active_style
   ) as TextStyle;
 
   const color = useMemo(
@@ -28,12 +28,7 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = (props) => {
 
   const IconComponent = useMemo(
     () => (
-      <TabBarIcon
-        size={24}
-        name={iconName}
-        color={color}
-        style={styles.icon}
-      />
+      <TabBarIcon size={24} name={iconName} color={color} style={styles.icon} />
     ),
     [iconName, color]
   );
@@ -55,18 +50,18 @@ export default memo<TabBarItemProps & ViewProps>(TabBarItem);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: 2,
   },
   icon: {
-    display: "flex",
-    justifyContent: "center",
+    display: 'flex',
+    justifyContent: 'center',
   },
   text: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 1,
   },
 });

@@ -17,6 +17,20 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+	  {
+        // Put ignores in its own config object at the root level
+        ignores: [
+            '**/node_modules/**',
+            '**/expo/**',
+            '**/.vscode/**',
+            '**/.husky/**',
+            '**/.idea/**',
+            '**/scripts/**',
+            './metro.config.js',  // Make the path more explicit
+            './plugin.js',        // Make the path more explicit
+            'expo-env.d.ts'
+        ]
+    },
 	...compat.extends(
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
@@ -30,17 +44,6 @@ const eslintConfig = [
 		},
 	}),
 	{
-		ignores: [
-			'**/node_modules/**',
-			'**/expo/**',
-			'**/.vscode/**',
-			'**/.husky/**',
-			'**/.idea/**',
-			'metro.config.js',
-			'expo-env.d.ts',
-			'**/scripts/**',
-			'plugin.js',
-		],
 		languageOptions: {
 			globals: {
 				React: 'readonly',
@@ -70,7 +73,7 @@ const eslintConfig = [
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'@typescript-eslint/no-unused-vars': 'off',
 			'@typescript-eslint/no-explicit-any': 'off',
-			'@typescript-eslint/no-require-imports': 'off',
+			'@typescript-eslint/no-require-imports': 'warn',
 			'unused-imports/no-unused-imports': 'warn',
 			'unused-imports/no-unused-vars': [
 				'warn',

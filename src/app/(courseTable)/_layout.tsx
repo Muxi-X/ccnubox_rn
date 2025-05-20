@@ -32,9 +32,7 @@ export default function Layout() {
               headerTitle: () => (
                 <>
                   {CurrentComponents && (
-                    <CurrentComponents.HeaderCenter
-                      title={config.title}
-                    />
+                    <CurrentComponents.HeaderCenter title={config.title} />
                   )}
                 </>
               ),
