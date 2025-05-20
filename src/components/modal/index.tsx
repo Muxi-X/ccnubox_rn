@@ -20,7 +20,6 @@ import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
- 
 const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   visible: initVisible = true,
   currentKey,
@@ -35,11 +34,11 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   cancelText,
 }) => {
   const handleConfirm = () => {
-    onConfirm && onConfirm();
+    if (onConfirm) onConfirm();
     handleClose();
   };
   const handleCancel = () => {
-    onCancel && onCancel();
+    if (onCancel) onCancel();
     handleClose();
   };
   const isBottomMode = useMemo(() => {
@@ -68,7 +67,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   }, [initVisible]);
   const handleClose = () => {
     setVisible(false);
-    onClose && onClose();
+    if (onClose) onClose();
   };
   const showButtons = useMemo(() => {
     return confirmText || onConfirm || (showCancel && (cancelText || onCancel));
@@ -180,7 +179,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   useEffect(() => {
     if (!visible) {
       const timer = setTimeout(() => {
-        currentKey !== undefined && deleteChildren(currentKey);
+        if (currentKey !== undefined) deleteChildren(currentKey);
         clearTimeout(timer);
       }, 200);
     }
@@ -260,7 +259,7 @@ export const ModalTrigger: React.FC<ModalTriggerProps> = props => {
     setKey(Modal.show(restProps));
   };
   useEffect(() => {
-    key !== -1 && usePortalStore.getState().updateChildren(key, restProps);
+    if (key !== -1) usePortalStore.getState().updateChildren(key, restProps);
   }, [props, key]);
   return (
     <>
@@ -290,7 +289,7 @@ export const ModalBack: FC<
         toVisible={visible}
         onAnimationEnd={() => {
           setDisplayMode(visible ? 'flex' : 'none');
-          onAnimationEnd && onAnimationEnd(visible);
+          if (onAnimationEnd) onAnimationEnd(visible);
         }}
         style={[
           {

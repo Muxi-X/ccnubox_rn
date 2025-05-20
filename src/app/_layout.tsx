@@ -1,24 +1,24 @@
-import { Provider, Toast } from "@ant-design/react-native";
-import { loadAsync } from "expo-font";
-import * as Haptics from "expo-haptics";
-import { Stack } from "expo-router";
-import * as React from "react";
-import { Platform, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import WebView from "react-native-webview";
+import { Provider, Toast } from '@ant-design/react-native';
+import { loadAsync } from 'expo-font';
+import * as Haptics from 'expo-haptics';
+import { Stack } from 'expo-router';
+import * as React from 'react';
+import { Platform, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import WebView from 'react-native-webview';
 
-import PortalRoot from "@/components/portal";
-import Scraper from "@/components/scraper";
+import PortalRoot from '@/components/portal';
+import Scraper from '@/components/scraper';
 
-import { usePortalStore } from "@/store/portal";
-import useScraper from "@/store/scraper";
-import useVisualScheme from "@/store/visualScheme";
+import { usePortalStore } from '@/store/portal';
+import useScraper from '@/store/scraper';
+import useVisualScheme from '@/store/visualScheme';
 
-import { commonColors } from "@/styles/common";
-import { fetchUpdate } from "@/utils";
+import { commonColors } from '@/styles/common';
+import { fetchUpdate } from '@/utils';
 
 export default function RootLayout() {
-  const initVisualScheme = useVisualScheme((state) => state.init);
+  const initVisualScheme = useVisualScheme(state => state.init);
   const scraperRef = React.useRef<WebView>(null);
   const portalRef = React.useRef<View>(null);
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
@@ -28,7 +28,7 @@ export default function RootLayout() {
     alert(data);
   }, []);
 
-  const setPortalRef = usePortalStore((state) => state.setPortalRef);
+  const setPortalRef = usePortalStore(state => state.setPortalRef);
 
   // 配置JPush,消息推送
   // try {
@@ -43,7 +43,7 @@ export default function RootLayout() {
     initVisualScheme();
     // 加载字体
     void loadAsync({
-      antoutline: require("@ant-design/icons-react-native/fonts/antoutline.ttf"),
+      antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
     });
     // 配置Toast
     Toast.config({ mask: false, stackable: true });
@@ -65,7 +65,7 @@ export default function RootLayout() {
         brand_primary: commonColors.purple,
       }}
       onHaptics={() =>
-        Platform.OS !== "web" &&
+        Platform.OS !== 'web' &&
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
     >
@@ -74,7 +74,7 @@ export default function RootLayout() {
       {/* 手势检测 */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Scraper
-          ref={ref as React.RefObject<WebView<{}> | null>}
+          ref={ref as React.RefObject<WebView<any> | null>}
           onMessage={handleMessage}
         ></Scraper>
         <Stack
@@ -83,7 +83,7 @@ export default function RootLayout() {
             headerShown: false,
           }}
         >
-          {["index"].map((name) => (
+          {['index'].map(name => (
             <Stack.Screen
               key={name}
               name={name}

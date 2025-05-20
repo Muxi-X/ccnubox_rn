@@ -88,7 +88,9 @@ const CheckGrades = () => {
         confirmText="确认"
         cancelText="取消"
         titleDisplayLogic={(_val, _data) => '请选择学期'}
-      >{SemesterPickerTrigger}</MultiPicker>
+      >
+        {SemesterPickerTrigger}
+      </MultiPicker>
 
       <MultiPicker
         mode="bottom"
@@ -100,7 +102,9 @@ const CheckGrades = () => {
         confirmText="确认"
         cancelText="取消"
         titleDisplayLogic={(_val, _data) => '请选择课程性质'}
-      >{CourseTypePickerTrigger}</MultiPicker>
+      >
+        {CourseTypePickerTrigger}
+      </MultiPicker>
 
       <TouchableOpacity
         style={{
@@ -116,8 +120,7 @@ const CheckGrades = () => {
         }}
         onPress={() => {
           router.push({
-            //@ts-ignore
-            pathname: '/scoreCaculation',
+            pathname: '/(mainPage)/scoreCalculation',
             params: {
               semester: JSON.stringify(selectedSemester),
               courseType: JSON.stringify(selectedCourseType),

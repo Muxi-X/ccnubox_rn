@@ -1,12 +1,12 @@
 import { useIsFocused } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, {
-    FC,
-    memo,
-    ReactElement,
-    useEffect,
-    useMemo,
-    useState,
+  FC,
+  memo,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 
@@ -44,11 +44,11 @@ const SkeletonLoader: FC<SkeletonType> = ({
   // 监听请求完成事件
   useEffect(() => {
     globalEventBus.on('request_complete', () => {
-      isFocused && setLoading(false);
+      if (isFocused) setLoading(false);
     });
   }, []);
   React.useEffect(() => {
-    layout &&
+    if (layout)
       Animated.loop(
         Animated.timing(translateX, {
           toValue: layout.width * 1.25,
