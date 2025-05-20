@@ -2,12 +2,12 @@ import { makeImageFromView } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
-    memo,
-    RefObject,
-    useDeferredValue,
-    useEffect,
-    useRef,
-    useState,
+  memo,
+  RefObject,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -23,15 +23,15 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
-    COURSE_HEADER_HEIGHT,
-    COURSE_HORIZONTAL_PADDING,
-    COURSE_ITEM_HEIGHT,
-    COURSE_ITEM_WIDTH,
-    COURSE_VERTICAL_PADDING,
-    courseCollapse,
-    daysOfWeek,
-    TIME_WIDTH,
-    timeSlots,
+  COURSE_HEADER_HEIGHT,
+  COURSE_HORIZONTAL_PADDING,
+  COURSE_ITEM_HEIGHT,
+  COURSE_ITEM_WIDTH,
+  COURSE_VERTICAL_PADDING,
+  courseCollapse,
+  daysOfWeek,
+  TIME_WIDTH,
+  timeSlots,
 } from '@/constants/courseTable';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
@@ -136,7 +136,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
           // 使用完整课表内容的引用而不是滚动视图
-          const snapshot = await makeImageFromView(fullTableRef as RefObject<View>);
+          const snapshot = await makeImageFromView(
+            fullTableRef as RefObject<View>
+          );
           if (!snapshot) {
             Toast.show({
               text: '截图失败',

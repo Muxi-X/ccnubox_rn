@@ -24,18 +24,12 @@ function About() {
           style={styles.icon}
         />
         <Text style={[styles.appName, textStyle]}>华师匣子</Text>
-        <Text style={[styles.version, textStyle]}>
-          版本 {version}
-        </Text>
+        <Text style={[styles.version, textStyle]}>版本 {version}</Text>
       </View>
       <View style={[styles.groupContainer, currentStyle?.background_style]}>
         <View style={styles.groupRow}>
-          <Text style={[styles.groupText, textStyle]}>
-            匣子交流群：
-          </Text>
-          <Text style={[styles.groupNumber, textStyle]}>
-            {number}
-          </Text>
+          <Text style={[styles.groupText, textStyle]}>匣子交流群：</Text>
+          <Text style={[styles.groupNumber, textStyle]}>{number}</Text>
           <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>

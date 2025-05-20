@@ -2,11 +2,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Slot } from 'expo-router';
 import * as React from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 
 import { useKeyboardShow } from '@/hooks';

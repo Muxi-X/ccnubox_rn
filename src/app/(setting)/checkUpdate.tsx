@@ -45,9 +45,7 @@ function CheckUpdate(): React.ReactNode {
           source={require('../../assets/images/mx-logo.png')}
           style={styles.icon}
         />
-        <Text style={[styles.appName, currentStyle?.text_style]}>
-          华师匣子
-        </Text>
+        <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
         <Text style={[styles.version, currentStyle?.text_style]}>
           版本 {version}
         </Text>

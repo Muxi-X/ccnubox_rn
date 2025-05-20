@@ -1,4 +1,3 @@
- 
 import { create } from 'zustand';
 
 import { queryFeedEvents, readFeedEvent } from '@/request/api/feeds';

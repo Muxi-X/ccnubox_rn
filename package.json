@@ -71,7 +71,7 @@
     "@inquirer/prompts": "^7.5.1",
     "@types/react": "~19.0.10",
     "commitlint": "^19.8.1",
-    "eslint": "^9.25.0",
+    "eslint": "^9.27.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",

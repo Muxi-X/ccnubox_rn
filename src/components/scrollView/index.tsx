@@ -283,22 +283,22 @@ const ScrollLikeView = (props: ScrollableViewProps) => {
       handlePullToRefresh(event);
       // 永远处理滚动, 包括下拉刷新时
       const newTranslateX = Math.min(
-          0,
-          Math.max(
-            startX.value + Math.floor(event.translationX),
-            wrapperSize.width - containerSize.width
-          )
-        );
+        0,
+        Math.max(
+          startX.value + Math.floor(event.translationX),
+          wrapperSize.width - containerSize.width
+        )
+      );
 
-        const newTranslateY = Math.min(
-          0,
-          Math.max(
-            startY.value + Math.floor(event.translationY),
-            wrapperSize.height - containerSize.height
-          )
-        );
-        translateX.value = newTranslateX;
-        translateY.value = newTranslateY;
+      const newTranslateY = Math.min(
+        0,
+        Math.max(
+          startY.value + Math.floor(event.translationY),
+          wrapperSize.height - containerSize.height
+        )
+      );
+      translateX.value = newTranslateX;
+      translateY.value = newTranslateY;
     })
     .onEnd(event => {
       'worklet';

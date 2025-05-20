@@ -5,19 +5,19 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { FC, useEffect, useState } from 'react';
 import {
-    Dimensions,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
@@ -42,11 +42,11 @@ const GuidePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
   const gradientValue = useSharedValue(0);
-  const timeoutFn = (activeIndex: number,  timeout: number) => {
+  const timeoutFn = (activeIndex: number, timeout: number) => {
     setTimeout(() => {
-      setActiveContentIndex(activeIndex)
-    }, timeout)
-  }
+      setActiveContentIndex(activeIndex);
+    }, timeout);
+  };
   // 标题移动距离
   const titleShift = useSharedValue(0);
   useEffect(() => {
@@ -91,7 +91,7 @@ const GuidePage: FC = () => {
     setActiveIndex(pageNum);
     setTimeout(() => {
       setToVisible(true);
-      setActiveContentIndex(pageNum)
+      setActiveContentIndex(pageNum);
     }, PAGE_SWIPE_ANIMATION_DURATION + 200);
   };
   const onSwipe = Gesture.Pan()

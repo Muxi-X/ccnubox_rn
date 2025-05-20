@@ -5,8 +5,8 @@ import { Text } from 'react-native';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
-    ScheduleHeaderRight,
-    ScheduleHeaderTitle,
+  ScheduleHeaderRight,
+  ScheduleHeaderTitle,
 } from '@/modules/courseTable/components/ScheduleHeader';
 //import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
