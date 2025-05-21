@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",
+    "prebuild": "expo prebuild",
     "build": "node ./scripts/prebuild.js",
     "android": "expo run:android",
     "ios": "expo run:ios",

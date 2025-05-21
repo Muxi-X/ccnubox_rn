@@ -3,7 +3,7 @@
 printf "正在执行 Eslint 检查... "
 start_time=$(date +%s)
 
-if pnpx eslint --fix . ; then
+if pnpm run lint; then
     eslint_end_time=$(date +%s)
     echo -e "\r\033[32m✅ Eslint 检查通过 (耗时 $((eslint_end_time - start_time)) 秒)\033[0m"
 else
