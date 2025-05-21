@@ -55,7 +55,14 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "./plugins/config-android-url-scheme.js",
+        {
+          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
+          "schemes": ["weixin", "alipays", "tel", "sms"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

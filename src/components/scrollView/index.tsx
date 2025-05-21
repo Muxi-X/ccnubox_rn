@@ -1,5 +1,5 @@
 import LottieView from 'lottie-react-native';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, memo, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   LayoutRectangle,
@@ -42,7 +42,7 @@ const refreshTextMap: Record<RefreshState, string> = {
  */
 type RefreshState = 'pull' | 'release' | 'refreshing' | 'pullMore';
 
-const ScrollLikeView = (props: ScrollableViewProps) => {
+const ScrollLikeView = (props: ScrollableViewProps, ref: React.Ref<View>) => {
   const {
     stickyTop,
     stickyLeft,
@@ -371,9 +371,9 @@ const ScrollLikeView = (props: ScrollableViewProps) => {
 
   return (
     <View
+      ref={ref}
       style={[styles.largeWrapper, style]}
       collapsable={collapsable}
-      // 确保内容不被裁剪
       pointerEvents="box-none"
     >
       <Animated.View
@@ -528,4 +528,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(ScrollLikeView);
+export default memo(forwardRef(ScrollLikeView));
