@@ -24,7 +24,9 @@ const useVisualScheme = create<visualSchemeType>()(
             LayoutName,
             LayoutType
           >;
-          if (state.themeName === 'dark') {
+          const currentTheme =
+            Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
+          if (currentTheme === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
           } else {
             SystemUI.setBackgroundColorAsync('white');
@@ -33,6 +35,7 @@ const useVisualScheme = create<visualSchemeType>()(
           globalEventBus.emit('layoutChange', state.layoutName);
           return {
             ...state,
+            themeName: currentTheme,
             currentStyle: layoutMap[state.layoutName][
               state.themeName
             ] as SingleThemeType,

@@ -3,7 +3,7 @@ import { loadAsync } from 'expo-font';
 import * as Haptics from 'expo-haptics';
 import { Stack } from 'expo-router';
 import * as React from 'react';
-import { Platform, View } from 'react-native';
+import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 
@@ -19,6 +19,7 @@ import { fetchUpdate } from '@/utils';
 
 export default function RootLayout() {
   const initVisualScheme = useVisualScheme(state => state.init);
+  const changeTheme = useVisualScheme(state => state.changeTheme);
   const scraperRef = React.useRef<WebView>(null);
   const portalRef = React.useRef<View>(null);
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
@@ -57,6 +58,11 @@ export default function RootLayout() {
 
   React.useEffect(() => {
     initApp();
+    const listener = Appearance.addChangeListener(scheme => {
+      console.log('toggled change scheme', scheme);
+      changeTheme(scheme.colorScheme === 'dark' ? 'dark' : 'light');
+    });
+    return () => listener.remove();
   }, []);
 
   return (
