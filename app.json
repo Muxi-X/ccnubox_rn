@@ -14,6 +14,11 @@
       "src/assets/fonts"
     ],
     "ios": {
+      "icon": {
+        "light": "./src/assets/images/icon-ios-light.png",
+        "dark": "./src/assets/images/icon-ios-dark.png",
+        "tinted": "./src/assets/images/icon-ios-tinted.png"
+      },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
       "buildNumber": "8",
@@ -27,6 +32,10 @@
       }
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/android-icon-foreground.png",
+        "backgroundColor": "#6666FF"
+      },
       "permissions": [
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
@@ -41,10 +50,13 @@
       [
         "expo-splash-screen",
         {
-          "image": "./src/assets/images/splash.png",
-          "resizeMode": "cover",
-          "imageWidth": 300,
-          "backgroundColor": "#7D82F4"
+          "backgroundColor": "#7D82F4",
+          "image": "./src/assets/images/splash-icon-light.png",
+          "dark": {
+            "image": "./src/assets/images/splash-icon-dark.png",
+            "backgroundColor": "#f1f1f1"
+          },
+          "imageWidth": 200
         }
       ],
       [
