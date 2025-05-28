@@ -11,14 +11,14 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { TABBAR_COLOR } from '@/constants/tabBar';
 
+import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';
 import { TabBarItemProps } from './types';
-import AnimatedScale from '../animatedView/AnimatedScale';
 
 const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
   const { isFocused, onPress, onLongPress, label = '', iconName } = props;
   const iconStyle = useVisualScheme(
-    state => state.currentStyle?.navbar_icon_active_style
+    state => state.currentStyle?.navbar_icon_active_text_style
   ) as TextStyle;
 
   const color = useMemo(

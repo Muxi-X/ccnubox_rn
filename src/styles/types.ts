@@ -21,7 +21,7 @@ export type ConfigurableThemeNames =
   | 'notification_text_style'
   | 'background_style'
   | 'skeleton_background_style'
-  | 'navbar_icon_active_style'
+  | 'navbar_icon_active_text_style'
   | 'information_background_style'
   | 'information_title_text_style'
   | 'information_text_style';

@@ -69,6 +69,8 @@ export default function RootLayout() {
     <Provider
       theme={{
         brand_primary: commonColors.purple,
+        border_color_base: '#dddddd', // 基础的
+        border_color_thin: '#D8D8D8', // 更细的
       }}
       onHaptics={() =>
         Platform.OS !== 'web' &&

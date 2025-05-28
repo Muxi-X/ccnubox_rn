@@ -52,7 +52,7 @@ const CheckGrades = () => {
   );
 
   const CourseTypePickerTrigger = (
-    <View style={[styles.item, styles.itemBorder]}>
+    <View style={styles.item}>
       <Image
         style={{ width: 35, height: 35, marginRight: 34 }}
         source={require('../../../../assets/images/xueqi.png')}
@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemBorder: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderStyle: 'solid',
-    borderColor: '#D8D8D8',
+    borderColor: '#D8D8D880',
   },
 });
