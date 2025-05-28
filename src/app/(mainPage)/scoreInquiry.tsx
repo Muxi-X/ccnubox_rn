@@ -22,7 +22,7 @@ const ScoreInquiry = () => {
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      <TabBar tabs={tabs}>
+      <TabBar tabs={tabs} style={{ paddingTop: 20 }}>
         <View style={styles.content}>
           <CheckGrades />
         </View>
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingTop: 10,
     paddingHorizontal: 20,
   },
 });

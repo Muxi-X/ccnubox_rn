@@ -17,7 +17,7 @@ const baseStyle: ThemeType = {
     header_text_style: {
       color: lightGray,
     },
-    navbar_icon_active_style: {
+    navbar_icon_active_text_style: {
       color: purple,
     },
     skeleton_background_style: {
@@ -50,7 +50,7 @@ const baseStyle: ThemeType = {
     navbar_background_style: {
       backgroundColor: white,
     },
-    navbar_icon_active_style: {
+    navbar_icon_active_text_style: {
       color: purple,
     },
     modal_background_style: {

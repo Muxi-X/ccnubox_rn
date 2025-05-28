@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
     height: windowHeight - 100, // Adjust based on header height
   },
   titleBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f1f1',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#D8D8D880',
     paddingBottom: 20,
   },
   node: {
