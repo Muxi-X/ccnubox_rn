@@ -29,7 +29,7 @@ function CheckUpdate(): React.ReactNode {
   }, [isUpdatePending]);
 
   useEffect(() => {
-    isUpdateAvailable &&
+    if (isUpdateAvailable)
       Modal.show({
         title: '检测到更新',
         children: '是否更新',

@@ -11,15 +11,14 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { TABBAR_COLOR } from '@/constants/tabBar';
 
+import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';
 import { TabBarItemProps } from './types';
-import AnimatedOpacity from '../animatedView/AnimatedOpacity';
-import AnimatedScale from '../animatedView/AnimatedScale';
 
-const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
+const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
   const { isFocused, onPress, onLongPress, label = '', iconName } = props;
   const iconStyle = useVisualScheme(
-    state => state.currentStyle?.navbar_icon_active_style
+    state => state.currentStyle?.navbar_icon_active_text_style
   ) as TextStyle;
 
   const color = useMemo(
@@ -29,13 +28,7 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
 
   const IconComponent = useMemo(
     () => (
-      <TabBarIcon
-        size={24}
-        // @ts-ignore
-        name={iconName}
-        color={color}
-        style={styles.icon}
-      />
+      <TabBarIcon size={24} name={iconName} color={color} style={styles.icon} />
     ),
     [iconName, color]
   );
@@ -47,15 +40,12 @@ const TabBarItem = memo<TabBarItemProps & ViewProps>(props => {
       style={[styles.container]}
     >
       <AnimatedScale trigger={isFocused}>{IconComponent}</AnimatedScale>
-
-      <AnimatedOpacity trigger>
-        <Text style={[{ color: color }, styles.text]}>{label}</Text>
-      </AnimatedOpacity>
+      <Text style={[{ color: color }, styles.text]}>{label}</Text>
     </Pressable>
   );
-});
+};
 
-export default TabBarItem as FC<TabBarItemProps & ViewProps>;
+export default memo<TabBarItemProps & ViewProps>(TabBarItem);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,11 +1,7 @@
 import { request } from '@/request';
 
 const queryWebsites = async () => {
-  try {
-    return await request.get(`/website/getWebsites`);
-  } catch (error) {
-    throw error;
-  }
+  return await request.get(`/website/getWebsites`);
 };
 
 export default queryWebsites;

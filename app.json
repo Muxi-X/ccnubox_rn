@@ -4,7 +4,7 @@
     "slug": "ccnucoursetable",
     "version": "3.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/logo.png",
+    "icon": "./src/assets/images/icon.png",
     "scheme": "wx6220588048f6e417",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
@@ -13,15 +13,15 @@
       "src/assets/data/",
       "src/assets/fonts"
     ],
-    "splash": {
-      "image": "./src/assets/images/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
+      "icon": {
+        "light": "./src/assets/images/icon-ios-light.png",
+        "dark": "./src/assets/images/icon-ios-dark.png",
+        "tinted": "./src/assets/images/icon-ios-tinted.png"
+      },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "7",
+      "buildNumber": "8",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -32,29 +32,31 @@
       }
     },
     "android": {
-      "versionCode": 2,
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/android-icon-foreground.png",
+        "backgroundColor": "#6666FF"
+      },
       "permissions": [
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.ACCESS_NOTIFICATION_POLICY",
         "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
-      "googleServicesFile": "./src/secret/google-services.json",
-      "package": "com.kbkbk.ccnu_coursetable"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./src/assets/images/logo.png"
+      "edgeToEdgeEnabled": true,
+      "package": "com.muxixyz.ccnubox"
     },
     "plugins": [
       "expo-router",
-      "expo-font",
       [
-        "./plugin.js",
+        "expo-splash-screen",
         {
-          "appKey": "3fdd1ecdd0325fa2a197df7e",
-          "channel": "course_box"
+          "backgroundColor": "#7D82F4",
+          "image": "./src/assets/images/splash-icon-light.png",
+          "dark": {
+            "image": "./src/assets/images/splash-icon-dark.png",
+            "backgroundColor": "#f1f1f1"
+          },
+          "imageWidth": 200
         }
       ],
       [
@@ -63,6 +65,14 @@
           "android": {
             "usesCleartextTraffic": true
           }
+        }
+      ],
+      "expo-secure-store",
+      [
+        "./plugins/config-android-url-scheme.js",
+        {
+          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
+          "schemes": ["weixin", "alipays", "tel", "sms"]
         }
       ]
     ],

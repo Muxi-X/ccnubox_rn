@@ -1,13 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Slot } from 'expo-router';
 import * as React from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useKeyboardShow } from '@/hooks';
 
@@ -21,48 +15,40 @@ const Login: React.FC = () => {
   const isKeyboardShow = useKeyboardShow();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
-    >
-      <LinearGradient colors={['#7B6EF1', '#7FB4FB']} style={styles.bg}>
-        <AnimatedFade
-          duration={100}
-          direction="vertical"
-          distance={12}
-          toVisible={!isKeyboardShow}
-        >
-          <Text
-            style={[
-              styles.text1,
-              commonStyles.fontExtraLarge,
-              commonStyles.fontExtraBold,
-            ]}
-          >
-            “需求太多？
-          </Text>
-          <Text
-            style={[
-              styles.text2,
-              commonStyles.fontExtraLarge,
-              commonStyles.fontExtraBold,
-            ]}
-          >
-            用匣子试试！”
-          </Text>
-        </AnimatedFade>
-        <Slot />
-        {/* 脚注 */}
-        <View
+    <LinearGradient colors={['#7B6EF1', '#7FB4FB']} style={styles.bg}>
+      <AnimatedFade
+        duration={100}
+        direction="vertical"
+        distance={12}
+        toVisible={!isKeyboardShow}
+      >
+        <Text
           style={[
-            styles.divider,
-            { display: isKeyboardShow ? 'none' : 'flex' },
+            styles.text1,
+            commonStyles.fontExtraLarge,
+            commonStyles.fontExtraBold,
           ]}
         >
-          <Divider>木犀团队出品</Divider>
-        </View>
-      </LinearGradient>
-    </KeyboardAvoidingView>
+          “需求太多？
+        </Text>
+        <Text
+          style={[
+            styles.text2,
+            commonStyles.fontExtraLarge,
+            commonStyles.fontExtraBold,
+          ]}
+        >
+          用匣子试试！”
+        </Text>
+      </AnimatedFade>
+      <Slot />
+      {/* 脚注 */}
+      <View
+        style={[styles.divider, { display: isKeyboardShow ? 'none' : 'flex' }]}
+      >
+        <Divider>木犀团队出品</Divider>
+      </View>
+    </LinearGradient>
   );
 };
 

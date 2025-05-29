@@ -35,33 +35,23 @@ const useThemeChangeStyle = (
       };
     }
 
-    // 当前页面才执行动画
-    const color = interpolateColor(
-      progress.value,
-      [0, 1],
-      [previousColor.value, currentColor]
-    );
-
     return {
-      [styleName]: color,
+      [styleName]: interpolateColor(
+        progress.value,
+        [0, 1],
+        [previousColor.value, currentColor]
+      ),
     };
   });
 
   useEffect(() => {
+    'worklet';
     const currentColor =
       currentStyle?.[configurableThemeName]?.[styleName] ?? '';
     if (previousColor.value !== currentColor) {
-      if (isFocused) {
-        // 当前页面执行动画
-        progress.value = 0;
-        progress.value = withTiming(1, { duration: 400 }, () => {
-          previousColor.value = currentColor as string;
-        });
-      } else {
-        // 非当前页面直接更新颜色，不执行动画
-        progress.value = 1;
+      progress.value = withTiming(1, { duration: 400 }, () => {
         previousColor.value = currentColor as string;
-      }
+      });
     }
   }, [currentStyle, isFocused]);
 

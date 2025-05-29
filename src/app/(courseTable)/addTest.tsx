@@ -3,8 +3,8 @@ import React from 'react';
 
 import TabBar from '@/components/tabs';
 
-import ItemList from './components/ItemList';
-import { ManualAdd } from './components/ManualAdd';
+import ItemList from '@/modules/courseTable/components/ItemList';
+import { ManualAdd } from '@/modules/courseTable/components/ManualAdd';
 
 export default function AddTest() {
   const list = [

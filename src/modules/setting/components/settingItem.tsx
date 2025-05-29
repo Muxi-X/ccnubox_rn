@@ -7,7 +7,7 @@ import useVisualScheme from '@/store/visualScheme';
 interface ItemProps {
   icon: { uri: string };
   text: string;
-  url: Href<string>;
+  url: Href;
 }
 function SettingItem({ icon, text, url }: ItemProps) {
   const currentScheme = useVisualScheme(state => state.currentStyle);

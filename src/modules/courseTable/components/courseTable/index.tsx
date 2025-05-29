@@ -3,6 +3,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
   memo,
+  RefObject,
   useDeferredValue,
   useEffect,
   useRef,
@@ -32,8 +33,8 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
-import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -52,7 +53,7 @@ const CourseContent: React.FC<CourseTransferType> = memo(
     } = props;
 
     const CourseItem = useThemeBasedComponents(
-      state => state.currentComponents?.course_item
+      state => state.CurrentComponents?.CourseItem
     );
 
     return (
@@ -135,7 +136,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
           // 使用完整课表内容的引用而不是滚动视图
-          const snapshot = await makeImageFromView(fullTableRef);
+          const snapshot = await makeImageFromView(
+            fullTableRef as RefObject<View>
+          );
           if (!snapshot) {
             Toast.show({
               text: '截图失败',

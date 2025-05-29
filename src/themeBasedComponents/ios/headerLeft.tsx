@@ -9,7 +9,7 @@ import { commonStyles } from '@/styles/common';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
-export const HeaderLeft: React.FC<{ config: MainPageGridDataType }> = () => {
+const HeaderLeft: React.FC<{ config: MainPageGridDataType }> = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
