@@ -2,8 +2,8 @@ import { Icon, Toast } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { FC, useEffect, useState } from 'react';
 import * as React from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -42,9 +42,15 @@ const GuidePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
   const gradientValue = useSharedValue(0);
+  const timeoutFn = (activeIndex: number, timeout: number) => {
+    setTimeout(() => {
+      setActiveContentIndex(activeIndex);
+    }, timeout);
+  };
   // 标题移动距离
   const titleShift = useSharedValue(0);
   useEffect(() => {
+    'worklet';
     // 渐变条每次移动多少
     const percent = Math.floor(
       (percent2px(80) - 4 * commonStyles.fontExtraLarge.fontSize - 48) /
@@ -53,6 +59,7 @@ const GuidePage: FC = () => {
     titleShift.value = withTiming(Math.floor(percent * activeIndex), {
       easing: Easing.out(Easing.ease),
     });
+    // runOnJS(setActiveContentIndex)(activeIndex)
     gradientValue.value = withTiming(
       percent * (activeIndex + 1) - percent2px(60 * 2),
       {
@@ -70,9 +77,6 @@ const GuidePage: FC = () => {
     router.navigate('/auth/login');
     AsyncStorage.setItem('firstLaunch', 'true');
   };
-  useEffect(() => {
-    setActiveContentIndex(activeIndex);
-  }, [titleShift.value]);
   // 跳转第几条内容
   const jump = (pageNum: number) => {
     if (pageNum > preloginGuide.length - 1 || pageNum < 0) {
@@ -87,6 +91,7 @@ const GuidePage: FC = () => {
     setActiveIndex(pageNum);
     setTimeout(() => {
       setToVisible(true);
+      setActiveContentIndex(pageNum);
     }, PAGE_SWIPE_ANIMATION_DURATION + 200);
   };
   const onSwipe = Gesture.Pan()
@@ -147,7 +152,7 @@ const GuidePage: FC = () => {
             style={{ flex: 1 }}
             duration={PAGE_SWIPE_ANIMATION_DURATION}
           >
-            {preloginGuide[activeContentIndex].content}
+            {preloginGuide[activeContentIndex]?.content}
           </AnimatedOpacity>
         </View>
       </GestureDetector>

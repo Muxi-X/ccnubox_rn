@@ -4,7 +4,14 @@ import axios, { AxiosError } from 'axios';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { useKeyboardShow } from '@/hooks';
 
@@ -70,74 +77,79 @@ const LoginPage: FC = () => {
     setPrivacyChecked(e.target.checked);
   };
   return (
-    <AnimatedFade direction="vertical" distance={16} style={[styles.form]}>
-      <Image
-        source={require('../../assets/images/mx-logo.png')}
-        style={styles.logo}
-      ></Image>
-      <AnimatedOpacity toVisible={!isKeyboardShow}>
-        <Text
-          style={[
-            commonStyles.fontExtraLarge,
-            commonStyles.fontBold,
-            styles.auth,
-          ]}
-        >
-          统一身份认证
-        </Text>
-      </AnimatedOpacity>
-      <Input
-        style={styles.input}
-        /* 加上前后缀，与下方Input对齐 */
-        prefix={<View style={styles.suffixStyle}></View>}
-        suffix={<View style={styles.suffixStyle}></View>}
-        placeholder="请输入学号"
-        value={userInfo.student_id}
-        onChangeText={text =>
-          setUserInfo(prev => ({ ...prev, student_id: text.toString() }))
-        }
-        placeholderTextColor={styles.textColor.color}
-        textAlign="center"
-        blurOnSubmit={false}
-      ></Input>
-      <Input
-        style={styles.input}
-        placeholderTextColor={styles.textColor.color}
-        textAlign="center"
-        /* 前后缀都要有，不然对不齐 */
-        prefix={<View style={styles.suffixStyle}></View>}
-        value={userInfo.password}
-        onChangeText={text =>
-          setUserInfo(prev => ({ ...prev, password: text.toString() }))
-        }
-        blurOnSubmit={false}
-        type={isPasswordShow ? 'text' : 'password'}
-        suffix={
-          <Icon
-            name={isPasswordShow ? 'eye' : 'eye-invisible'}
-            style={styles.suffixStyle}
-            color={styles.textColor.color}
-            size="xs"
-            onPress={handleViewPassword}
-          ></Icon>
-        }
-        placeholder="请输入密码"
-      ></Input>
-      <View style={styles.rules}>
-        <Checkbox onChange={onCheckPrivacy}>
-          <Text style={styles.rules_radio}>
-            已阅读并同意 <Text style={styles.link}>服务协议</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+      style={{ flex: 1 }}
+    >
+      <AnimatedFade direction="vertical" distance={16} style={[styles.form]}>
+        <Image
+          source={require('../../assets/images/mx-logo.png')}
+          style={styles.logo}
+        ></Image>
+        <AnimatedOpacity toVisible={!isKeyboardShow}>
+          <Text
+            style={[
+              commonStyles.fontExtraLarge,
+              commonStyles.fontBold,
+              styles.auth,
+            ]}
+          >
+            统一身份认证
           </Text>
-        </Checkbox>
-      </View>
-      <Button
-        onPress={handleLogin}
-        isLoading={loginTriggered}
-        style={[styles.login_button, currentStyle?.button_style]}
-      >
-        登录
-      </Button>
-    </AnimatedFade>
+        </AnimatedOpacity>
+        <Input
+          style={styles.input}
+          /* 加上前后缀，与下方Input对齐 */
+          prefix={<View style={styles.suffixStyle}></View>}
+          suffix={<View style={styles.suffixStyle}></View>}
+          placeholder="请输入学号"
+          value={userInfo.student_id}
+          onChangeText={text =>
+            setUserInfo(prev => ({ ...prev, student_id: text.toString() }))
+          }
+          placeholderTextColor={styles.textColor.color}
+          textAlign="center"
+        ></Input>
+
+        <Input
+          style={styles.input}
+          placeholderTextColor={styles.textColor.color}
+          textAlign="center"
+          /* 前后缀都要有，不然对不齐 */
+          prefix={<View style={styles.suffixStyle}></View>}
+          value={userInfo.password}
+          onChangeText={text =>
+            setUserInfo(prev => ({ ...prev, password: text.toString() }))
+          }
+          type={isPasswordShow ? 'text' : 'password'}
+          suffix={
+            <Icon
+              name={isPasswordShow ? 'eye' : 'eye-invisible'}
+              style={styles.suffixStyle}
+              color={styles.textColor.color}
+              size="xs"
+              onPress={handleViewPassword}
+            ></Icon>
+          }
+          placeholder="请输入密码"
+        ></Input>
+        <View style={styles.rules}>
+          <Checkbox onChange={onCheckPrivacy}>
+            <Text style={styles.rules_radio}>
+              已阅读并同意 <Text style={styles.link}>服务协议</Text>
+            </Text>
+          </Checkbox>
+        </View>
+        <Button
+          onPress={handleLogin}
+          isLoading={loginTriggered}
+          style={[styles.login_button, currentStyle?.button_style]}
+        >
+          登录
+        </Button>
+      </AnimatedFade>
+    </KeyboardAvoidingView>
   );
 };
 

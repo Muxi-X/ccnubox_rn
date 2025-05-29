@@ -13,7 +13,7 @@ import { ConfigurableThemeNames } from '@/styles/types';
  * @param restProps
  * @constructor
  */
-const View: React.FC<
+const ThemeBasedView: React.FC<
   { configurableThemeName?: ConfigurableThemeNames } & ViewProps
 > = ({ style, configurableThemeName = 'background_style', ...restProps }) => {
   const animatedStyle = useThemeChangeStyle(
@@ -24,4 +24,4 @@ const View: React.FC<
   return <Animated.View style={[style, animatedStyle]} {...restProps} />;
 };
 
-export default View;
+export default ThemeBasedView;

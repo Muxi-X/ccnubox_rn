@@ -30,11 +30,13 @@ export type visualSchemeType = {
 
 export type scraperType = {
   /* webview 的 ref */
-  ref: MutableRefObject<WebView<{}> | undefined> | null;
+  ref: MutableRefObject<WebView<unknown> | undefined> | null;
   /* 注入的 js */
   injectJavaScript: (_injected: string) => void;
   /* 设置 ref */
-  setRef: (_newRef: MutableRefObject<WebView<{}> | undefined> | null) => void;
+  setRef: (
+    _newRef: MutableRefObject<WebView<unknown> | undefined> | null
+  ) => void;
 };
 
 /** theme based components */
@@ -42,7 +44,7 @@ export type ThemeBasedComponentsType = {
   /** 所有的可替换组件 */
   themeBasedComponents: ThemeBasedComponentMap;
   /** 目前的可替换组件 */
-  currentComponents: ThemeBasedComponentRecord | null;
+  CurrentComponents: ThemeBasedComponentRecord | null;
   /** 设置 components */
   setComponents: (_components: ThemeBasedComponentMap) => void;
   /** 改变布局时，更改当前选择组件 */

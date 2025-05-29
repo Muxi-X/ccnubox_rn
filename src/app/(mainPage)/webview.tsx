@@ -28,8 +28,11 @@ export default function ClassRoom() {
         injectedJavaScriptForMainFrameOnly={false}
         style={styles.container}
         onMessage={event => {
-          if (event.nativeEvent.data === '_pageLoaded') {
+          const eventName: string = event.nativeEvent.data;
+          if (eventName === '_pageLoaded') {
             setLoading(false);
+          } else if (eventName === '_pageStartLoading') {
+            setLoading(true);
           }
         }}
         source={{ uri: atob(link as string) }}
