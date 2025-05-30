@@ -9,7 +9,7 @@ import java.util.Calendar
 object TimeTableUtils {
 
     //学期第一天早上八点的Unix时间戳
-    private var startTimestamp=1739721600L
+    private var startTimestamp = 1739721600L
 
     //每节课的开始时间是一天中的第几分钟
     private val sectionStartMinutes = mapOf(
@@ -28,7 +28,18 @@ object TimeTableUtils {
     //每节课持续时间 有生之年应该不会改了
     private const val DEFAULT_DURATION = 45L
 
-    public fun getTodayWeekday(): Int {
+    public fun setStartTimeStamp(startTimestamp: Long) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public fun getDateString(): String {
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH) + 1 // 月份从 0 开始，所以要 +1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        return "${month}月${day}日"
+    }
+
+    public fun getWeekday(): Int {
         val calendar = Calendar.getInstance()
         // 注意：Calendar.DAY_OF_WEEK 返回的是 1~7（周日是1，周一是2...）
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
@@ -37,11 +48,8 @@ object TimeTableUtils {
         return if (dayOfWeek == Calendar.SUNDAY) 7 else dayOfWeek - 1
     }
 
-    public fun setStartTimeStamp(startTimestamp:Long){
-        this.startTimestamp=startTimestamp;
-    }
 
-    fun numberToChinese(num: Int): String {
+    fun weekIntToString(num: Int): String {
         val digits = listOf("零", "一", "二", "三", "四", "五", "六", "七", "八", "九")
 
         return when (num) {
@@ -53,8 +61,14 @@ object TimeTableUtils {
         }
     }
 
+    fun weekdayIntToString(num: Int): String {
+        val digits = listOf("零", "一", "二", "三", "四", "五", "六", "日")
 
-    public fun getCurrentWeek(): Int {
+        return digits[num]
+    }
+
+
+    fun getWeek(): Int {
         val now = System.currentTimeMillis()
         val startMillis = startTimestamp * 1000 // 时间戳是秒，转成毫秒
         if (now < startMillis) return 0 // 开学前
@@ -65,13 +79,13 @@ object TimeTableUtils {
     }
 
 
-    public fun getTodayCourses(context: Context): List<CourseInfo> {
-        val weekday= getTodayWeekday()
-        val currentWeek= getCurrentWeek()
+    fun getTodayCourses(context: Context): List<CourseInfo> {
+        val weekday = getWeekday()
+        val currentWeek = getWeek()
         val sp = context.getSharedPreferences("WidgetData", Context.MODE_PRIVATE)
         val stored = sp.getString("all_courses", null) ?: return emptyList()
 
-        Log.d("stored",stored)
+        Log.d("stored", stored)
 
         val result = mutableListOf<CourseInfo>()
 
@@ -94,7 +108,7 @@ object TimeTableUtils {
                     val endPeriod = obj.getInt("endPeriod")
 
                     // 判断是否课程还没结束
-                    val endMinutes = TimeTableUtils.getStartMinuteOfSection(endPeriod).plus(45)
+                    val endMinutes = getStartMinuteOfSection(endPeriod).plus(45)
                     if (currentMinutes < endMinutes) {
                         val course = CourseInfo(
                             name = obj.getString("name"),
@@ -106,23 +120,17 @@ object TimeTableUtils {
                             weekBitMask = bitmask
                         )
                         result.add(course)
-                        Log.d("TAG","course:")
+                        Log.d("TAG", "course:")
                     }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        Log.d("result",result.toString())
+        Log.d("result", result.toString())
 
         // 排序 + 取前两个未结束的课程
-        return result.sortedBy { it.startPeriod }.take(2)
-    }
-
-
-    fun getStartMinuteOfSection(section: Int): Long {
-        return sectionStartMinutes[section]
-            ?: throw IllegalArgumentException("无效的节数: $section")
+        return result.sortedBy { it.startPeriod }
     }
 
     /**
@@ -135,25 +143,15 @@ object TimeTableUtils {
         return "${formatMinutes(start)}-${formatMinutes(end)}"
     }
 
+    private fun getStartMinuteOfSection(section: Int): Long {
+        return sectionStartMinutes[section]
+            ?: throw IllegalArgumentException("无效的节数: $section")
+    }
+
     private fun formatMinutes(minutes: Long): String {
         val hour = minutes / 60
         val min = minutes % 60
         return String.format("%02d:%02d", hour, min)
     }
 
-    fun getEvenClassEndTimes(): List<Long> {
-        val currentTime = System.currentTimeMillis()
-        val calendar = Calendar.getInstance()
-        val todayStart = calendar.timeInMillis - calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000L -
-                calendar.get(Calendar.MINUTE) * 60 * 1000L -
-                calendar.get(Calendar.SECOND) * 1000L -
-                calendar.get(Calendar.MILLISECOND)
-
-        return sectionStartMinutes.filterKeys { it % 2 == 0 } // 筛选偶数课
-            .map { (section, startTimeMinutes) ->
-                val endTimeMinutes = startTimeMinutes + DEFAULT_DURATION
-                val endTimeMillis = todayStart + endTimeMinutes * 60 * 1000L
-                endTimeMillis
-            }
-    }
 }
