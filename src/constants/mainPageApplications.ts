@@ -20,6 +20,7 @@ import IosMoreSvg from '@/assets/images/icons/ios/more.svg';
 import IosSiteSvg from '@/assets/images/icons/ios/site.svg';
 import IosWebSvg from '@/assets/images/icons/ios/web.svg';
 import { handleOpenURL } from '@/utils/handleOpenURL';
+import { updateCourseData } from '@/utils/updateWidget';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
@@ -169,5 +170,23 @@ export const mainPageApplications: MainPageGridDataType[] = [
       }) || AndroidMoreSvg,
     key: 'grid-13',
     href: '/more' as Href,
+  },
+  {
+    title: '更新小组件',
+    name: 'updateWidget',
+    imageUrl:
+      Platform.select({
+        ios: IosMoreSvg,
+        android: AndroidMoreSvg,
+      }) || AndroidMoreSvg,
+    key: 'grid-14',
+    action: () =>
+      updateCourseData()
+        .then(() => {
+          console.log('updateWidget');
+        })
+        .catch(error => {
+          console.error('更新小组件失败:', error);
+        }),
   },
 ];
