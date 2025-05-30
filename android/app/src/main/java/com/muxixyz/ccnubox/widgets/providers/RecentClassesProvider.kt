@@ -39,9 +39,9 @@ class RecentClassesProvider : AppWidgetProvider() {
 
         val views = RemoteViews(context.packageName, R.layout.recent_classes_widget)
 
-        val week = TimeTableUtils.getCurrentWeek()
-        val weekday = TimeTableUtils.getTodayWeekday()
-        views.setTextViewText(R.id.widget_date, "第${TimeTableUtils.numberToChinese(week)}周 周${TimeTableUtils.numberToChinese(weekday)}")
+        val weekday = TimeTableUtils.getWeekday()
+        views.setTextViewText(R.id.date_in_year, TimeTableUtils.getDateString())
+        views.setTextViewText(R.id.date_in_week,"星期"+TimeTableUtils.weekdayIntToString(weekday))
 
         val serviceIntent = Intent(context, RecentClassesService::class.java)
         views.setRemoteAdapter(R.id.lv, serviceIntent)
