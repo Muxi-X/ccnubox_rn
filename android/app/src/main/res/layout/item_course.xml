@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#212121"
+                android:textColor="#000000"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textStyle="bold" />
@@ -38,14 +38,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="#666666" />
+                android:textColor="#AAAAAA" />
 
             <TextView
                 android:id="@+id/course_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="#666666" />
+                android:textColor="#AAAAAA" />
         </LinearLayout>
     </LinearLayout>
 
