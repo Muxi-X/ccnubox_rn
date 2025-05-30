@@ -85,8 +85,4 @@ class WidgetManagerModule(private val reactContext: ReactApplicationContext):Rea
             e.printStackTrace()
         }
     }
-
-    private fun updateWidget() {
-
-    }
 }
