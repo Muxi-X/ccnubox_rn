@@ -60,7 +60,7 @@
         <data android:scheme="exp+ccnubox"/>
       </intent-filter>
     </activity>
-    <receiver android:name=".widgets.provider.DailyCourseWidgetProvider" android:exported="true">
+    <receiver android:name=".widgets.providers.RecentClassesProvider" android:exported="true">
       <intent-filter>
         <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
         <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
