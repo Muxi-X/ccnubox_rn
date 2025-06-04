@@ -1,6 +1,7 @@
 import { Href, Redirect, SplashScreen } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
+import { Platform } from 'react-native';
 
 import useCourse from '@/store/course';
 
@@ -36,13 +37,16 @@ const Index = () => {
           setItem('firstLaunch', 'false');
           setInitialRoute('/auth/guide');
         } else {
-          updateCourseData()
-            .then(() => {
-              console.log('updateWidget');
-            })
-            .catch(error => {
-              console.error('更新小组件失败:', error);
-            });
+          if (Platform.OS === 'android') {
+            updateCourseData()
+              .then(() => {
+                console.log('updateWidget');
+              })
+              .catch(error => {
+                console.error('更新小组件失败:', error);
+              });
+          }
+
           // 不是首次启动但没有token，去登录
           setInitialRoute('/auth/guide');
         }
