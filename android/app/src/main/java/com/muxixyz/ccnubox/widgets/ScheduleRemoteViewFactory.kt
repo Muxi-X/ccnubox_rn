@@ -28,8 +28,10 @@ class ScheduleRemoteViewsFactory(private val context: Context) : RemoteViewsServ
     }
 
     private fun loadData() {
+        val temp=TimeTableUtils.getTodayCourses(context)
+        if(temp == todayCourses) return
         todayCourses.clear()
-        todayCourses.addAll(TimeTableUtils.getTodayCourses(context))
+        todayCourses.addAll(temp)
     }
 
     override fun getCount(): Int = todayCourses.size
