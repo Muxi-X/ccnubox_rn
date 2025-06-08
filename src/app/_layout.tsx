@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 
 import PortalRoot from '@/components/portal';
@@ -85,22 +86,24 @@ export default function RootLayout() {
           ref={ref as React.RefObject<WebView<any> | null>}
           onMessage={handleMessage}
         ></Scraper>
-        <Stack
-          screenOptions={{
-            headerBackVisible: false,
-            headerShown: false,
-          }}
-        >
-          {['index'].map(name => (
-            <Stack.Screen
-              key={name}
-              name={name}
-              options={{ headerShown: false }}
-            />
-          ))}
-        </Stack>
-        {/* portal */}
-        <PortalRoot ref={portalRef} />
+        <SafeAreaProvider>
+          <Stack
+            screenOptions={{
+              headerBackVisible: false,
+              headerShown: false,
+            }}
+          >
+            {['index'].map(name => (
+              <Stack.Screen
+                key={name}
+                name={name}
+                options={{ headerShown: false }}
+              />
+            ))}
+          </Stack>
+          {/* portal */}
+          <PortalRoot ref={portalRef} />
+        </SafeAreaProvider>
       </GestureHandlerRootView>
     </Provider>
   );
