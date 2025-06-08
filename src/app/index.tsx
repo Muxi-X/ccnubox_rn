@@ -21,9 +21,9 @@ const Index = () => {
     }
 
     const init = async () => {
-      const firstLaunch = getItem('firstLaunch');
+      const firstLaunch = await getItem('firstLaunch');
 
-      const token = getItem('longToken');
+      const token = await getItem('longToken');
 
       // 设置全局错误处理器
       setupGlobalErrorHandler();
