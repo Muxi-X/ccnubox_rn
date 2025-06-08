@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import * as React from 'react';
-import { StyleProp, StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
@@ -18,7 +19,7 @@ export default function Layout() {
     state => state.CurrentComponents
   );
   return (
-    <View style={[styles.container]}>
+    <SafeAreaView edges={['bottom']} style={[styles.container]}>
       <Stack
         screenOptions={{
           contentStyle:
@@ -61,7 +62,7 @@ export default function Layout() {
           options={{ headerShown: false }}
         ></Stack.Screen>
       </Stack>
-    </View>
+    </SafeAreaView>
   );
 }
 
