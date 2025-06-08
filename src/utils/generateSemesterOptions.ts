@@ -32,7 +32,7 @@ export const generateSemesterOptions = (): PickerDataType => {
         value: `${year}-1`,
       });
 
-      if (currentSemester >= 2) {
+      if (currentSemester >= 1) {
         options.push({
           label: `${year}学年-第二学期`,
           value: `${year}-2`,
