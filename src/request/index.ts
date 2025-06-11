@@ -92,7 +92,6 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      router.replace('/auth/login');
       originalRequest._retry = true; // 防止无限循环
       try {
         const newShortToken = await refreshToken();
