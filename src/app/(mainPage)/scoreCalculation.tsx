@@ -21,6 +21,8 @@ import { percent2px } from '@/utils';
 interface GradeDetails {
   usualGrade: string | number;
   finalGrade: string | number;
+  regularGradePercent: string;
+  finalGradePercent: string;
   allGrade: number;
   credit: number;
   score: number;
@@ -93,13 +95,13 @@ const ScoreCalculation: React.FC = () => {
           </View>
           <View style={styles.modalContent}>
             <Text style={styles.textItem}>
-              平时成绩（60%）:{' '}
+              {course.details.regularGradePercent}:{' '}
               <Text style={styles.textHighlight}>
                 {course.details?.usualGrade}
               </Text>
             </Text>
             <Text style={styles.textItem}>
-              期末成绩（40%）:{' '}
+              {course.details.finalGradePercent}:{' '}
               <Text style={styles.textHighlight}>
                 {course.details?.finalGrade}
               </Text>
@@ -183,6 +185,8 @@ const ScoreCalculation: React.FC = () => {
               details: {
                 usualGrade: grade.regularGrade,
                 finalGrade: grade.finalGrade,
+                finalGradePercent: grade.finalGradePercent,
+                regularGradePercent: grade.regularGradePercent,
                 allGrade: Number(grade.cj),
                 credit: grade.xf,
                 score: grade.jd,
