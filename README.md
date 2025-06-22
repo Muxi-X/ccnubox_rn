@@ -370,6 +370,13 @@ npx openapi-typescript src/request/openapi.yaml -o src/request/schema.d.ts
 pnpm exec expo prebuild # 生成资源文件供原生 app 打包
 ```
 
+## 上传到appstore/testlight
+
+```zsh
+eas submit -p ios -latest # 上传最后一次构建的
+# 这里要注意eas.json 中 distribution要修改为"store" 这样数字签名证书才可以生效
+```
+
 # 更新须知
 
 - 热更新更新通知位于
