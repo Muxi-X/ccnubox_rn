@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "华师匣子",
+    "name": "ccnubox",
+    "displayName": "华师匣子",
     "slug": "ccnucoursetable",
     "version": "3.0.0",
     "orientation": "portrait",
