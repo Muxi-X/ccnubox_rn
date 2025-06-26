@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -8,6 +7,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { useInternalBroswer } from '@/hooks/useInternalBroswer';
 
 import Text from '@/components/text';
 
@@ -25,13 +26,10 @@ interface PopularWebsite {
 type ItemProps = { title: string; _url: string; link: string };
 
 const WebsiteItem = ({ title, _url, link }: ItemProps) => {
-  const router = useRouter();
+  const openInApp = useInternalBroswer();
 
   return (
-    <Pressable
-      style={styles.item}
-      onPress={() => router.navigate(`/(mainPage)/webview?link=${btoa(link)}`)}
-    >
+    <Pressable style={styles.item} onPress={() => openInApp(link)}>
       <Image source={{ uri: _url }} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
     </Pressable>
