@@ -31,7 +31,10 @@ export default function TabLayout() {
             headerLeft: headerLeft,
             headerTitleAlign: 'center',
             tabBarStyle: currentStyle?.schedule_background_style,
-            headerStyle: currentStyle?.schedule_background_style,
+            headerStyle: [
+              currentStyle?.schedule_background_style,
+              { height: 120 },
+            ],
           }}
         />
       );

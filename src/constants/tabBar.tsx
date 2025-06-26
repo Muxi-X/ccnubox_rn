@@ -61,6 +61,7 @@ export const tabConfig: SinglePageType[] = [
     name: 'setting',
     title: '其他',
     iconName: 'setting',
+    headerTitle: () => <Text style={commonStyles.fontLarge}>其他</Text>,
   },
   // {
   //   name: 'notification',
