@@ -717,6 +717,7 @@ const styles = StyleSheet.create({
   modalInfoText: {
     fontSize: 14,
     color: '#333',
+    maxWidth: '80%',
   },
 });
 
