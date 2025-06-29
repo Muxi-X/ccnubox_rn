@@ -87,7 +87,9 @@ const ScoreCalculation: React.FC = () => {
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle]}>{course.title}</Text>
+            <Text style={[styles.modalTitle, currentStyle?.text_style]}>
+              {course.title}
+            </Text>
             {/* <Image
               style={styles.modalLogo}
               source={require('../../assets/images/mx-logo.png')}
@@ -387,9 +389,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 8,
+    borderRadius: 10,
   },
   activeCourseItem: {
-    backgroundColor: '#e9e3ff',
+    backgroundColor: 'rgba(117, 117, 117, 0.5)',
   },
   courseHeader: {
     flexDirection: 'row',
