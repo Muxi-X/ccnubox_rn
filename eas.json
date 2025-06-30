@@ -51,7 +51,7 @@
     "production": {},
     "test": {
       "ios": {
-        "ascAppId": "6689522026"
+        "ascAppId": "${EAS_ENV.ASC_APP_ID}"
       }
     },
     "development": {}

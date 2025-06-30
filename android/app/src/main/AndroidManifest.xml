@@ -52,7 +52,7 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="wx6220588048f6e417"/>
+        <data android:scheme="ccnubox"/>
       </intent-filter>
     </activity>
   </application>
