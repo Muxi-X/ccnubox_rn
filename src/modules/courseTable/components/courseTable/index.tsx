@@ -33,6 +33,7 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import { deleteCourse } from '@/request/api/course';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -51,6 +52,8 @@ const CourseContent: React.FC<CourseTransferType> = memo(
       class_when,
       date,
     } = props;
+
+    const { semester, year } = useTimeStore();
 
     const CourseItem = useThemeBasedComponents(
       state => state.CurrentComponents?.CourseItem
@@ -84,9 +87,16 @@ const CourseContent: React.FC<CourseTransferType> = memo(
               ),
               mode: 'middle',
               // confirmText: '退出',
-              // cancelText: '编辑',
+              cancelText: '删除课程',
               // onConfirm: () => {},
-              // onCancel: () => {},
+              onCancel: () => {
+                deleteCourse(props.id, semester, year).then(res => {
+                  console.log(res);
+                  useCourse
+                    .getState()
+                    .deleteCourse(props as unknown as courseType);
+                });
+              },
             });
           }}
         >
