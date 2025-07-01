@@ -7,7 +7,7 @@ interface QueryParams {
 }
 
 // 查询课表
-export const queryCourseTable = async (queryParams: QueryParams) => {
+const queryCourseTable = async (queryParams: QueryParams) => {
   try {
     return await request.get('/class/get', {
       query: queryParams,
