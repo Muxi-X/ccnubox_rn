@@ -11,6 +11,7 @@ import React, {
 } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import Button from '@/components/button';
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
 import ScrollableView from '@/components/scrollView';
@@ -33,6 +34,7 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import { deleteCourse } from '@/request/api/course';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -86,6 +88,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                         }}
                       >
                         <ModalContent
+                          id={c.id}
                           class_when={c.class_when}
                           isThisWeek={c.weeks.includes(currentWeek)}
                           courseName={c.classname}
@@ -101,6 +104,10 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                 </View>
               ),
               mode: 'middle',
+              // confirmText: '退出',
+              // cancelText: '编辑',
+              // onConfirm: () => {},
+              // onCancel: () => {},
             });
           }}
         >
@@ -438,6 +445,7 @@ const Timetable: React.FC<CourseTableProps> = ({
 };
 
 interface ModalContentProps {
+  id: string;
   courseName: string;
   teacher: string;
   classroom: string;
@@ -451,6 +459,7 @@ interface ModalContentProps {
 const ModalContent: React.FC<ModalContentProps> = memo(
   function ModalContent(props) {
     const {
+      id,
       courseName,
       teacher,
       classroom,
@@ -523,6 +532,37 @@ const ModalContent: React.FC<ModalContentProps> = memo(
               {classroom}
             </Text>
           </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 10,
+            justifyContent: 'space-around',
+          }}
+        >
+          <Button style={{ borderRadius: 20, width: 100 }}>编辑</Button>
+          <Button
+            style={{ borderRadius: 20, width: 100 }}
+            onPress={() =>
+              Modal.show({
+                title: '删除课程',
+                children: '确定要删除该课程吗？',
+                mode: 'middle',
+                showCancel: true,
+                confirmText: '删除',
+                cancelText: '取消',
+                onConfirm: () => {
+                  deleteCourse(
+                    id,
+                    useTimeStore.getState().semester,
+                    useTimeStore.getState().year
+                  );
+                },
+              })
+            }
+          >
+            删除
+          </Button>
         </View>
       </View>
     );
