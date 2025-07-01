@@ -57,14 +57,26 @@ const CourseTablePage: FC = () => {
     schoolTime,
     setSchoolTime,
   } = useCourse();
-  const { currentWeek, setCurrentWeek, showWeekPicker, setShowWeekPicker } =
-    useTimeStore();
+  const {
+    semester,
+    setSemester,
+    year,
+    setYear,
+    currentWeek,
+    setCurrentWeek,
+    showWeekPicker,
+    setShowWeekPicker,
+  } = useTimeStore();
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
       try {
-        const { semester, year } = computeSemesterAndYear(schoolTime);
+        if (semester === '' || year === '') {
+          const { semester, year } = computeSemesterAndYear(schoolTime);
+          setSemester(semester);
+          setYear(year);
+        }
 
         // 使用计算得到的学期和年份
         const res = await queryCourseTable({

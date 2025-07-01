@@ -13,12 +13,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 删除信息整合信息
      * @description 删除信息整合信息
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header?: never;
@@ -43,6 +42,7 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -142,12 +142,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 删除 banner 内容
      * @description 删除 banner 内容
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header?: never;
@@ -172,6 +171,7 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -271,12 +271,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 删除日历内容
      * @description 删除日历内容
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header?: never;
@@ -301,12 +300,13 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/calendar/getCalendar': {
+  '/calendar/getCalendars': {
     parameters: {
       query?: never;
       header?: never;
@@ -319,9 +319,7 @@ export interface paths {
      */
     get: {
       parameters: {
-        query: {
-          year: number;
-        };
+        query?: never;
         header?: never;
         path?: never;
         cookie?: never;
@@ -335,7 +333,7 @@ export interface paths {
           };
           content: {
             'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['calendar.GetCalendarResponse'];
+              data?: components['schemas']['calendar.GetCalendarsResponse'];
             };
           };
         };
@@ -654,12 +652,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 删除课表
      * @description 根据课表ID删除课表
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header: {
@@ -687,6 +684,7 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -1005,12 +1003,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 删除部门信息
      * @description 删除部门信息
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header: {
@@ -1038,6 +1035,7 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -1143,12 +1141,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 取消电费提醒标准
      * @description 取消自己订阅的电费提醒
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header: {
@@ -1189,6 +1186,7 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -2823,12 +2821,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post?: never;
     /**
      * 删除网站信息
      * @description 删除网站信息
      */
-    delete: {
+    post: {
       parameters: {
         query?: never;
         header?: never;
@@ -2853,6 +2850,7 @@ export interface paths {
         };
       };
     };
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -2964,12 +2962,15 @@ export interface components {
       picture_link: string;
       web_link: string;
     };
+    'calendar.Calendar': {
+      link: string;
+      year: number;
+    };
     'calendar.DelCalendarRequest': {
       year: number;
     };
-    'calendar.GetCalendarResponse': {
-      link: string;
-      year: number;
+    'calendar.GetCalendarsResponse': {
+      calendars?: components['schemas']['calendar.Calendar'][];
     };
     'calendar.SaveCalendarRequest': {
       link: string;
@@ -3272,7 +3273,7 @@ export interface components {
       question_id?: number;
     };
     'grade.GetGradeByTermReq': {
-      /** @description 课程种类筛选,有如下类型:专业主干课程,通识选修课,通识必修课,个性发展课程,通识核心课等 */
+      /** @description 课程种类筛选,有如下类型:专业主干课程,通识选修课,通识必修课,个性发展课程,通识核心课,教师教育选修,教师教育必修,大学英语分级教育等 */
       kcxzmcs?: string[];
       /** @description 是否强制刷新,可选字段 */
       refresh?: boolean;
