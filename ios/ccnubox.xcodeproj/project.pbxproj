@@ -8,28 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		142D1F39621E2298B7E7EBD3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 19F1BD19E14B7570E9DDFC47 /* PrivacyInfo.xcprivacy */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		8C9DE9AFD4E5B5580B1E8D91 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B416E7CC905321CD53101E /* ExpoModulesProvider.swift */; };
-		9BFDA83E56FAD69A27350268 /* libPods-coursetable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A85F96D6E6B5E412F8D0601 /* libPods-coursetable.a */; };
-		B95358F9B624BEDBD12A0C67 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = BD585FA1EF182C589AF9A66A /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		EE5119174787B54EA4B30C79 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7799EC78D6FA8E8E4F6067F /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+		F3FF0A10FB9E1270F58A9C0C /* libPods-ccnubox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CD5F9D6F18885CE76AB2F68 /* libPods-ccnubox.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0DBAC34867520154A9508D05 /* Pods-coursetable.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coursetable.debug.xcconfig"; path = "Target Support Files/Pods-coursetable/Pods-coursetable.debug.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* coursetable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = coursetable.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = coursetable/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = coursetable/Info.plist; sourceTree = "<group>"; };
-		17A1AA3F09F3B1EC4B9AF88D /* Pods-coursetable.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coursetable.release.xcconfig"; path = "Target Support Files/Pods-coursetable/Pods-coursetable.release.xcconfig"; sourceTree = "<group>"; };
-		9A85F96D6E6B5E412F8D0601 /* libPods-coursetable.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-coursetable.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A7B416E7CC905321CD53101E /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-coursetable/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = coursetable/SplashScreen.storyboard; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* ccnubox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ccnubox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ccnubox/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ccnubox/Info.plist; sourceTree = "<group>"; };
+		19F1BD19E14B7570E9DDFC47 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ccnubox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		44F7CEA747C3E6D013643D9B /* Pods-ccnubox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.debug.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.debug.xcconfig"; sourceTree = "<group>"; };
+		5CD5F9D6F18885CE76AB2F68 /* libPods-ccnubox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ccnubox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7799EC78D6FA8E8E4F6067F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ccnubox/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ccnubox/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		BD585FA1EF182C589AF9A66A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = coursetable/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D586B6E32A92174235787893 /* Pods-ccnubox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.release.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = coursetable/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* coursetable-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "coursetable-Bridging-Header.h"; path = "coursetable/coursetable-Bridging-Header.h"; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ccnubox/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* ccnubox-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ccnubox-Bridging-Header.h"; path = "ccnubox/ccnubox-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,44 +37,44 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BFDA83E56FAD69A27350268 /* libPods-coursetable.a in Frameworks */,
+				F3FF0A10FB9E1270F58A9C0C /* libPods-ccnubox.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0B3D5ACCCF6A15CF98AD33F5 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				0DBAC34867520154A9508D05 /* Pods-coursetable.debug.xcconfig */,
-				17A1AA3F09F3B1EC4B9AF88D /* Pods-coursetable.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		13B07FAE1A68108700A75B9A /* coursetable */ = {
+		13B07FAE1A68108700A75B9A /* ccnubox */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				F11748442D0722820044C1D9 /* coursetable-Bridging-Header.h */,
+				F11748442D0722820044C1D9 /* ccnubox-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				BD585FA1EF182C589AF9A66A /* PrivacyInfo.xcprivacy */,
+				19F1BD19E14B7570E9DDFC47 /* PrivacyInfo.xcprivacy */,
 			);
-			name = coursetable;
+			name = ccnubox;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				9A85F96D6E6B5E412F8D0601 /* libPods-coursetable.a */,
+				5CD5F9D6F18885CE76AB2F68 /* libPods-ccnubox.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4F7B992C2A8CDB24BB8F42A3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				44F7CEA747C3E6D013643D9B /* Pods-ccnubox.debug.xcconfig */,
+				D586B6E32A92174235787893 /* Pods-ccnubox.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -87,12 +87,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* coursetable */,
+				13B07FAE1A68108700A75B9A /* ccnubox */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				0B3D5ACCCF6A15CF98AD33F5 /* Pods */,
-				C2ED31C8052F1AE208C1F7A3 /* ExpoModulesProviders */,
+				4F7B992C2A8CDB24BB8F42A3 /* Pods */,
+				EB0D1ACECE6D063A5E11C2AE /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -102,17 +102,9 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* coursetable.app */,
+				13B07F961A680F5B00A75B9A /* ccnubox.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B3366D53417E9B9AB4AB303A /* coursetable */ = {
-			isa = PBXGroup;
-			children = (
-				A7B416E7CC905321CD53101E /* ExpoModulesProvider.swift */,
-			);
-			name = coursetable;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -121,13 +113,21 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = coursetable/Supporting;
+			path = ccnubox/Supporting;
 			sourceTree = "<group>";
 		};
-		C2ED31C8052F1AE208C1F7A3 /* ExpoModulesProviders */ = {
+		BD11B0FF7B7C9318A73294C6 /* ccnubox */ = {
 			isa = PBXGroup;
 			children = (
-				B3366D53417E9B9AB4AB303A /* coursetable */,
+				A7799EC78D6FA8E8E4F6067F /* ExpoModulesProvider.swift */,
+			);
+			name = ccnubox;
+			sourceTree = "<group>";
+		};
+		EB0D1ACECE6D063A5E11C2AE /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				BD11B0FF7B7C9318A73294C6 /* ccnubox */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -135,26 +135,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* coursetable */ = {
+		13B07F861A680F5B00A75B9A /* ccnubox */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "coursetable" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ccnubox" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				5059606F67F06B2345EFB701 /* [Expo] Configure project */,
+				725EC071E0E6DDA2DC4BEB20 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				22531E56FCE5F9538404660E /* [CP] Embed Pods Frameworks */,
+				DBB9E952C76250F3CAB51149 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = coursetable;
-			productName = coursetable;
-			productReference = 13B07F961A680F5B00A75B9A /* coursetable.app */;
+			name = ccnubox;
+			productName = ccnubox;
+			productReference = 13B07F961A680F5B00A75B9A /* ccnubox.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -170,7 +170,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "coursetable" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ccnubox" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -183,7 +183,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* coursetable */,
+				13B07F861A680F5B00A75B9A /* ccnubox */,
 			);
 		};
 /* End PBXProject section */
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				B95358F9B624BEDBD12A0C67 /* PrivacyInfo.xcprivacy in Resources */,
+				142D1F39621E2298B7E7EBD3 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,32 +233,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-coursetable-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ccnubox-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		22531E56FCE5F9538404660E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-coursetable/Pods-coursetable-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-coursetable/Pods-coursetable-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5059606F67F06B2345EFB701 /* [Expo] Configure project */ = {
+		725EC071E0E6DDA2DC4BEB20 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -275,7 +257,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-coursetable/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ccnubox/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -283,7 +265,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-coursetable/Pods-coursetable-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXApplication/ExpoApplication_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
@@ -326,7 +308,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-coursetable/Pods-coursetable-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DBB9E952C76250F3CAB51149 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -337,7 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				8C9DE9AFD4E5B5580B1E8D91 /* ExpoModulesProvider.swift in Sources */,
+				EE5119174787B54EA4B30C79 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,18 +346,18 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0DBAC34867520154A9508D05 /* Pods-coursetable.debug.xcconfig */;
+			baseConfigurationReference = 44F7CEA747C3E6D013643D9B /* Pods-ccnubox.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = coursetable/coursetable.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ccnubox/ccnubox.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = coursetable/Info.plist;
+				INFOPLIST_FILE = ccnubox/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -372,7 +372,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
 				PRODUCT_NAME = "app";
-				SWIFT_OBJC_BRIDGING_HEADER = "coursetable/coursetable-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -382,13 +382,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 17A1AA3F09F3B1EC4B9AF88D /* Pods-coursetable.release.xcconfig */;
+			baseConfigurationReference = D586B6E32A92174235787893 /* Pods-ccnubox.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = coursetable/coursetable.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ccnubox/ccnubox.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = coursetable/Info.plist;
+				INFOPLIST_FILE = ccnubox/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -403,7 +403,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
 				PRODUCT_NAME = "app";
-				SWIFT_OBJC_BRIDGING_HEADER = "coursetable/coursetable-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -537,7 +537,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "coursetable" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ccnubox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -546,7 +546,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "coursetable" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ccnubox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

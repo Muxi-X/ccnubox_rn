@@ -1,6 +1,7 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { FC, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useDebounce from '@/hooks/useDebounce';
 
@@ -78,11 +79,10 @@ const TabBar: FC<BottomTabBarProps> = props => {
   }, [state.routes, state.index, descriptors, debouncedHandler]);
 
   return (
-    <ColorTransitionView
-      configurableThemeName="navbar_background_style"
-      style={[styles.tabbar, navbarStyle]}
-    >
-      {tabItems}
+    <ColorTransitionView configurableThemeName="navbar_background_style">
+      <SafeAreaView edges={['bottom']} style={[styles.tabbar, navbarStyle]}>
+        {tabItems}
+      </SafeAreaView>
     </ColorTransitionView>
   );
 };

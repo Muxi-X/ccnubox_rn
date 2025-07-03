@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "华师匣子",
-    "slug": "ccnucoursetable",
+    "slug": "ccnubox",
     "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
-    "scheme": "wx6220588048f6e417",
+    "scheme": "ccnubox",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": [
@@ -78,14 +78,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "d6863b18-d443-4651-b836-5129afd64edc"
-      }
     },
     "runtimeVersion": "1.2.0",
     "updates": {

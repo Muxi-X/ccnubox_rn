@@ -5,10 +5,13 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import { ossLoginAndNavigate } from '@/constants/scraper';
 import { commonColors } from '@/styles/common';
 
 export default function ClassRoom() {
+  const currentTheme = useVisualScheme().themeName;
   const [loading, setLoading] = useState(true);
   const { link } = useLocalSearchParams();
   let student_id = '';
@@ -26,6 +29,9 @@ export default function ClassRoom() {
         javaScriptEnabled
         injectedJavaScript={login}
         injectedJavaScriptForMainFrameOnly={false}
+        originWhitelist={['*']}
+        setSupportMultipleWindows={false} // Android 必须
+        onShouldStartLoadWithRequest={request => true}
         style={styles.container}
         onMessage={event => {
           const eventName: string = event.nativeEvent.data;
@@ -38,7 +44,15 @@ export default function ClassRoom() {
         source={{ uri: atob(link as string) }}
       />
       {loading && (
-        <View style={styles.loadingView}>
+        <View
+          style={[
+            styles.loadingView,
+            {
+              backgroundColor:
+                currentTheme === 'dark' ? 'rgba(0,0,0,0.9)' : 'rgba(0,0,0,0.1)',
+            },
+          ]}
+        >
           <ActivityIndicator color={commonColors.purple} size="large" />
         </View>
       )}
@@ -59,6 +73,5 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 });

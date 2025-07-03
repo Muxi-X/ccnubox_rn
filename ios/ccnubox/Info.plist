@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>wx6220588048f6e417</string>
+          <string>ccnubox</string>
           <string>release-20240916</string>
         </array>
       </dict>
