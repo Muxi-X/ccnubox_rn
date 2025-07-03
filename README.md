@@ -1,15 +1,15 @@
 # ccnubox_rn
 
-华师匣子rn版
+华师匣子 v3.0
 
-# 项目简述
+## 项目简述
 
 - `react-native` + `expo` 重构华师匣子
-- 状态管理采用`zustand`及其中间件
+- 状态管理采用 `zustand` 及其中间件
 - 消息推送目前采用插件注入的方式集成，`JPush`，插件地址：[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)
-- 采用`eas`进行远程包管理和更新发布
+- 采用 `eas` 进行远程包管理和更新发布
 
-# 项目结构
+## 项目结构
 
 ```text
 .
@@ -79,7 +79,7 @@
 └── tsconfig.json        # TypeScript配置
 ```
 
-# 开发环境版本
+## 开发环境版本
 
 - **Node.js**: >=18.0.0
 - **pnpm**: >=9.14.4
@@ -92,26 +92,48 @@
 - **JDK**: 17
 - **TypeScript**: ~5.3.3
 
-# 推荐开发调试方法
+## 推荐开发调试方法
 
 - [集成 android studio(android调试)](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [集成 expo-orbit(ios调试)](https://docs.expo.dev/workflow/ios-simulator/)
-- 若要测试`mx-jpush-expo`等消息通知内容，请参考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
+- 若要测试 `mx-jpush-expo` 等消息通知内容，请参考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
 
-# 项目基建以及代码规范
+## 开发环境搭建
+
+拉取代码后先运行 `eas env:pull` 并选择一个环境，开发时尽量使用 `development` 环境。
+
+拉取代码后运行 `pnpm install` 安装依赖，此时即满足 `Expo Go` 开发环境。
+
+在 `ios/` 目录下运行 `pod install` 能够成功时，运行 `pnpm ios` 可以启动 iOS 的 development build 开发环境，用于调试 iOS 原生行为。
+
+在配置好 `ANDROID_HOME` 等 Android SDK 环境后，运行 `pnpm android` 可以启动 Android 的 development build 环境。
+
+## 配置文件
+
+任何关于配置文件的修改都应该声明在对应 git commit 的 commit message 中，以便后续追查与回溯。
+
+### app.json & app.config.ts
+
+这两个是用来配置 app 信息的，json 是静态的，ts 是动态的，被使用时静态配置文件内容会被传入到 ts 配置文件中，并被动态配置文件中的处理函数手动处理。
+
+### eas.json
+
+这个配置文件用于配置 eas 云平台构建和发布应用时的行为。
+
+## 项目基建以及代码规范
 
 本仓库并未严格限制 `eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
 
-## 接口
+### 接口
 
 项目采用长短token方式登录时 缓存了 shortToken 和 longToken 请求已经都封装好了都在
 `request/request.ts` 里面默认请求头添加的都是shortToken去发送请求
 
-## 颜色主题自定义
+### 颜色主题自定义
 
-样式注册在`styles`文件夹中进行，采用全局`store`设计
+样式注册在 `styles` 文件夹中进行，采用全局 `store` 设计
 
-#### styles结构
+#### styles 结构
 
 - 与主题无关的通用样式存于`common.ts`中
 
@@ -166,7 +188,7 @@ export type ConfigurableThemeNames =
   | 'navbar_icon_active_style';
 ```
 
-#### 样式使用：
+#### 样式使用
 
 ```ts
 const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -174,7 +196,7 @@ const currentStyle = useVisualScheme(state => state.currentStyle);
 return <Button style={currentStyle?.button_style} />
 ```
 
-### 样式切换
+#### 样式切换
 
 ```ts
 const { currentStyle, changeTheme, changeLayoutStyle } = useVisualScheme(
@@ -186,7 +208,9 @@ const { currentStyle, changeTheme, changeLayoutStyle } = useVisualScheme(
 );
 ```
 
-## 简单动画效果封装
+### 组件
+
+#### 简单动画效果封装
 
 基础动画效果封装，若有复杂效果请自行设计位于`animatedView`中，用法基本相同，均继承于类型`BaseAnimatedProps`：
 
@@ -234,11 +258,11 @@ export interface BaseAnimatedProps extends ViewProps {
 </AnimatedFade>
 ```
 
-## Button组件
+#### Button组件
 
 由于`antd`的`Button`的`active`颜色配置要通过配置他自身的`config`进行，这样再加一层`config`会略显臃肿，因此干脆实现了简单的`Button`组件带有`loading`和`ripple(在android中的点击特效)`效果
 
-## ScrollView组件
+#### ScrollView组件
 
 由于安卓`ScrollView`不支持双向同时滚动，因此通过`gesture-handler`自行实现了`ScrollView`，未来可能单独拉成外部包，定义如下：
 
@@ -276,7 +300,7 @@ export interface ScrollableViewProps {
 }
 ```
 
-## CourseTable组件
+#### CourseTable组件
 
 基于`scrollView`组件搭建的课表组件，由于约定式路由不允许`component`在`app`中出现，因此移动到外部，之后可能会移动
 
@@ -294,7 +318,7 @@ export interface ScrollableViewProps {
  }}
 ```
 
-## Portal 组件
+#### Portal 组件
 
 类似于`ReactDom-Portal`的简化版,用于将某组件提升至root层
 
@@ -304,14 +328,14 @@ export interface ScrollableViewProps {
 </Portal>
 ```
 
-## Picker 组件
+#### Picker 组件
 
 封装的选择器,分为 PickerView 与 Picker 两部分
 
 - PickerView 不带 Modal
 - Picker 为 Portal 与 PickerView 的结合目前黑夜样式待修改
 
-## Modal 组件
+#### Modal 组件
 
 建议直接使用`Modal.show()`方法调用或者使用 `ModalTrigger`组件，通过
 `triggerComponent`定义触发弹窗元素
@@ -334,15 +358,15 @@ export interface ScrollableViewProps {
 ></ModalTrigger>
 ```
 
-# 常用指令
+## 常用指令
 
-## env
+### env
 
 ```bash
 eas env:pull # 运行后可以选择 development 或 production 环境
 ```
 
-## build（打包->注入极光推送sdk->部署到expo）
+### build（打包->注入极光推送sdk->部署到expo）
 
 ```bash
   pnpm run build
@@ -352,25 +376,39 @@ eas env:pull # 运行后可以选择 development 或 production 环境
 	eas build -e production
 ```
 
-## update（热更新）
-
-```bash
-eas update --branch production --message "wdigets test_1"
-```
-
-## 生成API类型定义
+### 生成API类型定义
 
 ```bash
 npx openapi-typescript src/request/openapi.yaml -o src/request/schema.d.ts
 ```
 
-## 修改资源文件
+### 修改资源文件
+
+修改了资源文件以后需要运行以下命令以生成各平台的资源文件，并重新进行原生应用打包。
 
 ```bash
 pnpm exec expo prebuild # 生成资源文件供原生 app 打包
 ```
 
-# 更新须知
+## 更新须知
 
-- 热更新更新通知位于
-  `assets/data/updateInfo.json`中，每次热更新手动更新其中的版本号以及更新内容
+### eas update（OTA 热更新）
+
+```bash
+eas update --branch production --message "wdigets test_1"
+```
+
+> 如无特殊需要，尽量避免手动发布 OTA 更新。
+
+热更新更新通知位于
+`assets/data/updateInfo.json`中，每次热更新手动更新其中的版本号以及更新内容并推送到 GitHub，将触发 CD 自动发布 test 通道的 OTA。
+
+如果修改了原生代码，需要重新打包原生应用安装包，此时需要发布新的原生安装包作为更新包。
+
+### 上传到 appstore / testflight
+
+```zsh
+eas submit -p ios -latest # 上传最后一次构建的
+# 这里要注意eas.json 中 distribution 要修改为 "store" 这样数字签名证书才可以生效
+```
+

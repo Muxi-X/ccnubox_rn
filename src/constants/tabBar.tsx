@@ -61,6 +61,16 @@ export const tabConfig: SinglePageType[] = [
     name: 'setting',
     title: '其他',
     iconName: 'setting',
+    headerTitle: () => (
+      <Text
+        style={[
+          commonStyles.fontLarge,
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
+        其他
+      </Text>
+    ),
   },
   // {
   //   name: 'notification',
