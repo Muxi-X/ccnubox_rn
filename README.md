@@ -403,7 +403,22 @@ eas update --branch production --message "wdigets test_1"
 热更新更新通知位于
 `assets/data/updateInfo.json`中，每次热更新手动更新其中的版本号以及更新内容并推送到 GitHub，将触发 CD 自动发布 test 通道的 OTA。
 
-如果修改了原生代码，需要重新打包原生应用安装包，此时需要发布新的原生安装包作为更新包。
+如果修改了原生代码，需要更新版本号并重新打包原生应用安装包，此时需要发布新的原生安装包作为更新包。
+
+版本号更新示例：
+
+```json
+{
+  "expo": {
+    "name": "华师匣子",
+    "slug": "ccnubox",
+    "version": "3.0.0", // update to 3.0.1
+    "runtimeVersion": "3.0.0", // sync this with version field, update to 3.0.2
+  }
+}
+```
+
+ota 更新只有 runtimeVersion 在 ota 更新包与拉取更新的客户端相同时，才会被客户端下载，这是为了保证不会因 js 代码与客户端原生代码版本不匹配导致程序崩溃，为了便于区分，请保持 runtimeVersion 与 version 的值相同。
 
 ### 上传到 appstore / testflight
 

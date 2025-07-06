@@ -1,4 +1,5 @@
 import * as Application from 'expo-application';
+import * as Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -9,8 +10,13 @@ import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import { UpdateInfo } from '@/types/updateInfo';
+
 function CheckUpdate(): React.ReactNode {
   const version = Application.nativeApplicationVersion;
+  const updateInfo = Constants.default.expoConfig?.extra
+    ?.updateInfo as UpdateInfo;
   const [loading, setLoading] = useState(false);
   const { currentStyle } = useVisualScheme(
     ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
@@ -47,13 +53,27 @@ function CheckUpdate(): React.ReactNode {
         />
         <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
         <Text style={[styles.version, currentStyle?.text_style]}>
-          版本 {version}
+          App 版本 {version}
         </Text>
+        <Text style={[styles.version, currentStyle?.text_style]}>
+          热更新版本 {updateInfo.otaVersion}
+        </Text>
+        <View style={styles.releaseNotesContainer}>
+          <Text style={[styles.releaseNotesTitle, currentStyle?.text_style]}>
+            更新日志
+          </Text>
+          <Text style={[styles.releaseNotes, currentStyle?.text_style]}>
+            {updateInfo.releaseNotes.join('\n')}
+          </Text>
+          <Text style={[styles.releaseNotesTitle, currentStyle?.text_style]}>
+            已知问题
+          </Text>
+          <Text style={[styles.releaseNotes, currentStyle?.text_style]}>
+            {updateInfo.knownIssues.join('\n')}
+          </Text>
+        </View>
         <Button
-          style={[
-            currentStyle?.button_style,
-            { width: '60%', marginTop: 10, marginBottom: 10 },
-          ]}
+          style={[currentStyle?.button_style, styles.button]}
           onPress={() => {
             setLoading(true);
             Updates.checkForUpdateAsync()
@@ -103,6 +123,33 @@ const styles = StyleSheet.create({
   version: {
     fontSize: 14,
     color: '#666',
+  },
+  releaseNotesContainer: {
+    marginVertical: 10,
+    backgroundColor: '#F8F9FB',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  releaseNotesTitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    // marginVertical: 8,
+    textAlign: 'center',
+  },
+  releaseNotes: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  button: {
+    width: '60%',
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
   },
 });
 export default CheckUpdate;
