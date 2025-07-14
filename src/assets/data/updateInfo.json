@@ -1,9 +1,13 @@
 {
   "otaVersion": "3.0.8",
-  "releaseNotes": [
+	"updateTime": "2025-07-14",
+  "newFeatures": [
 		"新增更新日志显示"
 	],
-  "knownIssues": [
+  "fixedIssues": [
+		"修复部分样式问题"
+	],
+	"knownIssues": [
 		"弹窗在按钮导航模式下仍然会被遮挡"
 	]
 }
