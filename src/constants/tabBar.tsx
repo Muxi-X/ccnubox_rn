@@ -60,7 +60,7 @@ export const tabConfig: SinglePageType[] = [
   {
     name: 'library',
     title: '图书馆',
-    iconName: 'notification',
+    iconName: 'library',
     headerTitle: () => (
       <>
         <Text

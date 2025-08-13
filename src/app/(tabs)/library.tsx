@@ -4,6 +4,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import DiamondIcon from '@/assets/icons/diamond.svg';
+import SofaIcon from '@/assets/icons/sofa.svg';
+import StatIcon from '@/assets/icons/stat.svg';
+import TimeIcon from '@/assets/icons/time.svg';
+
 const primaryColor = '#8B5CF6';
 const secondaryColor = '#7D6EF9';
 
@@ -49,7 +54,7 @@ export default function LibraryPage() {
           <TouchableOpacity
             style={[styles.bookingButton, styles.primaryButton]}
           >
-            <Ionicons name="checkmark-circle-outline" size={32} color="white" />
+            <SofaIcon></SofaIcon>
             <Text style={styles.primaryButtonText}>座位预约</Text>
           </TouchableOpacity>
 
@@ -57,6 +62,7 @@ export default function LibraryPage() {
             style={[styles.bookingButton, styles.secondaryButton]}
           >
             <Ionicons name="people-outline" size={32} color={primaryColor} />
+            {/* <PeopleIcon></PeopleIcon> */}
             <Text style={[styles.secondaryButtonText, { color: textColor }]}>
               研讨间预约
             </Text>
@@ -117,8 +123,8 @@ export default function LibraryPage() {
           </Text>
           <View style={styles.functionsGrid}>
             <TouchableOpacity style={styles.functionItem}>
-              <View style={[styles.functionIcon, { borderColor: '#9CA3AF' }]}>
-                <Ionicons name="time-outline" size={24} color="#9CA3AF" />
+              <View style={styles.functionIcon}>
+                <TimeIcon></TimeIcon>
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
                 预约记录
@@ -126,13 +132,8 @@ export default function LibraryPage() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.functionItem}>
-              <View
-                style={[
-                  styles.functionIcon,
-                  { backgroundColor: primaryColor, borderColor: primaryColor },
-                ]}
-              >
-                <Ionicons name="star" size={24} color="white" />
+              <View style={styles.functionIcon}>
+                <Ionicons name="star" size={24} color={primaryColor} />
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
                 我的收藏
@@ -140,8 +141,8 @@ export default function LibraryPage() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.functionItem}>
-              <View style={[styles.functionIcon, { borderColor: '#9CA3AF' }]}>
-                <Ionicons name="bar-chart-outline" size={24} color="#9CA3AF" />
+              <View style={styles.functionIcon}>
+                <StatIcon></StatIcon>
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
                 使用统计
@@ -149,8 +150,8 @@ export default function LibraryPage() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.functionItem}>
-              <View style={[styles.functionIcon, { borderColor: '#9CA3AF' }]}>
-                <Ionicons name="settings-outline" size={24} color="#9CA3AF" />
+              <View style={styles.functionIcon}>
+                <DiamondIcon></DiamondIcon>
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
                 信誉积分
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    borderWidth: 2,
+    backgroundColor: '#F3F4F6',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,

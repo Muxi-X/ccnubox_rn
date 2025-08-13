@@ -4,12 +4,14 @@ import { ColorValue, ViewStyle } from 'react-native';
 // 导入所有SVG图标
 import CalendarIcon from '@/assets/icons/calendar.svg';
 import HomeIcon from '@/assets/icons/home.svg';
+import LibraryIcon from '@/assets/icons/library.svg';
 import NotificationIcon from '@/assets/icons/notification.svg';
 import SettingIcon from '@/assets/icons/setting.svg';
 
 export const icons = {
   calendar: CalendarIcon,
   home: HomeIcon,
+  library: LibraryIcon,
   notification: NotificationIcon,
   setting: SettingIcon,
 };
