@@ -58,12 +58,31 @@ export const tabConfig: SinglePageType[] = [
     headerRight: () => <ScheduleHeaderRight />,
   },
   {
+    name: 'library',
+    title: '图书馆',
+    iconName: 'notification',
+    headerTitle: () => (
+      <>
+        <Text
+          style={[
+            commonStyles.TabBarPadding,
+            commonStyles.fontLarge,
+            useVisualScheme.getState().currentStyle?.header_text_style,
+          ]}
+        >
+          图书馆座位预约
+        </Text>
+      </>
+    ),
+  },
+  {
     name: 'setting',
     title: '其他',
     iconName: 'setting',
     headerTitle: () => (
       <Text
         style={[
+          commonStyles.TabBarPadding,
           commonStyles.fontLarge,
           useVisualScheme.getState().currentStyle?.header_text_style,
         ]}

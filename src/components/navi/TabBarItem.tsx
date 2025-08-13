@@ -11,9 +11,9 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { TABBAR_COLOR } from '@/constants/tabBar';
 
-import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';
 import { TabBarItemProps } from './types';
+import AnimatedScale from '../animatedView/AnimatedScale';
 
 const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
   const { isFocused, onPress, onLongPress, label = '', iconName } = props;
