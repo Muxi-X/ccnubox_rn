@@ -23,7 +23,7 @@ const computeWeekNumber = (schoolTime: number): number => {
 
 // 根据开学时间计算学期和年份
 const computeSemesterAndYear = (startTimestamp: number) => {
-  const startDate = new Date(startTimestamp);
+  const startDate = new Date(startTimestamp * 1000);
   const month = startDate.getMonth(); // 获取开学时间的月份
   let semester = '1'; // 默认学期为 '1'
   let year = new Date().getFullYear().toString(); // 默认年份为当前年
@@ -42,7 +42,6 @@ const computeSemesterAndYear = (startTimestamp: number) => {
     semester = '1';
     year = new Date().getFullYear().toString(); // 当前年
   }
-
   return { semester, year };
 };
 
