@@ -443,7 +443,7 @@ eas build -p ios --profile test
 要更新buildNumber 需要更新app.json 中的buildNumber然后执行
 
 ```bash
-expo prebuild --platform ios --no-install
+npx expo prebuild --platform ios --no-install
 ```
 
 然后再重新打包 才可以submit
