@@ -27,7 +27,7 @@
       },
       "ios": {
         "distribution": "store",
-        "simulator": false // 设为 true 可以生成 iOS 模拟器包
+        "simulator": false
       }
     },
     "preview": {
@@ -51,7 +51,7 @@
     "production": {},
     "test": {
       "ios": {
-        "ascAppId": "${EAS_ENV.ASC_APP_ID}"
+        "ascAppId": "6689522026"
       }
     },
     "development": {}

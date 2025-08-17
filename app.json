@@ -27,12 +27,8 @@
       },
       "updateInfo": {
         "otaVersion": "3.0.8",
-        "releaseNotes": [
-          "新增更新日志显示"
-        ],
-        "knownIssues": [
-          "弹窗在按钮导航模式下仍然会被遮挡"
-        ]
+        "releaseNotes": ["新增更新日志显示"],
+        "knownIssues": ["弹窗在按钮导航模式下仍然会被遮挡"]
       }
     },
     "ios": {
@@ -43,19 +39,14 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "LSApplicationQueriesSchemes": [
-          "weixin",
-          "alipays",
-          "tel",
-          "sms"
-        ]
+        "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
       }
     },
     "android": {
@@ -98,16 +89,8 @@
       [
         "./plugins/config-android-url-scheme.js",
         {
-          "packages": [
-            "com.tencent.mm",
-            "com.eg.android.AlipayGphone"
-          ],
-          "schemes": [
-            "weixin",
-            "alipays",
-            "tel",
-            "sms"
-          ]
+          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
+          "schemes": ["weixin", "alipays", "tel", "sms"]
         }
       ]
     ],
