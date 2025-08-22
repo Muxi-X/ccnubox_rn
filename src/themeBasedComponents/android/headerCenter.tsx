@@ -22,7 +22,6 @@ const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
         style={{
           position: 'absolute',
           left: 20,
-          height: '100%',
           display: 'flex',
           justifyContent: 'center',
         }}

@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -16,6 +17,7 @@ export default function LibraryPage() {
   const backgroundColor =
     useVisualScheme.getState().currentStyle?.background_style?.backgroundColor;
   const textColor = useVisualScheme.getState().currentStyle?.text_style?.color;
+  const router = useRouter();
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
@@ -53,6 +55,7 @@ export default function LibraryPage() {
         <View style={styles.bookingButtons}>
           <TouchableOpacity
             style={[styles.bookingButton, styles.primaryButton]}
+            onPress={() => router.push('/(library)/viewSeats')}
           >
             <SofaIcon></SofaIcon>
             <Text style={styles.primaryButtonText}>座位预约</Text>
