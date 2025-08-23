@@ -55,7 +55,7 @@ export default function LibraryPage() {
         <View style={styles.bookingButtons}>
           <TouchableOpacity
             style={[styles.bookingButton, styles.primaryButton]}
-            onPress={() => router.push('/(library)/viewSeats')}
+            onPress={() => router.push('/(library)/selectSeat')}
           >
             <SofaIcon></SofaIcon>
             <Text style={styles.primaryButtonText}>座位预约</Text>

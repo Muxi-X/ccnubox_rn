@@ -32,12 +32,12 @@ export default function Layout() {
         }}
       >
         <Stack.Screen
-          name="viewSeats"
+          name="selectSeat"
           options={{
             headerTitle: () => (
               <>
                 {CurrentComponents && (
-                  <CurrentComponents.HeaderCenter title="浏览座位" />
+                  <CurrentComponents.HeaderCenter title="座位预约" />
                 )}
               </>
             ),
