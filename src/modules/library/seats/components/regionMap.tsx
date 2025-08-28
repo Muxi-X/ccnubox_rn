@@ -1,5 +1,7 @@
-import { Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, ScrollView, Text, View } from 'react-native';
 
+import Button from '@/components/button';
 import { ModalTrigger } from '@/components/modal';
 
 import AppointedIcon from '@/assets/icons/library/appointed.svg';
@@ -9,20 +11,34 @@ import OccupiedIcon from '@/assets/icons/library/occupied.svg';
 import QuestionIcon from '@/assets/icons/library/question.svg';
 import UnavailableIcon from '@/assets/icons/library/unavailable.svg';
 
+import Seat from './seat';
+
 export default function RegionMap() {
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const headerHeight = useRef(new Animated.Value(250)).current;
+
+  useEffect(() => {
+    Animated.timing(headerHeight, {
+      toValue: selectedRegion ? 150 : 250,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [selectedRegion]);
+
   return (
     <View style={{ height: '100%', width: '100%' }}>
-      <View
+      <Animated.View
         style={{
           padding: 4,
-          height: 250,
+          height: headerHeight,
           backgroundColor: '#F5F5F5',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Map</Text>
-      </View>
+        <Button onPress={() => setSelectedRegion('test')}>Test</Button>
+        <Button onPress={() => setSelectedRegion('')}>Reset</Button>
+      </Animated.View>
       <View
         style={{
           flexDirection: 'row',
@@ -58,6 +74,66 @@ export default function RegionMap() {
           <QuestionContent />
         </ModalTrigger>
       </View>
+      {selectedRegion && (
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            paddingHorizontal: 24,
+            paddingTop: 8,
+            justifyContent: 'space-evenly',
+            overflow: 'hidden',
+            backgroundColor: '#fff',
+          }}
+        >
+          {/* two columns */}
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            {/* left column */}
+            <View
+              style={{
+                gap: 30,
+                paddingVertical: 18,
+                width: '50%',
+                alignItems: 'center',
+              }}
+            >
+              {Array.from({ length: 12 }).map((_, idx) => (
+                <View key={idx} style={{ flexDirection: 'row' }}>
+                  <Seat seatStatus={0b00000} />
+                  <Seat seatStatus={0b10000} />
+                  <Seat seatStatus={0b11111} />
+                  <Seat seatStatus={0b01111} />
+                  <Seat seatStatus={0b00011} />
+                  <Seat seatStatus={0b01100} />
+                </View>
+              ))}
+            </View>
+            {/* right column */}
+            <View
+              style={{
+                gap: 30,
+                paddingVertical: 18,
+                width: '50%',
+                alignItems: 'center',
+              }}
+            >
+              {Array.from({ length: 12 }).map((_, idx) => (
+                <View
+                  key={idx}
+                  style={{
+                    flexDirection: 'row',
+                    gap: 12,
+                    backgroundColor: '#aaaaaa',
+                    width: 56,
+                    height: 42,
+                  }}
+                ></View>
+              ))}
+            </View>
+          </View>
+        </ScrollView>
+      )}
     </View>
   );
 }
