@@ -382,7 +382,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               // onTimetableRefresh returns a Promise so we need to await it
               await onTimetableRefresh(true);
               handleSuccess();
-            } catch (error) {
+            } catch {
               //console.error('刷新失败:', error);
               handleFail();
             } finally {
@@ -434,13 +434,15 @@ const ModalContent: React.FC<ModalContentProps> = memo(
           <ThemeChangeText style={styles.modalTitle}>
             {courseName}
           </ThemeChangeText>
+        </View>
+        <View style={styles.modalSubtitleRow}>
+          <Text style={styles.modalSubtitleText}>{credit}学分</Text>
           {!isThisWeek && (
             <View style={styles.notThisWeekTag}>
               <Text style={styles.notThisWeekText}>非本周</Text>
             </View>
           )}
         </View>
-        <Text style={styles.modalSubtitle}>{credit}学分</Text>
 
         <View style={styles.modalInfoGrid}>
           <View style={styles.modalInfoItem}>
@@ -517,7 +519,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
           weekDates.push(`${month}/${day}`);
         }
         setDates(weekDates);
-      } catch (error) {
+      } catch {
         throw new Error('计算日期失败');
       }
     };
@@ -691,11 +693,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notThisWeekTag: {
-    position: 'absolute',
-    right: 0,
+    height: 20,
+    justifyContent: 'center',
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 8,
-    paddingVertical: 2,
     borderRadius: 10,
   },
   notThisWeekText: {
@@ -705,8 +706,21 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontSize: 14,
     color: '#666',
-    textAlign: 'center',
+  },
+  modalSubtitleRow: {
+    height: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 20,
+  },
+  modalSubtitleText: {
+    height: 20,
+    lineHeight: 20,
+    fontSize: 14,
+    color: '#666',
+    marginRight: 6,
   },
   modalInfoGrid: {
     flexDirection: 'row',
