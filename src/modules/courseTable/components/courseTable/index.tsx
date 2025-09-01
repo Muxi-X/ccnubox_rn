@@ -212,18 +212,25 @@ const Timetable: React.FC<CourseTableProps> = ({
         week_duration,
         credit,
       } = course;
+
+      // 计算课程的时间跨度（占几节课）
       const timeSpan = class_when
         .split('-')
         .map(Number)
         .reduce((a: number, b: number) => b - a + 1);
-      const rowIndex = Number(class_when.split('-')[0]) - 1;
-      const colIndex = day - 1;
-      const key = `${rowIndex}-${colIndex}`;
+
+      // 计算课程在课表中的位置
+      const rowIndex = Number(class_when.split('-')[0]) - 1; // 第几节课开始
+      const colIndex = day - 1; // 周几（0-6，对应周一到周日）
+      const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
 
       if (rowIndex !== -1 && colIndex !== -1) {
+        // 如果该时间槽还没有课程，创建一个空数组
         if (!coursesBySlot.has(key)) {
           coursesBySlot.set(key, []);
         }
+
+        // 将课程添加到对应的时间槽中
         coursesBySlot.get(key).push({
           id,
           courseName: classname,
@@ -234,7 +241,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           rowIndex,
           colIndex,
           weeks,
-          isThisWeek: weeks.includes(currentWeek),
+          isThisWeek: weeks.includes(currentWeek), // 标记是否为当前周的课程
           week_duration,
           credit,
           class_when,
@@ -246,11 +253,19 @@ const Timetable: React.FC<CourseTableProps> = ({
     for (const [key, slotCourses] of coursesBySlot) {
       const [rowIndex, colIndex] = key.split('-').map(Number);
 
-      // 找到当前周应该显示的课程
-      const courseToShow =
-        slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
+      // 当一个时间槽有多节课时，优先显示当前周的课程
+      let courseToShow: CourseTransferType | null = null;
+
+      // 1. 首先尝试找到当前周应该显示的课程
+      courseToShow =
+        slotCourses.find((course: CourseTransferType) =>
           course.weeks.includes(currentWeek)
-        ) || slotCourses[0];
+        ) || null;
+
+      // 2. 如果当前周没有课程，则选择第一节课作为默认显示
+      if (!courseToShow && slotCourses.length > 0) {
+        courseToShow = slotCourses[0];
+      }
 
       if (courseToShow) {
         timetableMatrix[rowIndex][colIndex] = {
