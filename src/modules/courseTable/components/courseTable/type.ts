@@ -32,6 +32,7 @@ export interface CourseTransferType {
   week_duration: string;
   credit: number;
   class_when: string;
+  weeks: number[]; // 添加 weeks 字段
 }
 
 export interface WeekSelectorProps {
