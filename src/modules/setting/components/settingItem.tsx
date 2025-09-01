@@ -7,18 +7,24 @@ import useVisualScheme from '@/store/visualScheme';
 interface ItemProps {
   icon: { uri: string };
   text: string;
-  url: Href;
+  // with a Href, will navigate to the page
+  // with a function, will execute the function
+  to: Href | (() => void);
 }
-function SettingItem({ icon, text, url }: ItemProps) {
+function SettingItem({ icon, text, to }: ItemProps) {
   const currentScheme = useVisualScheme(state => state.currentStyle);
   const navigation = useRouter();
+
+  const handlePress = () => {
+    if (typeof to === 'function') {
+      to();
+    } else {
+      navigation.navigate(to);
+    }
+  };
+
   return (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => {
-        navigation.navigate(url);
-      }}
-    >
+    <TouchableOpacity style={styles.itemContainer} onPress={handlePress}>
       <View style={styles.iconContainer}>
         <Image source={icon} style={styles.icon} />
       </View>
