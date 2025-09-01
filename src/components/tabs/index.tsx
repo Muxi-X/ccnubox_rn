@@ -18,9 +18,12 @@ import useVisualScheme from '@/store/visualScheme';
  */
 export const TabBar: React.FC<TabsProps> = props => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const themeName = useVisualScheme(state => state.themeName);
   return (
     <Tabs
-      {...props}
+      styles={{
+        topTabBarSplitLine: { borderBottomWidth: 0 },
+      }}
       renderTabBar={tabProps => (
         <Tabs.DefaultTabBar
           {...tabProps}
@@ -28,12 +31,13 @@ export const TabBar: React.FC<TabsProps> = props => {
             fontSize: 18,
             fontWeight: 500,
           }}
-          tabBarInactiveTextColor={currentStyle?.text_style?.color as string}
+          tabBarInactiveTextColor={themeName === 'dark' ? '#969696' : '#3D3D3D'}
           tabBarActiveTextColor="#9379F6"
           tabBarUnderlineStyle={{
             backgroundColor: '#9379F6',
             marginHorizontal: '10%',
             width: '30%',
+            height: 3,
           }}
           tabBarBackgroundColor={
             currentStyle?.background_style?.backgroundColor as string
@@ -45,6 +49,7 @@ export const TabBar: React.FC<TabsProps> = props => {
           }}
         ></Tabs.DefaultTabBar>
       )}
+      {...props}
     >
       {props.children}
     </Tabs>

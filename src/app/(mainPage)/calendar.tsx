@@ -1,4 +1,3 @@
-import { View } from '@ant-design/react-native';
 import * as FileSystem from 'expo-file-system';
 import * as React from 'react';
 import {
@@ -6,12 +5,12 @@ import {
   Dimensions,
   Platform,
   StyleSheet,
-  Text,
 } from 'react-native';
 import PdfRendererView from 'react-native-pdf-renderer';
 import { WebView } from 'react-native-webview';
 
-import useVisualScheme from '@/store/visualScheme';
+import Text from '@/components/text';
+import View from '@/components/view';
 
 const pdfUrl =
   'https://jwc.ccnu.edu.cn/virtual_attach_file.vsb?afc=NUNLTZnzM2UmLbotRAknN78olCZL8rj7U4N4Ul78nmCZUz70gihFp2hmCIa0Mky4oSyYMYh7nlUiMz6VL7-YM7UDU87sM4NaLlUbLllYLmVFUmC8o7UZUlQFLzN8UNr7gjfNQmOeo4xmCDbigDTJQty0Lz74L1yboz9PgtA8pUwcc&tid=1132&nid=9981&e=.pdf';
@@ -38,7 +37,6 @@ export default function Calendar() {
 }
 
 const AndroidCalendar: React.FC = () => {
-  const { currentStyle } = useVisualScheme();
   const [downloading, setDownloading] = React.useState<boolean>(false);
   const [source, setSource] = React.useState<string>();
 
@@ -66,9 +64,7 @@ const AndroidCalendar: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#7878F8" />
-        <Text style={[styles.loadingText, currentStyle?.text_style]}>
-          加载中...
-        </Text>
+        <Text style={styles.loadingText}>加载中...</Text>
       </View>
     );
   }

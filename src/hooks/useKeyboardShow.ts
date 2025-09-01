@@ -14,8 +14,8 @@ const useKeyboardShow = () => {
       setKeyboardShow(false);
     });
     return () => {
-      keyboardShowListener && keyboardShowListener.remove();
-      keyboardHideListener && keyboardHideListener.remove();
+      if (keyboardShowListener) keyboardShowListener.remove();
+      if (keyboardHideListener) keyboardHideListener.remove();
     };
   }, []);
 

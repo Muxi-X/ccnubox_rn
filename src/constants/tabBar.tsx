@@ -7,7 +7,7 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   ScheduleHeaderRight,
   ScheduleHeaderTitle,
-} from '@/app/(courseTable)/components/ScheduleHeader';
+} from '@/modules/courseTable/components/ScheduleHeader';
 //import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
 
@@ -61,6 +61,16 @@ export const tabConfig: SinglePageType[] = [
     name: 'setting',
     title: '其他',
     iconName: 'setting',
+    headerTitle: () => (
+      <Text
+        style={[
+          commonStyles.fontLarge,
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
+        其他
+      </Text>
+    ),
   },
   // {
   //   name: 'notification',

@@ -10,7 +10,7 @@ import useVisualScheme from '@/store/visualScheme';
 interface ItemProps {
   icon: { uri: string };
   text: string;
-  url: Href<string>;
+  url: Href;
   name?: string;
 }
 function SettingItem({ icon, text, url, name }: ItemProps) {

@@ -21,9 +21,9 @@ const Index = () => {
     }
 
     const init = async () => {
-      const firstLaunch = getItem('firstLaunch');
+      const firstLaunch = await getItem('firstLaunch');
 
-      const token = getItem('longToken');
+      const token = await getItem('longToken');
 
       // 设置全局错误处理器
       setupGlobalErrorHandler();
@@ -37,7 +37,7 @@ const Index = () => {
           setInitialRoute('/auth/guide');
         } else {
           // 不是首次启动但没有token，去登录
-          setInitialRoute('/auth/login');
+          setInitialRoute('/auth/guide');
         }
       } else {
         // 有token直接进入主页

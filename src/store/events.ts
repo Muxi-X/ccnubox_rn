@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { create } from 'zustand';
 
 import { queryFeedEvents, readFeedEvent } from '@/request/api/feeds';

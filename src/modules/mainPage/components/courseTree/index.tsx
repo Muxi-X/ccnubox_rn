@@ -106,6 +106,8 @@ const CourseTree = () => {
                   ? [styles.nodeText, currentStyle?.text_style]
                   : styles.subNodeText
               }
+              ellipsizeMode="tail"
+              numberOfLines={1}
             >
               {item.title}
             </Text>
@@ -204,8 +206,8 @@ const styles = StyleSheet.create({
     height: windowHeight - 100, // Adjust based on header height
   },
   titleBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f1f1',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#D8D8D880',
     paddingBottom: 20,
   },
   node: {
@@ -215,6 +217,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   nodeLeft: {
+    maxWidth: '80%',
     flexDirection: 'row',
     alignItems: 'center',
   },
