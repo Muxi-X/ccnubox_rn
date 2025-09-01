@@ -489,7 +489,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { currentWeek } = useTimeStore();
+  const { selectedWeek: currentWeek } = useTimeStore();
   const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 

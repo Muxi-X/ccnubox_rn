@@ -13,14 +13,6 @@ import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';
 import WeekSelector from './components/weekSelector';
 
-// 根据开学日期计算当前周数，开学当天为第一周
-const computeWeekNumber = (schoolTime: number): number => {
-  const startTimestamp = schoolTime * 1000;
-  const diffTime = new Date().getTime() - startTimestamp;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  return Math.floor(diffDays / 7) + 1;
-};
-
 // 根据开学时间计算学期和年份
 const computeSemesterAndYear = (startTimestamp: number) => {
   const startDate = new Date(startTimestamp * 1000);
@@ -56,8 +48,12 @@ const CourseTablePage: FC = () => {
     schoolTime,
     setSchoolTime,
   } = useCourse();
-  const { currentWeek, setCurrentWeek, showWeekPicker, setShowWeekPicker } =
-    useTimeStore();
+  const {
+    selectedWeek: currentWeek,
+    setSelectedWeek: setCurrentWeek,
+    showWeekPicker,
+    setShowWeekPicker,
+  } = useTimeStore();
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
@@ -101,7 +97,7 @@ const CourseTablePage: FC = () => {
         ) {
           setSchoolTime(res.data.school_time);
           setHolidayTime(res.data.holiday_time);
-          setCurrentWeek(computeWeekNumber(res.data.school_time));
+          setCurrentWeek(useTimeStore.getState().getCurrentWeek());
         }
       } catch (err) {
         log.error('Failed to fetch current week:', err);
