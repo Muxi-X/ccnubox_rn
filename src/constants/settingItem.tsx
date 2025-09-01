@@ -1,3 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { deleteItemAsync } from 'expo-secure-store';
+
+import Modal from '@/components/modal';
+
 import { SettingItem } from '@/types/settingItem';
 
 export const SettingItems: SettingItem[] = [
@@ -7,7 +13,7 @@ export const SettingItems: SettingItem[] = [
     id: 1,
     icon: require('@/assets/images/person.png'),
     text: '个性化',
-    url: '/(setting)/theme',
+    to: '/(setting)/theme',
   },
   // {
   //   title: '分享',
@@ -15,7 +21,7 @@ export const SettingItems: SettingItem[] = [
   //   id: 2,
   //   icon: require('@/assets/images/share.png'),
   //   text: '分享',
-  //   url: '/(setting)/share',
+  //   to: '/(setting)/share',
   // },
   {
     title: '检查更新',
@@ -23,7 +29,7 @@ export const SettingItems: SettingItem[] = [
     id: 4,
     icon: require('@/assets/images/check-update.png'),
     text: '检查更新',
-    url: '/(setting)/checkUpdate',
+    to: '/(setting)/checkUpdate',
   },
   {
     title: '关于',
@@ -31,7 +37,7 @@ export const SettingItems: SettingItem[] = [
     id: 5,
     icon: require('@/assets/images/about.png'),
     text: '关于',
-    url: '/(setting)/about',
+    to: '/(setting)/about',
   },
   {
     title: '退出',
@@ -39,6 +45,21 @@ export const SettingItems: SettingItem[] = [
     id: 6,
     icon: require('@/assets/images/exit.png'),
     text: '退出',
-    url: '/(setting)/exit',
+    to: () => {
+      const navigation = useRouter();
+      Modal.show({
+        mode: 'middle',
+        title: '退出登录',
+        children: '确定要退出登录吗？',
+        confirmText: '确定',
+        cancelText: '取消',
+        onConfirm: () => {
+          AsyncStorage.multiRemove(['courses']);
+          deleteItemAsync('longToken').then(() => {
+            navigation.replace('/auth/login');
+          });
+        },
+      });
+    },
   },
 ];
