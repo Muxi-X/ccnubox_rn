@@ -4,8 +4,10 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 // import ThemeChangeText from '@/components/text';
 import View from '@/components/view';
 
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
+import { commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
 import { WeekSelectorProps } from '../courseTable/type';
@@ -16,6 +18,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   onWeekSelect,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
 
   return (
     <>
@@ -51,17 +54,35 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                 <Text
                   style={[
                     styles.weekButtonText,
+                    commonStyles.fontSemiBold,
                     {
                       color:
                         currentWeek === i + 1
                           ? '#FFFFFF'
-                          : currentStyle?.schedule_text_style?.color ||
-                            '#000000',
+                          : getCurrentWeek() === i + 1
+                            ? '#7878F8'
+                            : currentStyle?.schedule_text_style?.color ||
+                              '#000000',
                     },
                   ]}
                 >
                   {i + 1}
                 </Text>
+                {getCurrentWeek() === i + 1 && (
+                  <Text
+                    style={[
+                      commonStyles.fontSmall,
+                      commonStyles.fontSemiBold,
+                      {
+                        position: 'absolute',
+                        bottom: -12,
+                        color: '#7878F8',
+                      },
+                    ]}
+                  >
+                    当前周
+                  </Text>
+                )}
               </Pressable>
             ))}
           </View>
@@ -88,15 +109,17 @@ const styles = StyleSheet.create({
   weekGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    left: 5,
+    gap: 16,
+    left: 16,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   weekButton: {
-    width: 45,
-    height: 45,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 24,
+    borderRadius: 15,
   },
   weekButtonText: {
     fontSize: 16,

@@ -1,6 +1,6 @@
 import { View } from '@ant-design/react-native';
 
-import { ManualAdd } from './components/ManualAdd';
+import { ManualAdd } from '@/modules/courseTable/components/ManualAdd';
 
 export default function EditCourse() {
   // const route = useRouter(); // 获取 route 参数

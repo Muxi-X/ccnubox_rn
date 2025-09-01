@@ -1,5 +1,4 @@
-import { generateStyleSheet } from '@/utils';
-
+import generateStyleSheet from '@/utils/generateStyleSheet';
 /** 默认样式 */
 export const defaultStyles = generateStyleSheet({
   dark: {
@@ -27,7 +26,7 @@ export const defaultStyles = generateStyleSheet({
     information_background_style: {
       backgroundColor: '#444444',
     },
-    information_title_style: {
+    information_title_text_style: {
       color: '#D6D6D6',
     },
     information_text_style: {
@@ -59,7 +58,7 @@ export const defaultStyles = generateStyleSheet({
     information_background_style: {
       backgroundColor: '#F7F7F7',
     },
-    information_title_style: {
+    information_title_text_style: {
       color: '#000000',
     },
     information_text_style: {

@@ -2,10 +2,7 @@ import * as React from 'react';
 import { Image, Text } from 'react-native';
 
 import Button from '@/components/button';
-// eslint-disable-next-line import/no-duplicates
 import ThemeBasedView from '@/components/view';
-// eslint-disable-next-line import/no-duplicates,no-duplicate-imports
-import View from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -22,7 +19,7 @@ export default function SelectTheme() {
   const isApplied = (layout: string) => layout === layoutName;
   return (
     <ThemeBasedView style={{ flex: 1, paddingVertical: 20 }}>
-      <View
+      <ThemeBasedView
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -54,7 +51,7 @@ export default function SelectTheme() {
         >
           {isApplied('android') ? '已应用' : '应用'}
         </Button>
-      </View>
+      </ThemeBasedView>
       <Image
         source={
           themeName === 'dark'
@@ -70,7 +67,7 @@ export default function SelectTheme() {
           resizeMode: 'cover',
         }}
       />
-      <View
+      <ThemeBasedView
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -103,7 +100,7 @@ export default function SelectTheme() {
         >
           {isApplied('ios') ? '已应用' : '应用'}
         </Button>
-      </View>
+      </ThemeBasedView>
       <Image
         source={
           themeName === 'dark'

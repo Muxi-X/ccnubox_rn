@@ -7,5 +7,5 @@ export interface SettingItem
   id: number;
   icon: { uri: string };
   text: string;
-  url: Href<string>;
+  url: Href;
 }

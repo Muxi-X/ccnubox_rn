@@ -1,8 +1,12 @@
 {
-  "version": "3.0.4",
-  "releaseNotes": [
-		"修复切换页面崩溃的问题",
-		"优化部分样式细节"
-  ],
-  "knownIssues": []
+  "otaVersion": "3.0.9",
+	"updateTime": "2025-08-17",
+  "newFeatures": [
+		"接入学校新版教务系统"
+	],
+  "fixedIssues": [
+	],
+	"knownIssues": [
+		"弹窗在按钮导航模式下仍然会被遮挡"
+	]
 }

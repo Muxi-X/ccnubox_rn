@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -6,11 +5,12 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useVisualScheme from '@/store/visualScheme';
+import { useInternalBroswer } from '@/hooks/useInternalBroswer';
+
+import Text from '@/components/text';
 
 import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
@@ -26,18 +26,12 @@ interface PopularWebsite {
 type ItemProps = { title: string; _url: string; link: string };
 
 const WebsiteItem = ({ title, _url, link }: ItemProps) => {
-  const currentVisualScheme = useVisualScheme(state => state.currentStyle);
-  const router = useRouter();
+  const openInApp = useInternalBroswer();
 
   return (
-    <Pressable
-      style={styles.item}
-      onPress={() => router.navigate(`/(mainPage)/webview?link=${btoa(link)}`)}
-    >
+    <Pressable style={styles.item} onPress={() => openInApp(link)}>
       <Image source={{ uri: _url }} style={styles.image} />
-      <Text style={[styles.title, currentVisualScheme?.text_style]}>
-        {title}
-      </Text>
+      <Text style={styles.title}>{title}</Text>
     </Pressable>
   );
 };
@@ -75,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    // backgroundColor: '#f9c2ff',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,

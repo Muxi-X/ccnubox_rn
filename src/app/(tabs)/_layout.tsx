@@ -1,12 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
 
+import TabBar from '@/components/navi';
+
 import useVisualScheme from '@/store/visualScheme';
 
 import { tabConfig } from '@/constants/tabBar';
 import { keyGenerator } from '@/utils';
-
-import TabBar from '../../components/navi/index';
 
 import { SinglePageType } from '@/types/tabBarTypes';
 
@@ -31,7 +31,10 @@ export default function TabLayout() {
             headerLeft: headerLeft,
             headerTitleAlign: 'center',
             tabBarStyle: currentStyle?.schedule_background_style,
-            headerStyle: currentStyle?.schedule_background_style,
+            headerStyle: [
+              currentStyle?.schedule_background_style,
+              { height: 120 },
+            ],
           }}
         />
       );
