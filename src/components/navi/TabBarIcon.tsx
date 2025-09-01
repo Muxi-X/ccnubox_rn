@@ -6,7 +6,7 @@ import CalendarIcon from '@/assets/icons/calendar.svg';
 import HomeIcon from '@/assets/icons/home.svg';
 import SettingIcon from '@/assets/icons/setting.svg';
 
-const icons = {
+export const icons = {
   calendar: CalendarIcon,
   home: HomeIcon,
   setting: SettingIcon,

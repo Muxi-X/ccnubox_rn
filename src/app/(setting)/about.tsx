@@ -1,4 +1,5 @@
 import * as Application from 'expo-application';
+import * as Constants from 'expo-constants';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -11,31 +12,31 @@ import handleCopy from '@/utils/handleCopy';
 function About() {
   const number = '791185783';
   const version = Application.nativeApplicationVersion;
+  const otaVersion =
+    Constants.default.expoConfig?.extra?.updateInfo?.otaVersion || '';
   const { currentStyle } = useVisualScheme();
-
+  const textStyle = currentStyle?.text_style;
   return (
     <ThemeBasedView style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.headerText, currentStyle?.text_style]}>关于</Text>
+        <Text style={[styles.headerText, textStyle]}>关于</Text>
       </View>
       <View style={styles.infoContainer}>
         <Image
           source={require('../../assets/images/mx-logo.png')}
           style={styles.icon}
         />
-        <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
-        <Text style={[styles.version, currentStyle?.text_style]}>
-          版本 {version}
+        <Text style={[styles.appName, textStyle]}>华师匣子</Text>
+        <Text style={[styles.version, textStyle]}>App 版本 {version}</Text>
+        <Text style={[styles.version, textStyle]}>
+          热更新版本
+          {otaVersion ? ` ${otaVersion}` : ''}
         </Text>
       </View>
       <View style={[styles.groupContainer, currentStyle?.background_style]}>
         <View style={styles.groupRow}>
-          <Text style={[styles.groupText, currentStyle?.text_style]}>
-            匣子交流群：
-          </Text>
-          <Text style={[styles.groupNumber, currentStyle?.text_style]}>
-            {number}
-          </Text>
+          <Text style={[styles.groupText, textStyle]}>匣子交流群：</Text>
+          <Text style={[styles.groupNumber, textStyle]}>{number}</Text>
           <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
@@ -127,10 +128,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#7C4DFF',
-    borderRadius: 24,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     height: 44,
+    width: '60%',
+    alignSelf: 'center',
   },
   buttonText: {
     color: '#FFF',

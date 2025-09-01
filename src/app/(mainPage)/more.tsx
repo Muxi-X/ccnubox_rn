@@ -1,19 +1,16 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
-import useVisualScheme from '@/store/visualScheme';
+import Text from '@/components/text';
+import View from '@/components/view';
 
 export default function More() {
-  const currentStyle = useVisualScheme(state => state.currentStyle);
-
   return (
     <View style={styles.container}>
       <Image
         source={require('@/assets/images/mx-logo.png')}
         style={styles.image}
       ></Image>
-      <Text style={[styles.text, currentStyle?.text_style]}>
-        更多功能敬请期待
-      </Text>
+      <Text style={styles.text}>更多功能敬请期待</Text>
     </View>
   );
 }

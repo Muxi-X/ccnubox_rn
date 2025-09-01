@@ -8,7 +8,9 @@ const useScraper = create<scraperType>((set, get) => ({
   setRef: newRef => set(() => ({ ref: newRef ?? null })),
   injectJavaScript: (injected: string) => {
     const { ref } = get();
-    ref?.current && ref.current.injectJavaScript(injected);
+    if (ref?.current) {
+      ref.current.injectJavaScript(injected);
+    }
   },
 }));
 

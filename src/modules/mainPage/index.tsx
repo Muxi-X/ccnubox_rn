@@ -100,13 +100,13 @@ const IndexPage: FC = () => {
       <Skeleton>
         <View style={styles.banner}>
           <Carousel
-            style={{ flex: 1, marginHorizontal: percent2px(2.5) }}
+            style={{ marginHorizontal: percent2px(2.5) }}
             width={percent2px(95)}
-            height={120}
+            height={140}
+            data={banners}
             autoPlay
             loop
-            data={banners}
-            scrollAnimationDuration={2000}
+            scrollAnimationDuration={1500}
             renderItem={({ item }) => {
               return (
                 <View

@@ -27,30 +27,25 @@ async function getStoredToken(): Promise<string> {
 }
 
 async function refreshToken(): Promise<string> {
-  try {
-    const longToken = getItem('longToken');
-    if (!longToken) throw new Error('长 token 不存在');
+  const longToken = getItem('longToken');
+  if (!longToken) throw new Error('长 token 不存在');
 
-    // 刷新短 token
-    const response = await axios.get(
-      `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
-      {
-        headers: { Authorization: `Bearer ${longToken}` },
-      }
-    );
-
-    if (response.status === 200 || response.status === 201) {
-      const newShortToken = response.headers['x-jwt-token'];
-      //   console.log(newShortToken);
-      setItem('shortToken', newShortToken);
-      return newShortToken;
+  // 刷新短 token
+  const response = await axios.get(
+    `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
+    {
+      headers: { Authorization: `Bearer ${longToken}` },
     }
+  );
 
-    throw new Error('刷新短 token 失败');
-  } catch (error) {
-    //  console.error('刷新短 token 失败:', error);
-    throw error;
+  if (response.status === 200 || response.status === 201) {
+    const newShortToken = response.headers['x-jwt-token'];
+    //   console.log(newShortToken);
+    setItem('shortToken', newShortToken);
+    return newShortToken;
   }
+
+  throw new Error('刷新短 token 失败');
 }
 
 axiosInstance.interceptors.request.use(
@@ -61,7 +56,7 @@ axiosInstance.interceptors.request.use(
       try {
         const token = await getStoredToken();
         if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+          config.headers['Authorization'] = `Bearer ${token.trim()}`;
         }
       } catch (error) {
         throw Error('token不存在');
@@ -77,6 +72,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   response => {
     requestBus.requestComplete();
+
     switch (response.status) {
       case 200:
         return response;
@@ -99,6 +95,7 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true; // 防止无限循环
       try {
         const newShortToken = await refreshToken();
+
         originalRequest.headers['Authorization'] = `Bearer ${newShortToken}`;
         return axiosInstance(originalRequest); // 重新发送请求
       } catch (refreshError) {
@@ -139,13 +136,13 @@ function resolvePathWithParams<P extends Path>(
   path: P,
   params?: RequestParams<P, Method>
 ): string {
-  // @ts-ignore
+  // @ts-expect-error 2339 never type
   if (!params || !params.query) {
     return path as string;
   }
 
   if (typeof params === 'object' && 'query' in params) {
-    // @ts-ignore
+    // @ts-expect-error 2339 never type
     const query = params.query;
     if (typeof query === 'object') {
       const queryParams = new URLSearchParams();
@@ -185,6 +182,7 @@ async function baseRequest<P extends Path, M extends Method>(
   };
 
   const response = await axiosInstance(axiosConfig);
+
   return response.data as ResponseData<P, M>;
 }
 

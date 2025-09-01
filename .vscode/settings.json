@@ -1,4 +1,7 @@
 {
-    "git.ignoreLimitWarning": true,
-    "cmake.sourceDirectory": "D:/26066/VScode/ccnubox/ccnubox_rn/.ignored_node_modules/nan"
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.sortMembers": "explicit"
+  }
 }

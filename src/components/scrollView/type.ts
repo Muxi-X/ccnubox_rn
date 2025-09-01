@@ -1,4 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
+import { ViewProps } from 'react-native';
 import {
   GestureUpdateEvent,
   PanGestureHandlerEventPayload,
@@ -26,7 +27,7 @@ export interface ScrollableViewProps {
   /**
    * 滚动内容
    */
-  children?: ReactElement;
+  children?: ReactElement<ViewProps>;
   /**
    * 下方固定栏彩蛋
    */

@@ -1,5 +1,57 @@
-const HeaderCenter = () => {
-  return <></>;
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import * as React from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import useVisualScheme from '@/store/visualScheme';
+
+import { commonStyles } from '@/styles/common';
+
+const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        onPress={router.back}
+        style={{
+          position: 'absolute',
+          left: 20,
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Ionicons
+          name="arrow-back-outline"
+          size={commonStyles.fontLarge.fontSize}
+          color={(currentStyle?.text_style as TextStyle).color}
+        />
+      </TouchableOpacity>
+      <Text
+        style={[
+          currentStyle?.header_text_style,
+          commonStyles.TabBarPadding,
+          commonStyles.fontLarge,
+          { marginLeft: 60 },
+        ]}
+      >
+        {title}
+      </Text>
+    </View>
+  );
 };
 
+export const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+  },
+});
 export default HeaderCenter;

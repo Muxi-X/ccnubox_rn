@@ -102,7 +102,7 @@ const Picker: React.FC<DatePickerProps> = ({
     setPickerValue(pickedValue);
   };
   const handleConfirm = () => {
-    onConfirm && onConfirm(pickerValue.map(item => String(item)));
+    if (onConfirm) onConfirm(pickerValue.map(item => String(item)));
   };
   const contentWidth = useMemo(() => {
     return percent2px(94) - 60;

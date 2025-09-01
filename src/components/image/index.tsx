@@ -18,15 +18,15 @@ const Image: FC<ImageProps> = ({
   ...props
 }) => {
   const handleLoad = () => {
-    onLoadStart && onLoadStart();
+    if (onLoadStart) onLoadStart();
     requestBus.requestRegister();
   };
   const handleLoadEnd = () => {
-    onLoadEnd && onLoadEnd();
+    if (onLoadEnd) onLoadEnd();
     requestBus.requestComplete();
   };
   const handleErr = (err: any) => {
-    onError && onError(err);
+    if (onError) onError(err);
     requestBus.requestComplete();
   };
   return (

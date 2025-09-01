@@ -13,7 +13,7 @@ import { ConfigurableThemeNames } from '@/styles/types';
  * @param restProps
  * @constructor
  */
-const Text: React.FC<
+const ThemeBasedText: React.FC<
   { configurableThemeName?: ConfigurableThemeNames } & TextProps
 > = ({ style, configurableThemeName = 'text_style', ...restProps }) => {
   const animatedStyle = useThemeChangeStyle(configurableThemeName, 'color');
@@ -21,4 +21,4 @@ const Text: React.FC<
   return <Animated.Text style={[style, animatedStyle]} {...restProps} />;
 };
 
-export default Text;
+export default ThemeBasedText;
