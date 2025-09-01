@@ -2,17 +2,35 @@
   "expo": {
     "name": "华师匣子",
     "slug": "ccnubox",
+    "owner": "muxi_fe",
     "version": "3.0.0",
+    "runtimeVersion": "3.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "ccnubox",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
+    "updates": {
+      "url": "https://u.expo.dev/65d670f0-9625-4631-9603-f4b11f44e621"
+    },
     "assetBundlePatterns": [
       "src/assets/images/",
       "src/assets/data/",
       "src/assets/fonts"
     ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "65d670f0-9625-4631-9603-f4b11f44e621"
+      },
+      "updateInfo": {
+        "otaVersion": "3.0.8",
+        "releaseNotes": ["新增更新日志显示"],
+        "knownIssues": ["弹窗在按钮导航模式下仍然会被遮挡"]
+      }
+    },
     "ios": {
       "icon": {
         "light": "./src/assets/images/icon-ios-light.png",
@@ -21,7 +39,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "8",
+      "buildNumber": "10",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -78,11 +96,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "runtimeVersion": "1.2.0",
-    "updates": {
-      "url": "https://u.expo.dev/d6863b18-d443-4651-b836-5129afd64edc"
-    },
-    "owner": "muxi_fe"
+    }
   }
 }

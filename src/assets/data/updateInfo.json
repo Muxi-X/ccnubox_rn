@@ -1,12 +1,12 @@
 {
-  "version": "3.0.7",
-  "releaseNotes": [
-		"新增第三学期成绩查询功能",
-		"修复已修学分课程名过长溢出",
-		"修复课程详情文字过长溢出",
-		"修复网站自动登录频闪问题"
+  "otaVersion": "3.0.9",
+	"updateTime": "2025-08-17",
+  "newFeatures": [
+		"接入学校新版教务系统"
 	],
-  "knownIssues": [
+  "fixedIssues": [
+	],
+	"knownIssues": [
 		"弹窗在按钮导航模式下仍然会被遮挡"
 	]
 }
