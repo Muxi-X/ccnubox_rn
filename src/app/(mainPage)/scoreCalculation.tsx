@@ -21,6 +21,8 @@ import { percent2px } from '@/utils';
 interface GradeDetails {
   usualGrade: string | number;
   finalGrade: string | number;
+  regularGradePercent: string;
+  finalGradePercent: string;
   allGrade: number;
   credit: number;
   score: number;
@@ -74,6 +76,7 @@ const ScoreCalculation: React.FC = () => {
     setIsPartiallySelected(isPartial);
     setIsAllSelected(selection.size === gradeData.length);
   };
+  const textStyle = currentStyle?.text_style;
 
   const showCourseDetails = (course: GradeData) => {
     setSelectedCourse(course);
@@ -94,13 +97,13 @@ const ScoreCalculation: React.FC = () => {
           </View>
           <View style={styles.modalContent}>
             <Text style={styles.textItem}>
-              平时成绩（60%）:{' '}
+              {course.details.regularGradePercent}:{' '}
               <Text style={styles.textHighlight}>
                 {course.details?.usualGrade}
               </Text>
             </Text>
             <Text style={styles.textItem}>
-              期末成绩（40%）:{' '}
+              {course.details.finalGradePercent}:{' '}
               <Text style={styles.textHighlight}>
                 {course.details?.finalGrade}
               </Text>
@@ -159,12 +162,8 @@ const ScoreCalculation: React.FC = () => {
             <Text style={styles.resultTitle}>计算结果</Text>
           </View>
           <View style={styles.resultContent}>
-            <Text style={[styles.resultScore, currentStyle?.text_style]}>
-              {averageScore}
-            </Text>
-            <Text style={[styles.resultLabel, currentStyle?.text_style]}>
-              平时学分绩
-            </Text>
+            <Text style={[styles.resultScore, textStyle]}>{averageScore}</Text>
+            <Text style={[styles.resultLabel, textStyle]}>平时学分绩</Text>
           </View>
         </View>
       ),
@@ -188,6 +187,8 @@ const ScoreCalculation: React.FC = () => {
               details: {
                 usualGrade: grade.regularGrade,
                 finalGrade: grade.finalGrade,
+                finalGradePercent: grade.finalGradePercent,
+                regularGradePercent: grade.regularGradePercent,
                 allGrade: Number(grade.cj),
                 credit: grade.xf,
                 score: grade.jd,
@@ -223,12 +224,10 @@ const ScoreCalculation: React.FC = () => {
               source={require('../../assets/images/arrow-left.png')}
             />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, currentStyle?.text_style]}>
-            成绩
-          </Text>
+          <Text style={[styles.headerTitle, textStyle]}>成绩</Text>
         </View>
         <View style={styles.headerRight}>
-          <Text style={currentStyle?.text_style}>全选：</Text>
+          <Text style={textStyle}>全选：</Text>
           <TouchableOpacity
             onPress={() => handleSelectAllToggle(!isAllSelected)}
             style={[
@@ -257,9 +256,7 @@ const ScoreCalculation: React.FC = () => {
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#7878F8" />
-          <Text style={[styles.loadingText, currentStyle?.text_style]}>
-            加载中...
-          </Text>
+          <Text style={[styles.loadingText, textStyle]}>加载中...</Text>
         </View>
       ) : (
         <ScrollView style={styles.scrollView}>
@@ -279,16 +276,12 @@ const ScoreCalculation: React.FC = () => {
                   <View>
                     <View style={styles.courseHeader}>
                       <View style={styles.courseDot} />
-                      <Text
-                        style={[styles.courseTitle, currentStyle?.text_style]}
-                      >
+                      <Text style={[styles.courseTitle, textStyle]}>
                         {course.title}
                       </Text>
                     </View>
                     <View style={styles.courseInfo}>
-                      <Text
-                        style={[styles.creditText, currentStyle?.text_style]}
-                      >
+                      <Text style={[styles.creditText, textStyle]}>
                         学分：{course.credit}
                       </Text>
                       <Text style={styles.scoreText}>成绩：{course.score}</Text>
@@ -396,9 +389,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 8,
+    borderRadius: 10,
   },
   activeCourseItem: {
-    backgroundColor: '#e9e3ff',
+    backgroundColor: 'rgba(117, 117, 117, 0.5)',
   },
   courseHeader: {
     flexDirection: 'row',

@@ -8,12 +8,7 @@ interface QueryParams {
 
 // 成绩查询详细
 export const queryGradeDetail = async (queryParams: QueryParams) => {
-  try {
-    return await request.post('/grade/getGradeByTerm', { ...queryParams });
-  } catch (error) {
-    //console.error('查询成绩接口出错:', error);
-    throw error;
-  }
+  return await request.post('/grade/getGradeByTerm', { ...queryParams });
 };
 
 export default queryGradeDetail;

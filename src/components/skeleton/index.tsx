@@ -15,8 +15,8 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import globalEventBus from '@/eventBus';
 import { keyGenerator } from '@/utils';
+import globalEventBus from '@/utils/eventBus';
 
 /**
  * 骨架屏组件
@@ -44,11 +44,11 @@ const SkeletonLoader: FC<SkeletonType> = ({
   // 监听请求完成事件
   useEffect(() => {
     globalEventBus.on('request_complete', () => {
-      isFocused && setLoading(false);
+      if (isFocused) setLoading(false);
     });
   }, []);
   React.useEffect(() => {
-    layout &&
+    if (layout)
       Animated.loop(
         Animated.timing(translateX, {
           toValue: layout.width * 1.25,

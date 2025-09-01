@@ -12,7 +12,7 @@ import Toast from '@/components/toast';
  * // 打开微信
  * handleOpenURL('weixin://dl/business/?appid=xxx', '微信');
  */
-const handleOpenURL = async (url: string, appName: string) => {
+export const handleOpenURL = async (url: string, appName: string) => {
   try {
     const supported = await Linking.canOpenURL(url);
     if (!supported) {
@@ -49,5 +49,3 @@ export const openPhoneNumber = (number: string) => {
 export const openBrowser = (url: string) => {
   handleOpenURL(url, '浏览器');
 };
-
-export default handleOpenURL;

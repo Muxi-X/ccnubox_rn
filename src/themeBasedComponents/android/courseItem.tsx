@@ -2,10 +2,10 @@ import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
-  colorOptions,
-  COURSE_HEADER_HEIGHT,
-  COURSE_HORIZONTAL_PADDING,
-  COURSE_ITEM_HEIGHT,
+    colorOptions,
+    COURSE_HEADER_HEIGHT,
+    COURSE_HORIZONTAL_PADDING,
+    COURSE_ITEM_HEIGHT,
 } from '@/constants/courseTable';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 

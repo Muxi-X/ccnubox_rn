@@ -27,7 +27,7 @@ const Button: FC<ButtonProps> = ({
         style,
       ]}
       onPress={(...props) => {
-        !isLoading && onPress?.(...props);
+        if (!isLoading) onPress?.(...props);
       }}
     >
       <View accessible accessibilityRole="button" style={[styles.button]}>

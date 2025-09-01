@@ -52,7 +52,7 @@ const CheckGrades = () => {
   );
 
   const CourseTypePickerTrigger = (
-    <View style={[styles.item, styles.itemBorder]}>
+    <View style={styles.item}>
       <Image
         style={{ width: 35, height: 35, marginRight: 34 }}
         source={require('../../../../assets/images/xueqi.png')}
@@ -88,8 +88,9 @@ const CheckGrades = () => {
         confirmText="确认"
         cancelText="取消"
         titleDisplayLogic={(_val, _data) => '请选择学期'}
-        children={SemesterPickerTrigger}
-      />
+      >
+        {SemesterPickerTrigger}
+      </MultiPicker>
 
       <MultiPicker
         mode="bottom"
@@ -101,8 +102,9 @@ const CheckGrades = () => {
         confirmText="确认"
         cancelText="取消"
         titleDisplayLogic={(_val, _data) => '请选择课程性质'}
-        children={CourseTypePickerTrigger}
-      />
+      >
+        {CourseTypePickerTrigger}
+      </MultiPicker>
 
       <TouchableOpacity
         style={{
@@ -118,7 +120,7 @@ const CheckGrades = () => {
         }}
         onPress={() => {
           router.push({
-            pathname: '/scoreCalculation',
+            pathname: '/(mainPage)/scoreCalculation',
             params: {
               semester: JSON.stringify(selectedSemester),
               courseType: JSON.stringify(selectedCourseType),
@@ -144,8 +146,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemBorder: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderStyle: 'solid',
-    borderColor: '#D8D8D8',
+    borderColor: '#D8D8D880',
   },
 });

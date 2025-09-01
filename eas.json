@@ -26,8 +26,8 @@
         "buildType": "apk"
       },
       "ios": {
-        "distribution": "internal",
-        "simulator": false // 设为 true 可以生成 iOS 模拟器包
+        "distribution": "store",
+        "simulator": false
       }
     },
     "preview": {

@@ -10,7 +10,6 @@ import CourseTree from '@/modules/mainPage/components/courseTree';
 
 const ScoreInquiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  // const [pattern, setPattern] = React.useState(0);
 
   const tabs = [
     {
@@ -23,11 +22,7 @@ const ScoreInquiry = () => {
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      {/* <TabBar pattern={pattern} setPattern={setPattern} navText={navText} />
-      <View style={styles.content}>
-        {pattern === 0 ? <CheckGrades /> : <CourseTree />}
-      </View> */}
-      <TabBar tabs={tabs}>
+      <TabBar tabs={tabs} style={{ paddingTop: 20 }}>
         <View style={styles.content}>
           <CheckGrades />
         </View>
@@ -48,6 +43,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingTop: 10,
     paddingHorizontal: 20,
   },
 });

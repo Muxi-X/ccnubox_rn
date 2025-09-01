@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import * as React from 'react';
-import { StyleProp, StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
@@ -14,18 +15,16 @@ export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
-  const currentComponents = useThemeBasedComponents(
-    state => state.currentComponents
+  const CurrentComponents = useThemeBasedComponents(
+    state => state.CurrentComponents
   );
   return (
-    <View style={[styles.container]}>
+    <SafeAreaView edges={['bottom']} style={[styles.container]}>
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: 'white' },
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackVisible: false,
-          headerTitleAlign: 'center',
           headerShadowVisible: false,
         }}
       >
@@ -40,22 +39,10 @@ export default function Layout() {
               key={keyGenerator.next().value as unknown as number}
               name={config.name}
               options={{
-                headerTitleAlign: 'center',
-                headerLeft: () => {
-                  return (
-                    <>
-                      {currentComponents && (
-                        <currentComponents.header_left title={config.title} />
-                      )}
-                    </>
-                  );
-                },
                 headerTitle: () => (
                   <>
-                    {currentComponents && (
-                      <currentComponents.header_center
-                        title={config.title}
-                      ></currentComponents.header_center>
+                    {CurrentComponents && (
+                      <CurrentComponents.HeaderCenter title={config.title} />
                     )}
                   </>
                 ),
@@ -68,13 +55,14 @@ export default function Layout() {
                   }>,
               }}
             ></Stack.Screen>
-          ))}
+          ))
+          .filter(item => item)}
         <Stack.Screen
           name="scoreCalculation"
           options={{ headerShown: false }}
         ></Stack.Screen>
       </Stack>
-    </View>
+    </SafeAreaView>
   );
 }
 

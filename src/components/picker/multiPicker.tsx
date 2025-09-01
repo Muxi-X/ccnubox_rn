@@ -80,7 +80,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
     setMultiPickerValue(Array.from(items));
   };
   const handleConfirm = () => {
-    onConfirm && onConfirm(multiPickerValue.map(item => String(item)));
+    if (onConfirm) onConfirm(multiPickerValue.map(item => String(item)));
   };
   return (
     <ModalTrigger
@@ -130,7 +130,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   const [checkedList, setCheckedList] = React.useState(
     pickedItems ?? new Set([])
   );
-  const [indeterminate, setIndeterminate] = React.useState(true);
   const [checkAll, setCheckAll] = React.useState(false);
 
   const onChange = (
@@ -145,9 +144,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     onPick?.(checkedList);
 
     setCheckedList(new Set(checkedList));
-    setIndeterminate(
-      !!checkedList.size && checkedList.size < plainOptions.length
-    );
     setCheckAll(checkedList.size === plainOptions.length);
   };
 
@@ -157,7 +153,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       : new Set();
     setCheckedList(checkedItems);
     onPick?.(checkedItems);
-    setIndeterminate(false);
     setCheckAll(e.target.checked);
   };
 
@@ -180,7 +175,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
         }}
       >
         <CheckboxItem
-          indeterminate={indeterminate}
           onChange={onCheckAllChange}
           checked={checkAll}
           styles={{

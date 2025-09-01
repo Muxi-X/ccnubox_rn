@@ -5,8 +5,8 @@ import TabBar from '@/components/tabs';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { ManualAdd } from './components/ManualAdd';
-import { SearchAdd } from './components/SearchAdd';
+import { ManualAdd } from '@/modules/courseTable/components/ManualAdd';
+import { SearchAdd } from '@/modules/courseTable/components/SearchAdd';
 
 export default function AddCourse() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

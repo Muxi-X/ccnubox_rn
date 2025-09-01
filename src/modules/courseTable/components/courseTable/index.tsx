@@ -3,6 +3,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
   memo,
+  RefObject,
   useDeferredValue,
   useEffect,
   useRef,
@@ -32,8 +33,8 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
-import globalEventBus from '@/eventBus';
 import { commonColors } from '@/styles/common';
+import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
@@ -52,7 +53,7 @@ const CourseContent: React.FC<CourseTransferType> = memo(
     } = props;
 
     const CourseItem = useThemeBasedComponents(
-      state => state.currentComponents?.course_item
+      state => state.CurrentComponents?.CourseItem
     );
 
     return (
@@ -135,7 +136,9 @@ const Timetable: React.FC<CourseTableProps> = ({
           // 给予时间让滚动位置重置
           await new Promise(resolve => setTimeout(resolve, 100));
           // 使用完整课表内容的引用而不是滚动视图
-          const snapshot = await makeImageFromView(fullTableRef);
+          const snapshot = await makeImageFromView(
+            fullTableRef as RefObject<View>
+          );
           if (!snapshot) {
             Toast.show({
               text: '截图失败',
@@ -209,18 +212,25 @@ const Timetable: React.FC<CourseTableProps> = ({
         week_duration,
         credit,
       } = course;
+
+      // 计算课程的时间跨度（占几节课）
       const timeSpan = class_when
         .split('-')
         .map(Number)
         .reduce((a: number, b: number) => b - a + 1);
-      const rowIndex = Number(class_when.split('-')[0]) - 1;
-      const colIndex = day - 1;
-      const key = `${rowIndex}-${colIndex}`;
+
+      // 计算课程在课表中的位置
+      const rowIndex = Number(class_when.split('-')[0]) - 1; // 第几节课开始
+      const colIndex = day - 1; // 周几（0-6，对应周一到周日）
+      const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
 
       if (rowIndex !== -1 && colIndex !== -1) {
+        // 如果该时间槽还没有课程，创建一个空数组
         if (!coursesBySlot.has(key)) {
           coursesBySlot.set(key, []);
         }
+
+        // 将课程添加到对应的时间槽中
         coursesBySlot.get(key).push({
           id,
           courseName: classname,
@@ -231,7 +241,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           rowIndex,
           colIndex,
           weeks,
-          isThisWeek: weeks.includes(currentWeek),
+          isThisWeek: weeks.includes(currentWeek), // 标记是否为当前周的课程
           week_duration,
           credit,
           class_when,
@@ -243,11 +253,19 @@ const Timetable: React.FC<CourseTableProps> = ({
     for (const [key, slotCourses] of coursesBySlot) {
       const [rowIndex, colIndex] = key.split('-').map(Number);
 
-      // 找到当前周应该显示的课程
-      const courseToShow =
-        slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
+      // 当一个时间槽有多节课时，优先显示当前周的课程
+      let courseToShow: CourseTransferType | null = null;
+
+      // 1. 首先尝试找到当前周应该显示的课程
+      courseToShow =
+        slotCourses.find((course: CourseTransferType) =>
           course.weeks.includes(currentWeek)
-        ) || slotCourses[0];
+        ) || null;
+
+      // 2. 如果当前周没有课程，则选择第一节课作为默认显示
+      if (!courseToShow && slotCourses.length > 0) {
+        courseToShow = slotCourses[0];
+      }
 
       if (courseToShow) {
         timetableMatrix[rowIndex][colIndex] = {
@@ -364,7 +382,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               // onTimetableRefresh returns a Promise so we need to await it
               await onTimetableRefresh(true);
               handleSuccess();
-            } catch (error) {
+            } catch {
               //console.error('刷新失败:', error);
               handleFail();
             } finally {
@@ -416,13 +434,15 @@ const ModalContent: React.FC<ModalContentProps> = memo(
           <ThemeChangeText style={styles.modalTitle}>
             {courseName}
           </ThemeChangeText>
+        </View>
+        <View style={styles.modalSubtitleRow}>
+          <Text style={styles.modalSubtitleText}>{credit}学分</Text>
           {!isThisWeek && (
             <View style={styles.notThisWeekTag}>
               <Text style={styles.notThisWeekText}>非本周</Text>
             </View>
           )}
         </View>
-        <Text style={styles.modalSubtitle}>{credit}学分</Text>
 
         <View style={styles.modalInfoGrid}>
           <View style={styles.modalInfoItem}>
@@ -469,7 +489,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { currentWeek } = useTimeStore();
+  const { selectedWeek: currentWeek } = useTimeStore();
   const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
@@ -499,7 +519,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
           weekDates.push(`${month}/${day}`);
         }
         setDates(weekDates);
-      } catch (error) {
+      } catch {
         throw new Error('计算日期失败');
       }
     };
@@ -673,11 +693,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notThisWeekTag: {
-    position: 'absolute',
-    right: 0,
+    height: 20,
+    justifyContent: 'center',
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 8,
-    paddingVertical: 2,
     borderRadius: 10,
   },
   notThisWeekText: {
@@ -687,8 +706,21 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontSize: 14,
     color: '#666',
-    textAlign: 'center',
+  },
+  modalSubtitleRow: {
+    height: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 20,
+  },
+  modalSubtitleText: {
+    height: 20,
+    lineHeight: 20,
+    fontSize: 14,
+    color: '#666',
+    marginRight: 6,
   },
   modalInfoGrid: {
     flexDirection: 'row',
@@ -714,6 +746,7 @@ const styles = StyleSheet.create({
   modalInfoText: {
     fontSize: 14,
     color: '#333',
+    maxWidth: '80%',
   },
 });
 

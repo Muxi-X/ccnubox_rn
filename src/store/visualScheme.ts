@@ -4,9 +4,9 @@ import { Appearance, Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import globalEventBus from '@/eventBus';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
+import globalEventBus from '@/utils/eventBus';
 
 import { visualSchemeType } from './types';
 
@@ -24,10 +24,18 @@ const useVisualScheme = create<visualSchemeType>()(
             LayoutName,
             LayoutType
           >;
+          const currentTheme =
+            Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
+          if (currentTheme === 'dark') {
+            SystemUI.setBackgroundColorAsync('#242424');
+          } else {
+            SystemUI.setBackgroundColorAsync('white');
+          }
           globalEventBus.emit('layoutSet');
           globalEventBus.emit('layoutChange', state.layoutName);
           return {
             ...state,
+            themeName: currentTheme,
             currentStyle: layoutMap[state.layoutName][
               state.themeName
             ] as SingleThemeType,

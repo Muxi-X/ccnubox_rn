@@ -1,3 +1,5 @@
+import { icons } from './TabBarIcon';
+
 import { SinglePageType } from '@/types/tabBarTypes';
 
 export interface TabBarItemProps extends SinglePageType {
@@ -7,6 +9,7 @@ export interface TabBarItemProps extends SinglePageType {
   isFocused: boolean;
   onPress?: (_e: any) => void;
   onLongPress?: (_e: any) => void;
+  iconName?: keyof typeof icons;
   /**
    * 展示文本
    */
