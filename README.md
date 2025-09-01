@@ -96,21 +96,26 @@
 
 - [集成 android studio(android调试)](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [集成 expo-orbit(ios调试)](https://docs.expo.dev/workflow/ios-simulator/)
-- 若要测试 `mx-jpush-expo` 等消息通知内容，请参考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
+- 若要测试 `mx-jpush-expo`
+  等消息通知内容，请参考[mx-jpush-expo](https://github.com/konodioda727/JPush-Expo)的文档
 
 ## 开发环境搭建
 
-拉取代码后先运行 `eas env:pull` 并选择一个环境，开发时尽量使用 `development` 环境。
+拉取代码后先运行 `eas env:pull` 并选择一个环境，开发时尽量使用 `development`
+环境。
 
 拉取代码后运行 `pnpm install` 安装依赖，此时即满足 `Expo Go` 开发环境。
 
-在 `ios/` 目录下运行 `pod install` 能够成功时，运行 `pnpm ios` 可以启动 iOS 的 development build 开发环境，用于调试 iOS 原生行为。
+在 `ios/` 目录下运行 `pod install` 能够成功时，运行 `pnpm ios`
+可以启动 iOS 的 development build 开发环境，用于调试 iOS 原生行为。
 
-在配置好 `ANDROID_HOME` 等 Android SDK 环境后，运行 `pnpm android` 可以启动 Android 的 development build 环境。
+在配置好 `ANDROID_HOME` 等 Android SDK 环境后，运行 `pnpm android`
+可以启动 Android 的 development build 环境。
 
 ## 配置文件
 
-任何关于配置文件的修改都应该声明在对应 git commit 的 commit message 中，以便后续追查与回溯。
+任何关于配置文件的修改都应该声明在对应 git commit 的 commit
+message 中，以便后续追查与回溯。
 
 ### app.json & app.config.ts
 
@@ -403,7 +408,22 @@ eas update --branch production --message "wdigets test_1"
 热更新更新通知位于
 `assets/data/updateInfo.json`中，每次热更新手动更新其中的版本号以及更新内容并推送到 GitHub，将触发 CD 自动发布 test 通道的 OTA。
 
-如果修改了原生代码，需要重新打包原生应用安装包，此时需要发布新的原生安装包作为更新包。
+如果修改了原生代码，需要更新版本号并重新打包原生应用安装包，此时需要发布新的原生安装包作为更新包。
+
+版本号更新示例：
+
+```json
+{
+  "expo": {
+    "name": "华师匣子",
+    "slug": "ccnubox",
+    "version": "3.0.0", // update to 3.0.1
+    "runtimeVersion": "3.0.0" // sync this with version field, update to 3.0.2
+  }
+}
+```
+
+ota 更新只有 runtimeVersion 在 ota 更新包与拉取更新的客户端相同时，才会被客户端下载，这是为了保证不会因 js 代码与客户端原生代码版本不匹配导致程序崩溃，为了便于区分，请保持 runtimeVersion 与 version 的值相同。
 
 ### 上传到 appstore / testflight
 
@@ -412,3 +432,18 @@ eas submit -p ios -latest # 上传最后一次构建的
 # 这里要注意eas.json 中 distribution 要修改为 "store" 这样数字签名证书才可以生效
 ```
 
+### iOS 打包
+
+```bash
+eas build -p ios --profile test
+```
+
+#### 注意事项
+
+要更新buildNumber 需要更新app.json 中的buildNumber然后执行
+
+```bash
+npx expo prebuild --platform ios --no-install
+```
+
+然后再重新打包 才可以submit

@@ -1,4 +1,5 @@
 import * as Application from 'expo-application';
+import * as Constants from 'expo-constants';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -11,6 +12,8 @@ import handleCopy from '@/utils/handleCopy';
 function About() {
   const number = '791185783';
   const version = Application.nativeApplicationVersion;
+  const otaVersion =
+    Constants.default.expoConfig?.extra?.updateInfo?.otaVersion || '';
   const { currentStyle } = useVisualScheme();
   const textStyle = currentStyle?.text_style;
   return (
@@ -24,7 +27,11 @@ function About() {
           style={styles.icon}
         />
         <Text style={[styles.appName, textStyle]}>华师匣子</Text>
-        <Text style={[styles.version, textStyle]}>版本 {version}</Text>
+        <Text style={[styles.version, textStyle]}>App 版本 {version}</Text>
+        <Text style={[styles.version, textStyle]}>
+          热更新版本
+          {otaVersion ? ` ${otaVersion}` : ''}
+        </Text>
       </View>
       <View style={[styles.groupContainer, currentStyle?.background_style]}>
         <View style={styles.groupRow}>
@@ -121,10 +128,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#7C4DFF',
-    borderRadius: 24,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     height: 44,
+    width: '60%',
+    alignSelf: 'center',
   },
   buttonText: {
     color: '#FFF',
