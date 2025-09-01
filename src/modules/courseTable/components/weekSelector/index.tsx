@@ -4,8 +4,10 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 // import ThemeChangeText from '@/components/text';
 import View from '@/components/view';
 
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
+import { commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
 import { WeekSelectorProps } from '../courseTable/type';
@@ -16,6 +18,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   onWeekSelect,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
 
   return (
     <>
@@ -55,13 +58,32 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                       color:
                         currentWeek === i + 1
                           ? '#FFFFFF'
-                          : currentStyle?.schedule_text_style?.color ||
-                            '#000000',
+                          : getCurrentWeek() === i + 1
+                            ? '#7878F8'
+                            : currentStyle?.schedule_text_style?.color ||
+                              '#000000',
                     },
                   ]}
                 >
                   {i + 1}
                 </Text>
+                {getCurrentWeek() === i + 1 && (
+                  <Text
+                    style={[
+                      commonStyles.fontSmall,
+                      {
+                        position: 'absolute',
+                        bottom: 5,
+                        color:
+                          getCurrentWeek() === currentWeek
+                            ? '#FFFFFF'
+                            : '#7878F8',
+                      },
+                    ]}
+                  >
+                    当前周
+                  </Text>
+                )}
               </Pressable>
             ))}
           </View>

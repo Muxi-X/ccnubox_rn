@@ -15,7 +15,7 @@ import globalEventBus from '@/utils/eventBus';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();
-  const { currentWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
+  const { selectedWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
 
   return (
     <View
@@ -46,7 +46,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
             },
           ]}
         >
-          第{currentWeek}周
+          第{selectedWeek}周
         </Text>
         <MaterialIcons
           name="arrow-forward-ios"
