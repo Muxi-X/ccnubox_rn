@@ -13,7 +13,7 @@ import Text from '@/components/text';
 import View from '@/components/view';
 
 const pdfUrl =
-  'https://jwc.ccnu.edu.cn/virtual_attach_file.vsb?afc=NUNLTZnzM2UmLbotRAknN78olCZL8rj7U4N4Ul78nmCZUz70gihFp2hmCIa0Mky4oSyYMYh7nlUiMz6VL7-YM7UDU87sM4NaLlUbLllYLmVFUmC8o7UZUlQFLzN8UNr7gjfNQmOeo4xmCDbigDTJQty0Lz74L1yboz9PgtA8pUwcc&tid=1132&nid=9981&e=.pdf';
+  'https://xxb.ccnu.edu.cn/virtual_attach_file.vsb?afc=Uoz9n8U462Lln7LSmAVM7-sozUZMNQzRM8WfM8MVM4UYUNl0gihFp2hmCIa0M1h2USysnkhRnmlYoRGYUzMkolMRUmrfMlU4LRC8nzVRoz6FL4QfU4nkMmnFozAfMl-Jqjfjo4OeosAZC1hXptQ0g47aM4C0LmUZokbw62l8c&oid=1258546771&tid=1076&nid=2488&e=.pdf';
 
 export default function Calendar() {
   return Platform.select({
