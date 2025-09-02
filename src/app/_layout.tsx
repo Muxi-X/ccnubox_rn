@@ -50,7 +50,9 @@ export default function RootLayout() {
     // 配置Toast
     Toast.config({ mask: false, stackable: true });
     // 获取更新
-    fetchUpdate();
+    if (!__DEV__) {
+      fetchUpdate();
+    }
     // 在 store 中设置爬虫 ref
     setRef(scraperRef as React.RefObject<WebView>);
     // 在 store 中配置 portal ref

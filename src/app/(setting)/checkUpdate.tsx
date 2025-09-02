@@ -79,18 +79,23 @@ function CheckUpdate(): React.ReactNode {
           style={[styles.updateButton, currentStyle?.button_style]}
           onPress={() => {
             setLoading(true);
-            Updates.checkForUpdateAsync()
-              .then(res => {
-                if (!res.isAvailable) {
-                  Toast.show({ text: '已是最新版', icon: 'success' });
-                }
-              })
-              .catch(err => {
-                Toast.show({ text: err.toString() });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            if (__DEV__) {
+              Toast.show({ text: '已是最新版', icon: 'success' });
+              setLoading(false);
+            } else {
+              Updates.checkForUpdateAsync()
+                .then(res => {
+                  if (!res.isAvailable) {
+                    Toast.show({ text: '已是最新版', icon: 'success' });
+                  }
+                })
+                .catch(err => {
+                  Toast.show({ text: err.toString() });
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+            }
           }}
           isLoading={loading}
         >

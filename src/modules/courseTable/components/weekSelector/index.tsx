@@ -76,9 +76,12 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                       {
                         position: 'absolute',
                         bottom: -12,
+                        width: 31,
+                        overflow: 'visible',
                         color: '#7878F8',
                       },
                     ]}
+                    numberOfLines={1}
                   >
                     当前周
                   </Text>
