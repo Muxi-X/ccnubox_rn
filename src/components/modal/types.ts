@@ -24,6 +24,8 @@ export interface ModalProps extends PortalBaseProps {
   /* modal 类型 */
   mode?: 'bottom' | 'middle';
   show?: () => void;
+  //背景是否透明
+  isTransparent?: boolean;
 }
 
 export interface ModalTriggerProps

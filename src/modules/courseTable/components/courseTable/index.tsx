@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -38,22 +38,26 @@ import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
+type CourseContentProps = CourseTransferType & {
+  originalData: courseType[];
+  currentWeek: number;
+};
+
 // 课程内容组件
-const CourseContent: React.FC<CourseTransferType> = memo(
+const CourseContent: React.FC<CourseContentProps> = memo(
   function CourseContent(props) {
-    const {
-      classroom,
-      courseName,
-      teacher,
-      isThisWeek,
-      week_duration,
-      credit,
-      class_when,
-      date,
-    } = props;
+    const { class_when, originalData, currentWeek } = props;
 
     const CourseItem = useThemeBasedComponents(
       state => state.CurrentComponents?.CourseItem
+    );
+
+    const slotCourses = React.useMemo(
+      () =>
+        originalData.filter(
+          c => c.day - 1 === props.colIndex && c.class_when === class_when
+        ),
+      [originalData, props.colIndex, class_when]
     );
 
     return (
@@ -70,27 +74,52 @@ const CourseContent: React.FC<CourseTransferType> = memo(
           }}
           onPress={() => {
             Modal.show({
+              isTransparent: true,
               children: (
-                <ModalContent
-                  class_when={class_when}
-                  isThisWeek={isThisWeek}
-                  courseName={courseName}
-                  teacher={teacher}
-                  classroom={classroom}
-                  week_duration={week_duration}
-                  credit={credit}
-                  date={date}
-                ></ModalContent>
+                <View style={{ height: 500 }}>
+                  <ScrollView style={{ width: '100%' }}>
+                    {slotCourses.map((c, idx) => (
+                      <View
+                        key={`${c.id}`}
+                        style={{
+                          marginBottom: idx === slotCourses.length - 1 ? 0 : 12,
+                        }}
+                      >
+                        <ModalContent
+                          class_when={c.class_when}
+                          isThisWeek={c.weeks.includes(currentWeek)}
+                          courseName={c.classname}
+                          teacher={c.teacher}
+                          classroom={c.where}
+                          week_duration={c.week_duration}
+                          credit={c.credit}
+                          date={daysOfWeek[props.colIndex]}
+                        />
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
               ),
               mode: 'middle',
-              // confirmText: '退出',
-              // cancelText: '编辑',
-              // onConfirm: () => {},
-              // onCancel: () => {},
             });
           }}
         >
           {CourseItem && <CourseItem {...props}></CourseItem>}
+          {slotCourses.length > 1 && (
+            <View
+              pointerEvents="none"
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: '#FF4D4F',
+                zIndex: 100,
+              }}
+            />
+          )}
         </Pressable>
       </>
     );
@@ -317,7 +346,12 @@ const Timetable: React.FC<CourseTableProps> = ({
           ))}
           {/* 课程内容 */}
           {courses.map(item => (
-            <CourseContent key={item.id} {...item} />
+            <CourseContent
+              key={item.id}
+              {...item}
+              originalData={data}
+              currentWeek={currentWeek}
+            />
           ))}
         </View>
       );
@@ -429,7 +463,15 @@ const ModalContent: React.FC<ModalContentProps> = memo(
     const currentStyle = useVisualScheme(state => state.currentStyle);
 
     return (
-      <View style={[styles.modalContainer, currentStyle?.background_style]}>
+      <View
+        style={[
+          styles.modalContainer,
+          { width: 280 },
+          { paddingHorizontal: 20 },
+          { paddingVertical: 10 },
+          currentStyle?.modal_background_style,
+        ]}
+      >
         <View style={styles.modalHeader}>
           <ThemeChangeText style={styles.modalTitle}>
             {courseName}

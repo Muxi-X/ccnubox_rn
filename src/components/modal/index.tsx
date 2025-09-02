@@ -32,6 +32,7 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
   mode = 'bottom',
   confirmText,
   cancelText,
+  isTransparent = false,
 }) => {
   const handleConfirm = () => {
     if (onConfirm) onConfirm();
@@ -213,7 +214,12 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             direction="vertical"
             duration={200}
             trigger={visible}
-            style={[styles.modalContent, currentStyle?.modal_background_style]}
+            style={[
+              isTransparent
+                ? styles.transparentModalContent
+                : styles.modalContent,
+              !isTransparent && currentStyle?.modal_background_style,
+            ]}
           >
             {modalContent}
           </AnimatedSlide>
@@ -222,7 +228,12 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
             duration={400}
             outputRange={[0.6, 1]}
             trigger={visible}
-            style={[styles.modalContent, currentStyle?.modal_background_style]}
+            style={[
+              isTransparent
+                ? styles.transparentModalContent
+                : styles.modalContent,
+              !isTransparent && currentStyle?.modal_background_style,
+            ]}
           >
             {modalContent}
           </AnimatedScale>
@@ -344,6 +355,15 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
+    display: 'flex',
+    overflow: 'hidden',
+  },
+  transparentModalContent: {
+    width: '100%',
+    borderRadius: 20,
+    margin: 20,
+    shadowOpacity: 0,
+    shadowRadius: 0,
     display: 'flex',
     overflow: 'hidden',
   },
