@@ -428,7 +428,7 @@ ota 更新只有 runtimeVersion 在 ota 更新包与拉取更新的客户端相�
 ### 上传到 appstore / testflight
 
 ```zsh
-eas submit -p ios -latest # 上传最后一次构建的
+eas submit -p ios --latest # 上传最后一次构建的
 # 这里要注意eas.json 中 distribution 要修改为 "store" 这样数字签名证书才可以生效
 ```
 
