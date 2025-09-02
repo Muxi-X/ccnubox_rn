@@ -106,7 +106,7 @@ export const ScheduleHeaderRight: React.FC = () => {
           globalEventBus.emit('SaveImageShot');
         }}
       >
-        <ScreenShotIcon color={currentStyle?.text_style?.color} />
+        <ScreenShotIcon color={currentStyle?.text_style?.color} width={24} />
       </TouchableOpacity>
       {/* <MaterialIcons
         name="delete-sweep"
