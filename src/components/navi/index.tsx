@@ -71,7 +71,7 @@ const TabBar: FC<BottomTabBarProps> = props => {
           onLongPress={onLongPress}
           isFocused={isFocused}
           name={route.name}
-          iconName={iconName}
+          iconName={iconName as 'home'}
           label={label as string}
         />
       );
