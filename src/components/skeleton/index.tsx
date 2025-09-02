@@ -46,6 +46,9 @@ const SkeletonLoader: FC<SkeletonType> = ({
     globalEventBus.on('request_complete', () => {
       if (isFocused) setLoading(false);
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
   }, []);
   React.useEffect(() => {
     if (layout)
