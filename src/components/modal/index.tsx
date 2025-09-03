@@ -359,7 +359,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   transparentModalContent: {
-    width: '100%',
+    zIndex: 1,
+    width: '80%',
     borderRadius: 20,
     margin: 20,
     shadowOpacity: 0,
