@@ -76,7 +76,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
             Modal.show({
               isTransparent: true,
               children: (
-                <View style={{ height: 500 }}>
+                <View style={{ maxHeight: 400, minHeight: 220 }}>
                   <ScrollView style={{ width: '100%' }}>
                     {slotCourses.map((c, idx) => (
                       <View
