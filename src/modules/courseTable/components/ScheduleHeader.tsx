@@ -54,7 +54,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
           style={[
             useVisualScheme.getState().currentStyle?.header_text_style,
             {
-              transform: [{ rotate: '90deg' }],
+              transform: [{ rotate: showWeekPicker ? '270deg' : '90deg' }],
               marginLeft: 4,
             },
           ]}
