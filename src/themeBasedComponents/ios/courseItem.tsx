@@ -1,19 +1,28 @@
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import {
+  colorOptions,
+  COURSE_HEADER_HEIGHT,
+  COURSE_HORIZONTAL_PADDING,
+  COURSE_ITEM_HEIGHT,
+} from '@/constants/courseTable';
+
 import useVisualScheme from '@/store/visualScheme';
 
-import { colorOptions } from '@/constants/courseTable';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;
   const { currentStyle } = useVisualScheme();
+  const TOP_OFFSET = timeSpan === 1 ? 0 : 15
+  const TOTAL_HEIGHT = COURSE_ITEM_HEIGHT * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2 - TOP_OFFSET
   //console.log('CourseItems', props);
   return (
     <View
       style={{
-        top: timeSpan === 1 ? 0 : 15,
+        top: TOP_OFFSET,
+        height: TOTAL_HEIGHT,
       }}
     >
       <View
@@ -27,7 +36,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
             borderRadius: 5,
-            minHeight: 40,
+            minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,
           },
         ]}
       >
