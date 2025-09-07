@@ -65,6 +65,8 @@ export interface PortalStore {
   appendChildren: (_newChildren: ReactElement, _portalType?: string) => number;
   /* 通过 key 删除节点，每个 portal 下的组件都会接收到一个 currentKey 参数，代表当前 key 值 */
   deleteChildren: (_key: number) => void;
+  /* 清除所有 portal 下的节点 */
+  clearAll: () => void;
   /* 通过 elements 遍历得出 portal 下真正的节点结构 */
   updateFromElements: () => void;
 }

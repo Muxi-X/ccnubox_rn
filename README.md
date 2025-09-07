@@ -351,6 +351,11 @@ export interface ScrollableViewProps {
 - 底部：有渐变、动画为滑入
 - 中部：无渐变、动画为放大
 
+**API 方法：**
+
+- `Modal.show(props)` - 显示Modal
+- `Modal.clear()` - 清除所有Modal
+
 ```tsx
 <ModalTrigger
   title={title}
