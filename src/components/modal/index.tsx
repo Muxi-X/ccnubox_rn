@@ -20,7 +20,10 @@ import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
-const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
+const Modal: React.FC<ModalProps> & {
+  show: (props: ModalProps) => number;
+  clear: () => void;
+} = ({
   visible: initVisible = true,
   currentKey,
   onClose,
@@ -251,6 +254,32 @@ const Modal: React.FC<ModalProps> & { show: (props: ModalProps) => number } = ({
 Modal.show = props => {
   const { appendChildren } = usePortalStore.getState();
   return appendChildren(<Modal {...props}></Modal>, 'modal');
+};
+
+/**
+ * 清除所有Modal
+ * @example 示例
+ * Modal.clear()
+ */
+Modal.clear = () => {
+  const { elements, clearAll } = usePortalStore.getState();
+
+  // 先设置所有Modal为不可见，触发关闭动画
+  Object.entries(elements).forEach(([key, element]) => {
+    if (
+      element &&
+      element.props &&
+      (element.props as any).portalType === 'modal'
+    ) {
+      // 通过updateChildren立即设置visible为false
+      usePortalStore.getState().updateChildren(Number(key), { visible: false });
+    }
+  });
+
+  // 延迟清空，等待动画完成
+  setTimeout(() => {
+    clearAll();
+  }, 300); // 比Modal的200ms延迟稍长一些
 };
 /**
  * 带有触发按钮的 trigger
