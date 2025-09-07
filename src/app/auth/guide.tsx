@@ -1,12 +1,14 @@
 import { Icon, Toast } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import * as React from 'react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import {
+  BackHandler,
   Dimensions,
   Image,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,12 +25,13 @@ import Animated, {
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
+import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { preloginGuide } from '@/constants/prelogin';
-import { commonStyles } from '@/styles/common';
+import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
 const PAGE_SWIPE_ANIMATION_DURATION = 450;
@@ -49,6 +52,41 @@ const GuidePage: FC = () => {
   };
   // 标题移动距离
   const titleShift = useSharedValue(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      AsyncStorage.getItem('agreement').then(agreement => {
+        if (agreement !== 'accepted') {
+          Modal.show({
+            children: <AgreementModal />,
+            mode: 'middle',
+            cancelText: '不同意',
+            confirmText: '同意并接受',
+            onConfirm: () => {
+              AsyncStorage.setItem('agreement', 'accepted');
+            },
+            onCancel() {
+              if (Platform.OS === 'android') {
+                router.replace('/auth/guide');
+                BackHandler.exitApp();
+              } else if (Platform.OS === 'ios') {
+                router.replace('/auth/guide');
+              }
+            },
+            onClose() {
+              if (Platform.OS === 'android') {
+                router.replace('/auth/guide');
+              } else if (Platform.OS === 'ios') {
+                router.replace('/auth/guide');
+              }
+            },
+          });
+        }
+      });
+      return () => {};
+    }, [])
+  );
+
   useEffect(() => {
     'worklet';
     // 渐变条每次移动多少
@@ -67,16 +105,20 @@ const GuidePage: FC = () => {
       }
     );
   }, [gradientValue, activeIndex, titleShift]);
+
   const gradientStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: gradientValue.value }],
   }));
+
   const titleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: titleShift.value }],
   }));
+
   const handleStart = () => {
     router.navigate('/auth/login');
     AsyncStorage.setItem('firstLaunch', 'true');
   };
+
   // 跳转第几条内容
   const jump = (pageNum: number) => {
     if (pageNum > preloginGuide.length - 1 || pageNum < 0) {
@@ -94,6 +136,7 @@ const GuidePage: FC = () => {
       setActiveContentIndex(pageNum);
     }, PAGE_SWIPE_ANIMATION_DURATION + 200);
   };
+
   const onSwipe = Gesture.Pan()
     .minDistance(30)
     .onEnd(event => {
@@ -105,6 +148,7 @@ const GuidePage: FC = () => {
   const handleChange = (current: number) => {
     jump(current);
   };
+
   return (
     <View style={styles.guide_wrap}>
       <GestureDetector gesture={onSwipe}>
@@ -183,6 +227,36 @@ const GuidePage: FC = () => {
 };
 
 export default GuidePage;
+
+export const AgreementModal: FC = () => {
+  return (
+    <Text
+      style={[commonStyles.fontMedium, { textAlign: 'center', lineHeight: 22 }]}
+    >
+      请你务必审慎阅读、充分理解“用户协议”和“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。你可阅读
+      <Text
+        style={{ color: commonColors.purple, textDecorationLine: 'underline' }}
+        onPress={() => {
+          router.push('/(setting)/agreement');
+          Modal.clear();
+        }}
+      >
+        《用户协议》
+      </Text>
+      和
+      <Text
+        style={{ color: commonColors.purple, textDecorationLine: 'underline' }}
+        onPress={() => {
+          router.push('/(setting)/privacy');
+          Modal.clear();
+        }}
+      >
+        《隐私政策》
+      </Text>
+      了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。
+    </Text>
+  );
+};
 
 const styles = StyleSheet.create({
   skip_container: {
