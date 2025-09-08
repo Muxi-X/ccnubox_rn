@@ -38,7 +38,7 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
         key,
         portalType,
         currentKey: key,
-      });
+      } as any);
     }
     set({
       elements: tmpMap,
@@ -51,5 +51,11 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
     delete elements[key];
 
     updateFromElements();
+  },
+  clearAll: () => {
+    set({
+      elements: {},
+    });
+    get().updateFromElements();
   },
 }));
