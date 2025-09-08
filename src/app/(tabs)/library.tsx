@@ -63,6 +63,7 @@ export default function LibraryPage() {
 
           <TouchableOpacity
             style={[styles.bookingButton, styles.secondaryButton]}
+            onPress={() => router.push('/(library)/selectRoom')}
           >
             <Ionicons name="people-outline" size={32} color={primaryColor} />
             {/* <PeopleIcon></PeopleIcon> */}

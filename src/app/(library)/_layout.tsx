@@ -43,6 +43,42 @@ export default function Layout() {
             ),
           }}
         />
+        <Stack.Screen
+          name="selectRoom"
+          options={{
+            headerTitle: () => (
+              <>
+                {CurrentComponents && (
+                  <CurrentComponents.HeaderCenter title="研讨室预约" />
+                )}
+              </>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="bookForm"
+          options={{
+            headerTitle: () => (
+              <>
+                {CurrentComponents && (
+                  <CurrentComponents.HeaderCenter title="研讨室预约" />
+                )}
+              </>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="addMember"
+          options={{
+            headerTitle: () => (
+              <>
+                {CurrentComponents && (
+                  <CurrentComponents.HeaderCenter title="添加成员" />
+                )}
+              </>
+            ),
+          }}
+        />
       </Stack>
     </View>
   );
