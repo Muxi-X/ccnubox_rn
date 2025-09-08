@@ -1,8 +1,10 @@
 {
   "otaVersion": "3.0.13",
-	"updateTime": "2025-09-05",
+	"updateTime": "2025-09-08",
 	"newFeatures": [
-        "优化当前周UI展示"
+        "优化当前周UI展示",
+        "更新并优化校历展示",
+        ""
     ],
   "fixedIssues": [
         "修复一节课程占多节课节IOS主题显示问题",

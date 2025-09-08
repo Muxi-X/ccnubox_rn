@@ -1,11 +1,6 @@
 import * as FileSystem from 'expo-file-system';
 import * as React from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  Platform,
-  StyleSheet,
-} from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet } from 'react-native';
 import PdfRendererView from 'react-native-pdf-renderer';
 import { WebView } from 'react-native-webview';
 
@@ -14,29 +9,27 @@ import View from '@/components/view';
 
 // 这个链接去本科生院的华大校历找：https://jwc.ccnu.edu.cn/index/hdxl.htm
 const pdfUrl =
-  'https://jwc.ccnu.edu.cn/virtual_attach_file.vsb?afc=dLm--8M8-bM47YLWzviLNMRnRQ2LzCHYLm6fnRv8ozLbUmU0gihFp2hmCIa0Mky4oSyYMYh7nlUiMz6VL7-YM7UDU87sM4NaLlUbLllYLmVFUmC8o7UZUlQFLzN8UNr7gjfNQmOeo4xmCDbigDTJQty0Lz74L1yYMmUsLSbw62g8c&oid=1203777467&tid=1132&nid=26471&e=.pdf';
+  'https://jwc.ccnu.edu.cn/system/resource/pdfjs/viewer.html?file=%2Fvirtual_attach_file.vsb%3Fafc%3DdnmG-anm6RoRA7MW7LYM7CDoR6kMNCHZoRT7MmfkMRQVoRC0gihFp2hmCIa0MkyYLkybL1y4M8nfo7LYnmlsM7CinzQfMz6fnzCPMRMRMzAFnR9ZMmV7M4VFLNQfo77bgjfNQmOeo4xmCDbigDTJQty0Lz74L1yYMmUsLSbw62g8c%26oid%3D1203777467%26tid%3D1132%26nid%3D26471%26e%3D.pdf';
 
 export default function Calendar() {
-  return Platform.select({
-    ios: (
-      <WebView
-        style={styles.container}
-        source={{
-          uri: pdfUrl,
-          cache: true,
-        }}
-        scalesPageToFit={true}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        injectedJavaScript={`
-          document.body.style.overflowX = 'hidden';
-        `}
-      />
-    ),
-    android: <AndroidCalendar />,
-  });
+  return (
+    <WebView
+      style={styles.container}
+      source={{
+        uri: pdfUrl,
+        cache: true,
+      }}
+      scalesPageToFit={true}
+      javaScriptEnabled={true}
+      domStorageEnabled={true}
+      injectedJavaScript={`
+      document.body.style.overflowX = 'hidden';
+    `}
+    />
+  );
 }
-
+// 这个没用上 但是留着备用
+// eslint-disable-next-line unused-imports/no-unused-vars
 const AndroidCalendar: React.FC = () => {
   const [downloading, setDownloading] = React.useState<boolean>(false);
   const [source, setSource] = React.useState<string>();
