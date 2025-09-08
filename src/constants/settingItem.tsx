@@ -34,6 +34,14 @@ export const SettingItems: SettingItem[] = [
     url: '/(setting)/about',
   },
   {
+    title: '帮助与反馈',
+    name: 'feedback',
+    id: 7,
+    icon: require('@/assets/images/exit.png'),
+    text: '帮助与反馈',
+    url: '/(setting)/feedback',
+  },
+  {
     title: '退出',
     name: 'exit',
     id: 6,

@@ -27,7 +27,7 @@ target 'ccnubox' do
       '--platform',
       'ios'
     ]
-  end
+end
 
   config = use_native_modules!(config_command)
 
@@ -43,6 +43,7 @@ target 'ccnubox' do
   )
 
   post_install do |installer|
+    # 合并原有的post_install配置
     react_native_post_install(
       installer,
       config[:reactNativePath],
@@ -50,8 +51,20 @@ target 'ccnubox' do
       :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
     )
 
-    # This is necessary for Xcode 14, because it signs resource bundles by default
-    # when building for devices.
+    # 添加脚本阶段输出路径配置
+    installer.pods_project.targets.each do |target|
+      target.shell_script_build_phases.each do |phase|
+        # 为Expo Updates脚本阶段添加输出路径
+        if phase.name == '[CP-User] Generate updates resources for expo-updates'
+          phase.output_paths = ['$(DERIVED_FILE_DIR)/expo-updates-resources.log']
+        # 为Hermes脚本阶段添加输出路径
+        elsif phase.name == '[CP-User] [Hermes] Replace Hermes for the right configuration, if needed'
+          phase.output_paths = ['$(DERIVED_FILE_DIR)/hermes-replace.log']
+        end
+      end
+    end
+
+    # 保留原有的资源签名配置
     installer.target_installation_results.pod_target_installation_results
       .each do |pod_name, target_installation_result|
       target_installation_result.resource_bundle_targets.each do |resource_bundle_target|

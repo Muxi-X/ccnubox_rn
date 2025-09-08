@@ -17,6 +17,8 @@ export const setupMockServer = () => {
       };
 
       this.urlPrefix = mockConfig.urlPrefix;
+      this.passthrough('http://116.62.179.155:8080/**');
+      this.passthrough('https://open.feishu.cn/**');
       mockConfig.routes.forEach(({ method, path, handler }) => {
         this[method](path, handler);
       });

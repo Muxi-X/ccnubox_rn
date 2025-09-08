@@ -31,6 +31,7 @@ export default function Layout() {
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
             options={{
+              headerShown: config.name != 'feedback',
               headerTitle: () => (
                 <>
                   {CurrentComponents && (

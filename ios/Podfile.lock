@@ -1,19 +1,19 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
-  - EASClient (0.14.3):
+  - EASClient (0.14.4):
     - ExpoModulesCore
-  - EXApplication (6.1.4):
+  - EXApplication (6.1.5):
     - ExpoModulesCore
-  - EXConstants (17.1.6):
+  - EXConstants (17.1.7):
     - ExpoModulesCore
   - EXImageLoader (5.1.0):
     - ExpoModulesCore
     - React-Core
   - EXJSONUtils (0.15.0)
-  - EXManifests (0.16.5):
+  - EXManifests (0.16.6):
     - ExpoModulesCore
-  - Expo (53.0.9):
+  - Expo (53.0.20):
     - DoubleConversion
     - ExpoModulesCore
     - glog
@@ -40,15 +40,15 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - ExpoAsset (11.1.5):
+  - ExpoAsset (11.1.7):
     - ExpoModulesCore
-  - ExpoBlur (14.1.4):
+  - ExpoBlur (14.1.5):
     - ExpoModulesCore
-  - ExpoClipboard (7.1.4):
+  - ExpoClipboard (7.1.5):
     - ExpoModulesCore
-  - ExpoFileSystem (18.1.10):
+  - ExpoFileSystem (18.1.11):
     - ExpoModulesCore
-  - ExpoFont (13.3.1):
+  - ExpoFont (13.3.2):
     - ExpoModulesCore
   - ExpoHaptics (14.1.4):
     - ExpoModulesCore
@@ -65,16 +65,18 @@ PODS:
     - EXImageLoader
     - ExpoModulesCore
     - SDWebImageWebPCoder
+  - ExpoImagePicker (16.1.4):
+    - ExpoModulesCore
   - ExpoKeepAwake (14.1.4):
     - ExpoModulesCore
-  - ExpoLinearGradient (14.1.4):
+  - ExpoLinearGradient (14.1.5):
     - ExpoModulesCore
-  - ExpoLinking (7.1.5):
+  - ExpoLinking (7.1.7):
     - ExpoModulesCore
-  - ExpoMediaLibrary (17.1.6):
+  - ExpoMediaLibrary (17.1.7):
     - ExpoModulesCore
     - React-Core
-  - ExpoModulesCore (2.3.13):
+  - ExpoModulesCore (2.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -101,16 +103,16 @@ PODS:
     - Yoga
   - ExpoSecureStore (14.2.3):
     - ExpoModulesCore
-  - ExpoSplashScreen (0.30.8):
+  - ExpoSplashScreen (0.30.10):
     - ExpoModulesCore
-  - ExpoSymbols (0.4.4):
+  - ExpoSymbols (0.4.5):
     - ExpoModulesCore
-  - ExpoSystemUI (5.0.7):
+  - ExpoSystemUI (5.0.10):
     - ExpoModulesCore
   - ExpoWebBrowser (14.1.6):
     - ExpoModulesCore
   - EXStructuredHeaders (4.1.0)
-  - EXUpdates (0.28.13):
+  - EXUpdates (0.28.17):
     - DoubleConversion
     - EASClient
     - EXManifests
@@ -2271,6 +2273,7 @@ DEPENDENCIES:
   - ExpoHead (from `../node_modules/expo-router/ios`)
   - ExpoImage (from `../node_modules/expo-image/ios`)
   - ExpoImageManipulator (from `../node_modules/expo-image-manipulator/ios`)
+  - ExpoImagePicker (from `../node_modules/expo-image-picker/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
@@ -2415,6 +2418,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-image/ios"
   ExpoImageManipulator:
     :path: "../node_modules/expo-image-manipulator/ios"
+  ExpoImagePicker:
+    :path: "../node_modules/expo-image-picker/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
@@ -2602,34 +2607,35 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
-  EASClient: 961c6b0118bed52023fd2c129d41cbca212d60c4
-  EXApplication: 63b87ca5204304007fac6b1be432f8afa3731c17
-  EXConstants: 9f310f44bfedba09087042756802040e464323c0
+  EASClient: fe396f88189ce51edd819abe12df16c99e98bcd2
+  EXApplication: 1e06972201838375ca1ec1ba34d586a98a5dc718
+  EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
   EXImageLoader: 4d3d3284141f1a45006cc4d0844061c182daf7ee
   EXJSONUtils: 1d3e4590438c3ee593684186007028a14b3686cd
-  EXManifests: 951161dd9a63523c4eef0fa2a7476639a7ba230d
-  Expo: a9fc723f6c8f673f0e7e036c9021772d3a1a0707
-  ExpoAsset: 3bc9adb7dbbf27ae82c18ca97eb988a3ae7e73b1
-  ExpoBlur: 7f9379db213e4a56aeceda82e94a7fea1b1d8c48
-  ExpoClipboard: c9771e7aa5f1316183e4a6f40a5755a0b98a6b8d
-  ExpoFileSystem: c36eb8155eb2381c83dda7dc210e3eec332368b6
-  ExpoFont: abbb91a911eb961652c2b0a22eef801860425ed6
+  EXManifests: 691a779b04e4f2c96da46fb9bef4f86174fefcb5
+  Expo: a40d525c930dd1c8a158e082756ee071955baccb
+  ExpoAsset: ef06e880126c375f580d4923fdd1cdf4ee6ee7d6
+  ExpoBlur: 3c8885b9bf9eef4309041ec87adec48b5f1986a9
+  ExpoClipboard: 436f6de6971f14eb75ae160e076d9cb3b19eb795
+  ExpoFileSystem: 7f92f7be2f5c5ed40a7c9efc8fa30821181d9d63
+  ExpoFont: cf508bc2e6b70871e05386d71cab927c8524cc8e
   ExpoHaptics: 0ff6e0d83cd891178a306e548da1450249d54500
   ExpoHead: af044f3e9c99e7d8d21bf653b4c2f2ef53a7f082
   ExpoImage: e7738bebc58cee17e93fa161f2444f9c343996f5
   ExpoImageManipulator: 1e06e7a1e56f454e75d01b7032c1e44963bfc865
+  ExpoImagePicker: 0963da31800c906e01c03e25d7c849f16ebf02a2
   ExpoKeepAwake: bf0811570c8da182bfb879169437d4de298376e7
-  ExpoLinearGradient: a3126d055dd021c1eb38a2cf28052ccbd1a2b3e2
-  ExpoLinking: b85ff4eafeae6fc638c6cace60007ae521af0ef4
-  ExpoMediaLibrary: ef14f0390b06ddecca98118eb7332e92efe4765a
-  ExpoModulesCore: 5d37821c36f3781dcd0ea9a393800c90eaa6259d
+  ExpoLinearGradient: 7734c8059972fcf691fb4330bcdf3390960a152d
+  ExpoLinking: d5c183998ca6ada66ff45e407e0f965b398a8902
+  ExpoMediaLibrary: 0daf5e811e00daa47690f5da2989e71ff7de56e0
+  ExpoModulesCore: 00a1b5c73248465bd0b93f59f8538c4573dac579
   ExpoSecureStore: b367d9f62c9102d808afbeb1561636d4276e439d
-  ExpoSplashScreen: f524572afd81522e40850eaa7163e2ae99cce783
-  ExpoSymbols: 5324de61341b396965a1cd3d2c738227b13d6a60
-  ExpoSystemUI: 82c970cf8495449698e7343b4f78a0d04bcec9ee
+  ExpoSplashScreen: 0ad5acac1b5d2953c6e00d4319f16d616f70d4dd
+  ExpoSymbols: c5612a90fb9179cdaebcd19bea9d8c69e5d3b859
+  ExpoSystemUI: c2724f9d5af6b1bb74e013efadf9c6a8fae547a2
   ExpoWebBrowser: 06fb5f767f53ad53944b068cdd207984cb998712
   EXStructuredHeaders: 32bec6771c2db18c4cd47cecae530d1d06cdf972
-  EXUpdates: 6c9ee77e4133462020aa63009018f5b4f21c1f09
+  EXUpdates: 960c0542bd8269770b97e095b2ef65681eb2b53b
   EXUpdatesInterface: 7ff005b7af94ee63fa452ea7bb95d7a8ff40277a
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 84b955f7b4da8b895faf5946f73748267347c975
@@ -2720,6 +2726,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: c758bfb934100bb4bf9cbaccb52557cee35e8bdf
 
-PODFILE CHECKSUM: 978c2d6c3f28644d109e9cd650952ad9ad1ee97e
+PODFILE CHECKSUM: 70706f4c3b12cbb287ebb66daa5a54af5d02263c
 
 COCOAPODS: 1.16.2

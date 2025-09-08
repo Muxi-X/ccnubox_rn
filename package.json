@@ -60,7 +60,8 @@
     "react-native-svg-transformer": "^1.5.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "zustand": "^4"
+    "zustand": "^4",
+    "expo-image-picker": "~16.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
