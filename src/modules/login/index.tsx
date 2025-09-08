@@ -132,7 +132,7 @@ const LoginPage: FC = () => {
               onPress={handleViewPassword}
             ></Icon>
           }
-          placeholder="请输入密码"
+          placeholder="请输入教务系统密码"
         ></Input>
         <View style={styles.rules}>
           <Checkbox onChange={onCheckPrivacy}>

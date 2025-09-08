@@ -1,11 +1,12 @@
 import { FC, memo } from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 // import ThemeChangeText from '@/components/text';
-import View from '@/components/view';
-
+// import View from '@/components/view';
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
+import { commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
 import { WeekSelectorProps } from '../courseTable/type';
@@ -16,54 +17,85 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   onWeekSelect,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
 
   return (
     <>
       {showWeekPicker && (
         <View
-          style={[
-            styles.pickerContainer,
-            {
-              backgroundColor:
-                currentStyle?.schedule_background_style?.backgroundColor,
-            },
-          ]}
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            position: 'absolute',
+          }}
         >
-          <View style={styles.weekGrid}>
-            {[...Array(20)].map((_, i) => (
-              <Pressable
-                key={i}
-                onPress={() => {
-                  onWeekSelect(i + 1);
-                  log.info('选择周次', i + 1);
-                }}
-                style={[
-                  styles.weekButton,
-                  {
-                    backgroundColor:
-                      currentWeek === i + 1
-                        ? '#7878F8'
-                        : currentStyle?.schedule_background_style
-                            ?.backgroundColor,
-                  },
-                ]}
-              >
-                <Text
+          <View
+            style={[
+              styles.pickerContainer,
+              {
+                backgroundColor:
+                  currentStyle?.schedule_background_style?.backgroundColor,
+              },
+            ]}
+          >
+            <View style={styles.weekGrid}>
+              {[...Array(20)].map((_, i) => (
+                <Pressable
+                  key={i}
+                  onPress={() => {
+                    onWeekSelect(i + 1);
+                    log.info('选择周次', i + 1);
+                  }}
                   style={[
-                    styles.weekButtonText,
+                    styles.weekButton,
                     {
-                      color:
+                      backgroundColor:
                         currentWeek === i + 1
-                          ? '#FFFFFF'
-                          : currentStyle?.schedule_text_style?.color ||
-                            '#000000',
+                          ? '#7878F8'
+                          : currentStyle?.schedule_background_style
+                              ?.backgroundColor,
                     },
                   ]}
                 >
-                  {i + 1}
-                </Text>
-              </Pressable>
-            ))}
+                  <Text
+                    style={[
+                      styles.weekButtonText,
+                      commonStyles.fontSemiBold,
+                      {
+                        color:
+                          currentWeek === i + 1
+                            ? '#FFFFFF'
+                            : getCurrentWeek() === i + 1
+                              ? '#7878F8'
+                              : currentStyle?.schedule_text_style?.color ||
+                                '#000000',
+                      },
+                    ]}
+                  >
+                    {i + 1}
+                  </Text>
+                  {getCurrentWeek() === i + 1 && (
+                    <Text
+                      style={[
+                        commonStyles.fontSmall,
+                        commonStyles.fontSemiBold,
+                        {
+                          position: 'absolute',
+                          bottom: -12,
+                          width: 31,
+                          overflow: 'visible',
+                          color: '#7878F8',
+                        },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      当前周
+                    </Text>
+                  )}
+                </Pressable>
+              ))}
+            </View>
           </View>
         </View>
       )}
@@ -76,7 +108,8 @@ const styles = StyleSheet.create({
     //  ...StyleSheet.absoluteFillObject,
     position: 'absolute',
     width: '100%',
-    borderRadius: 8,
+    borderEndStartRadius: 8,
+    borderEndEndRadius: 8,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -88,15 +121,17 @@ const styles = StyleSheet.create({
   weekGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    left: 5,
+    gap: 16,
+    left: 16,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   weekButton: {
-    width: 45,
-    height: 45,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 24,
+    borderRadius: 15,
   },
   weekButtonText: {
     fontSize: 16,

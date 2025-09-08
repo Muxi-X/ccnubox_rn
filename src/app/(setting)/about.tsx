@@ -1,5 +1,6 @@
 import * as Application from 'expo-application';
 import * as Constants from 'expo-constants';
+import { Link } from 'expo-router';
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -40,6 +41,18 @@ function About() {
           <TouchableOpacity onPress={() => handleCopy(number)}>
             <Text style={styles.copyText}>点击复制</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.groupRow}>
+          <Text style={[styles.groupText, textStyle]}>隐私条例：</Text>
+          <Text style={[styles.groupNumber, textStyle]}>
+            <Link href="/(setting)/privacy">点击查看</Link>
+          </Text>
+        </View>
+        <View style={styles.groupRow}>
+          <Text style={[styles.groupText, textStyle]}>用户协议：</Text>
+          <Text style={[styles.groupNumber, textStyle]}>
+            <Link href="/(setting)/agreement">点击查看</Link>
+          </Text>
         </View>
         {/* <View style={styles.groupRow}>
           <Text style={[styles.groupText, currentStyle?.text_style]}>

@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
@@ -38,22 +38,26 @@ import globalEventBus from '@/utils/eventBus';
 
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
+type CourseContentProps = CourseTransferType & {
+  originalData: courseType[];
+  currentWeek: number;
+};
+
 // 课程内容组件
-const CourseContent: React.FC<CourseTransferType> = memo(
+const CourseContent: React.FC<CourseContentProps> = memo(
   function CourseContent(props) {
-    const {
-      classroom,
-      courseName,
-      teacher,
-      isThisWeek,
-      week_duration,
-      credit,
-      class_when,
-      date,
-    } = props;
+    const { class_when, originalData, currentWeek } = props;
 
     const CourseItem = useThemeBasedComponents(
       state => state.CurrentComponents?.CourseItem
+    );
+
+    const slotCourses = React.useMemo(
+      () =>
+        originalData.filter(
+          c => c.day - 1 === props.colIndex && c.class_when === class_when
+        ),
+      [originalData, props.colIndex, class_when]
     );
 
     return (
@@ -70,27 +74,52 @@ const CourseContent: React.FC<CourseTransferType> = memo(
           }}
           onPress={() => {
             Modal.show({
+              isTransparent: true,
               children: (
-                <ModalContent
-                  class_when={class_when}
-                  isThisWeek={isThisWeek}
-                  courseName={courseName}
-                  teacher={teacher}
-                  classroom={classroom}
-                  week_duration={week_duration}
-                  credit={credit}
-                  date={date}
-                ></ModalContent>
+                <View style={{ maxHeight: 400, minHeight: 220 }}>
+                  <ScrollView style={{ width: '100%' }}>
+                    {slotCourses.map((c, idx) => (
+                      <View
+                        key={`${c.id}`}
+                        style={{
+                          marginBottom: idx === slotCourses.length - 1 ? 0 : 12,
+                        }}
+                      >
+                        <ModalContent
+                          class_when={c.class_when}
+                          isThisWeek={c.weeks.includes(currentWeek)}
+                          courseName={c.classname}
+                          teacher={c.teacher}
+                          classroom={c.where}
+                          week_duration={c.week_duration}
+                          credit={c.credit}
+                          date={daysOfWeek[props.colIndex]}
+                        />
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
               ),
               mode: 'middle',
-              // confirmText: '退出',
-              // cancelText: '编辑',
-              // onConfirm: () => {},
-              // onCancel: () => {},
             });
           }}
         >
           {CourseItem && <CourseItem {...props}></CourseItem>}
+          {slotCourses.length > 1 && (
+            <View
+              pointerEvents="none"
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: '#FF4D4F',
+                zIndex: 100,
+              }}
+            />
+          )}
         </Pressable>
       </>
     );
@@ -212,18 +241,25 @@ const Timetable: React.FC<CourseTableProps> = ({
         week_duration,
         credit,
       } = course;
+
+      // 计算课程的时间跨度（占几节课）
       const timeSpan = class_when
         .split('-')
         .map(Number)
         .reduce((a: number, b: number) => b - a + 1);
-      const rowIndex = Number(class_when.split('-')[0]) - 1;
-      const colIndex = day - 1;
-      const key = `${rowIndex}-${colIndex}`;
+
+      // 计算课程在课表中的位置
+      const rowIndex = Number(class_when.split('-')[0]) - 1; // 第几节课开始
+      const colIndex = day - 1; // 周几（0-6，对应周一到周日）
+      const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
 
       if (rowIndex !== -1 && colIndex !== -1) {
+        // 如果该时间槽还没有课程，创建一个空数组
         if (!coursesBySlot.has(key)) {
           coursesBySlot.set(key, []);
         }
+
+        // 将课程添加到对应的时间槽中
         coursesBySlot.get(key).push({
           id,
           courseName: classname,
@@ -234,7 +270,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           rowIndex,
           colIndex,
           weeks,
-          isThisWeek: weeks.includes(currentWeek),
+          isThisWeek: weeks.includes(currentWeek), // 标记是否为当前周的课程
           week_duration,
           credit,
           class_when,
@@ -246,11 +282,19 @@ const Timetable: React.FC<CourseTableProps> = ({
     for (const [key, slotCourses] of coursesBySlot) {
       const [rowIndex, colIndex] = key.split('-').map(Number);
 
-      // 找到当前周应该显示的课程
-      const courseToShow =
-        slotCourses.find((course: CourseTransferType & { weeks: number[] }) =>
+      // 当一个时间槽有多节课时，优先显示当前周的课程
+      let courseToShow: CourseTransferType | null = null;
+
+      // 1. 首先尝试找到当前周应该显示的课程
+      courseToShow =
+        slotCourses.find((course: CourseTransferType) =>
           course.weeks.includes(currentWeek)
-        ) || slotCourses[0];
+        ) || null;
+
+      // 2. 如果当前周没有课程，则选择第一节课作为默认显示
+      if (!courseToShow && slotCourses.length > 0) {
+        courseToShow = slotCourses[0];
+      }
 
       if (courseToShow) {
         timetableMatrix[rowIndex][colIndex] = {
@@ -302,7 +346,12 @@ const Timetable: React.FC<CourseTableProps> = ({
           ))}
           {/* 课程内容 */}
           {courses.map(item => (
-            <CourseContent key={item.id} {...item} />
+            <CourseContent
+              key={item.id}
+              {...item}
+              originalData={data}
+              currentWeek={currentWeek}
+            />
           ))}
         </View>
       );
@@ -367,7 +416,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               // onTimetableRefresh returns a Promise so we need to await it
               await onTimetableRefresh(true);
               handleSuccess();
-            } catch (error) {
+            } catch {
               //console.error('刷新失败:', error);
               handleFail();
             } finally {
@@ -414,18 +463,28 @@ const ModalContent: React.FC<ModalContentProps> = memo(
     const currentStyle = useVisualScheme(state => state.currentStyle);
 
     return (
-      <View style={[styles.modalContainer, currentStyle?.background_style]}>
+      <View
+        style={[
+          styles.modalContainer,
+          { width: 280 },
+          { paddingHorizontal: 20 },
+          { paddingVertical: 10 },
+          currentStyle?.modal_background_style,
+        ]}
+      >
         <View style={styles.modalHeader}>
           <ThemeChangeText style={styles.modalTitle}>
             {courseName}
           </ThemeChangeText>
+        </View>
+        <View style={styles.modalSubtitleRow}>
+          <Text style={styles.modalSubtitleText}>{credit}学分</Text>
           {!isThisWeek && (
             <View style={styles.notThisWeekTag}>
               <Text style={styles.notThisWeekText}>非本周</Text>
             </View>
           )}
         </View>
-        <Text style={styles.modalSubtitle}>{credit}学分</Text>
 
         <View style={styles.modalInfoGrid}>
           <View style={styles.modalInfoItem}>
@@ -472,7 +531,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { currentWeek } = useTimeStore();
+  const { selectedWeek: currentWeek } = useTimeStore();
   const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
@@ -502,7 +561,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
           weekDates.push(`${month}/${day}`);
         }
         setDates(weekDates);
-      } catch (error) {
+      } catch {
         throw new Error('计算日期失败');
       }
     };
@@ -676,11 +735,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notThisWeekTag: {
-    position: 'absolute',
-    right: 0,
+    height: 20,
+    justifyContent: 'center',
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 8,
-    paddingVertical: 2,
     borderRadius: 10,
   },
   notThisWeekText: {
@@ -690,8 +748,21 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontSize: 14,
     color: '#666',
-    textAlign: 'center',
+  },
+  modalSubtitleRow: {
+    height: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 20,
+  },
+  modalSubtitleText: {
+    height: 20,
+    lineHeight: 20,
+    fontSize: 14,
+    color: '#666',
+    marginRight: 6,
   },
   modalInfoGrid: {
     flexDirection: 'row',

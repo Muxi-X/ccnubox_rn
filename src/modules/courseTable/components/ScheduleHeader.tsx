@@ -15,7 +15,7 @@ import globalEventBus from '@/utils/eventBus';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();
-  const { currentWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
+  const { selectedWeek, showWeekPicker, setShowWeekPicker } = useTimeStore();
 
   return (
     <View
@@ -46,7 +46,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
             },
           ]}
         >
-          第{currentWeek}周
+          第{selectedWeek}周
         </Text>
         <MaterialIcons
           name="arrow-forward-ios"
@@ -54,7 +54,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
           style={[
             useVisualScheme.getState().currentStyle?.header_text_style,
             {
-              transform: [{ rotate: '90deg' }],
+              transform: [{ rotate: showWeekPicker ? '270deg' : '90deg' }],
               marginLeft: 4,
             },
           ]}
@@ -106,7 +106,7 @@ export const ScheduleHeaderRight: React.FC = () => {
           globalEventBus.emit('SaveImageShot');
         }}
       >
-        <ScreenShotIcon color={currentStyle?.text_style?.color} />
+        <ScreenShotIcon color={currentStyle?.text_style?.color} width={24} />
       </TouchableOpacity>
       {/* <MaterialIcons
         name="delete-sweep"

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Platform, Text } from 'react-native';
 
 import TabBar from '@/components/navi';
 
@@ -33,7 +33,11 @@ export default function TabLayout() {
             tabBarStyle: currentStyle?.schedule_background_style,
             headerStyle: [
               currentStyle?.schedule_background_style,
-              { height: 120 },
+              Platform.select({
+                ios: {
+                  height: 120,
+                },
+              }),
             ],
           }}
         />

@@ -18,7 +18,7 @@ export const COURSE_ITEM_HEIGHT = percent2px(8, 'height');
 /**
  * 时间栏宽度（高度和课程一样）
  */
-export const TIME_WIDTH = percent2px(16);
+export const TIME_WIDTH = percent2px(12);
 /**
  * 一周天数
  */
@@ -79,7 +79,7 @@ export const colorOptions = [
     label: '日',
   },
   {
-    color: '#D6D6D6',
+    color: '#989AA8',
     label: '无',
   },
 ];

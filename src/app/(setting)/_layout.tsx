@@ -47,6 +47,42 @@ export default function Layout() {
             }}
           ></Stack.Screen>
         ))}
+        <Stack.Screen
+          name="privacy"
+          options={{
+            headerTitle: () => (
+              <>
+                {CurrentComponents && (
+                  <CurrentComponents.HeaderCenter title="隐私条例" />
+                )}
+              </>
+            ),
+            headerStyle: currentStyle?.header_background_style as StyleProp<{
+              backgroundColor: string | undefined;
+              flexDirection: 'row';
+              justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+              alignItems: 'center';
+            }>,
+          }}
+        />
+        <Stack.Screen
+          name="agreement"
+          options={{
+            headerTitle: () => (
+              <>
+                {CurrentComponents && (
+                  <CurrentComponents.HeaderCenter title="用户协议" />
+                )}
+              </>
+            ),
+            headerStyle: currentStyle?.header_background_style as StyleProp<{
+              backgroundColor: string | undefined;
+              flexDirection: 'row';
+              justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+              alignItems: 'center';
+            }>,
+          }}
+        />
       </Stack>
     </SafeAreaView>
   );
