@@ -65,23 +65,24 @@ export const mainPageApplications: MainPageGridDataType[] = [
         ios: IosCardSvg,
         android: AndroidCardSvg,
       }) || AndroidCardSvg,
-    key: 'grid-4',
+    key: 'grid-5',
     action: () =>
       handleOpenURL(
         'alipays://platformapi/startapp?appId=2021004168660064',
         '支付宝'
       ),
   },
-  // {
-  //   title: '空闲教室',
-  //   name: 'classroom',
-  //   imageUrl: Platform.select({
-  //     ios: require('../assets/images/icons/ios/classroom.png'),
-  //     android: require('../assets/images/icons/android/classroom.png'),
-  //   }),
-  //   key: 'grid-5',
-  //   href: '/classroom' as Href,
-  // },
+  {
+    title: '空闲教室',
+    name: 'classroom',
+    imageUrl:
+      Platform.select({
+        ios: IosCardSvg,
+        android: AndroidCardSvg,
+      }) || AndroidCardSvg,
+    key: 'grid-4',
+    href: '/classroom' as Href,
+  },
   // {
   //   title: '蹭课',
   //   name: 'spaceLesson',

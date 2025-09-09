@@ -39,20 +39,29 @@ export default function Layout() {
               key={keyGenerator.next().value as unknown as number}
               name={config.name}
               options={{
-                headerTitle: () => (
-                  <>
-                    {CurrentComponents && (
-                      <CurrentComponents.HeaderCenter title={config.title} />
-                    )}
-                  </>
-                ),
+                // 为 classroom 隐藏默认 header
+                headerShown: config.name === 'classroom' ? false : undefined,
+                headerTitle:
+                  config.name === 'classroom'
+                    ? undefined
+                    : () => (
+                        <>
+                          {CurrentComponents && (
+                            <CurrentComponents.HeaderCenter
+                              title={config.title}
+                            />
+                          )}
+                        </>
+                      ),
                 headerStyle:
-                  currentStyle?.header_background_style as StyleProp<{
-                    backgroundColor: string | undefined;
-                    flexDirection: 'row';
-                    justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-                    alignItems: 'center';
-                  }>,
+                  config.name === 'classroom'
+                    ? undefined
+                    : (currentStyle?.header_background_style as StyleProp<{
+                        backgroundColor: string | undefined;
+                        flexDirection: 'row';
+                        justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+                        alignItems: 'center';
+                      }>),
               }}
             ></Stack.Screen>
           ))
@@ -60,6 +69,24 @@ export default function Layout() {
         <Stack.Screen
           name="scoreCalculation"
           options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="classroomStar"
+          options={{
+            headerTitle: () => (
+              <>
+                {CurrentComponents && (
+                  <CurrentComponents.HeaderCenter title="我的收藏" />
+                )}
+              </>
+            ),
+            headerStyle: currentStyle?.header_background_style as StyleProp<{
+              backgroundColor: string | undefined;
+              flexDirection: 'row';
+              justifyContent: 'space-between';
+              alignItems: 'center';
+            }>,
+          }}
         ></Stack.Screen>
       </Stack>
     </SafeAreaView>
