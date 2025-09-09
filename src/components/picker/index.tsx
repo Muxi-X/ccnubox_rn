@@ -127,40 +127,14 @@ const Picker: React.FC<DatePickerProps> = ({
       triggerComponent={children}
       style={style}
     >
-      <View
-        style={[
-          styles.content,
-          { top: (3 * itemHeight - commonStyles.fontMedium.fontSize) / 2 },
-        ]}
-      >
-        {/* FIX_ME：前缀，目前采用手动计算 */}
-        {prefixes &&
-          prefixes.map((prefix, index) => (
-            <Text
-              style={[
-                styles.prefix,
-                {
-                  // 手动计算距离左侧距离
-                  left:
-                    (contentWidth / prefixes.length +
-                      commonStyles.fontMedium.fontSize) /
-                    2,
-                },
-              ]}
-              key={index}
-            >
+      {prefixes && (
+        <View style={styles.prefixContainer}>
+          {prefixes.map((prefix, index) => (
+            <Text style={styles.prefix} key={`prefix-${index}`}>
               {prefix ?? '1'}
             </Text>
           ))}
-      </View>
-
-      {connectors && connectors.length > 0 && (
-        <PickerConnector
-          connectors={connectors}
-          totalWidth={contentWidth}
-          itemHeight={itemHeight}
-          data={data}
-        />
+        </View>
       )}
 
       <PickerView
@@ -217,6 +191,12 @@ const Picker: React.FC<DatePickerProps> = ({
 export default Picker;
 
 const styles = StyleSheet.create({
+  prefixContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    backgroundColor: 'transparent',
+  },
   content: {
     position: 'absolute',
     alignItems: 'center',
@@ -224,7 +204,9 @@ const styles = StyleSheet.create({
     right: 30,
     width: percent2px(94) - 60,
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    // justifyContent: 'space-around',
+    height: 30,
   },
   maskTop: {
     flex: 1,
