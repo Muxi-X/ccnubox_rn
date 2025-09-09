@@ -71,16 +71,17 @@ export const HOME_ITEMS = [
         '支付宝'
       ),
   },
-  // {
-  //   title: '空闲教室',
-  //   name: 'classroom',
-  //   imageUrl: layoutSelect({
-  //     ios: require('../assets/images/icons/ios/classroom.png'),
-  //     android: require('../assets/images/icons/android/classroom.png'),
-  //   }),
-  //   key: 'grid-5',
-  //   href: '/classroom' as Href,
-  // },
+  {
+    title: '空闲教室',
+    name: 'classroom',
+    imageUrl: {
+      ios: IosCardSvg,
+      android: AndroidCardSvg,
+      default: AndroidCardSvg,
+    },
+    key: 'grid-5',
+    href: '/classroom' as Href,
+  },
   // {
   //   title: '蹭课',
   //   name: 'spaceLesson',
