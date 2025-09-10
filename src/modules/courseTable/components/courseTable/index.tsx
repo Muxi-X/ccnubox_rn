@@ -50,6 +50,8 @@ const CourseContent: React.FC<CourseContentProps> = memo(
   function CourseContent(props) {
     const { class_when, originalData, currentWeek } = props;
 
+    const { semester, year } = useTimeStore();
+
     const CourseItem = useThemeBasedComponents(
       state => state.CurrentComponents?.CourseItem
     );
@@ -105,9 +107,14 @@ const CourseContent: React.FC<CourseContentProps> = memo(
               ),
               mode: 'middle',
               // confirmText: '退出',
-              // cancelText: '编辑',
+              cancelText: '删除课程',
               // onConfirm: () => {},
-              // onCancel: () => {},
+              onCancel: () => {
+                deleteCourse(props.id, semester, year).then(res => {
+                  console.log(res);
+                  useCourse.getState().deleteCourse(props.id);
+                });
+              },
             });
           }}
         >
@@ -593,7 +600,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { selectedWeek: currentWeek } = useTimeStore();
+  const { selectedWeek } = useTimeStore();
   const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
@@ -609,7 +616,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
         const startDate = new Date(startTimestamp);
 
         // 计算当前周的第一天（周一）
-        const daysToAdd = (currentWeek - 1) * 7;
+        const daysToAdd = (selectedWeek - 1) * 7;
         const currentWeekStartDate = new Date(startDate);
         currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
 
@@ -629,7 +636,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     };
 
     calculateDates();
-  }, [currentWeek, schoolTime]);
+  }, [selectedWeek, schoolTime]);
 
   return (
     <View style={styles.header}>
