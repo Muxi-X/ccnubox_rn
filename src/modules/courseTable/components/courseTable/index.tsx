@@ -543,7 +543,8 @@ const ModalContent: React.FC<ModalContentProps> = memo(
           <Button style={{ borderRadius: 20, width: 100 }}>编辑</Button>
           <Button
             style={{ borderRadius: 20, width: 100 }}
-            onPress={() =>
+            onPress={() => {
+              Modal.clear();
               Modal.show({
                 title: '删除课程',
                 children: '确定要删除该课程吗？',
@@ -556,10 +557,31 @@ const ModalContent: React.FC<ModalContentProps> = memo(
                     id,
                     useTimeStore.getState().semester,
                     useTimeStore.getState().year
-                  );
+                  )
+                    .then(res => {
+                      if (res.code === 0) {
+                        useCourse.getState().deleteCourse(id);
+                        Modal.show({
+                          title: '删除成功',
+                          children: '课程已删除',
+                          mode: 'middle',
+                          showCancel: false,
+                        });
+                      }
+                    })
+                    .catch(err => {
+                      if (err.response.data.code === 50001) {
+                        Modal.show({
+                          title: '删除失败',
+                          children: '从教务系统导入的课程不支持删除',
+                          mode: 'middle',
+                          showCancel: false,
+                        });
+                      }
+                    });
                 },
-              })
-            }
+              });
+            }}
           >
             删除
           </Button>
