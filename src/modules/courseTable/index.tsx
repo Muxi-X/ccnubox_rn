@@ -53,8 +53,8 @@ const CourseTablePage: FC = () => {
     setSemester,
     year,
     setYear,
-    currentWeek,
-    setCurrentWeek,
+    selectedWeek,
+    setSelectedWeek,
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
@@ -105,14 +105,14 @@ const CourseTablePage: FC = () => {
         ) {
           setSchoolTime(res.data.school_time);
           setHolidayTime(res.data.holiday_time);
-          setCurrentWeek(useTimeStore.getState().getCurrentWeek());
+          setSelectedWeek(useTimeStore.getState().getCurrentWeek());
         }
       } catch (err) {
         log.error('Failed to fetch current week:', err);
       }
     };
     fetchCurrentWeek();
-  }, [setSchoolTime, setHolidayTime, setCurrentWeek]);
+  }, [setSchoolTime, setHolidayTime, setSelectedWeek]);
 
   // 刷新课表数据
   useEffect(() => {
@@ -128,14 +128,14 @@ const CourseTablePage: FC = () => {
       <CourseTable
         data={courses}
         onTimetableRefresh={onTimetableRefresh}
-        currentWeek={currentWeek}
+        currentWeek={selectedWeek}
       />
       {showWeekPicker && (
         <WeekSelector
-          currentWeek={currentWeek}
+          currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
           onWeekSelect={week => {
-            setCurrentWeek(week);
+            setSelectedWeek(week);
             setShowWeekPicker(false);
           }}
         />
