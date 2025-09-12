@@ -1,5 +1,7 @@
 // import { Tooltip } from '@ant-design/react-native';
+import { Tooltip } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Href, useRouter } from 'expo-router';
 // import { Href, router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -7,11 +9,9 @@ import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
-import ScreenShotIcon from '@/assets/icons/screenshot.svg';
-// import { tooltipActions } from '@/constants/courseTableApplications';
-import { commonStyles } from '@/styles/common';
-import { percent2px } from '@/utils';
-import globalEventBus from '@/utils/eventBus';
+import { tooltipActions } from '@/constants/courseTableApplications';
+
+import { commonStyles } from '../../../styles/common';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();
@@ -86,6 +86,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
 };
 
 export const ScheduleHeaderRight: React.FC = () => {
+  const router = useRouter();
   const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <View
@@ -95,7 +96,7 @@ export const ScheduleHeaderRight: React.FC = () => {
         alignItems: 'center',
       }}
     >
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[
           {
             // paddingLeft: 50,
@@ -107,7 +108,7 @@ export const ScheduleHeaderRight: React.FC = () => {
         }}
       >
         <ScreenShotIcon color={currentStyle?.text_style?.color} width={24} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {/* <MaterialIcons
         name="delete-sweep"
         size={24}
@@ -117,17 +118,16 @@ export const ScheduleHeaderRight: React.FC = () => {
             paddingRight: 10,
           },
         ]}
-      /> 
+      /> */}
       <View>
         <Tooltip.Menu
           actions={tooltipActions}
           placement="bottom-start"
-          onAction={node => {
-            if (node.key === 'screenShot') {
-              globalEventBus.emit('SaveImageShot');
-            }
-            if ((node.key as string)[0] === '/') {
-              router.navigate(node.key as Href);
+          onAction={action => {
+            if (action.onPress) {
+              action.onPress();
+            } else if (action.key) {
+              router.navigate(action.key as Href);
             }
           }}
           styles={{
@@ -136,6 +136,7 @@ export const ScheduleHeaderRight: React.FC = () => {
             },
           }}
           trigger="onPress"
+          mode={useVisualScheme.getState().themeName}
         >
           <TouchableOpacity>
             <MaterialIcons
@@ -150,7 +151,7 @@ export const ScheduleHeaderRight: React.FC = () => {
             />
           </TouchableOpacity>
         </Tooltip.Menu>
-      </View> */}
+      </View>
     </View>
   );
 };

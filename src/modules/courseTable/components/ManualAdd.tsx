@@ -3,11 +3,17 @@ import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import Image from '@/components/image';
+import Modal from '@/components/modal';
 import Picker from '@/components/picker';
+import MultiPicker from '@/components/picker/multiPicker';
 
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
-import { percent2px } from '@/utils';
+import { courseType } from '@/modules/courseTable/components/courseTable/type';
+import { addCourse } from '@/request/api/course';
+import { keyGenerator, percent2px } from '@/utils';
 
 interface FormItem {
   icon: any;
@@ -19,38 +25,176 @@ interface FormItem {
 interface AddComponentProps {
   buttonText: string;
   pageText: string;
+  onSuccess?: () => void;
+}
+
+interface FormData {
+  name: string;
+  weeks: number[];
+  day: number;
+  dur_class: string;
+  where: string;
+  teacher: string;
+  credit?: number;
 }
 
 export const ManualAdd = (props: AddComponentProps) => {
   const text = props.pageText === 'test' ? '考试' : '上课';
+  const { buttonText } = props;
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { semester, year } = useTimeStore();
+  const { addCourse: addCourseToStore } = useCourse();
+
+  // 表单状态管理
+  const [formData, setFormData] = React.useState<FormData>({
+    name: '',
+    weeks: [1],
+    day: 1,
+    dur_class: '1-2',
+    where: '',
+    teacher: '',
+    credit: 3,
+  });
+  const [loading, setLoading] = React.useState(false);
+
   const items: FormItem[] = [
     {
-      icon: require('@/assets/images/week.png'),
+      icon: require('@/assets/images/week.png'), // eslint-disable-line @typescript-eslint/no-require-imports
       title: '选择周次',
-      value: '1-18周',
+      value:
+        formData.weeks.length > 0
+          ? `${Math.min(...formData.weeks)}-${Math.max(...formData.weeks)}周`
+          : '1-18周',
       type: 'picker',
     },
     {
-      icon: require('@/assets/images/time.png'),
+      icon: require('@/assets/images/time.png'), // eslint-disable-line @typescript-eslint/no-require-imports
       title: `${text}时间`,
-      value: '周一1-2节',
+      value: `周${['一', '二', '三', '四', '五', '六', '日'][formData.day - 1]}${formData.dur_class}节`,
       type: 'picker',
     },
     {
-      icon: require('@/assets/images/location.png'),
+      icon: require('@/assets/images/location.png'), // eslint-disable-line @typescript-eslint/no-require-imports
       title: '',
-      value: `输入${text}地点(非必填)`,
+      value: formData.where || `输入${text}地点`,
       type: 'input',
     },
     {
-      icon: require('@/assets/images/teacher.png'),
+      icon: require('@/assets/images/teacher.png'), // eslint-disable-line @typescript-eslint/no-require-imports
       title: '',
-      value: '输入教师(非必填)',
+      value: formData.teacher || '输入教师',
       type: 'input',
     },
   ];
-  const { buttonText } = props;
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+
+  // 构造课程数据并添加到本地缓存
+  const createAndCacheCourse = (
+    formData: FormData,
+    semester: string,
+    year: string
+  ): courseType => {
+    const courseId = `manual_${keyGenerator.next().value}_${Date.now()}`;
+    const weekDuration =
+      formData.weeks.length === 1
+        ? `第${formData.weeks[0]}周`
+        : `第${Math.min(...formData.weeks)}-${Math.max(...formData.weeks)}周`;
+
+    const courseData: courseType = {
+      id: courseId,
+      classname: formData.name,
+      teacher: formData.teacher || '未知教师',
+      where: formData.where || '未知地点',
+      day: formData.day,
+      class_when: formData.dur_class,
+      weeks: formData.weeks,
+      week_duration: weekDuration,
+      credit: formData.credit || 0,
+      semester,
+      year,
+    };
+
+    // 添加到本地缓存
+    addCourseToStore(courseData);
+
+    return courseData;
+  };
+
+  // 提交课程数据
+  const handleSubmit = async () => {
+    if (!formData.name.trim()) {
+      Modal.show({
+        title: '提示',
+        children: '请输入课程名称',
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+      });
+      return;
+    }
+    if (formData.weeks.length === 0) {
+      Modal.show({
+        title: '提示',
+        children: '请选择周次',
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const courseData = {
+        ...formData,
+        semester: semester || '1',
+        year: year || new Date().getFullYear().toString(),
+      };
+
+      await addCourse(courseData);
+
+      // 添加到本地缓存
+      createAndCacheCourse(
+        formData,
+        semester || '1',
+        year || new Date().getFullYear().toString()
+      );
+
+      Modal.show({
+        title: '成功',
+        children: '课程添加成功',
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+        onConfirm: () => {
+          // 重置表单
+          setFormData({
+            name: '',
+            weeks: [1],
+            day: 1,
+            dur_class: '1-2',
+            where: '',
+            teacher: '',
+            credit: 3,
+          });
+          // 调用成功回调，刷新课表数据
+          if (props.onSuccess) {
+            props.onSuccess();
+          }
+        },
+      });
+    } catch {
+      Modal.show({
+        title: '错误',
+        children: '添加课程失败，请重试',
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <View style={styles.addContainer}>
@@ -58,7 +202,9 @@ export const ManualAdd = (props: AddComponentProps) => {
           inputStyle={styles.addText}
           allowClear
           placeholder={`请输入${props.pageText === 'test' ? '考试' : '课程'}名称`}
-          placeholderTextColor="#75757B"
+          placeholderTextColor={currentStyle?.placeholder_text_style?.color}
+          value={formData.name}
+          onChangeText={text => setFormData(prev => ({ ...prev, name: text }))}
         />
         <WhiteSpace size="lg" />
         <FlatList
@@ -67,30 +213,103 @@ export const ManualAdd = (props: AddComponentProps) => {
             <View style={styles.card}>
               <Image source={item.icon} style={styles.icon} />
               {item.type === 'picker' ? (
-                <Picker>
-                  <View style={{ width: percent2px(70) }}>
-                    <View>
-                      <Text
-                        style={[
-                          { fontSize: 16, height: 20 },
-                          currentStyle?.text_style,
-                        ]}
-                      >
-                        {item.title}
-                      </Text>
+                item.title === '选择周次' ? (
+                  <MultiPicker
+                    data={[
+                      [...Array(18).keys()].map(i => ({
+                        value: i + 1,
+                        label: `第${i + 1}周`,
+                      })),
+                    ]}
+                    onConfirm={values => {
+                      const selectedWeeks = values.map(v => parseInt(v));
+                      setFormData(prev => ({ ...prev, weeks: selectedWeeks }));
+                    }}
+                    titleDisplayLogic={() =>
+                      formData.weeks.length > 0
+                        ? `${Math.min(...formData.weeks)}-${Math.max(...formData.weeks)}周`
+                        : '1-18周'
+                    }
+                  >
+                    <View style={{ width: percent2px(70) }}>
+                      <View>
+                        <Text
+                          style={[
+                            { fontSize: 16, height: 20 },
+                            currentStyle?.text_style,
+                          ]}
+                        >
+                          {item.title}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={{ fontSize: 14, color: '#75757B' }}>
+                          {item.value}
+                        </Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text style={{ fontSize: 14, color: '#75757B' }}>
-                        {item.value}
-                      </Text>
+                  </MultiPicker>
+                ) : (
+                  <Picker
+                    titleDisplayLogic={() =>
+                      `周${['一', '二', '三', '四', '五', '六', '日'][formData.day - 1]}${formData.dur_class}节`
+                    }
+                    data={[
+                      [...Array(7).keys()].map(i => ({
+                        value: i + 1,
+                        label: ['一', '二', '三', '四', '五', '六', '日'][i],
+                      })),
+                      [...Array(6).keys()].map(i => ({
+                        value: `${i * 2 + 1}-${i * 2 + 2}`,
+                        label: `${i * 2 + 1}-${i * 2 + 2}节`,
+                      })),
+                    ]}
+                    onConfirm={values => {
+                      setFormData(prev => ({
+                        ...prev,
+                        day: parseInt(values[0]),
+                        dur_class: values[1],
+                      }));
+                    }}
+                  >
+                    <View style={{ width: percent2px(70) }}>
+                      <View>
+                        <Text
+                          style={[
+                            { fontSize: 16, height: 20 },
+                            currentStyle?.text_style,
+                          ]}
+                        >
+                          {item.title}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={{ fontSize: 14, color: '#75757B' }}>
+                          {item.value}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                </Picker>
+                  </Picker>
+                )
               ) : (
                 <Input
                   placeholder={item.value}
                   placeholderTextColor="#75757B"
                   allowClear
+                  value={
+                    item.title === '' && item.value.includes('地点')
+                      ? formData.where
+                      : item.title === '' && item.value.includes('教师')
+                        ? formData.teacher
+                        : ''
+                  }
+                  onChangeText={text => {
+                    if (item.value.includes('地点')) {
+                      setFormData(prev => ({ ...prev, where: text }));
+                    } else if (item.value.includes('教师')) {
+                      setFormData(prev => ({ ...prev, teacher: text }));
+                    }
+                  }}
                 />
               )}
             </View>
@@ -100,9 +319,8 @@ export const ManualAdd = (props: AddComponentProps) => {
         <Button
           type="primary"
           style={styles.button}
-          onPress={() => {
-            //console.log(`${buttonText} 按钮被点击`);
-          }}
+          loading={loading}
+          onPress={handleSubmit}
         >
           {buttonText}
         </Button>
@@ -119,6 +337,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   addContainer: {
+    paddingTop: 20,
     paddingHorizontal: 20,
   },
   addText: {
