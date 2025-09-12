@@ -8,6 +8,9 @@ const baseStyle: ThemeType = {
     text_style: {
       color: lightGray,
     },
+    placeholder_text_style: {
+      color: '#969696',
+    },
     navbar_background_style: {
       backgroundColor: lightDark,
     },
@@ -40,6 +43,9 @@ const baseStyle: ThemeType = {
   light: {
     text_style: {
       color: black,
+    },
+    placeholder_text_style: {
+      color: '#ABAAAA',
     },
     header_background_style: {
       backgroundColor: lightGray,

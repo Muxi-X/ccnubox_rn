@@ -107,14 +107,14 @@ const CourseContent: React.FC<CourseContentProps> = memo(
               ),
               mode: 'middle',
               // confirmText: '退出',
-              cancelText: '删除课程',
+              // cancelText: '删除课程',
               // onConfirm: () => {},
-              onCancel: () => {
-                deleteCourse(props.id, semester, year).then(res => {
-                  console.log(res);
-                  useCourse.getState().deleteCourse(props.id);
-                });
-              },
+              // onCancel: () => {
+              //   deleteCourse(props.id, semester, year).then(res => {
+              //     console.log(res);
+              //     useCourse.getState().deleteCourse(props.id);
+              //   });
+              // },
             });
           }}
         >
@@ -547,7 +547,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             justifyContent: 'space-around',
           }}
         >
-          <Button style={{ borderRadius: 20, width: 100 }}>编辑</Button>
+          {/* <Button style={{ borderRadius: 20, width: 100 }}>编辑</Button> */}
           <Button
             style={{ borderRadius: 20, width: 100 }}
             onPress={() => {
