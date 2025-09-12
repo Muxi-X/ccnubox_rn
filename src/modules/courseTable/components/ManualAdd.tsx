@@ -13,7 +13,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { courseType } from '@/modules/courseTable/components/courseTable/type';
 import { addCourse } from '@/request/api/course';
-import { keyGenerator, percent2px } from '@/utils';
+import { percent2px } from '@/utils';
 
 interface FormItem {
   icon: any;
@@ -88,12 +88,15 @@ export const ManualAdd = (props: AddComponentProps) => {
   ];
 
   // 构造课程数据并添加到本地缓存
+  // TODO)) 这一步可以换成触发课表数据更新，不过目前实现起来不太方便，后续有时间可以优化
   const createAndCacheCourse = (
     formData: FormData,
     semester: string,
     year: string
   ): courseType => {
-    const courseId = `manual_${keyGenerator.next().value}_${Date.now()}`;
+    // 后端课程 ID 构建如下
+    // ci.ID = fmt.Sprintf("Class:%s:%s:%s:%d:%s:%s:%s:%d", ci.Classname, ci.Year, ci.Semester, ci.Day, ci.ClassWhen, ci.Teacher, ci.Where, ci.Weeks)
+    const courseId = `Class:${formData.name}:${year}:${semester}:${formData.day}:${formData.dur_class}:${formData.teacher}:${formData.where}:${formData.weeks}`;
     const weekDuration =
       formData.weeks.length === 1
         ? `第${formData.weeks[0]}周`
