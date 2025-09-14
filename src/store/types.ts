@@ -11,6 +11,8 @@ import { ConfigurableComponentName } from '@/themeBasedComponents/type';
 
 /** 配色、布局整体store类型 */
 export type visualSchemeType = {
+  /** 是否自动跟随系统主题 */
+  isAutoTheme: boolean;
   /** 注册的样式名 */
   themeName: ThemeName;
   /** 布局类型 */
@@ -19,6 +21,8 @@ export type visualSchemeType = {
   layouts: Map<LayoutName, LayoutType>;
   /** 当前样式表 */
   currentStyle: SingleThemeType | null;
+  /** 更改默认跟随 */
+  setAutoTheme: (_value: boolean) => void;
   /** 更改主题 */
   changeTheme: (_name: ThemeName) => void;
   /** 更改布局 ios | android */
