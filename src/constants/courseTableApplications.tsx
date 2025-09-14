@@ -58,7 +58,7 @@ const TextNode: React.FC<{ text: string }> = ({ text }) => {
 export const tooltipActions: Action[] = [
   {
     key: '/(courseTable)/addCourse',
-    icon: <AddCourseIcon color={commonColors.gray} width={24} />,
+    icon: <AddCourseIcon color={commonColors.purple} width={24} />,
     text: <TextNode text="添加新课程" />,
   },
   // {
@@ -72,7 +72,7 @@ export const tooltipActions: Action[] = [
   //   text: <TextNode text="添加考试安排" />,
   // },
   {
-    icon: <ScreenShotIcon color={commonColors.gray} width={24} />,
+    icon: <ScreenShotIcon color={commonColors.purple} width={24} />,
     text: <TextNode text="课表截图" />,
     onPress: () => {
       globalEventBus.emit('SaveImageShot');
