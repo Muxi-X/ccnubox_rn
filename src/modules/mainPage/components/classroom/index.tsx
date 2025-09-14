@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Picker from '@/components/picker';
 import Text from '@/components/text';
 import StarIcon from '@/assets/icons/star.svg';
+import StarGrayIcon from '@/assets/icons/star-gray.svg';
 import ChooseIcon from '@/assets/icons/choose.svg';
 
 import useClassroomStarStore from '@/store/classroomStar';
@@ -439,15 +440,11 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
                         toggleStarredClassroom(classroom.roomNumber)
                       }
                     >
-                      <StarIcon
-                        width={16}
-                        height={16}
-                        color={
-                          isClassroomStarred(classroom.roomNumber)
-                            ? '#FFD700'
-                            : '#E0E0E0'
-                        }
-                      />
+                      {isClassroomStarred(classroom.roomNumber) ? (
+                        <StarIcon width={16} height={16} />
+                      ) : (
+                        <StarGrayIcon width={16} height={16} />
+                      )}
                     </TouchableOpacity>
                   </View>
                   {/* 空闲情况状态栏 */}
