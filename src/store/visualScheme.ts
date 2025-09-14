@@ -41,7 +41,7 @@ const useVisualScheme = create<visualSchemeType>()(
             ...state,
             themeName: currentTheme,
             currentStyle: layoutMap[state.layoutName][
-              state.themeName
+              currentTheme
             ] as SingleThemeType,
             layouts: newLayouts,
           };
@@ -85,9 +85,9 @@ const useVisualScheme = create<visualSchemeType>()(
             layoutName,
           };
         }),
-      setAutoTheme: () =>
+      setAutoTheme: value =>
         set(state => {
-          const isAutoTheme = !state.isAutoTheme;
+          const isAutoTheme = !!value;
           const currentTheme = isAutoTheme
             ? Appearance.getColorScheme() === 'dark'
               ? 'dark'
