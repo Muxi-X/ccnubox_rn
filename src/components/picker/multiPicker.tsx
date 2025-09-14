@@ -132,13 +132,14 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   );
   const [checkAll, setCheckAll] = React.useState(false);
 
-  // 初始化时检查是否全选
+  // 同步外部选择到本地状态，并更新“全选”
   React.useEffect(() => {
-    if (pickedItems) {
-      setCheckAll(pickedItems.size === plainOptions.length);
-    }
-  }, [pickedItems, plainOptions.length]);
-
+    const options = plainOptions ?? [];
+    const next =
+      pickedItems ? new Set<string | number>(pickedItems) : new Set<string | number>();
+    setCheckedList(next);
+    setCheckAll(next.size === options.length);
+  }, [pickedItems, plainOptions]);
   const onChange = (
     value: string | number,
     e: { target: { checked: boolean } }
