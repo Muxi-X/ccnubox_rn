@@ -14,6 +14,7 @@ import { visualSchemeType } from './types';
 const useVisualScheme = create<visualSchemeType>()(
   persist(
     set => ({
+      isAutoTheme: true,
       themeName: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
       layoutName: Platform.OS === 'ios' ? 'ios' : 'android',
       currentStyle: null,
@@ -24,8 +25,11 @@ const useVisualScheme = create<visualSchemeType>()(
             LayoutName,
             LayoutType
           >;
-          const currentTheme =
-            Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
+          const currentTheme = state.isAutoTheme
+            ? Appearance.getColorScheme() === 'dark'
+              ? 'dark'
+              : 'light'
+            : state.themeName;
           if (currentTheme === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
           } else {
@@ -79,6 +83,28 @@ const useVisualScheme = create<visualSchemeType>()(
             ...state,
             currentStyle: newStyle ?? currentStyle,
             layoutName,
+          };
+        }),
+      setAutoTheme: () =>
+        set(state => {
+          const isAutoTheme = !state.isAutoTheme;
+          const currentTheme = isAutoTheme
+            ? Appearance.getColorScheme() === 'dark'
+              ? 'dark'
+              : 'light'
+            : state.themeName;
+          if (currentTheme === 'dark') {
+            SystemUI.setBackgroundColorAsync('#242424');
+          } else {
+            SystemUI.setBackgroundColorAsync('white');
+          }
+          return {
+            ...state,
+            isAutoTheme: isAutoTheme,
+            currentStyle: layoutMap[state.layoutName][
+              currentTheme
+            ] as SingleThemeType,
+            themeName: currentTheme,
           };
         }),
     }),
