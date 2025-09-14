@@ -48,7 +48,7 @@ export const ManualAdd = (props: AddComponentProps) => {
   // 表单状态管理
   const [formData, setFormData] = React.useState<FormData>({
     name: '',
-    weeks: [1],
+    weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
     day: 1,
     dur_class: '1-2',
     where: '',
@@ -75,13 +75,13 @@ export const ManualAdd = (props: AddComponentProps) => {
     },
     {
       icon: require('@/assets/images/location.png'), // eslint-disable-line @typescript-eslint/no-require-imports
-      title: '',
+      title: 'location',
       value: formData.where || `输入${text}地点`,
       type: 'input',
     },
     {
       icon: require('@/assets/images/teacher.png'), // eslint-disable-line @typescript-eslint/no-require-imports
-      title: '',
+      title: 'teacher',
       value: formData.teacher || '输入教师',
       type: 'input',
     },
@@ -172,7 +172,9 @@ export const ManualAdd = (props: AddComponentProps) => {
           // 重置表单
           setFormData({
             name: '',
-            weeks: [1],
+            weeks: [
+              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            ],
             day: 1,
             dur_class: '1-2',
             where: '',
@@ -223,6 +225,10 @@ export const ManualAdd = (props: AddComponentProps) => {
                         value: i + 1,
                         label: `第${i + 1}周`,
                       })),
+                    ]}
+                    defaultValue={[
+                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                      18,
                     ]}
                     onConfirm={values => {
                       const selectedWeeks = values.map(v => parseInt(v));
@@ -300,16 +306,16 @@ export const ManualAdd = (props: AddComponentProps) => {
                   placeholderTextColor="#75757B"
                   allowClear
                   value={
-                    item.title === '' && item.value.includes('地点')
+                    item.title === 'location'
                       ? formData.where
-                      : item.title === '' && item.value.includes('教师')
+                      : item.title === 'teacher'
                         ? formData.teacher
                         : ''
                   }
                   onChangeText={text => {
-                    if (item.value.includes('地点')) {
+                    if (item.title === 'location') {
                       setFormData(prev => ({ ...prev, where: text }));
-                    } else if (item.value.includes('教师')) {
+                    } else if (item.title === 'teacher') {
                       setFormData(prev => ({ ...prev, teacher: text }));
                     }
                   }}

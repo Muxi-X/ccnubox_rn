@@ -132,19 +132,27 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   );
   const [checkAll, setCheckAll] = React.useState(false);
 
+  // 初始化时检查是否全选
+  React.useEffect(() => {
+    if (pickedItems) {
+      setCheckAll(pickedItems.size === plainOptions.length);
+    }
+  }, [pickedItems, plainOptions.length]);
+
   const onChange = (
     value: string | number,
     e: { target: { checked: boolean } }
   ) => {
+    const newCheckedList = new Set(checkedList);
     if (e.target.checked) {
-      checkedList.add(value);
+      newCheckedList.add(value);
     } else {
-      checkedList.delete(value);
+      newCheckedList.delete(value);
     }
-    onPick?.(checkedList);
 
-    setCheckedList(new Set(checkedList));
-    setCheckAll(checkedList.size === plainOptions.length);
+    setCheckedList(newCheckedList);
+    setCheckAll(newCheckedList.size === plainOptions.length);
+    onPick?.(newCheckedList);
   };
 
   const onCheckAllChange = (e: { target: { checked: boolean } }) => {

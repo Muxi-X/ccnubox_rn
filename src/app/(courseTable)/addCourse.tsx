@@ -17,7 +17,7 @@ export default function AddCourse() {
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      // TODO)) 搜索课程还没做
+      {/* TODO)): 搜索课程还没做 */}
       {/* <TabBar
         tabs={[
           {
