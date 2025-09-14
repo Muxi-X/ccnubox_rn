@@ -144,7 +144,7 @@ export default function SelectStyle() {
         <Button
           style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
           onPress={() => {
-            setAutoTheme(isAutoTheme);
+            setAutoTheme(!isAutoTheme);
           }}
         >
           {isAutoTheme ? '已应用' : '应用'}
