@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
+//该文件夹下都是用于构建src/app/（library）下的页面的小组件，目前没有大组件，如果有将在
+//room文件夹下而不是room/components下
 export default function Form() {
   const router = useRouter();
   return (

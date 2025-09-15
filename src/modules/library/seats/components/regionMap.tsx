@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { JSX, useEffect, useRef } from 'react';
 import { Animated, ScrollView, Text, View } from 'react-native';
 
-import Button from '@/components/button';
 import { ModalTrigger } from '@/components/modal';
 
 import AppointedIcon from '@/assets/icons/library/appointed.svg';
@@ -13,8 +12,48 @@ import UnavailableIcon from '@/assets/icons/library/unavailable.svg';
 
 import Seat from './seat';
 
-export default function RegionMap() {
-  const [selectedRegion, setSelectedRegion] = useState('');
+import {
+  LakeF1Atrium,
+  LakeF1Open,
+  LakeF2Open,
+  LakeF2Seats,
+  MainF1Room,
+  MainF2Room1,
+  MainF2Room2,
+  MainF3Room,
+  MainF5Room4,
+  MainF5Room5,
+  MainF6ForeignRoom,
+  MainF6Room1,
+  MainF7Room2,
+  MainF7Room3,
+  MainF9Room,
+} from './regionComponents';
+
+export const regionComponents: Record<string, JSX.Element> = {
+  主馆一楼综合学习室: <MainF1Room />,
+  '主馆二楼借阅室（一）': <MainF2Room1 />,
+  '主馆二楼借阅室（二）': <MainF2Room2 />,
+  '主馆三楼借阅室（三）': <MainF3Room />,
+  '主馆五楼借阅室（四）': <MainF5Room4 />,
+  '主馆五楼借阅室（五）': <MainF5Room5 />,
+  '主馆六楼阅览室（一）': <MainF6Room1 />,
+  主馆六楼外文借阅室: <MainF6ForeignRoom />,
+  '主馆七楼阅览室（二）': <MainF7Room2 />,
+  '主馆七楼阅览室（三）': <MainF7Room3 />,
+  主馆九楼阅览室: <MainF9Room />,
+  南湖分馆一楼开敞座位区: <LakeF1Open />,
+  南湖分馆一楼中庭开敞座位区: <LakeF1Atrium />,
+  南湖分馆二楼开敞座位区: <LakeF2Open />,
+  南湖分馆二楼卡座区: <LakeF2Seats />,
+};
+
+export interface RegionMapProps {
+  selectedRegion: string | null;
+}
+
+export default function RegionMap({ selectedRegion }: RegionMapProps) {
+  //这个文件夹下是个人选座的小组件，用于seats文件夹下大组件的开发
   const headerHeight = useRef(new Animated.Value(250)).current;
 
   useEffect(() => {
@@ -23,7 +62,7 @@ export default function RegionMap() {
       duration: 300,
       useNativeDriver: false,
     }).start();
-  }, [selectedRegion]);
+  }, [selectedRegion]); //这个地方的selectedRegion是从父组件传过来的，emmm依赖项后面要改一下，改成点击图片上的区域按钮来弹出这个弹窗。
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
@@ -36,8 +75,11 @@ export default function RegionMap() {
           justifyContent: 'center',
         }}
       >
-        <Button onPress={() => setSelectedRegion('test')}>Test</Button>
-        <Button onPress={() => setSelectedRegion('')}>Reset</Button>
+        {selectedRegion ? (
+          regionComponents['主馆一楼综合学习室']
+        ) : (
+          <Text>请先选择一个区域</Text>
+        )}
       </Animated.View>
       <View
         style={{
