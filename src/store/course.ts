@@ -10,7 +10,7 @@ interface CourseState {
   courses: courseType[];
   updateCourses: (courses: courseType[]) => void;
   addCourse: (course: courseType) => void;
-  deleteCourse: (course: courseType) => void;
+  deleteCourse: (id: string) => void;
   lastUpdate: number;
   setLastUpdate: (time: number) => void;
   holidayTime: number;
@@ -30,9 +30,9 @@ const useCourse = create<CourseState>()(
         addCourse: (course: courseType) => {
           set(state => ({ courses: [...state.courses, course] }));
         },
-        deleteCourse: (course: courseType) => {
+        deleteCourse: (id: string) => {
           set(state => ({
-            courses: state.courses.filter(c => c.id !== course.id),
+            courses: state.courses.filter(c => c.id !== id),
           }));
         },
         lastUpdate: 0,

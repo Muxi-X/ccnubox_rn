@@ -49,8 +49,12 @@ const CourseTablePage: FC = () => {
     setSchoolTime,
   } = useCourse();
   const {
-    selectedWeek: currentWeek,
-    setSelectedWeek: setCurrentWeek,
+    semester,
+    setSemester,
+    year,
+    setYear,
+    selectedWeek,
+    setSelectedWeek,
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
@@ -59,7 +63,11 @@ const CourseTablePage: FC = () => {
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
       try {
-        const { semester, year } = computeSemesterAndYear(schoolTime);
+        if (semester === '' || year === '') {
+          const { semester, year } = computeSemesterAndYear(schoolTime);
+          setSemester(semester);
+          setYear(year);
+        }
 
         // 使用计算得到的学期和年份
         const res = await queryCourseTable({
@@ -97,14 +105,14 @@ const CourseTablePage: FC = () => {
         ) {
           setSchoolTime(res.data.school_time);
           setHolidayTime(res.data.holiday_time);
-          setCurrentWeek(useTimeStore.getState().getCurrentWeek());
+          setSelectedWeek(useTimeStore.getState().getCurrentWeek());
         }
       } catch (err) {
         log.error('Failed to fetch current week:', err);
       }
     };
     fetchCurrentWeek();
-  }, [setSchoolTime, setHolidayTime, setCurrentWeek]);
+  }, [setSchoolTime, setHolidayTime, setSelectedWeek]);
 
   // 刷新课表数据
   useEffect(() => {
@@ -120,14 +128,14 @@ const CourseTablePage: FC = () => {
       <CourseTable
         data={courses}
         onTimetableRefresh={onTimetableRefresh}
-        currentWeek={currentWeek}
+        currentWeek={selectedWeek}
       />
       {showWeekPicker && (
         <WeekSelector
-          currentWeek={currentWeek}
+          currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
           onWeekSelect={week => {
-            setCurrentWeek(week);
+            setSelectedWeek(week);
             setShowWeekPicker(false);
           }}
         />

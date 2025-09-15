@@ -11,6 +11,7 @@ import React, {
 } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import Button from '@/components/button';
 import Divider from '@/components/divider';
 import Modal from '@/components/modal';
 import ScrollableView from '@/components/scrollView';
@@ -33,6 +34,7 @@ import {
   TIME_WIDTH,
   timeSlots,
 } from '@/constants/courseTable';
+import { deleteCourse } from '@/request/api/course';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -47,6 +49,8 @@ type CourseContentProps = CourseTransferType & {
 const CourseContent: React.FC<CourseContentProps> = memo(
   function CourseContent(props) {
     const { class_when, originalData, currentWeek } = props;
+
+    const { semester, year } = useTimeStore();
 
     const CourseItem = useThemeBasedComponents(
       state => state.CurrentComponents?.CourseItem
@@ -86,6 +90,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                         }}
                       >
                         <ModalContent
+                          id={c.id}
                           class_when={c.class_when}
                           isThisWeek={c.weeks.includes(currentWeek)}
                           courseName={c.classname}
@@ -101,6 +106,15 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                 </View>
               ),
               mode: 'middle',
+              // confirmText: '退出',
+              // cancelText: '删除课程',
+              // onConfirm: () => {},
+              // onCancel: () => {
+              //   deleteCourse(props.id, semester, year).then(res => {
+              //     console.log(res);
+              //     useCourse.getState().deleteCourse(props.id);
+              //   });
+              // },
             });
           }}
         >
@@ -438,6 +452,7 @@ const Timetable: React.FC<CourseTableProps> = ({
 };
 
 interface ModalContentProps {
+  id: string;
   courseName: string;
   teacher: string;
   classroom: string;
@@ -451,6 +466,7 @@ interface ModalContentProps {
 const ModalContent: React.FC<ModalContentProps> = memo(
   function ModalContent(props) {
     const {
+      id,
       courseName,
       teacher,
       classroom,
@@ -524,6 +540,59 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             </Text>
           </View>
         </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 10,
+            justifyContent: 'space-around',
+          }}
+        >
+          {/* <Button style={{ borderRadius: 20, width: 100 }}>编辑</Button> */}
+          <Button
+            style={{ borderRadius: 20, width: 100 }}
+            onPress={() => {
+              Modal.clear();
+              Modal.show({
+                title: '删除课程',
+                children: '确定要删除该课程吗？',
+                mode: 'middle',
+                showCancel: true,
+                confirmText: '删除',
+                cancelText: '取消',
+                onConfirm: () => {
+                  deleteCourse(
+                    id,
+                    useTimeStore.getState().semester,
+                    useTimeStore.getState().year
+                  )
+                    .then(res => {
+                      if (res.code === 0) {
+                        useCourse.getState().deleteCourse(id);
+                        Modal.show({
+                          title: '删除成功',
+                          children: '课程已删除',
+                          mode: 'middle',
+                          showCancel: false,
+                        });
+                      }
+                    })
+                    .catch(err => {
+                      if (err.response.data.code === 50001) {
+                        Modal.show({
+                          title: '删除失败',
+                          children: '从教务系统导入的课程不支持删除',
+                          mode: 'middle',
+                          showCancel: false,
+                        });
+                      }
+                    });
+                },
+              });
+            }}
+          >
+            删除
+          </Button>
+        </View>
       </View>
     );
   }
@@ -531,7 +600,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const { selectedWeek: currentWeek } = useTimeStore();
+  const { selectedWeek } = useTimeStore();
   const schoolTime = useCourse(state => state.schoolTime);
   const [dates, setDates] = useState<string[]>([]);
 
@@ -547,7 +616,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
         const startDate = new Date(startTimestamp);
 
         // 计算当前周的第一天（周一）
-        const daysToAdd = (currentWeek - 1) * 7;
+        const daysToAdd = (selectedWeek - 1) * 7;
         const currentWeekStartDate = new Date(startDate);
         currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
 
@@ -567,7 +636,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     };
 
     calculateDates();
-  }, [currentWeek, schoolTime]);
+  }, [selectedWeek, schoolTime]);
 
   return (
     <View style={styles.header}>

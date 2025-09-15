@@ -6,6 +6,7 @@ import TabBar from '@/components/tabs';
 import ItemList from '@/modules/courseTable/components/ItemList';
 import { ManualAdd } from '@/modules/courseTable/components/ManualAdd';
 
+// TODO)) 这整个功能还没对接
 export default function AddTest() {
   const list = [
     {

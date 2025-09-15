@@ -132,19 +132,28 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   );
   const [checkAll, setCheckAll] = React.useState(false);
 
+  // 同步外部选择到本地状态，并更新“全选”
+  React.useEffect(() => {
+    const options = plainOptions ?? [];
+    const next =
+      pickedItems ? new Set<string | number>(pickedItems) : new Set<string | number>();
+    setCheckedList(next);
+    setCheckAll(next.size === options.length);
+  }, [pickedItems, plainOptions]);
   const onChange = (
     value: string | number,
     e: { target: { checked: boolean } }
   ) => {
+    const newCheckedList = new Set(checkedList);
     if (e.target.checked) {
-      checkedList.add(value);
+      newCheckedList.add(value);
     } else {
-      checkedList.delete(value);
+      newCheckedList.delete(value);
     }
-    onPick?.(checkedList);
 
-    setCheckedList(new Set(checkedList));
-    setCheckAll(checkedList.size === plainOptions.length);
+    setCheckedList(newCheckedList);
+    setCheckAll(newCheckedList.size === plainOptions.length);
+    onPick?.(newCheckedList);
   };
 
   const onCheckAllChange = (e: { target: { checked: boolean } }) => {
