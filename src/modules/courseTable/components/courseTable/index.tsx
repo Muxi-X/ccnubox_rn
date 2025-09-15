@@ -1,6 +1,7 @@
 import { makeImageFromView } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
+import { router } from 'expo-router';
 import React, {
   memo,
   RefObject,
@@ -50,7 +51,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
   function CourseContent(props) {
     const { class_when, originalData, currentWeek } = props;
 
-    const { semester, year } = useTimeStore();
+    // removed unused semester/year destructure to satisfy linter
 
     const CourseItem = useThemeBasedComponents(
       state => state.CurrentComponents?.CourseItem
@@ -547,7 +548,18 @@ const ModalContent: React.FC<ModalContentProps> = memo(
             justifyContent: 'space-around',
           }}
         >
-          {/* <Button style={{ borderRadius: 20, width: 100 }}>编辑</Button> */}
+          <Button
+            style={{ borderRadius: 20, width: 100 }}
+            onPress={() => {
+              Modal.clear();
+              router.push({
+                pathname: '/(courseTable)/editCourse',
+                params: { id },
+              });
+            }}
+          >
+            编辑
+          </Button>
           <Button
             style={{ borderRadius: 20, width: 100 }}
             onPress={() => {

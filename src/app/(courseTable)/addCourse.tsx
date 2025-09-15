@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { ManualAdd } from '@/modules/courseTable/components/ManualAdd';
+import { CourseForm } from '@/modules/courseTable/components/CourseForm';
 
 export default function AddCourse() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -31,9 +31,10 @@ export default function AddCourse() {
         <ManualAdd pageText="course" buttonText="添加课程" />
         <SearchAdd />
       </TabBar> */}
-      <ManualAdd
+      <CourseForm
         pageText="course"
-        buttonText="添加课程"
+        submitText="添加课程"
+        mode="create"
         onSuccess={handleSuccess}
       />
     </View>
