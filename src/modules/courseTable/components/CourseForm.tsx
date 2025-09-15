@@ -22,13 +22,7 @@ interface FormItem {
   type: 'input' | 'picker';
 }
 
-interface AddComponentProps {
-  buttonText: string;
-  pageText: string;
-  onSuccess?: () => void;
-}
-
-interface FormData {
+export interface CourseFormData {
   name: string;
   weeks: number[];
   day: number;
@@ -38,23 +32,67 @@ interface FormData {
   credit?: number;
 }
 
-export const ManualAdd = (props: AddComponentProps) => {
+interface CourseFormProps {
+  buttonText?: string; // backward-compat
+  submitText?: string; // preferred
+  pageText: string;
+  mode?: 'create' | 'edit';
+  onSuccess?: () => void;
+  onSubmit?: (data: CourseFormData) => Promise<void>;
+  courseData?: courseType;
+}
+
+export const CourseForm = (props: CourseFormProps) => {
   const text = props.pageText === 'test' ? '考试' : '上课';
-  const { buttonText } = props;
+  const submitText = props.submitText || props.buttonText || '提交';
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { semester, year } = useTimeStore();
   const { addCourse: addCourseToStore } = useCourse();
 
-  // 表单状态管理
-  const [formData, setFormData] = React.useState<FormData>({
-    name: '',
-    weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-    day: 1,
-    dur_class: '1-2',
-    where: '',
-    teacher: '',
-    credit: 3,
+  const [formData, setFormData] = React.useState<CourseFormData>(() => {
+    if (props.courseData) {
+      const cd = props.courseData;
+      return {
+        name: cd.classname || '',
+        weeks:
+          cd.weeks && cd.weeks.length > 0
+            ? cd.weeks
+            : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        day: cd.day || 1,
+        dur_class: cd.class_when || '1-2',
+        where: cd.where || '',
+        teacher: cd.teacher || '',
+        credit: cd.credit ?? 3,
+      };
+    }
+    return {
+      name: '',
+      weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+      day: 1,
+      dur_class: '1-2',
+      where: '',
+      teacher: '',
+      credit: 3,
+    };
   });
+
+  React.useEffect(() => {
+    if (props.courseData) {
+      const cd = props.courseData;
+      setFormData({
+        name: cd.classname || '',
+        weeks:
+          cd.weeks && cd.weeks.length > 0
+            ? cd.weeks
+            : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        day: cd.day || 1,
+        dur_class: cd.class_when || '1-2',
+        where: cd.where || '',
+        teacher: cd.teacher || '',
+        credit: cd.credit ?? 3,
+      });
+    }
+  }, [props.courseData]);
   const [loading, setLoading] = React.useState(false);
 
   const items: FormItem[] = [
@@ -87,42 +125,41 @@ export const ManualAdd = (props: AddComponentProps) => {
     },
   ];
 
-  // 构造课程数据并添加到本地缓存
-  // TODO)) 这一步可以换成触发课表数据更新，不过目前实现起来不太方便，后续有时间可以优化
+  const weeksToBitmask = (weeks: number[]): number => {
+    return weeks.reduce((mask, w) => mask | (1 << (w - 1)), 0);
+  };
+
   const createAndCacheCourse = (
-    formData: FormData,
-    semester: string,
-    year: string
+    data: CourseFormData,
+    curSemester: string,
+    curYear: string
   ): courseType => {
-    // 后端课程 ID 构建如下
-    // ci.ID = fmt.Sprintf("Class:%s:%s:%s:%d:%s:%s:%s:%d", ci.Classname, ci.Year, ci.Semester, ci.Day, ci.ClassWhen, ci.Teacher, ci.Where, ci.Weeks)
-    const courseId = `Class:${formData.name}:${year}:${semester}:${formData.day}:${formData.dur_class}:${formData.teacher}:${formData.where}:${formData.weeks}`;
+    const weeksMask = weeksToBitmask(data.weeks);
+    const courseId = `Class:${data.name}:${curYear}:${curSemester}:${data.day}:${data.dur_class}:${data.teacher}:${data.where}:${weeksMask}`;
     const weekDuration =
-      formData.weeks.length === 1
-        ? `第${formData.weeks[0]}周`
-        : `第${Math.min(...formData.weeks)}-${Math.max(...formData.weeks)}周`;
+      data.weeks.length === 1
+        ? `第${data.weeks[0]}周`
+        : `第${Math.min(...data.weeks)}-${Math.max(...data.weeks)}周`;
 
     const courseData: courseType = {
       id: courseId,
-      classname: formData.name,
-      teacher: formData.teacher || '未知教师',
-      where: formData.where || '未知地点',
-      day: formData.day,
-      class_when: formData.dur_class,
-      weeks: formData.weeks,
+      classname: data.name,
+      teacher: data.teacher || '未知教师',
+      where: data.where || '未知地点',
+      day: data.day,
+      class_when: data.dur_class,
+      weeks: data.weeks,
       week_duration: weekDuration,
-      credit: formData.credit || 0,
-      semester,
-      year,
+      credit: data.credit || 0,
+      semester: curSemester,
+      year: curYear,
     };
 
-    // 添加到本地缓存
     addCourseToStore(courseData);
 
     return courseData;
   };
 
-  // 提交课程数据
   const handleSubmit = async () => {
     if (!formData.name.trim()) {
       Modal.show({
@@ -147,15 +184,20 @@ export const ManualAdd = (props: AddComponentProps) => {
 
     setLoading(true);
     try {
-      const courseData = {
+      if (props.onSubmit) {
+        await props.onSubmit(formData);
+        return;
+      }
+
+      // default create behavior
+      const data = {
         ...formData,
         semester: semester || '1',
         year: year || new Date().getFullYear().toString(),
-      };
+      } as any;
 
-      await addCourse(courseData);
+      await addCourse(data);
 
-      // 添加到本地缓存
       createAndCacheCourse(
         formData,
         semester || '1',
@@ -164,33 +206,32 @@ export const ManualAdd = (props: AddComponentProps) => {
 
       Modal.show({
         title: '成功',
-        children: '课程添加成功',
+        children: props.mode === 'edit' ? '已保存' : '课程添加成功',
         mode: 'middle',
         showCancel: false,
         confirmText: '确定',
         onConfirm: () => {
-          // 重置表单
-          setFormData({
-            name: '',
-            weeks: [
-              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            ],
-            day: 1,
-            dur_class: '1-2',
-            where: '',
-            teacher: '',
-            credit: 3,
-          });
-          // 调用成功回调，刷新课表数据
-          if (props.onSuccess) {
-            props.onSuccess();
+          if (props.mode !== 'edit') {
+            setFormData({
+              name: '',
+              weeks: [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+              ],
+              day: 1,
+              dur_class: '1-2',
+              where: '',
+              teacher: '',
+              credit: 3,
+            });
           }
+          props.onSuccess?.();
         },
       });
     } catch {
       Modal.show({
         title: '错误',
-        children: '添加课程失败，请重试',
+        children:
+          props.mode === 'edit' ? '保存失败，请重试' : '添加课程失败，请重试',
         mode: 'middle',
         showCancel: false,
         confirmText: '确定',
@@ -331,13 +372,13 @@ export const ManualAdd = (props: AddComponentProps) => {
           loading={loading}
           onPress={handleSubmit}
         >
-          {buttonText}
+          {submitText}
         </Button>
       </View>
     </>
   );
 };
-export default ManualAdd;
+export default CourseForm;
 
 const styles = StyleSheet.create({
   container: {
