@@ -115,7 +115,7 @@ const IndexPage: FC = () => {
                 >
                   <Pressable onPress={() => openBrowser(item.navUrl)}>
                     <Image
-                      source={{ uri: item.bannerUrl }}
+                      source={{ uri: item.bannerUrl, cache: 'force-cache' }}
                       style={{
                         width: '100%',
                         height: '100%',
