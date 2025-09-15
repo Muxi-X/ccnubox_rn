@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import {
   colorOptions,
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
 } from '@/constants/courseTable';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
