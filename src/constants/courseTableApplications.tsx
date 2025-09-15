@@ -1,5 +1,13 @@
 import { Action } from '@ant-design/react-native/lib/tooltip';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import useVisualScheme from '@/store/visualScheme';
+
+import AddCourseIcon from '@/assets/icons/calendar/add-course.svg';
+import ScreenShotIcon from '@/assets/icons/calendar/screenshot.svg';
+import globalEventBus from '@/utils/eventBus';
+
+import { commonColors } from '../styles/common';
 
 import { SinglePageType } from '@/types/tabBarTypes';
 
@@ -28,7 +36,6 @@ const styles = StyleSheet.create({
   },
   tooltipText: {
     fontSize: 10,
-    color: '#333',
   },
   tooltipItem: {
     flex: 1,
@@ -38,9 +45,12 @@ const styles = StyleSheet.create({
 });
 
 const TextNode: React.FC<{ text: string }> = ({ text }) => {
+  const currentScheme = useVisualScheme(state => state.currentStyle);
   return (
     <View style={styles.tooltipItem}>
-      <Text style={styles.tooltipText}>{text}</Text>
+      <Text style={[styles.tooltipText, currentScheme?.text_style]}>
+        {text}
+      </Text>
     </View>
   );
 };
@@ -48,33 +58,25 @@ const TextNode: React.FC<{ text: string }> = ({ text }) => {
 export const tooltipActions: Action[] = [
   {
     key: '/(courseTable)/addCourse',
-    icon: (
-      <Image
-        style={styles.tooltipImage}
-        source={require('@/assets/images/add-course.png')}
-      />
-    ),
+    icon: <AddCourseIcon color={commonColors.purple} width={24} />,
     text: <TextNode text="添加新课程" />,
   },
+  // {
+  //   key: '/(courseTable)/addTest',
+  //   icon: (
+  //     <Image
+  //       style={styles.tooltipImage}
+  //       source={require('@/assets/images/add-test.png')}
+  //     />
+  //   ),
+  //   text: <TextNode text="添加考试安排" />,
+  // },
   {
-    key: '/(courseTable)/addTest',
-    icon: (
-      <Image
-        style={styles.tooltipImage}
-        source={require('@/assets/images/add-test.png')}
-      />
-    ),
-    text: <TextNode text="添加考试安排" />,
-  },
-  {
-    key: 'screenShot',
-    icon: (
-      <Image
-        style={styles.tooltipImage}
-        source={require('@/assets/images/change-week.png')}
-      />
-    ),
+    icon: <ScreenShotIcon color={commonColors.purple} width={24} />,
     text: <TextNode text="课表截图" />,
+    onPress: () => {
+      globalEventBus.emit('SaveImageShot');
+    },
   },
   // {
   //   key: 'changeYear',

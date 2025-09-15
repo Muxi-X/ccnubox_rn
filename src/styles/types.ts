@@ -5,6 +5,7 @@ export type ThemeName = 'dark' | 'light';
 /** 可配置style名 */
 export type ConfigurableThemeNames =
   | 'text_style'
+  | 'placeholder_text_style'
   | 'button_style'
   | 'button_text_style'
   | 'navbar_background_style'
