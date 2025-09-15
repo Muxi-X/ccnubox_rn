@@ -36,6 +36,7 @@ export const commonStyles = StyleSheet.create({
   },
 });
 
+// 全局颜色变量
 export const commonColors: Partial<ColorType> = {
   white: '#fff',
   lightGray: '#F5F5F5',
