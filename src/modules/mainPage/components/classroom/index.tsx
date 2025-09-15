@@ -3,14 +3,14 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Picker from '@/components/picker';
 import Text from '@/components/text';
-import StarIcon from '@/assets/icons/star.svg';
-import StarGrayIcon from '@/assets/icons/star-gray.svg';
-import ChooseIcon from '@/assets/icons/choose.svg';
 
 import useClassroomStarStore from '@/store/classroomStar';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
+import ChooseIcon from '@/assets/icons/choose.svg';
+import StarGrayIcon from '@/assets/icons/star-gray.svg';
+import StarIcon from '@/assets/icons/star.svg';
 import { queryFreeClassroom } from '@/request/api/queryClassroom';
 
 // 共享常量
@@ -460,7 +460,6 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
                       const finalStatus = isOutTime
                         ? 'outTime'
                         : periodStatus?.status || 'free';
-
                       return (
                         <View
                           key={period}
