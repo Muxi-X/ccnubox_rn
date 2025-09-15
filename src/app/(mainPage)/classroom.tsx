@@ -3,20 +3,20 @@ import * as React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import StarIcon from '@/assets/icons/star.svg';
 import Text from '@/components/text';
+
+import useVisualScheme from '@/store/visualScheme';
+
+import StarIcon from '@/assets/icons/star.svg';
 import {
   ClassroomContent,
   useClassroomData,
 } from '@/modules/mainPage/components/classroom';
-
-import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
 
 export default function Classroom() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  // 使用共享的教室数据管理Hook
   const classroomProps = useClassroomData();
 
   return (
@@ -49,7 +49,6 @@ export default function Classroom() {
                 我的收藏
               </Text>
             </TouchableOpacity>
-            6{' '}
           </View>
         </View>
       </SafeAreaView>
