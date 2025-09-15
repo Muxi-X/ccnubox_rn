@@ -21,6 +21,7 @@ import { fetchUpdate } from '@/utils';
 export default function RootLayout() {
   const initVisualScheme = useVisualScheme(state => state.init);
   const changeTheme = useVisualScheme(state => state.changeTheme);
+  const isAutoTheme = useVisualScheme(state => state.isAutoTheme);
   const scraperRef = React.useRef<WebView>(null);
   const portalRef = React.useRef<View>(null);
   const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
@@ -63,10 +64,12 @@ export default function RootLayout() {
     initApp();
     const listener = Appearance.addChangeListener(scheme => {
       console.log('toggled change scheme', scheme);
-      changeTheme(scheme.colorScheme === 'dark' ? 'dark' : 'light');
+      if (isAutoTheme) {
+        changeTheme(scheme.colorScheme === 'dark' ? 'dark' : 'light');
+      }
     });
     return () => listener.remove();
-  }, []);
+  }, [isAutoTheme]);
 
   return (
     <Provider
