@@ -135,8 +135,9 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   // 同步外部选择到本地状态，并更新“全选”
   React.useEffect(() => {
     const options = plainOptions ?? [];
-    const next =
-      pickedItems ? new Set<string | number>(pickedItems) : new Set<string | number>();
+    const next = pickedItems
+      ? new Set<string | number>(pickedItems)
+      : new Set<string | number>();
     setCheckedList(next);
     setCheckAll(next.size === options.length);
   }, [pickedItems, plainOptions]);
