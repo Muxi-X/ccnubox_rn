@@ -5,7 +5,6 @@ import useVisualScheme from '@/store/visualScheme';
 
 import {
   colorOptions,
-  COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
 } from '@/constants/courseTable';
@@ -35,7 +34,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
             borderRadius: 5,
-            minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,
+            // minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,
+            minHeight: 40,
           },
         ]}
       >
