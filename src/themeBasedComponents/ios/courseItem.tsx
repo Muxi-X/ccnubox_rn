@@ -33,6 +33,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             backgroundColor: isThisWeek
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
+            opacity: isThisWeek ? 1 : 0.4,
             borderRadius: 5,
             // minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,
             minHeight: 40,
@@ -49,6 +50,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             paddingBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
+            opacity: isThisWeek ? 1 : 0.4,
           },
         ]}
       >
