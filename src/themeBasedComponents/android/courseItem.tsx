@@ -20,6 +20,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
         backgroundColor: isThisWeek
           ? colorOptions.find(item => item.label === date)?.color
           : colorOptions.find(item => item.label === '无')?.color,
+        opacity: isThisWeek ? 1 : 0.4,
       }}
     >
       <View
