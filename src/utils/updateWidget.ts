@@ -6,7 +6,7 @@ import useTimeStore from '@/store/time';
 export const updateCourseData = async () => {
   const { WidgetManager } = NativeModules;
 
-  const currentWeek = useTimeStore.getState().currentWeek;
+  const currentWeek = useTimeStore.getState().getCurrentWeek();
 
   const courses = useCourseStore.getState().courses;
 
