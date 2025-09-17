@@ -22,7 +22,7 @@ class RecentClassesProvider : AppWidgetProvider() {
             action == "com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" ||
             action == "com.muxixyz.ccnubox.ACTION_WIDGET_CLICK" // 新增点击事件处理
         ) {
-            Log.d("action",action.toString())
+            Log.d("action",action)
             updateWidgetData(context)
         }
     }

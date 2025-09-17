@@ -79,6 +79,7 @@ class WidgetManagerModule(private val reactContext: ReactApplicationContext):Rea
             }
 
             editor.putString("all_courses", courseList.toString())
+            editor.putString("current_week", json.optString("date").removePrefix("第").removeSuffix("周"))
             editor.apply()
 
         } catch (e: Exception) {

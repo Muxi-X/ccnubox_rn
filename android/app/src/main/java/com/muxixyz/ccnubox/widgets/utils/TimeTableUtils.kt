@@ -9,7 +9,7 @@ import java.util.Calendar
 object TimeTableUtils {
 
     //学期第一天早上八点的Unix时间戳
-    private var startTimestamp = 1739721600L
+//    private var startTimestamp = 1739721600L
 
     //每节课的开始时间是一天中的第几分钟
     private val sectionStartMinutes = mapOf(
@@ -22,15 +22,17 @@ object TimeTableUtils {
         7 to 16 * 60L + 10,
         8 to 17 * 60L + 5,
         9 to 19 * 60L,
-        10 to 19 * 60L + 55
+        10 to 19 * 60L + 55,
+        11 to 20 * 60L + 15,
+        12 to 21 * 60L + 5
     )
 
     //每节课持续时间 有生之年应该不会改了
     private const val DEFAULT_DURATION = 45L
 
-    public fun setStartTimeStamp(startTimestamp: Long) {
-        this.startTimestamp = startTimestamp;
-    }
+//    public fun setStartTimeStamp(startTimestamp: Long) {
+//        this.startTimestamp = startTimestamp;
+//    }
 
     public fun getDateString(): String {
         val calendar = Calendar.getInstance()
@@ -68,22 +70,22 @@ object TimeTableUtils {
     }
 
 
-    fun getWeek(): Int {
-        val now = System.currentTimeMillis()
-        val startMillis = startTimestamp * 1000 // 时间戳是秒，转成毫秒
-        if (now < startMillis) return 0 // 开学前
-
-        val diff = now - startMillis
-        val weekMillis = 7 * 24 * 60 * 60 * 1000L
-        return (diff / weekMillis).toInt() + 1 // 从第1周开始
-    }
+//    fun getWeek(): Int {
+//        val now = System.currentTimeMillis()
+//        val startMillis = startTimestamp * 1000 // 时间戳是秒，转成毫秒
+//        if (now < startMillis) return 0 // 开学前
+//
+//        val diff = now - startMillis
+//        val weekMillis = 7 * 24 * 60 * 60 * 1000L
+//        return (diff / weekMillis).toInt() + 1 // 从第1周开始
+//    }
 
 
     fun getTodayCourses(context: Context): List<CourseInfo> {
         val weekday = getWeekday()
-        val currentWeek = getWeek()
         val sp = context.getSharedPreferences("WidgetData", Context.MODE_PRIVATE)
         val stored = sp.getString("all_courses", null) ?: return emptyList()
+        val currentWeek = sp.getString("current_week", null)?.toIntOrNull() ?: return emptyList()
 
         Log.d("stored", stored)
 
@@ -92,7 +94,6 @@ object TimeTableUtils {
         // 当前时间（分钟）
         val now = Calendar.getInstance()
         val currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
-
 
         try {
             val array = JSONArray(stored)
@@ -120,7 +121,7 @@ object TimeTableUtils {
                             weekBitMask = bitmask
                         )
                         result.add(course)
-                        Log.d("TAG", "course:")
+                        Log.d("TAG", "course:${course}")
                     }
                 }
             }
