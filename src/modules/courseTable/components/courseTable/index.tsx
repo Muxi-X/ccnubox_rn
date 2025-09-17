@@ -24,6 +24,10 @@ import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
+import LocationIcon from '@/assets/icons/calendar/location.svg';
+import TeacherIcon from '@/assets/icons/calendar/teacher.svg';
+import TimeIcon from '@/assets/icons/calendar/time.svg';
+import WeekIcon from '@/assets/icons/calendar/week.svg';
 import {
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
@@ -506,7 +510,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
         <View style={styles.modalInfoGrid}>
           <View style={styles.modalInfoItem}>
             <View style={styles.modalInfoIcon}>
-              <Text style={styles.iconText}>📅</Text>
+              <WeekIcon width={20} height={20} />
             </View>
             <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               {week_duration}
@@ -515,7 +519,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
           <View style={styles.modalInfoItem}>
             <View style={styles.modalInfoIcon}>
-              <Text style={styles.iconText}>🕒</Text>
+              <TimeIcon width={20} height={20} />
             </View>
             <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               周{date}
@@ -525,7 +529,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
           <View style={styles.modalInfoItem}>
             <View style={styles.modalInfoIcon}>
-              <Text style={styles.iconText}>👨‍🏫</Text>
+              <TeacherIcon width={20} height={20} />
             </View>
             <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               {teacher}
@@ -534,7 +538,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
           <View style={styles.modalInfoItem}>
             <View style={styles.modalInfoIcon}>
-              <Text style={styles.iconText}>🏢</Text>
+              <LocationIcon width={20} height={20} />
             </View>
             <Text style={[styles.modalInfoText, currentStyle?.text_style]}>
               {classroom}
@@ -862,9 +866,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
-  },
-  iconText: {
-    fontSize: 18,
   },
   modalInfoText: {
     fontSize: 14,
