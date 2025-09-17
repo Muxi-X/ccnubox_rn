@@ -86,7 +86,11 @@ const CourseContent: React.FC<CourseContentProps> = memo(
               isTransparent: true,
               children: (
                 <View
-                  style={{ minHeight: 220, height: slotCourses.length * 260 }}
+                  style={{
+                    minHeight: 220,
+                    height: slotCourses.length * 260,
+                    maxHeight: 600,
+                  }}
                 >
                   <ScrollView style={{ width: '100%' }}>
                     {slotCourses.map((c, idx) => (
