@@ -15,17 +15,18 @@ import { PickerDataType } from '@/components/picker/types';
  */
 export const generateSemesterOptions = (): PickerDataType => {
   const userInfo = getItem('userInfo');
-  const lastYear = JSON.parse(userInfo as string).student_id.slice(0, 4);
-  const currentYear = new Date().getFullYear() - 1;
+  const admissionYear = JSON.parse(userInfo as string).student_id.slice(0, 4);
+  const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const options = [];
 
   // Determine if current time is first or second semester
   // Assuming first semester is March-August (month 3-8), second is September-February
   // const currentSemester = currentMonth >= 3 && currentMonth <= 8 ? 1 : 2;
+  // 9-2 第一学期 3-6 第二学期 7-8 第三学期
   const currentSemester = currentMonth >= 3 ? 1 : currentMonth >= 6 ? 2 : 3;
 
-  for (let year = lastYear; year <= currentYear; year++) {
+  for (let year = admissionYear; year <= currentYear; year++) {
     // For current year, only add semesters that have passed
     if (year === currentYear) {
       options.push({
@@ -33,14 +34,14 @@ export const generateSemesterOptions = (): PickerDataType => {
         value: `${year}-1`,
       });
 
-      if (currentSemester >= 1) {
+      if (currentSemester > 1) {
         options.push({
           label: `${year}学年-第二学期`,
           value: `${year}-2`,
         });
       }
 
-      if (currentSemester >= 2) {
+      if (currentSemester > 2) {
         options.push({
           label: `${year}学年-第三学期`,
           value: `${year}-3`,
