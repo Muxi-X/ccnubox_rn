@@ -82,6 +82,7 @@ export default function ClassRoom() {
         ref={webview}
         javaScriptEnabled
         // injectedJavaScript={login}
+        geolocationEnabled
         injectedJavaScriptForMainFrameOnly={false}
         originWhitelist={['*']}
         setSupportMultipleWindows={false} // Android 必须
