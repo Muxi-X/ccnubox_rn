@@ -2,31 +2,30 @@ import * as Application from 'expo-application';
 import * as Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Toast from '@/components/toast';
+import { TypoText } from '@/components/typography/TypoText';
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { UpdateInfo } from '@/types/updateInfo';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mxLogo = require('../../assets/images/mx-logo.png');
+
 function CheckUpdate(): React.ReactNode {
   const version = Application.nativeApplicationVersion;
   const updateInfo = Constants.default.expoConfig?.extra
     ?.updateInfo as UpdateInfo;
   const [loading, setLoading] = useState(false);
-  const { currentStyle } = useVisualScheme(
-    ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
-      currentStyle,
-      changeTheme,
-      themeName,
-      layoutName,
-      changeLayout,
-    })
-  );
+  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+    currentStyle,
+  }));
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   useEffect(() => {
     if (isUpdatePending) {
@@ -44,65 +43,75 @@ function CheckUpdate(): React.ReactNode {
         },
       });
   }, [isUpdateAvailable]);
+
   return (
     <ThemeBasedView style={styles.container}>
-      <View style={styles.infoContainer}>
-        <Image
-          source={require('../../assets/images/mx-logo.png')}
-          style={styles.icon}
-        />
-        <Text style={[styles.appName, currentStyle?.text_style]}>华师匣子</Text>
-        <View style={styles.versionBlock}>
-          <Text style={styles.versionTitle}>
-            热更新版本 {updateInfo.otaVersion}
-          </Text>
-          <Text>应用版本 {version}</Text>
-          <Text style={styles.versionDate}>{updateInfo.updateTime || ''}</Text>
+      <ScrollView>
+        <View style={styles.infoContainer}>
+          <Image source={mxLogo} style={styles.icon} />
+          <TypoText level={1} bold style={styles.appName}>
+            华师匣子
+          </TypoText>
+          <View style={styles.versionBlock}>
+            <TypoText level={2} bold style={styles.versionTitle}>
+              热更新版本 {updateInfo.otaVersion}
+            </TypoText>
+            <TypoText level="body">应用版本 {version}</TypoText>
+            <TypoText level="body">{updateInfo.updateTime || ''}</TypoText>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.sectionBlock}>
+            <TypoText level={3} bold style={styles.sectionTitle}>
+              新增功能：
+            </TypoText>
+            <TypoText level="body" style={styles.sectionContent}>
+              {(updateInfo.newFeatures || []).join('\n')}
+            </TypoText>
+            <TypoText level={3} bold style={styles.sectionTitle}>
+              Bug修复：
+            </TypoText>
+            <TypoText level="body" style={styles.sectionContent}>
+              {(updateInfo.fixedIssues || []).join('\n')}
+            </TypoText>
+            <TypoText level={3} bold style={styles.sectionTitle}>
+              已知问题：
+            </TypoText>
+            <TypoText level="body" style={styles.sectionContent}>
+              {(updateInfo.knownIssues || []).join('\n')}
+            </TypoText>
+          </View>
+          <View style={styles.divider} />
+          <Button
+            style={[styles.updateButton, currentStyle?.button_style]}
+            onPress={() => {
+              setLoading(true);
+              if (__DEV__) {
+                Toast.show({ text: '已是最新版', icon: 'success' });
+                setLoading(false);
+              } else {
+                Updates.checkForUpdateAsync()
+                  .then(res => {
+                    if (!res.isAvailable) {
+                      Toast.show({ text: '已是最新版', icon: 'success' });
+                    }
+                  })
+                  .catch(err => {
+                    Toast.show({ text: err.toString() });
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+              }
+            }}
+            isLoading={loading}
+          >
+            检 查 更 新
+          </Button>
+          <TypoText level="body" style={styles.bottomTip}>
+            更新后请重启应用以确保新功能生效。
+          </TypoText>
         </View>
-        <View style={styles.divider} />
-        <View style={styles.sectionBlock}>
-          <Text style={styles.sectionTitle}>新增功能：</Text>
-          <Text style={styles.sectionContent}>
-            {(updateInfo.newFeatures || []).join('\n')}
-          </Text>
-          <Text style={styles.sectionTitle}>Bug修复：</Text>
-          <Text style={styles.sectionContent}>
-            {(updateInfo.fixedIssues || []).join('\n')}
-          </Text>
-          <Text style={styles.sectionTitle}>已知问题：</Text>
-          <Text style={styles.sectionContent}>
-            {(updateInfo.knownIssues || []).join('\n')}
-          </Text>
-        </View>
-        <View style={styles.divider} />
-        <Button
-          style={[styles.updateButton, currentStyle?.button_style]}
-          onPress={() => {
-            setLoading(true);
-            if (__DEV__) {
-              Toast.show({ text: '已是最新版', icon: 'success' });
-              setLoading(false);
-            } else {
-              Updates.checkForUpdateAsync()
-                .then(res => {
-                  if (!res.isAvailable) {
-                    Toast.show({ text: '已是最新版', icon: 'success' });
-                  }
-                })
-                .catch(err => {
-                  Toast.show({ text: err.toString() });
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
-            }
-          }}
-          isLoading={loading}
-        >
-          检 查 更 新
-        </Button>
-        <Text style={styles.bottomTip}>更新后请重启应用以确保新功能生效。</Text>
-      </View>
+      </ScrollView>
     </ThemeBasedView>
   );
 }
@@ -111,81 +120,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingVertical: 24,
+    paddingVertical: 16,
   },
   infoContainer: {
     alignItems: 'center',
-    marginBottom: 24,
-    height: '100%',
+    paddingBottom: 20,
   },
   icon: {
     width: 120,
     height: 120,
     borderRadius: 20,
-    marginBottom: 16,
   },
   appName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   versionBlock: {
     alignItems: 'center',
-    marginTop: 4,
-    marginBottom: 4,
+    marginBottom: 8,
   },
   versionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#222',
     marginBottom: 2,
-  },
-  versionDate: {
-    fontSize: 14,
-    color: '#AEAEAE',
-    marginBottom: 8,
   },
   divider: {
     height: 1,
     backgroundColor: '#E5E6EB',
-    marginVertical: 16,
+    marginVertical: 12,
     width: '80%',
   },
   sectionBlock: {
-    width: '70%',
+    width: '85%',
     marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#222',
-    marginTop: 8,
-    marginBottom: 4,
+    marginTop: 4,
+    marginBottom: 2,
     textAlign: 'left',
   },
   sectionContent: {
-    fontSize: 13,
-    color: '#444',
-    marginLeft: 10,
-    marginBottom: 8,
-    lineHeight: 20,
+    marginLeft: 8,
+    marginBottom: 4,
     textAlign: 'left',
   },
   updateButton: {
-    width: '70%',
-    height: 48,
-    borderRadius: 16,
+    width: '80%',
+    height: 44,
+    borderRadius: 12,
     alignSelf: 'center',
-    marginTop: 32,
+    marginTop: 16,
     marginBottom: 8,
     backgroundColor: '#7B7BFF',
   },
   bottomTip: {
-    fontSize: 12,
-    color: '#868686',
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: 2,
+    marginBottom: 8,
   },
 });
 export default CheckUpdate;
