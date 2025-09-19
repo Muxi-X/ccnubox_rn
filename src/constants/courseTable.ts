@@ -32,17 +32,17 @@ export const courseCollapse = 2;
  */
 export const timeSlots = [
   '08:00',
-  '',
+  '09:40',
   '10:10',
-  '',
+  '11:50',
   '14:00',
-  '',
+  '15:40',
   '16:10',
-  '',
+  '17:50',
   '18:30',
-  '',
+  '20:05',
   '20:15',
-  '',
+  '21:50',
 ];
 
 /**
@@ -69,7 +69,7 @@ export const colorOptions = [
     color: '#F39FA7',
     label: '五',
   },
-  // Todo:周六周日课表的颜色
+  // Todo)):周六周日课表的颜色
   {
     color: '#F39FA7',
     label: '六',
