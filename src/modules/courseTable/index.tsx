@@ -59,16 +59,30 @@ const CourseTablePage: FC = () => {
     setShowWeekPicker,
   } = useTimeStore();
 
+  const fetchCurrentWeek = async () => {
+    try {
+      const res = await queryCurrentWeek();
+      if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
+        setSchoolTime(res.data.school_time);
+        setHolidayTime(res.data.holiday_time);
+        const { semester, year } = computeSemesterAndYear(res.data.school_time);
+        setSemester(semester);
+        setYear(year);
+        setTimeout(
+          () => setSelectedWeek(useTimeStore.getState().getCurrentWeek()),
+          0
+        );
+      }
+    } catch (err) {
+      log.error('Failed to fetch current week:', err);
+    }
+  };
+
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
+      fetchCurrentWeek();
       try {
-        if (semester === '' || year === '') {
-          const { semester, year } = computeSemesterAndYear(schoolTime);
-          setSemester(semester);
-          setYear(year);
-        }
-
         // 使用计算得到的学期和年份
         const res = await queryCourseTable({
           semester,
@@ -95,22 +109,6 @@ const CourseTablePage: FC = () => {
 
   // 获取当前周数
   useEffect(() => {
-    const fetchCurrentWeek = async () => {
-      try {
-        const res = await queryCurrentWeek();
-        if (
-          res?.code === 0 &&
-          res.data?.school_time &&
-          res.data?.holiday_time
-        ) {
-          setSchoolTime(res.data.school_time);
-          setHolidayTime(res.data.holiday_time);
-          setSelectedWeek(useTimeStore.getState().getCurrentWeek());
-        }
-      } catch (err) {
-        log.error('Failed to fetch current week:', err);
-      }
-    };
     fetchCurrentWeek();
   }, [setSchoolTime, setHolidayTime, setSelectedWeek]);
 
