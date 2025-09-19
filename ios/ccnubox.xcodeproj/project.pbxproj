@@ -10,10 +10,12 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		142D1F39621E2298B7E7EBD3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 19F1BD19E14B7570E9DDFC47 /* PrivacyInfo.xcprivacy */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		6B6749B977374C44B3C7EF4A /* antfill.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EBE23F5F214A4478915BAF6E /* antfill.ttf */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		EE5119174787B54EA4B30C79 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7799EC78D6FA8E8E4F6067F /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		F3FF0A10FB9E1270F58A9C0C /* libPods-ccnubox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CD5F9D6F18885CE76AB2F68 /* libPods-ccnubox.a */; };
+		F61DDB0AB0184CA283AEA1F4 /* antoutline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2450EC9FEB0E474C99CF2E68 /* antoutline.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,12 +23,14 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ccnubox/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ccnubox/Info.plist; sourceTree = "<group>"; };
 		19F1BD19E14B7570E9DDFC47 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ccnubox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		2450EC9FEB0E474C99CF2E68 /* antoutline.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = antoutline.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf"; sourceTree = "<group>"; };
 		44F7CEA747C3E6D013643D9B /* Pods-ccnubox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.debug.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.debug.xcconfig"; sourceTree = "<group>"; };
 		5CD5F9D6F18885CE76AB2F68 /* libPods-ccnubox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ccnubox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7799EC78D6FA8E8E4F6067F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ccnubox/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ccnubox/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		D586B6E32A92174235787893 /* Pods-ccnubox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.release.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.release.xcconfig"; sourceTree = "<group>"; };
+		EBE23F5F214A4478915BAF6E /* antfill.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = antfill.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ccnubox/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* ccnubox-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ccnubox-Bridging-Header.h"; path = "ccnubox/ccnubox-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -56,6 +60,16 @@
 				19F1BD19E14B7570E9DDFC47 /* PrivacyInfo.xcprivacy */,
 			);
 			name = ccnubox;
+			sourceTree = "<group>";
+		};
+		2B1E050EC20A4757A7FE9D55 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EBE23F5F214A4478915BAF6E /* antfill.ttf */,
+				2450EC9FEB0E474C99CF2E68 /* antoutline.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -93,6 +107,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4F7B992C2A8CDB24BB8F42A3 /* Pods */,
 				EB0D1ACECE6D063A5E11C2AE /* ExpoModulesProviders */,
+				2B1E050EC20A4757A7FE9D55 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -197,6 +212,8 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				142D1F39621E2298B7E7EBD3 /* PrivacyInfo.xcprivacy in Resources */,
+				6B6749B977374C44B3C7EF4A /* antfill.ttf in Resources */,
+				F61DDB0AB0184CA283AEA1F4 /* antoutline.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,7 +392,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
-				PRODUCT_NAME = "app";
+				PRODUCT_NAME = app;
 				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -406,7 +423,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
-				PRODUCT_NAME = "app";
+				PRODUCT_NAME = app;
 				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
