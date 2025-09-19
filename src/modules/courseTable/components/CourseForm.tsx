@@ -309,16 +309,39 @@ export const CourseForm = (props: CourseFormProps) => {
                         value: i + 1,
                         label: ['一', '二', '三', '四', '五', '六', '日'][i],
                       })),
-                      [...Array(6).keys()].map(i => ({
-                        value: `${i * 2 + 1}-${i * 2 + 2}`,
-                        label: `${i * 2 + 1}-${i * 2 + 2}节`,
+                      // 课程开始时间
+                      [...Array(12).keys()].map(i => ({
+                        value: i + 1,
+                        label: `第${i + 1}节`,
+                      })),
+                      // 课程结束时间
+                      [...Array(12).keys()].map(i => ({
+                        value: i + 1,
+                        label: `第${i + 1}节`,
                       })),
                     ]}
                     onConfirm={values => {
+                      const [day, startClass, endClass] = values;
+                      const startClassNum = parseInt(startClass);
+                      const endClassNum = parseInt(endClass);
+
+                      // 开始时间晚于结束时间提示
+                      if (startClassNum > endClassNum) {
+                        Modal.show({
+                          title: '小提示',
+                          children: '课程开始时间不能晚于结束时间，请重新选择',
+                          mode: 'middle',
+                          showCancel: false,
+                          confirmText: '确定',
+                        });
+                        return;
+                      }
+
+                      const dur_class = `${startClass}-${endClass}`;
                       setFormData(prev => ({
                         ...prev,
-                        day: parseInt(values[0]),
-                        dur_class: values[1],
+                        day: parseInt(day),
+                        dur_class: dur_class,
                       }));
                     }}
                   >

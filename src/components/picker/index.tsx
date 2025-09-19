@@ -143,6 +143,12 @@ const Picker: React.FC<DatePickerProps> = ({
             </Text>
           ))}
       </View>
+
+      {/* 添加课程时开始时间与结束时间之间的分隔 */}
+      <View style={styles.separatorContainer} pointerEvents="none">
+        <Text style={styles.separatorText}>到</Text>
+      </View>
+
       <PickerView
         data={data}
         numberOfLines={1}
@@ -218,6 +224,22 @@ const styles = StyleSheet.create({
     fontSize: commonStyles.fontMedium.fontSize,
     textAlign: 'center',
     color: commonColors.darkGray,
+  },
+  separatorContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: PICKER_ITEM_HEIGHT,
+  },
+  separatorText: {
+    position: 'absolute',
+    top: '43%',
+    left: '66.7%',
+    fontSize: commonStyles.fontMedium.fontSize,
+    color: commonColors.darkGray,
+    transform: [
+      { translateX: -commonStyles.fontMedium.fontSize / 2 },
+      { translateY: -commonStyles.fontMedium.fontSize / 2 },
+    ],
   },
 });
 const pickerStyles = StyleSheet.create({
