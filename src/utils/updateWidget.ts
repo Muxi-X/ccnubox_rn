@@ -28,7 +28,7 @@ export const updateCourseData = async () => {
   WidgetManager.updateCourseData(JSON.stringify(courseData))
     .then((result: string) => {
       console.log('数据更新成功:', result); // Force widget to refresh
-
+      // console.log("Course Data:", JSON.stringify(courseData));
       WidgetManager.refreshWidget?.();
     })
     .catch((error: unknown) => {

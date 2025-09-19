@@ -85,6 +85,7 @@ object TimeTableUtils {
         val weekday = getWeekday()
         val sp = context.getSharedPreferences("WidgetData", Context.MODE_PRIVATE)
         val stored = sp.getString("all_courses", null) ?: return emptyList()
+
         val currentWeek = sp.getString("current_week", null)?.toIntOrNull() ?: return emptyList()
 
         Log.d("stored", stored)

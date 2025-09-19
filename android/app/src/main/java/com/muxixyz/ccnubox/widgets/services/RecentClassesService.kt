@@ -6,6 +6,6 @@ import com.muxixyz.ccnubox.widgets.ScheduleRemoteViewsFactory
 
 class RecentClassesService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return ScheduleRemoteViewsFactory(applicationContext)
+        return ScheduleRemoteViewsFactory(applicationContext, intent.getStringExtra("widget_type") ?: "2x2")
     }
 }

@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { courseType } from '@/modules/courseTable/components/courseTable/type';
 
-import useTimeStore from './time';
+import { updateCourseData } from '@/utils/updateWidget';
 
 interface CourseState {
   hydrated: boolean;
@@ -32,20 +32,7 @@ const useCourse = create<CourseState>()(
         updateCourses: (courses: courseType[]) => {
           // 推送到小组件
           if (Platform.OS === 'android') {
-            const courseData = {
-              date: `第${useTimeStore.getState().currentWeek}周`,
-              courses: courses.map(course => ({
-                id: course.id,
-              })),
-            };
-            WidgetManager.updateCourseData(JSON.stringify(courseData))
-              .then((result: string) => {
-                console.log('数据更新成功:', result); // Force widget to refresh
-                WidgetManager.refreshWidget?.();
-              })
-              .catch((error: unknown) => {
-                console.error('数据更新失败:', error);
-              });
+            updateCourseData();
           }
 
           set({ courses });
