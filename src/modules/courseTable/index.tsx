@@ -72,9 +72,6 @@ const CourseTablePage: FC = () => {
           () => setSelectedWeek(useTimeStore.getState().getCurrentWeek()),
           0
         );
-        console.log(
-          `update school time: ${res.data.school_time}, holiday time: ${res.data.holiday_time}`
-        );
       }
     } catch (err) {
       log.error('Failed to fetch current week:', err);
