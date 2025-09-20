@@ -17,6 +17,7 @@
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.4.1",
     "@expo/vector-icons": "^14.1.0",
+    "@gorhom/bottom-sheet": "^5.2.6",
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
