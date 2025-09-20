@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 import { ModalTriggerProps } from '@/components/modal/types';
 
 export type PickerDataType = { value: string | number; label: string }[][];
+export type ConnectorDataType = { content: string; columnIndex: number }[];
 export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
   /** 数据，必须有 label 和 value */
   data?: PickerDataType;
@@ -25,4 +26,17 @@ export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
   itemHeight?: number;
   /* 触发弹窗的按钮 */
   children?: ReactElement;
+  /** 连接词配置，用于在选择器列之间显示连接词 */
+  connectors?: ConnectorDataType;
+}
+
+export interface PickerConnectorProps {
+  /** 连接词配置数组 */
+  connectors: ConnectorDataType;
+  /** 选择器总宽度 */
+  totalWidth: number;
+  /** 选择器单列高度 */
+  itemHeight: number;
+  /** 选择器数据，用于计算字符长度差异和统计列数 */
+  data: PickerDataType;
 }
