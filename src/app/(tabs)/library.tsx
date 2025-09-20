@@ -14,9 +14,11 @@ const primaryColor = '#8B5CF6';
 const secondaryColor = '#7D6EF9';
 
 export default function LibraryPage() {
-  const backgroundColor =
-    useVisualScheme.getState().currentStyle?.background_style?.backgroundColor;
-  const textColor = useVisualScheme.getState().currentStyle?.text_style?.color;
+  // 推荐：使用订阅型选择器而非 getState()
+  const backgroundColor = useVisualScheme(
+    s => s.currentStyle?.background_style?.backgroundColor
+  );
+  const textColor = useVisualScheme(s => s.currentStyle?.text_style?.color);
   const router = useRouter();
 
   return (

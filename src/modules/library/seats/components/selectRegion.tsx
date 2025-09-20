@@ -73,7 +73,9 @@ export default function SelectRegion({
         >
           <RegionIcon style={{ position: 'absolute', left: 20 }} />
           <Text style={[commonStyles.fontMedium, currentStyle?.text_style]}>
-            {selectedRegion !== null ? `已选择：${selectedRegion}` : '选择区域'}
+            {selectedRegion != null && selectedRegion !== ''
+              ? `已选择：${selectedRegion}`
+              : '选择区域'}
           </Text>
         </View>
       </TouchableOpacity>
