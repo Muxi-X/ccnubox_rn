@@ -328,8 +328,8 @@ export const CourseForm = (props: CourseFormProps) => {
                     ]}
                     onConfirm={values => {
                       const [day, startClass, endClass] = values;
-                      const startClassNum = parseInt(startClass);
-                      const endClassNum = parseInt(endClass);
+                      const startClassNum = parseInt(startClass, 10);
+                      const endClassNum = parseInt(endClass, 10);
 
                       // 开始时间晚于结束时间提示
                       if (startClassNum > endClassNum) {

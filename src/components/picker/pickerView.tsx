@@ -29,19 +29,36 @@ const PickerConnector: FC<PickerConnectorProps> = ({
   data,
 }) => {
   const columnCount = data.length;
+
+  // 计算实际渲染宽度差异(字母比汉字大概小0.4)
+  const getTextWidth = (text: string): number => {
+    const chineseCharRegex = /[\u4e00-\u9fa5]/g;
+    const chineseCount = (text.match(chineseCharRegex) || []).length;
+    const otherCount = text.length - chineseCount;
+    return (
+      chineseCount * commonStyles.fontMedium.fontSize +
+      otherCount * commonStyles.fontMedium.fontSize * 0.6
+    );
+  };
+
   // 计算字符长度差异的偏差值
   const calcLengthDeviation = (columnIndex: number): number => {
+    if (
+      !data[columnIndex] ||
+      !data[columnIndex + 1] ||
+      !data[columnIndex][0] ||
+      !data[columnIndex + 1][0]
+    ) {
+      return 0;
+    }
+
     const leftPickerLabel = data[columnIndex][0].label;
     const rightPickerLabel = data[columnIndex + 1][0].label;
 
-    const lengthDiff = leftPickerLabel.length - rightPickerLabel.length;
+    const leftWidth = getTextWidth(leftPickerLabel);
+    const rightWidth = getTextWidth(rightPickerLabel);
 
-    if (lengthDiff === 0) return 0;
-
-    // 长度有差异就计算偏差值
-    const deviation = (lengthDiff / 2) * commonStyles.fontMedium.fontSize;
-
-    return deviation;
+    return (leftWidth - rightWidth) / 2;
   };
 
   // 验证索引范围，目前只支持放在选择器之间，后续需要可扩展
