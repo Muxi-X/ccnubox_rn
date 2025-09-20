@@ -73,7 +73,9 @@ export default function SelectRegion({
         >
           <RegionIcon style={{ position: 'absolute', left: 20 }} />
           <Text style={[commonStyles.fontMedium, currentStyle?.text_style]}>
-            {selectedRegion !== null ? `已选择：${selectedRegion}` : '选择区域'}
+            {selectedRegion != null && selectedRegion !== ''
+              ? `已选择：${selectedRegion}`
+              : '选择区域'}
           </Text>
         </View>
       </TouchableOpacity>
@@ -85,18 +87,21 @@ export default function SelectRegion({
           onPress={() => setVisible(false)}
           activeOpacity={1}
         >
-          <View style={styles.menuContainer}>
+          <View style={[styles.menuContainer, currentStyle?.background_style]}>
             <ScrollView>
               {Object.entries(regions).map(([library, floors]) => (
                 <View key={library}>
-                  <Text style={styles.libraryTitle}>
+                  <Text style={[styles.libraryTitle, currentStyle?.text_style]}>
                     {library === 'Main' ? '主图书馆' : '南湖分馆'}
                   </Text>
                   {Object.entries(floors).map(([floor, rooms]) => (
                     <View key={floor}>
                       {/* 一级菜单 */}
                       <TouchableOpacity
-                        style={styles.floorItem}
+                        style={[
+                          styles.floorItem,
+                          currentStyle?.header_background_style,
+                        ]}
                         onPress={() =>
                           setExpanded(
                             expanded === `${library}_${floor}`
@@ -105,19 +110,29 @@ export default function SelectRegion({
                           )
                         }
                       >
-                        <Text>{floor}</Text>
+                        <Text style={currentStyle?.text_style}>{floor}</Text>
                       </TouchableOpacity>
 
                       {/* 二级菜单 */}
                       {expanded === `${library}_${floor}` && (
-                        <View style={styles.subMenu}>
+                        <View
+                          style={[
+                            styles.subMenu,
+                            currentStyle?.background_style,
+                          ]}
+                        >
                           {rooms.map((room, i) => (
                             <TouchableOpacity
                               key={i}
-                              style={styles.subItem}
+                              style={[
+                                styles.subItem,
+                                currentStyle?.header_background_style,
+                              ]}
                               onPress={() => handleSelect(room)}
                             >
-                              <Text>{room}</Text>
+                              <Text style={currentStyle?.text_style}>
+                                {room}
+                              </Text>
                             </TouchableOpacity>
                           ))}
                         </View>
