@@ -304,6 +304,12 @@ export const CourseForm = (props: CourseFormProps) => {
                     titleDisplayLogic={() =>
                       `周${['一', '二', '三', '四', '五', '六', '日'][formData.day - 1]}${formData.dur_class}节`
                     }
+                    connectors={[
+                      {
+                        content: '到',
+                        columnIndex: 1,
+                      },
+                    ]}
                     data={[
                       [...Array(7).keys()].map(i => ({
                         value: i + 1,

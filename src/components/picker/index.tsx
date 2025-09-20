@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
-import PickerView from '@/components/picker/pickerView';
+import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -47,6 +47,7 @@ export const basicColumns = [
  * @param itemHeight 每一行高度
  * @param children 触发 picker 的元素
  * @param titleDisplayLogic 选择值改变时，如何动态修改title
+ * @param connectors 连接词配置，用于在选择器列之间显示连接词
  * @constructor
  * @example 使用方法
  * // 中框弹窗
@@ -59,6 +60,14 @@ export const basicColumns = [
  * </Picker>
  * // 自定义数据
  * <Picker data={basicColumns}></Picker>
+ * // 自定义连接词
+ * <Picker
+ *   connectors={[
+ *     { content: '连接', columnIndex: 0 },
+ *     { content: '到', columnIndex: 1 }
+ *   ]}
+ * >
+ * </Picker>
  */
 const Picker: React.FC<DatePickerProps> = ({
   onCancel,
@@ -71,6 +80,7 @@ const Picker: React.FC<DatePickerProps> = ({
   itemHeight = PICKER_ITEM_HEIGHT,
   data = basicColumns,
   children,
+  connectors,
   titleDisplayLogic = (pickerValue, data) => {
     const pickedLabels = pickerValue.map((value, index) => {
       const curArr = data[index];
@@ -144,10 +154,14 @@ const Picker: React.FC<DatePickerProps> = ({
           ))}
       </View>
 
-      {/* 添加课程时开始时间与结束时间之间的分隔 */}
-      <View style={styles.separatorContainer} pointerEvents="none">
-        <Text style={styles.separatorText}>到</Text>
-      </View>
+      {connectors && connectors.length > 0 && (
+        <PickerConnector
+          connectors={connectors}
+          totalWidth={contentWidth}
+          itemHeight={itemHeight}
+          data={data}
+        />
+      )}
 
       <PickerView
         data={data}
@@ -224,22 +238,6 @@ const styles = StyleSheet.create({
     fontSize: commonStyles.fontMedium.fontSize,
     textAlign: 'center',
     color: commonColors.darkGray,
-  },
-  separatorContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: PICKER_ITEM_HEIGHT,
-  },
-  separatorText: {
-    position: 'absolute',
-    top: '43%',
-    left: '66.7%',
-    fontSize: commonStyles.fontMedium.fontSize,
-    color: commonColors.darkGray,
-    transform: [
-      { translateX: -commonStyles.fontMedium.fontSize / 2 },
-      { translateY: -commonStyles.fontMedium.fontSize / 2 },
-    ],
   },
 });
 const pickerStyles = StyleSheet.create({
