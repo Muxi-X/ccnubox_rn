@@ -32,7 +32,13 @@ export default function LibraryPage() {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.card, styles.reservationCard]}>
+        <View
+          style={[
+            styles.card,
+            styles.reservationCard,
+            { backgroundColor: backgroundColor },
+          ]}
+        >
           <View style={styles.reservationLeft}>
             <Text style={styles.areaText}>A区 3楼</Text>
             <Text style={[styles.seatNumber, { color: textColor }]}>
@@ -62,7 +68,11 @@ export default function LibraryPage() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.bookingButton, styles.secondaryButton]}
+            style={[
+              styles.bookingButton,
+              styles.secondaryButton,
+              { backgroundColor: backgroundColor },
+            ]}
             onPress={() => router.push('/(library)/selectRoom')}
           >
             <Ionicons name="people-outline" size={32} color={primaryColor} />
@@ -127,7 +137,12 @@ export default function LibraryPage() {
           </Text>
           <View style={styles.functionsGrid}>
             <TouchableOpacity style={styles.functionItem}>
-              <View style={styles.functionIcon}>
+              <View
+                style={[
+                  styles.functionIcon,
+                  { backgroundColor: backgroundColor },
+                ]}
+              >
                 <TimeIcon></TimeIcon>
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
@@ -136,7 +151,12 @@ export default function LibraryPage() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.functionItem}>
-              <View style={styles.functionIcon}>
+              <View
+                style={[
+                  styles.functionIcon,
+                  { backgroundColor: backgroundColor },
+                ]}
+              >
                 <Ionicons name="star" size={24} color={primaryColor} />
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
@@ -145,7 +165,12 @@ export default function LibraryPage() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.functionItem}>
-              <View style={styles.functionIcon}>
+              <View
+                style={[
+                  styles.functionIcon,
+                  { backgroundColor: backgroundColor },
+                ]}
+              >
                 <StatIcon></StatIcon>
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
@@ -154,7 +179,12 @@ export default function LibraryPage() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.functionItem}>
-              <View style={styles.functionIcon}>
+              <View
+                style={[
+                  styles.functionIcon,
+                  { backgroundColor: backgroundColor },
+                ]}
+              >
                 <DiamondIcon></DiamondIcon>
               </View>
               <Text style={[styles.functionLabel, { color: textColor }]}>
@@ -305,6 +335,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
+    elevation: 3,
   },
   functionLabel: {
     fontSize: 12,

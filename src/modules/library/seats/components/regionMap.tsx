@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { Animated, ScrollView, Text, View } from 'react-native';
-
-import Button from '@/components/button';
-import { ModalTrigger } from '@/components/modal';
+import { JSX, useEffect, useRef, useState } from 'react';
+import { Animated, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import AppointedIcon from '@/assets/icons/library/appointed.svg';
 import FreeIcon from '@/assets/icons/library/free.svg';
@@ -10,12 +8,57 @@ import HalfFreeIcon from '@/assets/icons/library/halffree.svg';
 import OccupiedIcon from '@/assets/icons/library/occupied.svg';
 import QuestionIcon from '@/assets/icons/library/question.svg';
 import UnavailableIcon from '@/assets/icons/library/unavailable.svg';
+import { CustomBottomSheet } from '@/components/bottomSheet'; // 引入新组件
+import { CustomBottomSheetRef } from '@/components/bottomSheet/type';
+import Button from '@/components/button';
+import { ModalTrigger } from '@/components/modal';
+import {
+  LakeF1Atrium,
+  LakeF1Open,
+  LakeF2Open,
+  LakeF2Seats,
+  MainF1Room,
+  MainF2Room1,
+  MainF2Room2,
+  MainF3Room,
+  MainF5Room4,
+  MainF5Room5,
+  MainF6ForeignRoom,
+  MainF6Room1,
+  MainF7Room2,
+  MainF7Room3,
+  MainF9Room,
+} from './regionComponents';
+import { SeatContent } from './SeatContent';
 
-import Seat from './seat';
+export const regionComponents: Record<string, JSX.Element> = {
+  主馆一楼综合学习室: <MainF1Room />,
+  '主馆二楼借阅室（一）': <MainF2Room1 />,
+  '主馆二楼借阅室（二）': <MainF2Room2 />,
+  '主馆三楼借阅室（三）': <MainF3Room />,
+  '主馆五楼借阅室（四）': <MainF5Room4 />,
+  '主馆五楼借阅室（五）': <MainF5Room5 />,
+  '主馆六楼阅览室（一）': <MainF6Room1 />,
+  主馆六楼外文借阅室: <MainF6ForeignRoom />,
+  '主馆七楼阅览室（二）': <MainF7Room2 />,
+  '主馆七楼阅览室（三）': <MainF7Room3 />,
+  主馆九楼阅览室: <MainF9Room />,
+  南湖分馆一楼开敞座位区: <LakeF1Open />,
+  南湖分馆一楼中庭开敞座位区: <LakeF1Atrium />,
+  南湖分馆二楼开敞座位区: <LakeF2Open />,
+  南湖分馆二楼卡座区: <LakeF2Seats />,
+};
 
-export default function RegionMap() {
-  const [selectedRegion, setSelectedRegion] = useState('');
+export interface RegionMapProps {
+  selectedRegion: string | null;
+}
+
+export default function RegionMap({ selectedRegion }: RegionMapProps) {
   const headerHeight = useRef(new Animated.Value(250)).current;
+  const [selectedSmallRegion, setSelectedSmallRegion] = useState<string | null>(
+    null
+  );
+  const bottomSheetRef = useRef<CustomBottomSheetRef>(null);
 
   useEffect(() => {
     Animated.timing(headerHeight, {
@@ -23,118 +66,95 @@ export default function RegionMap() {
       duration: 300,
       useNativeDriver: false,
     }).start();
-  }, [selectedRegion]);
+  }, [selectedSmallRegion]);
+
+  // 处理 BottomSheet 打开
+  const handleOpenBottomSheet = () => {
+    setSelectedSmallRegion('test');
+    bottomSheetRef.current?.open();
+  };
+
+  // 处理 BottomSheet 关闭
+  const handleCloseBottomSheet = () => {
+    setSelectedSmallRegion(null);
+  };
+
+  // BottomSheet 状态变化处理
+  const handleBottomSheetChange = (index: number) => {
+    // 可以根据需要添加其他逻辑
+    console.log('BottomSheet index changed to:', index);
+  };
 
   return (
-    <View style={{ height: '100%', width: '100%' }}>
-      <Animated.View
-        style={{
-          padding: 4,
-          height: headerHeight,
-          backgroundColor: '#F5F5F5',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Button onPress={() => setSelectedRegion('test')}>Test</Button>
-        <Button onPress={() => setSelectedRegion('')}>Reset</Button>
-      </Animated.View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          padding: 10,
-        }}
-      >
-        <View style={{ alignItems: 'center', gap: 10 }}>
-          <FreeIcon />
-          <Text>空闲</Text>
-        </View>
-        <View style={{ alignItems: 'center', gap: 10 }}>
-          <HalfFreeIcon />
-          <Text>半空闲</Text>
-        </View>
-        <View style={{ alignItems: 'center', gap: 10 }}>
-          <OccupiedIcon />
-          <Text>忙碌</Text>
-        </View>
-        <View style={{ alignItems: 'center', gap: 10 }}>
-          <AppointedIcon />
-          <Text>已预约</Text>
-        </View>
-        <View style={{ alignItems: 'center', gap: 10 }}>
-          <UnavailableIcon />
-          <Text>不开放</Text>
-        </View>
-        <ModalTrigger
-          style={{ alignItems: 'center', gap: 10 }}
-          mode="middle"
-          triggerComponent={<QuestionIcon />}
-        >
-          <QuestionContent />
-        </ModalTrigger>
-      </View>
-      {selectedRegion && (
-        <ScrollView
-          contentContainerStyle={{
-            flex: 1,
-            paddingHorizontal: 24,
-            paddingTop: 8,
-            justifyContent: 'space-evenly',
-            overflow: 'hidden',
-            backgroundColor: '#fff',
+    <GestureHandlerRootView style={{ height: '100%', width: '100%' }}>
+      <View style={{ height: '100%', width: '100%' }}>
+        <Animated.View
+          style={{
+            padding: 4,
+            height: headerHeight,
+            backgroundColor: '#F5F5F5',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          {/* two columns */}
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
-            {/* left column */}
-            <View
-              style={{
-                gap: 30,
-                paddingVertical: 18,
-                width: '50%',
-                alignItems: 'center',
-              }}
-            >
-              {Array.from({ length: 12 }).map((_, idx) => (
-                <View key={idx} style={{ flexDirection: 'row' }}>
-                  <Seat seatStatus={0b00000} />
-                  <Seat seatStatus={0b10000} />
-                  <Seat seatStatus={0b11111} />
-                  <Seat seatStatus={0b01111} />
-                  <Seat seatStatus={0b00011} />
-                  <Seat seatStatus={0b01100} />
-                </View>
-              ))}
-            </View>
-            {/* right column */}
-            <View
-              style={{
-                gap: 30,
-                paddingVertical: 18,
-                width: '50%',
-                alignItems: 'center',
-              }}
-            >
-              {Array.from({ length: 12 }).map((_, idx) => (
-                <View
-                  key={idx}
-                  style={{
-                    flexDirection: 'row',
-                    gap: 12,
-                    backgroundColor: '#aaaaaa',
-                    width: 56,
-                    height: 42,
-                  }}
-                ></View>
-              ))}
-            </View>
+          <Button onPress={handleOpenBottomSheet}>打开座位详情</Button>
+          {selectedRegion ? (
+            regionComponents['主馆一楼综合学习室']
+          ) : (
+            <Text>请先选择一个区域</Text>
+          )}
+        </Animated.View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            padding: 10,
+          }}
+        >
+          <View style={{ alignItems: 'center', gap: 10 }}>
+            <FreeIcon />
+            <Text>空闲</Text>
           </View>
-        </ScrollView>
-      )}
-    </View>
+          <View style={{ alignItems: 'center', gap: 10 }}>
+            <HalfFreeIcon />
+            <Text>半空闲</Text>
+          </View>
+          <View style={{ alignItems: 'center', gap: 10 }}>
+            <OccupiedIcon />
+            <Text>忙碌</Text>
+          </View>
+          <View style={{ alignItems: 'center', gap: 10 }}>
+            <AppointedIcon />
+            <Text>已预约</Text>
+          </View>
+          <View style={{ alignItems: 'center', gap: 10 }}>
+            <UnavailableIcon />
+            <Text>不开放</Text>
+          </View>
+          <ModalTrigger
+            style={{ alignItems: 'center', gap: 10 }}
+            mode="middle"
+            triggerComponent={<QuestionIcon />}
+          >
+            <QuestionContent />
+          </ModalTrigger>
+        </View>
+
+        {/* 使用新的 CustomBottomSheet 组件 */}
+        <CustomBottomSheet
+          ref={bottomSheetRef}
+          snapPoints={['50%', '90%']}
+          enablePanDownToClose={true}
+          showBackdrop={true}
+          enableScrollView={true}
+          onClose={handleCloseBottomSheet}
+          onChange={handleBottomSheetChange}
+        >
+          <SeatContent />
+        </CustomBottomSheet>
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -173,7 +193,6 @@ const QuestionContent = () => {
           marginBottom: 16,
         }}
       >
-        {/* 2 x 2 grid */}
         <View style={{ flexDirection: 'row' }}>
           <View
             style={{

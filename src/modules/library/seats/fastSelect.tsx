@@ -8,6 +8,7 @@ import RandomIcon from '@/assets/icons/library/random.svg';
 import SelectRegion from './components/selectRegion';
 import SelectTime from './components/selectTime';
 
+//大组件
 export default function FastSelect() {
   const favoriteSeats: string[] = [
     'A区 k1',
@@ -37,7 +38,12 @@ export default function FastSelect() {
 
   return (
     <View>
-      <SelectRegion />
+      <SelectRegion
+        setSelectedRegion={() => {
+          return null;
+        }}
+      />
+      {/* //这个组件被我改成要传props的了所以传了个空函数 */}
       <SelectTime />
       <TouchableOpacity style={{ padding: 12 }}>
         <LinearGradient
