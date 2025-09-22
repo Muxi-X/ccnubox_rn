@@ -33,11 +33,16 @@ const useVisualScheme = create<visualSchemeType>()(
             : state.themeName;
           if (currentTheme === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
-            NavigationBar.setBackgroundColorAsync('#242424');
-            NavigationBar.setButtonStyleAsync('light');
+            if (Platform.OS !== 'ios') {
+              NavigationBar.setBackgroundColorAsync('#242424');
+              NavigationBar.setButtonStyleAsync('light');
+            }
           } else {
             SystemUI.setBackgroundColorAsync('white');
-            NavigationBar.setBackgroundColorAsync('white');
+            if (Platform.OS !== 'ios') {
+              NavigationBar.setBackgroundColorAsync('white');
+              NavigationBar.setButtonStyleAsync('dark');
+            }
             NavigationBar.setButtonStyleAsync('dark');
           }
           globalEventBus.emit('layoutSet');
@@ -61,12 +66,16 @@ const useVisualScheme = create<visualSchemeType>()(
         set(state => {
           if (themeName === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
-            NavigationBar.setBackgroundColorAsync('#242424');
-            NavigationBar.setButtonStyleAsync('light');
+            if (Platform.OS !== 'ios') {
+              NavigationBar.setBackgroundColorAsync('#242424');
+              NavigationBar.setButtonStyleAsync('light');
+            }
           } else {
             SystemUI.setBackgroundColorAsync('white');
-            NavigationBar.setBackgroundColorAsync('white');
-            NavigationBar.setButtonStyleAsync('dark');
+            if (Platform.OS !== 'ios') {
+              NavigationBar.setBackgroundColorAsync('white');
+              NavigationBar.setButtonStyleAsync('dark');
+            }
           }
           const { layouts, layoutName } = state;
           const currentTheme = layouts.get(layoutName)![
@@ -104,12 +113,16 @@ const useVisualScheme = create<visualSchemeType>()(
             : state.themeName;
           if (currentTheme === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
-            NavigationBar.setBackgroundColorAsync('#242424');
-            NavigationBar.setButtonStyleAsync('light');
+            if (Platform.OS !== 'ios') {
+              NavigationBar.setBackgroundColorAsync('#242424');
+              NavigationBar.setButtonStyleAsync('light');
+            }
           } else {
             SystemUI.setBackgroundColorAsync('white');
-            NavigationBar.setBackgroundColorAsync('white');
-            NavigationBar.setButtonStyleAsync('dark');
+            if (Platform.OS !== 'ios') {
+              NavigationBar.setBackgroundColorAsync('white');
+              NavigationBar.setButtonStyleAsync('dark');
+            }
           }
           return {
             ...state,
