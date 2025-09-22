@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as NavigationBar from 'expo-navigation-bar';
 import * as SystemUI from 'expo-system-ui';
 import { Appearance, Platform } from 'react-native';
 import { create } from 'zustand';
@@ -32,8 +33,12 @@ const useVisualScheme = create<visualSchemeType>()(
             : state.themeName;
           if (currentTheme === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
+            NavigationBar.setBackgroundColorAsync('#242424');
+            NavigationBar.setButtonStyleAsync('light');
           } else {
             SystemUI.setBackgroundColorAsync('white');
+            NavigationBar.setBackgroundColorAsync('white');
+            NavigationBar.setButtonStyleAsync('dark');
           }
           globalEventBus.emit('layoutSet');
           globalEventBus.emit('layoutChange', state.layoutName);
@@ -56,8 +61,12 @@ const useVisualScheme = create<visualSchemeType>()(
         set(state => {
           if (themeName === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
+            NavigationBar.setBackgroundColorAsync('#242424');
+            NavigationBar.setButtonStyleAsync('light');
           } else {
             SystemUI.setBackgroundColorAsync('white');
+            NavigationBar.setBackgroundColorAsync('white');
+            NavigationBar.setButtonStyleAsync('dark');
           }
           const { layouts, layoutName } = state;
           const currentTheme = layouts.get(layoutName)![
@@ -95,8 +104,12 @@ const useVisualScheme = create<visualSchemeType>()(
             : state.themeName;
           if (currentTheme === 'dark') {
             SystemUI.setBackgroundColorAsync('#242424');
+            NavigationBar.setBackgroundColorAsync('#242424');
+            NavigationBar.setButtonStyleAsync('light');
           } else {
             SystemUI.setBackgroundColorAsync('white');
+            NavigationBar.setBackgroundColorAsync('white');
+            NavigationBar.setButtonStyleAsync('dark');
           }
           return {
             ...state,
