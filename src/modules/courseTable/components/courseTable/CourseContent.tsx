@@ -57,7 +57,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                 <View
                   style={{
                     minHeight: 220,
-                    height: slotCourses.length * 260,
+                    height: slotCourses.length * 260 + 30,
                     maxHeight: 600,
                   }}
                 >
