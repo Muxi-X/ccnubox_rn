@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import useCourse from '@/store/course';
 
-import { setupMockServer } from '@/mock/server';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 
 // 由于 expo 没有 initialRoutes
@@ -15,10 +14,10 @@ const Index = () => {
   const hydrated = useCourse(state => state.hydrated);
 
   React.useEffect(() => {
-    if (__DEV__) {
-      //console.log('mock server setup');
-      setupMockServer();
-    }
+    // if (__DEV__) {
+    //   //console.log('mock server setup');
+    //   setupMockServer();
+    // }
 
     const init = async () => {
       const firstLaunch = await getItem('firstLaunch');
