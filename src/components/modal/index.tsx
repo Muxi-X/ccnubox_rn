@@ -12,7 +12,11 @@ import {
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
-import { ModalProps, ModalTriggerProps } from '@/components/modal/types';
+import {
+  ModalBackgroundProps,
+  ModalProps,
+  ModalTriggerProps,
+} from '@/components/modal/types';
 
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
@@ -202,17 +206,7 @@ const Modal: React.FC<ModalProps> & {
           },
         ]}
       >
-        <TouchableOpacity
-          activeOpacity={1}
-          style={[
-            styles.modalBackground,
-            {
-              height: '100%',
-              zIndex: 0,
-            },
-          ]}
-          onPress={handleClose}
-        />
+        <ModalBackground onPress={handleClose} />
         {/* 底部 modal 与中部动画不一致 */}
         {isBottomMode ? (
           <AnimatedSlide
@@ -227,6 +221,7 @@ const Modal: React.FC<ModalProps> & {
               !isTransparent && currentStyle?.modal_background_style,
             ]}
           >
+            {isTransparent && <ModalBackground onPress={handleClose} />}
             {modalContent}
           </AnimatedSlide>
         ) : (
@@ -241,6 +236,7 @@ const Modal: React.FC<ModalProps> & {
               !isTransparent && currentStyle?.modal_background_style,
             ]}
           >
+            {isTransparent && <ModalBackground onPress={handleClose} />}
             {modalContent}
           </AnimatedScale>
         )}
@@ -301,6 +297,39 @@ Modal.clear = () => {
     });
   }, 300); // 比Modal的200ms延迟稍长一些
 };
+
+/**
+ * Modal透明背景
+ * 封装背景点击关闭逻辑
+ * @param props
+ * @constructor
+ * @example 示例
+ *  <ModalBackground
+ *    onPress={() => console.log('点击背景关闭')}
+ *    style={{ backgroundColor: 'transparent' }}
+ *  />
+ */
+
+const ModalBackground: React.FC<ModalBackgroundProps> = ({
+  onPress,
+  style,
+}) => {
+  return (
+    <TouchableOpacity
+      activeOpacity={1}
+      style={[
+        styles.modalBackground,
+        {
+          height: '100%',
+          zIndex: 0,
+        },
+        style,
+      ]}
+      onPress={onPress}
+    />
+  );
+};
+
 /**
  * 带有触发按钮的 trigger
  * @param props
