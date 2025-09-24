@@ -1,6 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as NavigationBar from 'expo-navigation-bar';
-import * as SystemUI from 'expo-system-ui';
 import { Appearance, Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -8,6 +6,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 import globalEventBus from '@/utils/eventBus';
+import { setSystemUITheme } from '@/utils/systemUI';
 
 import { visualSchemeType } from './types';
 
@@ -31,20 +30,7 @@ const useVisualScheme = create<visualSchemeType>()(
               ? 'dark'
               : 'light'
             : state.themeName;
-          if (currentTheme === 'dark') {
-            SystemUI.setBackgroundColorAsync('#242424');
-            if (Platform.OS !== 'ios') {
-              NavigationBar.setBackgroundColorAsync('#242424');
-              NavigationBar.setButtonStyleAsync('light');
-            }
-          } else {
-            SystemUI.setBackgroundColorAsync('white');
-            if (Platform.OS !== 'ios') {
-              NavigationBar.setBackgroundColorAsync('white');
-              NavigationBar.setButtonStyleAsync('dark');
-            }
-            NavigationBar.setButtonStyleAsync('dark');
-          }
+          setSystemUITheme(currentTheme);
           globalEventBus.emit('layoutSet');
           globalEventBus.emit('layoutChange', state.layoutName);
           return {
@@ -64,19 +50,7 @@ const useVisualScheme = create<visualSchemeType>()(
         }),
       changeTheme: themeName =>
         set(state => {
-          if (themeName === 'dark') {
-            SystemUI.setBackgroundColorAsync('#242424');
-            if (Platform.OS !== 'ios') {
-              NavigationBar.setBackgroundColorAsync('#242424');
-              NavigationBar.setButtonStyleAsync('light');
-            }
-          } else {
-            SystemUI.setBackgroundColorAsync('white');
-            if (Platform.OS !== 'ios') {
-              NavigationBar.setBackgroundColorAsync('white');
-              NavigationBar.setButtonStyleAsync('dark');
-            }
-          }
+          setSystemUITheme(themeName);
           const { layouts, layoutName } = state;
           const currentTheme = layouts.get(layoutName)![
             themeName
@@ -111,19 +85,7 @@ const useVisualScheme = create<visualSchemeType>()(
               ? 'dark'
               : 'light'
             : state.themeName;
-          if (currentTheme === 'dark') {
-            SystemUI.setBackgroundColorAsync('#242424');
-            if (Platform.OS !== 'ios') {
-              NavigationBar.setBackgroundColorAsync('#242424');
-              NavigationBar.setButtonStyleAsync('light');
-            }
-          } else {
-            SystemUI.setBackgroundColorAsync('white');
-            if (Platform.OS !== 'ios') {
-              NavigationBar.setBackgroundColorAsync('white');
-              NavigationBar.setButtonStyleAsync('dark');
-            }
-          }
+          setSystemUITheme(currentTheme);
           return {
             ...state,
             isAutoTheme: isAutoTheme,
