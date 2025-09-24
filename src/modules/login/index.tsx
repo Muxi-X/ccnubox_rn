@@ -1,5 +1,6 @@
 import { Icon, Input, Toast } from '@ant-design/react-native';
 import axios, { AxiosError } from 'axios';
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
@@ -36,7 +37,8 @@ const LoginPage: FC = () => {
   });
   // use custom axios instance to avoid global error handler
   const request = axios.create({
-    baseURL: process.env.EXPO_PUBLIC_API_URL,
+    // baseURL: process.env.EXPO_PUBLIC_API_URL,
+    baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
     adapter: axios.defaults.adapter,
   });
   const handleViewPassword = () => {

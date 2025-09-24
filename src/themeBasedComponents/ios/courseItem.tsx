@@ -48,8 +48,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             alignItems: 'center',
             paddingTop: 5,
             paddingBottom: 5,
-            paddingLeft: 10,
-            paddingRight: 10,
+            paddingLeft: 5,
+            paddingRight: 5,
             opacity: isThisWeek ? 1 : 0.4,
           },
         ]}
@@ -60,6 +60,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             { color: '#0D0D0D', fontSize: 11, fontWeight: 'bold' },
             currentStyle?.text_style,
           ]}
+          ellipsizeMode='tail'
+          numberOfLines={2}
         >
           {teacher || ''}
         </Text>
@@ -68,6 +70,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             styles.cellText,
             { color: '#75757B', fontSize: 11, fontWeight: 'bold' },
           ]}
+          ellipsizeMode='tail'
+          numberOfLines={2}
         >
           {classroom ? `@${classroom}` : ''}
         </Text>
