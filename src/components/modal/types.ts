@@ -34,3 +34,8 @@ export interface ModalTriggerProps
   onPress?: () => void;
   triggerComponent?: ReactElement;
 }
+
+export interface ModalBackgroundProps {
+  onPress: () => void;
+  style?: any;
+}
