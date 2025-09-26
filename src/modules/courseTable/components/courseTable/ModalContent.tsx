@@ -12,6 +12,8 @@ import useVisualScheme from '@/store/visualScheme';
 
 import DeleteIcon from '@/assets/icons/calendar/delete.svg';
 import EditIcon from '@/assets/icons/calendar/edit.svg';
+import SuccessIcon from '@/assets/icons/calendar/success.svg';
+import FailIcon from '@/assets/icons/calendar/fail.svg';
 import LocationIcon from '@/assets/icons/calendar/location.svg';
 import TeacherIcon from '@/assets/icons/calendar/teacher.svg';
 import TimeIcon from '@/assets/icons/calendar/time.svg';
@@ -28,6 +30,63 @@ interface ModalContentProps {
   credit: number;
   class_when: string;
   date: string;
+}
+
+function handleDeleteCourseConfirm(id: string) {
+  deleteCourse(
+    id,
+    useTimeStore.getState().semester,
+    useTimeStore.getState().year
+  )
+    .then(res => {
+      if (res.code === 0) {
+        useCourse.getState().deleteCourse(id);
+        Modal.show({
+          title: '删除成功',
+          children: (
+            <View
+              style={{
+                alignItems: 'center',
+                gap: 10,
+                paddingBottom: 20,
+                width: 180,
+              }}
+            >
+              <SuccessIcon height={150} width={150} />
+              <Text style={{ fontSize: 20, textAlign: 'center' }}>
+                课程已删除
+              </Text>
+            </View>
+          ),
+          mode: 'middle',
+          showCancel: false,
+        });
+      }
+    })
+    .catch(err => {
+      if (err.response.data.code === 50001) {
+        Modal.show({
+          title: '删除失败',
+          children: (
+            <View
+              style={{
+                alignItems: 'center',
+                gap: 10,
+                paddingBottom: 20,
+                width: 180,
+              }}
+            >
+              <FailIcon height={150} width={150} />
+              <Text style={{ fontSize: 20, textAlign: 'center' }}>
+                从教务系统导入的课程不支持删除
+              </Text>
+            </View>
+          ),
+          mode: 'middle',
+          showCancel: false,
+        });
+      }
+    });
 }
 
 const ModalContent: React.FC<ModalContentProps> = memo(
@@ -131,34 +190,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
                 showCancel: true,
                 confirmText: '删除',
                 cancelText: '取消',
-                onConfirm: () => {
-                  deleteCourse(
-                    id,
-                    useTimeStore.getState().semester,
-                    useTimeStore.getState().year
-                  )
-                    .then(res => {
-                      if (res.code === 0) {
-                        useCourse.getState().deleteCourse(id);
-                        Modal.show({
-                          title: '删除成功',
-                          children: '课程已删除',
-                          mode: 'middle',
-                          showCancel: false,
-                        });
-                      }
-                    })
-                    .catch(err => {
-                      if (err.response.data.code === 50001) {
-                        Modal.show({
-                          title: '删除失败',
-                          children: '从教务系统导入的课程不支持删除',
-                          mode: 'middle',
-                          showCancel: false,
-                        });
-                      }
-                    });
-                },
+                onConfirm: () => handleDeleteCourseConfirm(id),
               });
             }}
           >
