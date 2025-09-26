@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeModules, Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { courseType } from '@/modules/courseTable/components/courseTable/type';
+
+import { updateCourseData } from '@/utils/updateWidget';
 
 interface CourseState {
   hydrated: boolean;
@@ -18,7 +21,7 @@ interface CourseState {
   schoolTime: number;
   setSchoolTime: (_time: number) => void;
 }
-
+const { WidgetManager } = NativeModules;
 const useCourse = create<CourseState>()(
   persist(
     set => {
@@ -26,7 +29,14 @@ const useCourse = create<CourseState>()(
         hydrated: false,
         setHydrated: (hydrated: boolean) => set({ hydrated }),
         courses: [],
-        updateCourses: (courses: courseType[]) => set({ courses }),
+        updateCourses: (courses: courseType[]) => {
+          // 推送到小组件
+          if (Platform.OS === 'android') {
+            updateCourseData();
+          }
+
+          set({ courses });
+        },
         addCourse: (course: courseType) => {
           set(state => ({ courses: [...state.courses, course] }));
         },
