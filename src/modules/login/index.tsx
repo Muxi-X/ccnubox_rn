@@ -19,10 +19,12 @@ import { useKeyboardShow } from '@/hooks';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
+import Modal from '@/components/modal';
 
+import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 
-import { commonStyles } from '@/styles/common';
+import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
 const LoginPage: FC = () => {
@@ -32,7 +34,10 @@ const LoginPage: FC = () => {
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);
-  const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
+  // const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
+  const { agreement: privacyChecked, setAgreement: setPrivacyChecked } =
+    usePrivacy();
+
   const [userInfo, setUserInfo] = useState({
     password: '',
     student_id: '',
@@ -137,9 +142,32 @@ const LoginPage: FC = () => {
           placeholder="请输入教务系统密码"
         ></Input>
         <View style={styles.rules}>
-          <Checkbox onChange={onCheckPrivacy}>
+          <Checkbox checked={privacyChecked} onChange={onCheckPrivacy}>
             <Text style={styles.rules_radio}>
-              已阅读并同意 <Text style={styles.link}>服务协议</Text>
+              已阅读并同意{' '}
+              <Text
+                style={{
+                  color: commonColors.purple,
+                }}
+                onPress={() => {
+                  router.push('/(setting)/agreement');
+                  Modal.clear();
+                }}
+              >
+                《用户协议》
+              </Text>
+              和
+              <Text
+                style={{
+                  color: commonColors.purple,
+                }}
+                onPress={() => {
+                  router.push('/(setting)/privacy');
+                  Modal.clear();
+                }}
+              >
+                《隐私政策》
+              </Text>
             </Text>
           </Checkbox>
         </View>

@@ -8,11 +8,11 @@ import { SettingItem } from '@/types/settingItem';
 
 export const SettingItems: SettingItem[] = [
   {
-    title: '个性化',
+    title: '界面样式设置',
     name: 'theme',
     id: 1,
     icon: require('@/assets/images/person.png'),
-    text: '个性化',
+    text: '界面样式设置',
     to: '/(setting)/theme',
   },
   // {
