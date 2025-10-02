@@ -144,7 +144,7 @@ const LoginPage: FC = () => {
         <View style={styles.rules}>
           <Checkbox checked={privacyChecked} onChange={onCheckPrivacy}>
             <Text style={styles.rules_radio}>
-              已阅读并同意{' '}
+              已阅读并同意
               <Text
                 style={{
                   color: commonColors.purple,
