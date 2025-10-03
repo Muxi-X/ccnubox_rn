@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 
@@ -9,7 +10,8 @@ import requestBus from '@/store/currentRequests';
 import { paths } from './schema';
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  // baseURL: process.env.EXPO_PUBLIC_API_URL,
+  baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
   adapter: axios.defaults.adapter,
 });
 
@@ -32,7 +34,8 @@ async function refreshToken(): Promise<string> {
 
   // 刷新短 token
   const response = await axios.get(
-    `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
+    // `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
+    `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
     {
       headers: { Authorization: `Bearer ${longToken}` },
     }

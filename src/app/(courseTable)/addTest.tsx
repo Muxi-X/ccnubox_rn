@@ -3,9 +3,10 @@ import React from 'react';
 
 import TabBar from '@/components/tabs';
 
+import { CourseForm } from '@/modules/courseTable/components/CourseForm';
 import ItemList from '@/modules/courseTable/components/ItemList';
-import { ManualAdd } from '@/modules/courseTable/components/ManualAdd';
 
+// TODO)) 这整个功能还没对接
 export default function AddTest() {
   const list = [
     {
@@ -37,7 +38,7 @@ export default function AddTest() {
         }}
       >
         <ItemList list={list} buttonText="设置" />
-        <ManualAdd buttonText="添加" pageText="test" />
+        <CourseForm submitText="添加" pageText="test" mode="create" />
       </View>
     </>
   );

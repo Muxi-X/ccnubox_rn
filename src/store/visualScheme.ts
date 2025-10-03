@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SystemUI from 'expo-system-ui';
 import { Appearance, Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -7,6 +6,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 import globalEventBus from '@/utils/eventBus';
+import { setSystemUITheme } from '@/utils/systemUI';
 
 import { visualSchemeType } from './types';
 
@@ -14,6 +14,7 @@ import { visualSchemeType } from './types';
 const useVisualScheme = create<visualSchemeType>()(
   persist(
     set => ({
+      isAutoTheme: true,
       themeName: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
       layoutName: Platform.OS === 'ios' ? 'ios' : 'android',
       currentStyle: null,
@@ -24,20 +25,19 @@ const useVisualScheme = create<visualSchemeType>()(
             LayoutName,
             LayoutType
           >;
-          const currentTheme =
-            Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
-          if (currentTheme === 'dark') {
-            SystemUI.setBackgroundColorAsync('#242424');
-          } else {
-            SystemUI.setBackgroundColorAsync('white');
-          }
+          const currentTheme = state.isAutoTheme
+            ? Appearance.getColorScheme() === 'dark'
+              ? 'dark'
+              : 'light'
+            : state.themeName;
+          setSystemUITheme(currentTheme);
           globalEventBus.emit('layoutSet');
           globalEventBus.emit('layoutChange', state.layoutName);
           return {
             ...state,
             themeName: currentTheme,
             currentStyle: layoutMap[state.layoutName][
-              state.themeName
+              currentTheme
             ] as SingleThemeType,
             layouts: newLayouts,
           };
@@ -50,11 +50,7 @@ const useVisualScheme = create<visualSchemeType>()(
         }),
       changeTheme: themeName =>
         set(state => {
-          if (themeName === 'dark') {
-            SystemUI.setBackgroundColorAsync('#242424');
-          } else {
-            SystemUI.setBackgroundColorAsync('white');
-          }
+          setSystemUITheme(themeName);
           const { layouts, layoutName } = state;
           const currentTheme = layouts.get(layoutName)![
             themeName
@@ -79,6 +75,24 @@ const useVisualScheme = create<visualSchemeType>()(
             ...state,
             currentStyle: newStyle ?? currentStyle,
             layoutName,
+          };
+        }),
+      setAutoTheme: value =>
+        set(state => {
+          const isAutoTheme = !!value;
+          const currentTheme = isAutoTheme
+            ? Appearance.getColorScheme() === 'dark'
+              ? 'dark'
+              : 'light'
+            : state.themeName;
+          setSystemUITheme(currentTheme);
+          return {
+            ...state,
+            isAutoTheme: isAutoTheme,
+            currentStyle: layoutMap[state.layoutName][
+              currentTheme
+            ] as SingleThemeType,
+            themeName: currentTheme,
           };
         }),
     }),

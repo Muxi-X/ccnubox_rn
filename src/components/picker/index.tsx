@@ -3,13 +3,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
-import PickerView from '@/components/picker/pickerView';
+import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
-import { percent2px } from '@/utils';
+import { keyGenerator, percent2px } from '@/utils';
 
 // picker 左侧紫色条宽度
 const BORDER_LEFT_WIDTH = 8;
@@ -47,6 +47,7 @@ export const basicColumns = [
  * @param itemHeight 每一行高度
  * @param children 触发 picker 的元素
  * @param titleDisplayLogic 选择值改变时，如何动态修改title
+ * @param connectors 连接词配置，用于在选择器列之间显示连接词
  * @constructor
  * @example 使用方法
  * // 中框弹窗
@@ -59,6 +60,14 @@ export const basicColumns = [
  * </Picker>
  * // 自定义数据
  * <Picker data={basicColumns}></Picker>
+ * // 自定义连接词
+ * <Picker
+ *   connectors={[
+ *     { content: '连接', columnIndex: 0 },
+ *     { content: '到', columnIndex: 1 }
+ *   ]}
+ * >
+ * </Picker>
  */
 const Picker: React.FC<DatePickerProps> = ({
   onCancel,
@@ -71,6 +80,7 @@ const Picker: React.FC<DatePickerProps> = ({
   itemHeight = PICKER_ITEM_HEIGHT,
   data = basicColumns,
   children,
+  connectors,
   titleDisplayLogic = (pickerValue, data) => {
     const pickedLabels = pickerValue.map((value, index) => {
       const curArr = data[index];
@@ -117,14 +127,40 @@ const Picker: React.FC<DatePickerProps> = ({
       triggerComponent={children}
       style={style}
     >
-      {prefixes && (
-        <View style={styles.prefixContainer}>
-          {prefixes.map((prefix, index) => (
-            <Text style={styles.prefix} key={`prefix-${index}`}>
+      <View
+        style={[
+          styles.content,
+          { top: (3 * itemHeight - commonStyles.fontMedium.fontSize) / 2 },
+        ]}
+      >
+        {/* FIX_ME：前缀，目前采用手动计算 */}
+        {prefixes &&
+          prefixes.map(prefix => (
+            <Text
+              style={[
+                styles.prefix,
+                {
+                  // 手动计算距离左侧距离
+                  left:
+                    (contentWidth / prefixes.length +
+                      commonStyles.fontMedium.fontSize) /
+                    2,
+                },
+              ]}
+              key={keyGenerator.next() as unknown as number}
+            >
               {prefix ?? '1'}
             </Text>
           ))}
-        </View>
+      </View>
+
+      {connectors && connectors.length > 0 && (
+        <PickerConnector
+          connectors={connectors}
+          totalWidth={contentWidth}
+          itemHeight={itemHeight}
+          data={data}
+        />
       )}
 
       <PickerView
@@ -181,12 +217,6 @@ const Picker: React.FC<DatePickerProps> = ({
 export default Picker;
 
 const styles = StyleSheet.create({
-  prefixContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    backgroundColor: 'transparent',
-  },
   content: {
     position: 'absolute',
     alignItems: 'center',
@@ -194,9 +224,7 @@ const styles = StyleSheet.create({
     right: 30,
     width: percent2px(94) - 60,
     display: 'flex',
-    flexDirection: 'row',
-    // justifyContent: 'space-around',
-    height: 30,
+    justifyContent: 'center',
   },
   maskTop: {
     flex: 1,

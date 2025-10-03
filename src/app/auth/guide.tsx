@@ -28,6 +28,7 @@ import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
 
+import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 
 import { preloginGuide } from '@/constants/prelogin';
@@ -44,6 +45,7 @@ const GuidePage: FC = () => {
   const [toVisible, setToVisible] = useState<boolean>(true);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
+  const { agreement, setAgreement } = usePrivacy();
   const gradientValue = useSharedValue(0);
   const timeoutFn = (activeIndex: number, timeout: number) => {
     setTimeout(() => {
@@ -55,34 +57,32 @@ const GuidePage: FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      AsyncStorage.getItem('agreement').then(agreement => {
-        if (agreement !== 'accepted') {
-          Modal.show({
-            children: <AgreementModal />,
-            mode: 'middle',
-            cancelText: '不同意',
-            confirmText: '同意并接受',
-            onConfirm: () => {
-              AsyncStorage.setItem('agreement', 'accepted');
-            },
-            onCancel() {
-              if (Platform.OS === 'android') {
-                router.replace('/auth/guide');
-                BackHandler.exitApp();
-              } else if (Platform.OS === 'ios') {
-                router.replace('/auth/guide');
-              }
-            },
-            onClose() {
-              if (Platform.OS === 'android') {
-                router.replace('/auth/guide');
-              } else if (Platform.OS === 'ios') {
-                router.replace('/auth/guide');
-              }
-            },
-          });
-        }
-      });
+      if (!agreement) {
+        Modal.show({
+          children: <AgreementModal />,
+          mode: 'middle',
+          cancelText: '不同意',
+          confirmText: '同意并接受',
+          onConfirm: () => {
+            setAgreement(true);
+          },
+          onCancel() {
+            if (Platform.OS === 'android') {
+              router.replace('/auth/guide');
+              BackHandler.exitApp();
+            } else if (Platform.OS === 'ios') {
+              router.replace('/auth/guide');
+            }
+          },
+          onClose() {
+            if (Platform.OS === 'android') {
+              router.replace('/auth/guide');
+            } else if (Platform.OS === 'ios') {
+              router.replace('/auth/guide');
+            }
+          },
+        });
+      }
       return () => {};
     }, [])
   );

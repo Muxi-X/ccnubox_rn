@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import useVisualScheme from '@/store/visualScheme';
+
 import {
   colorOptions,
-  COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
 } from '@/constants/courseTable';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
@@ -35,8 +33,10 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             backgroundColor: isThisWeek
               ? colorOptions.find(item => item.label === date)?.color
               : colorOptions.find(item => item.label === '无')?.color,
+            opacity: isThisWeek ? 1 : 0.4,
             borderRadius: 5,
-            minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,
+            // minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,
+            minHeight: 40,
           },
         ]}
       >
@@ -48,8 +48,9 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             alignItems: 'center',
             paddingTop: 5,
             paddingBottom: 5,
-            paddingLeft: 10,
-            paddingRight: 10,
+            paddingLeft: 5,
+            paddingRight: 5,
+            opacity: isThisWeek ? 1 : 0.4,
           },
         ]}
       >
@@ -59,6 +60,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             { color: '#0D0D0D', fontSize: 11, fontWeight: 'bold' },
             currentStyle?.text_style,
           ]}
+          ellipsizeMode='tail'
+          numberOfLines={2}
         >
           {teacher || ''}
         </Text>
@@ -67,6 +70,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             styles.cellText,
             { color: '#75757B', fontSize: 11, fontWeight: 'bold' },
           ]}
+          ellipsizeMode='tail'
+          numberOfLines={2}
         >
           {classroom ? `@${classroom}` : ''}
         </Text>

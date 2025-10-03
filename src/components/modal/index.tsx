@@ -12,7 +12,11 @@ import {
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
-import { ModalProps, ModalTriggerProps } from '@/components/modal/types';
+import {
+  ModalBackgroundProps,
+  ModalProps,
+  ModalTriggerProps,
+} from '@/components/modal/types';
 
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
@@ -183,7 +187,10 @@ const Modal: React.FC<ModalProps> & {
   useEffect(() => {
     if (!visible) {
       const timer = setTimeout(() => {
-        if (currentKey !== undefined) deleteChildren(currentKey);
+        // 检查是否正在被clear()函数清除，如果是则不自动删除
+        if (currentKey !== undefined && !clearingModalKeys.has(currentKey)) {
+          deleteChildren(currentKey);
+        }
         clearTimeout(timer);
       }, 200);
     }
@@ -199,17 +206,7 @@ const Modal: React.FC<ModalProps> & {
           },
         ]}
       >
-        <TouchableOpacity
-          activeOpacity={1}
-          style={[
-            styles.modalBackground,
-            {
-              height: '100%',
-              zIndex: 0,
-            },
-          ]}
-          onPress={handleClose}
-        />
+        <ModalBackground onPress={handleClose} />
         {/* 底部 modal 与中部动画不一致 */}
         {isBottomMode ? (
           <AnimatedSlide
@@ -224,6 +221,7 @@ const Modal: React.FC<ModalProps> & {
               !isTransparent && currentStyle?.modal_background_style,
             ]}
           >
+            {isTransparent && <ModalBackground onPress={handleClose} />}
             {modalContent}
           </AnimatedSlide>
         ) : (
@@ -238,6 +236,7 @@ const Modal: React.FC<ModalProps> & {
               !isTransparent && currentStyle?.modal_background_style,
             ]}
           >
+            {isTransparent && <ModalBackground onPress={handleClose} />}
             {modalContent}
           </AnimatedScale>
         )}
@@ -256,31 +255,81 @@ Modal.show = props => {
   return appendChildren(<Modal {...props}></Modal>, 'modal');
 };
 
+// 用于跟踪正在清除的modal keys，避免竞态条件
+const clearingModalKeys: Set<number> = new Set();
+
 /**
  * 清除所有Modal
  * @example 示例
  * Modal.clear()
  */
 Modal.clear = () => {
-  const { elements, clearAll } = usePortalStore.getState();
+  const { elements, deleteChildren } = usePortalStore.getState();
+
+  // 记录当前要清除的modal keys
+  const modalKeysToClear = Object.entries(elements)
+    .filter(
+      ([_key, element]) =>
+        element &&
+        element.props &&
+        (element.props as any).portalType === 'modal'
+    )
+    .map(([key]) => Number(key));
+
+  // 将正在清除的keys加入集合
+  modalKeysToClear.forEach(key => {
+    clearingModalKeys.add(key);
+  });
 
   // 先设置所有Modal为不可见，触发关闭动画
-  Object.entries(elements).forEach(([key, element]) => {
-    if (
-      element &&
-      element.props &&
-      (element.props as any).portalType === 'modal'
-    ) {
-      // 通过updateChildren立即设置visible为false
-      usePortalStore.getState().updateChildren(Number(key), { visible: false });
-    }
+  modalKeysToClear.forEach(key => {
+    usePortalStore.getState().updateChildren(key, { visible: false });
   });
 
   // 延迟清空，等待动画完成
   setTimeout(() => {
-    clearAll();
+    // 只清除之前记录的modal keys，避免清除新创建的modal
+    modalKeysToClear.forEach(key => {
+      if (clearingModalKeys.has(key)) {
+        deleteChildren(key);
+        clearingModalKeys.delete(key);
+      }
+    });
   }, 300); // 比Modal的200ms延迟稍长一些
 };
+
+/**
+ * Modal透明背景
+ * 封装背景点击关闭逻辑
+ * @param props
+ * @constructor
+ * @example 示例
+ *  <ModalBackground
+ *    onPress={() => console.log('点击背景关闭')}
+ *    style={{ backgroundColor: 'transparent' }}
+ *  />
+ */
+
+const ModalBackground: React.FC<ModalBackgroundProps> = ({
+  onPress,
+  style,
+}) => {
+  return (
+    <TouchableOpacity
+      activeOpacity={1}
+      style={[
+        styles.modalBackground,
+        {
+          height: '100%',
+          zIndex: 0,
+        },
+        style,
+      ]}
+      onPress={onPress}
+    />
+  );
+};
+
 /**
  * 带有触发按钮的 trigger
  * @param props

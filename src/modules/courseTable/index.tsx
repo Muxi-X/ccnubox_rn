@@ -16,12 +16,12 @@ import WeekSelector from './components/weekSelector';
 // 根据开学时间计算学期和年份
 const computeSemesterAndYear = (startTimestamp: number) => {
   const startDate = new Date(startTimestamp * 1000);
-  const month = startDate.getMonth(); // 获取开学时间的月份
+  const month = startDate.getMonth() + 1; // 获取开学时间的月份
   let semester = '1'; // 默认学期为 '1'
-  let year = new Date().getFullYear().toString(); // 默认年份为当前年
+  let year = startDate.getFullYear().toString(); // 默认年份为当前年
 
   // 根据开学时间计算学期和年份
-  if (month >= 0 && month <= 5) {
+  if (month >= 1 && month <= 5) {
     // 1月到5月 => 第二学期
     semester = '2';
     year = (new Date().getFullYear() - 1).toString(); // 前一年
@@ -29,7 +29,7 @@ const computeSemesterAndYear = (startTimestamp: number) => {
     // 6月到7月 => 第三学期
     semester = '3';
     year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 8 && month <= 11) {
+  } else if (month >= 8 && month <= 12) {
     // 8月到12月 => 第一学期
     semester = '1';
     year = new Date().getFullYear().toString(); // 当前年
@@ -49,18 +49,40 @@ const CourseTablePage: FC = () => {
     setSchoolTime,
   } = useCourse();
   const {
-    selectedWeek: currentWeek,
-    setSelectedWeek: setCurrentWeek,
+    semester,
+    setSemester,
+    year,
+    setYear,
+    selectedWeek,
+    setSelectedWeek,
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
 
+  const fetchCurrentWeek = async () => {
+    try {
+      const res = await queryCurrentWeek();
+      if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
+        setSchoolTime(res.data.school_time);
+        setHolidayTime(res.data.holiday_time);
+        const { semester, year } = computeSemesterAndYear(res.data.school_time);
+        setSemester(semester);
+        setYear(year);
+        setTimeout(
+          () => setSelectedWeek(useTimeStore.getState().getCurrentWeek()),
+          0
+        );
+      }
+    } catch (err) {
+      log.error('Failed to fetch current week:', err);
+    }
+  };
+
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
+      fetchCurrentWeek();
       try {
-        const { semester, year } = computeSemesterAndYear(schoolTime);
-
         // 使用计算得到的学期和年份
         const res = await queryCourseTable({
           semester,
@@ -87,24 +109,8 @@ const CourseTablePage: FC = () => {
 
   // 获取当前周数
   useEffect(() => {
-    const fetchCurrentWeek = async () => {
-      try {
-        const res = await queryCurrentWeek();
-        if (
-          res?.code === 0 &&
-          res.data?.school_time &&
-          res.data?.holiday_time
-        ) {
-          setSchoolTime(res.data.school_time);
-          setHolidayTime(res.data.holiday_time);
-          setCurrentWeek(useTimeStore.getState().getCurrentWeek());
-        }
-      } catch (err) {
-        log.error('Failed to fetch current week:', err);
-      }
-    };
     fetchCurrentWeek();
-  }, [setSchoolTime, setHolidayTime, setCurrentWeek]);
+  }, [setSchoolTime, setHolidayTime, setSelectedWeek]);
 
   // 刷新课表数据
   useEffect(() => {
@@ -120,14 +126,14 @@ const CourseTablePage: FC = () => {
       <CourseTable
         data={courses}
         onTimetableRefresh={onTimetableRefresh}
-        currentWeek={currentWeek}
+        currentWeek={selectedWeek}
       />
       {showWeekPicker && (
         <WeekSelector
-          currentWeek={currentWeek}
+          currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
           onWeekSelect={week => {
-            setCurrentWeek(week);
+            setSelectedWeek(week);
             setShowWeekPicker(false);
           }}
         />
