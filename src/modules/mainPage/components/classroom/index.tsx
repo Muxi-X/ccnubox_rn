@@ -11,33 +11,10 @@ import useVisualScheme from '@/store/visualScheme';
 import ChooseIcon from '@/assets/icons/choose.svg';
 import StarGrayIcon from '@/assets/icons/star-gray.svg';
 import StarIcon from '@/assets/icons/star.svg';
+import { ClassroomColumns, ClassroomPrefix } from '@/constants/Classroom';
 import { queryFreeClassroom } from '@/request/api/queryClassroom';
 
 // 共享常量
-export const prefix = ['自习地点', '楼层', '时间'];
-
-export const ClassroomColumns = [
-  [
-    { label: '南湖综合楼', value: 'n' },
-    { label: '7号楼', value: '7' },
-    { label: '8号楼', value: '8' },
-    { label: '9号楼', value: '9' },
-    { label: '10号楼', value: '10' },
-  ],
-  [
-    { label: '1层', value: '1' },
-    { label: '2层', value: '2' },
-    { label: '3层', value: '3' },
-    { label: '4层', value: '4' },
-    { label: '5层', value: '5' },
-    { label: '6层', value: '6' },
-  ],
-  [
-    { label: '上午', value: '上午' },
-    { label: '下午', value: '下午' },
-    { label: '晚上', value: '晚上' },
-  ],
-];
 
 // TOFIX: 手动硬编码判断当前学年和学期，需添加自动获取逻辑
 export const currentYear = '2024-2025';
@@ -346,7 +323,7 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
         onConfirm={handlePickerConfirm}
         onCancel={handlePickerCancel}
         mode="middle"
-        prefixes={prefix}
+        prefixes={ClassroomPrefix}
         titleDisplayLogic={() => '请选择'}
         data={ClassroomColumns}
         defaultValue={selectedValues}
@@ -428,7 +405,10 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
             classroomData.map((classroom, index) => {
               const selectedPeriods = getSelectedPeriods(selectedLabels[2]);
               return (
-                <View key={index} style={styles.classroomItem}>
+                <View
+                  key={index}
+                  style={(currentStyle?.background_style, styles.classroomItem)}
+                >
                   {/* 教室号码和收藏按钮 */}
                   <View style={styles.roomNumberContainer}>
                     <Text style={styles.roomNumber}>
@@ -554,7 +534,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderRadius: 8,
-    backgroundColor: '#F7F7F7',
     marginBottom: 15,
   },
   roomNumberContainer: {
