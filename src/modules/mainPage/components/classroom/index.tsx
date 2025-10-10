@@ -150,8 +150,7 @@ export const isCurrentOrUpcomingPeriod = (period: number): boolean => {
 export const useClassroomData = (filterStarred: boolean = false) => {
   const { starredClassrooms, isClassroomStarred, toggleStarredClassroom } =
     useClassroomStarStore();
-  const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
-  const currentWeek = getCurrentWeek();
+  const currentWeek = useTimeStore(state => state.getCurrentWeek());
   const currentDayOfWeek = getCurrentDayOfWeek();
   const currentTimeSlot = getCurrentTimeSlot();
 
