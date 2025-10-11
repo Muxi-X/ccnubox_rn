@@ -46,3 +46,5 @@ secret/google-services.json
 # output
 *.apk
 *.ipa
+
+.env.local

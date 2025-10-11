@@ -91,6 +91,14 @@
           "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
           "schemes": ["weixin", "alipays", "tel", "sms"]
         }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "muxi-studio-hg"
+        }
       ]
     ],
     "experiments": {
