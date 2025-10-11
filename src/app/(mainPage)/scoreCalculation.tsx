@@ -1,6 +1,5 @@
 import { ActivityIndicator, Icon, WingBlank } from '@ant-design/react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-// import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
   Image,
@@ -213,9 +212,6 @@ const ScoreCalculation: React.FC = () => {
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      {/* <StatusBar
-        backgroundColor={currentStyle?.navbar_background_style as any}
-      /> */}
       <View style={[styles.header, currentStyle?.navbar_background_style]}>
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => router.back()}>
