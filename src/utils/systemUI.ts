@@ -1,6 +1,4 @@
-import * as NavigationBar from 'expo-navigation-bar';
-import * as SystemUI from 'expo-system-ui';
-import { Platform } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 
 /**
  * 设置系统UI主题
@@ -8,11 +6,7 @@ import { Platform } from 'react-native';
  */
 export const setSystemUITheme = (themeName: 'dark' | 'light') => {
   const isDark = themeName === 'dark';
-  SystemUI.setBackgroundColorAsync(isDark ? '#242424' : 'white');
 
-  // NavigationBar only on Android
-  if (Platform.OS === 'android') {
-    NavigationBar.setBackgroundColorAsync(isDark ? '#242424' : 'white');
-    NavigationBar.setButtonStyleAsync(isDark ? 'light' : 'dark');
-  }
+  // 使用 SystemBars 设置状态栏和导航栏样式
+  SystemBars.setStyle(isDark ? 'light' : 'dark');
 };
