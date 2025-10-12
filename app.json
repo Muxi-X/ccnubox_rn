@@ -28,6 +28,7 @@
       }
     },
     "ios": {
+      "productName": "ccnubox",
       "icon": {
         "light": "./src/assets/images/icon-ios-light.png",
         "dark": "./src/assets/images/icon-ios-dark.png",

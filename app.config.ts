@@ -5,7 +5,7 @@ import updateInfo from './src/assets/data/updateInfo.json';
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   slug: 'ccnubox',
-  name: '华师匣子',
+  name: 'ccnubox',
   extra: {
     ...config.extra,
     updateInfo: updateInfo,
