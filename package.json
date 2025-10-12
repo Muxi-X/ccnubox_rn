@@ -10,7 +10,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "prettier": "prettier --write .",
+    "format": "prettier --write .",
     "prepare": "husky"
   },
   "dependencies": {
@@ -50,7 +50,7 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
     "react-native-draggable-grid": "^2.2.1",
-    "react-native-edge-to-edge": "^1.7.0",
+    "react-native-edge-to-edge": "^1.6.0",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-pdf-renderer": "^1.6.0",
     "react-native-reanimated": "~3.17.5",

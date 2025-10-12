@@ -7,29 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0E4746BEE45F9E5C8461228B /* libPods-ccnubox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D6E000CCC95BEE315506187 /* libPods-ccnubox.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1CB50C7B8A0C0DC86AA8902F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3E3517D4D7ECC843CEAB99 /* ExpoModulesProvider.swift */; };
+		14BED0A23ACD850413C6C277 /* libPods-ccnubox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F30DEAE3CC3B48726C42AD1 /* libPods-ccnubox.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		449A84633912AAA832EC5659 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EAB2DF31716E6F4B847F11 /* ExpoModulesProvider.swift */; };
+		597FAD67EA1BD813314E451C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EC8FFF68ABE811A1975AE94C /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FF5342BE26540324C26BE671 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 14C84E318E9D2DEC17F65181 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0E86E3FFC56B659C3D39CDF2 /* Pods-ccnubox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.debug.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.debug.xcconfig"; sourceTree = "<group>"; };
+		03EAB2DF31716E6F4B847F11 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ccnubox/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		0A3CE8FED7A174F7355FCE4B /* Pods-ccnubox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.debug.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ccnubox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ccnubox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ccnubox/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ccnubox/Info.plist; sourceTree = "<group>"; };
-		14C84E318E9D2DEC17F65181 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ccnubox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		6D6E000CCC95BEE315506187 /* libPods-ccnubox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ccnubox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36AAEFE25D64666F1E0578FD /* Pods-ccnubox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.release.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.release.xcconfig"; sourceTree = "<group>"; };
+		6F30DEAE3CC3B48726C42AD1 /* libPods-ccnubox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ccnubox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ccnubox/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		EC8FFF68ABE811A1975AE94C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ccnubox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EEA8CE1480F21AADCF2F9AE2 /* Pods-ccnubox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.release.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.release.xcconfig"; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ccnubox/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* ccnubox-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ccnubox-Bridging-Header.h"; path = "ccnubox/ccnubox-Bridging-Header.h"; sourceTree = "<group>"; };
-		FA3E3517D4D7ECC843CEAB99 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ccnubox/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E4746BEE45F9E5C8461228B /* libPods-ccnubox.a in Frameworks */,
+				14BED0A23ACD850413C6C277 /* libPods-ccnubox.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				14C84E318E9D2DEC17F65181 /* PrivacyInfo.xcprivacy */,
+				EC8FFF68ABE811A1975AE94C /* PrivacyInfo.xcprivacy */,
 			);
 			name = ccnubox;
 			sourceTree = "<group>";
@@ -62,25 +62,15 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				6D6E000CCC95BEE315506187 /* libPods-ccnubox.a */,
+				6F30DEAE3CC3B48726C42AD1 /* libPods-ccnubox.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		553DD96831F49BF56D36D8C9 /* Pods */ = {
+		2FA2B271501A6690A73B74DB /* ccnubox */ = {
 			isa = PBXGroup;
 			children = (
-				0E86E3FFC56B659C3D39CDF2 /* Pods-ccnubox.debug.xcconfig */,
-				EEA8CE1480F21AADCF2F9AE2 /* Pods-ccnubox.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		6FB66090427E8F2623C972E5 /* ccnubox */ = {
-			isa = PBXGroup;
-			children = (
-				FA3E3517D4D7ECC843CEAB99 /* ExpoModulesProvider.swift */,
+				03EAB2DF31716E6F4B847F11 /* ExpoModulesProvider.swift */,
 			);
 			name = ccnubox;
 			sourceTree = "<group>";
@@ -99,8 +89,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				553DD96831F49BF56D36D8C9 /* Pods */,
-				B8D1B57CF19E0A54A82DBD86 /* ExpoModulesProviders */,
+				D3D6040E6D554ACC404DB238 /* Pods */,
+				A00846B0FFD8A617E4A957A1 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -115,10 +105,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B8D1B57CF19E0A54A82DBD86 /* ExpoModulesProviders */ = {
+		A00846B0FFD8A617E4A957A1 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				6FB66090427E8F2623C972E5 /* ccnubox */,
+				2FA2B271501A6690A73B74DB /* ccnubox */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -132,6 +122,16 @@
 			path = ccnubox/Supporting;
 			sourceTree = "<group>";
 		};
+		D3D6040E6D554ACC404DB238 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0A3CE8FED7A174F7355FCE4B /* Pods-ccnubox.debug.xcconfig */,
+				36AAEFE25D64666F1E0578FD /* Pods-ccnubox.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ccnubox" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				6CD0761A7266DC8EEDFAA9D1 /* [Expo] Configure project */,
+				8E10F5D6EEE129F7FAA9B658 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				4212CEFB092DDD5AE6294B95 /* [CP] Embed Pods Frameworks */,
+				A5EF66FEC93E12864A9E0783 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				FF5342BE26540324C26BE671 /* PrivacyInfo.xcprivacy in Resources */,
+				597FAD67EA1BD813314E451C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,43 +239,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		4212CEFB092DDD5AE6294B95 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6CD0761A7266DC8EEDFAA9D1 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ccnubox/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -333,6 +296,43 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8E10F5D6EEE129F7FAA9B658 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ccnubox/expo-configure-project.sh\"\n";
+		};
+		A5EF66FEC93E12864A9E0783 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -341,7 +341,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				1CB50C7B8A0C0DC86AA8902F /* ExpoModulesProvider.swift in Sources */,
+				449A84633912AAA832EC5659 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,7 +350,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0E86E3FFC56B659C3D39CDF2 /* Pods-ccnubox.debug.xcconfig */;
+			baseConfigurationReference = 0A3CE8FED7A174F7355FCE4B /* Pods-ccnubox.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -375,7 +375,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
-				PRODUCT_NAME = ccnubox;
+				PRODUCT_NAME = "app";
 				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -386,7 +386,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EEA8CE1480F21AADCF2F9AE2 /* Pods-ccnubox.release.xcconfig */;
+			baseConfigurationReference = 36AAEFE25D64666F1E0578FD /* Pods-ccnubox.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -406,7 +406,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
-				PRODUCT_NAME = ccnubox;
+				PRODUCT_NAME = "app";
 				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
