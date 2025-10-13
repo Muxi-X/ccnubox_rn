@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { Stack } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
@@ -83,6 +84,8 @@ export default function RootLayout() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
     >
+      {/* 系统状态栏和导航栏管理 */}
+      <SystemBars style="auto" />
       {/* Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删  */}
       {/* FIX_ME 自建 portal 组件，支持自定义 Toast Modal */}
       {/* 手势检测 */}
