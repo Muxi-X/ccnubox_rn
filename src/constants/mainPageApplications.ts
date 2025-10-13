@@ -36,9 +36,9 @@ export const mainPageApplications: MainPageGridDataType[] = [
     href: '/scoreInquiry',
   },
   {
-    title: '电费',
-    name: 'electricity',
-    href: '/electricity',
+    title: '电费查询',
+    name: 'electricityBillinQuiry',
+    href: '/electricityBillinQuiry',
     imageUrl:
       Platform.select({
         ios: IosEnergySvg,
