@@ -33,6 +33,10 @@
       <action android:name="android.intent.action.VIEW"/>
       <data android:scheme="sms"/>
     </intent>
+    <package android:name="weixin"/>
+    <package android:name="alipays"/>
+    <package android:name="tel"/>
+    <package android:name="sms"/>
     <package android:name="com.tencent.mm"/>
     <package android:name="com.eg.android.AlipayGphone"/>
   </queries>
