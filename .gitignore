@@ -48,3 +48,8 @@ secret/google-services.json
 *.ipa
 
 .env.local
+
+# Sentry
+ios/sentry.properties
+android/sentry.properties
+sentry.properties

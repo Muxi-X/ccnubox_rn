@@ -1,4 +1,5 @@
 import { Provider, Toast } from '@ant-design/react-native';
+import * as Sentry from '@sentry/react-native';
 import { loadAsync } from 'expo-font';
 import * as Haptics from 'expo-haptics';
 import { Stack } from 'expo-router';
@@ -18,8 +19,33 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors } from '@/styles/common';
 import { fetchUpdate } from '@/utils';
-
-export default function RootLayout() {
+Sentry.init({
+  dsn: 'https://8e79e2808f488df259cd149b97152eb6@o4510171645149185.ingest.us.sentry.io/4510171652423680',
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+  // Performance monitoring
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: __DEV__ ? 1.0 : 0.1,
+  // Logs
+  // Enable logs to be sent to Sentry
+  enableLogs: true,
+  // Profiling
+  // profilesSampleRate is relative to tracesSampleRate.
+  // Here, we'll capture profiles for 100% of transactions.
+  profilesSampleRate: __DEV__ ? 1.0 : 0.1,
+  // Session Replay
+  // Record session replays for 100% of errors and 10% of sessions
+  replaysOnErrorSampleRate: 1.0,
+  replaysSessionSampleRate: __DEV__ ? 0.5 : 0.1,
+  integrations: [Sentry.mobileReplayIntegration()],
+  // Environment configuration
+  environment: __DEV__ ? 'development' : 'production',
+  // Debug mode
+  debug: __DEV__,
+});
+function RootLayout() {
   const initVisualScheme = useVisualScheme(state => state.init);
   const changeTheme = useVisualScheme(state => state.changeTheme);
   const isAutoTheme = useVisualScheme(state => state.isAutoTheme);
@@ -116,3 +142,4 @@ export default function RootLayout() {
     </Provider>
   );
 }
+export default Sentry.wrap(RootLayout);
