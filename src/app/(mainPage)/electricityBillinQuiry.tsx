@@ -1,6 +1,6 @@
 import { PickerView } from '@ant-design/react-native';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -467,7 +467,7 @@ const ElectricityBillinQuiry = () => {
           //   'press'
           // );
           router.push({
-            pathname: '/electricityBillBalance',
+            pathname: '/electricityBillinBalance',
             params: {
               building: buildingName,
               room: roomNumber,
