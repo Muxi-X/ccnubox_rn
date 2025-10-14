@@ -25,7 +25,11 @@ export type ConfigurableThemeNames =
   | 'navbar_icon_active_text_style'
   | 'information_background_style'
   | 'information_title_text_style'
-  | 'information_text_style';
+  | 'information_text_style'
+  | 'elecprice_change_button_text_style'
+  | 'elecprice_lighting_card_style'
+  | 'elecprice_air_conditioner_card_style'
+  | 'elecprice_standard_card_style';
 /** 按命名约定分类配置名 */
 type TextStyleNames = Extract<
   ConfigurableThemeNames,

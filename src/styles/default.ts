@@ -32,6 +32,18 @@ export const defaultStyles = generateStyleSheet({
     information_text_style: {
       color: '#ABAAAA',
     },
+    elecprice_change_button_text_style: {
+      color: '#444444',
+    },
+    elecprice_lighting_card_style: {
+      backgroundColor: '#444444',
+    },
+    elecprice_air_conditioner_card_style: {
+      backgroundColor: '#444444',
+    },
+    elecprice_standard_card_style: {
+      backgroundColor: '#444444',
+    },
   },
   light: {
     schedule_background_style: {
@@ -63,6 +75,18 @@ export const defaultStyles = generateStyleSheet({
     },
     information_text_style: {
       color: '#3D3D3D',
+    },
+    elecprice_change_button_text_style: {
+      color: '#FFFFFF',
+    },
+    elecprice_lighting_card_style: {
+      backgroundColor: '#FFE39A',
+    },
+    elecprice_air_conditioner_card_style: {
+      backgroundColor: '#BAB9FC',
+    },
+    elecprice_standard_card_style: {
+      backgroundColor: '#CFEEFF',
     },
   },
 });
