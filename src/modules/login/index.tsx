@@ -21,7 +21,7 @@ import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 
-import usePrivacy from '@/store/privacy';
+// import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
@@ -34,9 +34,9 @@ const LoginPage: FC = () => {
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);
-  // const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
-  const { agreement: privacyChecked, setAgreement: setPrivacyChecked } =
-    usePrivacy();
+  const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
+  // const { agreement: privacyChecked, setAgreement: setPrivacyChecked } =
+  //   usePrivacy();
 
   const [userInfo, setUserInfo] = useState({
     password: '',
