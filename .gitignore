@@ -46,3 +46,10 @@ secret/google-services.json
 # output
 *.apk
 *.ipa
+
+.env.local
+
+# Sentry
+ios/sentry.properties
+android/sentry.properties
+sentry.properties

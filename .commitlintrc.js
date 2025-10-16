@@ -43,7 +43,7 @@ module.exports = {
 
     // Subject 相关规则
     'subject-case': [2, 'never', ['start-case', 'pascal-case']], // 提交信息的 subject 必须符合指定的大小写规范
-    'header-max-length': [2, 'always', 72], // 提交信息的 header 最大长度为 72 个字符
+    'header-max-length': [2, 'always', 100], // 提交信息的 header 最大长度为 72 个字符
 
     // Body 和 Footer 相关规则
     'body-leading-blank': [1, 'always'], // 提交信息的 body 必须以空行开头
