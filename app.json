@@ -19,6 +19,7 @@
       "src/assets/fonts"
     ],
     "extra": {
+      "EXPO_PUBLIC_API_URL": "https://v3.ccnubox.muxixyz.com/api/v1",
       "router": {
         "origin": false
       },
@@ -63,6 +64,15 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Default",
+            "enforceNavigationBarContrast": false
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {

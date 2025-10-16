@@ -27,7 +27,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
         style={[
           styles.cellView,
           {
-            marginTop: timeSpan === 1 ? 0 : 20,
+            // marginTop: timeSpan === 1 ? 0 : 20,
+            marginTop: 15,
             height:
               timeSpan === 1
                 ? COURSE_HEADER_HEIGHT - 10
@@ -40,8 +41,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
         </Text>
       </View>
       <View style={styles.cellView}>
-        <Text style={styles.cellText}>{teacher || ''}</Text>
-        <Text style={styles.cellText}>{classroom ? `@${classroom}` : ''}</Text>
+        <Text style={styles.cellText} ellipsizeMode='tail' numberOfLines={2}>{teacher || ''}</Text>
+        <Text style={styles.cellText} ellipsizeMode='tail' numberOfLines={2}>{classroom ? `@${classroom}` : ''}</Text>
       </View>
     </View>
   );

@@ -1,5 +1,7 @@
-import { Icon, Input, Toast } from '@ant-design/react-native';
+import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
+import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import axios, { AxiosError } from 'axios';
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
@@ -17,10 +19,12 @@ import { useKeyboardShow } from '@/hooks';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
+import Modal from '@/components/modal';
 
+// import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 
-import { commonStyles } from '@/styles/common';
+import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
 const LoginPage: FC = () => {
@@ -30,13 +34,18 @@ const LoginPage: FC = () => {
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);
+  const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
+  // const { agreement: privacyChecked, setAgreement: setPrivacyChecked } =
+  //   usePrivacy();
+
   const [userInfo, setUserInfo] = useState({
     password: '',
     student_id: '',
   });
   // use custom axios instance to avoid global error handler
   const request = axios.create({
-    baseURL: process.env.EXPO_PUBLIC_API_URL,
+    // baseURL: process.env.EXPO_PUBLIC_API_URL,
+    baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
     adapter: axios.defaults.adapter,
   });
   const handleViewPassword = () => {
@@ -47,6 +56,9 @@ const LoginPage: FC = () => {
 
     if (!userInfo.student_id || !userInfo.password) {
       Toast.fail('请输入账号密码', 2);
+    }
+    if (!privacyChecked) {
+      Toast.fail('请先阅读隐私条例', 2);
     }
     //console.log(userInfo);
     try {
@@ -67,6 +79,9 @@ const LoginPage: FC = () => {
       log.error('注册请求失败:', error);
     }
     setLoginTriggered(false);
+  };
+  const onCheckPrivacy = (e: OnChangeParams) => {
+    setPrivacyChecked(e.target.checked);
   };
   return (
     <KeyboardAvoidingView
@@ -126,6 +141,36 @@ const LoginPage: FC = () => {
           }
           placeholder="请输入教务系统密码"
         ></Input>
+        <View style={styles.rules}>
+          <Checkbox checked={privacyChecked} onChange={onCheckPrivacy}>
+            <Text style={styles.rules_radio}>
+              已阅读并同意
+              <Text
+                style={{
+                  color: commonColors.purple,
+                }}
+                onPress={() => {
+                  router.push('/(setting)/agreement');
+                  Modal.clear();
+                }}
+              >
+                《用户协议》
+              </Text>
+              和
+              <Text
+                style={{
+                  color: commonColors.purple,
+                }}
+                onPress={() => {
+                  router.push('/(setting)/privacy');
+                  Modal.clear();
+                }}
+              >
+                《隐私政策》
+              </Text>
+            </Text>
+          </Checkbox>
+        </View>
         <Button
           onPress={handleLogin}
           isLoading={loginTriggered}
