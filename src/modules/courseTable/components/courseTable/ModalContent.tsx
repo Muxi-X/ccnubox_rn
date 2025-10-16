@@ -12,9 +12,9 @@ import useVisualScheme from '@/store/visualScheme';
 
 import DeleteIcon from '@/assets/icons/calendar/delete.svg';
 import EditIcon from '@/assets/icons/calendar/edit.svg';
-import SuccessIcon from '@/assets/icons/calendar/success.svg';
 import FailIcon from '@/assets/icons/calendar/fail.svg';
 import LocationIcon from '@/assets/icons/calendar/location.svg';
+import SuccessIcon from '@/assets/icons/calendar/success.svg';
 import TeacherIcon from '@/assets/icons/calendar/teacher.svg';
 import TimeIcon from '@/assets/icons/calendar/time.svg';
 import WeekIcon from '@/assets/icons/calendar/week.svg';

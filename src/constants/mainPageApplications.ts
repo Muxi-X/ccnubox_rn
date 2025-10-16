@@ -2,6 +2,7 @@ import { Href } from 'expo-router';
 import { Platform } from 'react-native';
 
 import AndroidCardSvg from '@/assets/images/icons/android/card.svg';
+import AndroidClassroomSvg from '@/assets/images/icons/android/classroom.svg';
 import AndroidDateSvg from '@/assets/images/icons/android/date.svg';
 import AndroidEnergySvg from '@/assets/images/icons/android/energy.svg';
 import AndroidGradesSvg from '@/assets/images/icons/android/grades.svg';
@@ -11,6 +12,7 @@ import AndroidMoreSvg from '@/assets/images/icons/android/more.svg';
 import AndroidSiteSvg from '@/assets/images/icons/android/site.svg';
 import AndroidWebSvg from '@/assets/images/icons/android/web.svg';
 import IosCardSvg from '@/assets/images/icons/ios/card.svg';
+import IosClassroomSvg from '@/assets/images/icons/ios/classroom.svg';
 import IosDateSvg from '@/assets/images/icons/ios/date.svg';
 import IosEnergySvg from '@/assets/images/icons/ios/energy.svg';
 import IosGradesSvg from '@/assets/images/icons/ios/grades.svg';
@@ -65,23 +67,24 @@ export const mainPageApplications: MainPageGridDataType[] = [
         ios: IosCardSvg,
         android: AndroidCardSvg,
       }) || AndroidCardSvg,
-    key: 'grid-4',
+    key: 'grid-5',
     action: () =>
       handleOpenURL(
         'alipays://platformapi/startapp?appId=2021004168660064',
         '支付宝'
       ),
   },
-  // {
-  //   title: '空闲教室',
-  //   name: 'classroom',
-  //   imageUrl: Platform.select({
-  //     ios: require('../assets/images/icons/ios/classroom.png'),
-  //     android: require('../assets/images/icons/android/classroom.png'),
-  //   }),
-  //   key: 'grid-5',
-  //   href: '/classroom' as Href,
-  // },
+  {
+    title: '空闲教室',
+    name: 'classroom',
+    imageUrl:
+      Platform.select({
+        ios: IosClassroomSvg,
+        android: AndroidClassroomSvg,
+      }) || AndroidCardSvg,
+    key: 'grid-4',
+    href: '/classroom' as Href,
+  },
   // {
   //   title: '蹭课',
   //   name: 'spaceLesson',
