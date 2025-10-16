@@ -46,6 +46,7 @@
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://u.expo.dev/65d670f0-9625-4631-9603-f4b11f44e621"/>
+    <service android:name=".widgets.services.RecentClassesService" android:permission="android.permission.BIND_REMOTEVIEWS" android:exported="false"/>
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -59,5 +60,19 @@
         <data android:scheme="exp+ccnubox"/>
       </intent-filter>
     </activity>
+    <receiver android:name=".widgets.providers.RecentClassesProvider2x2" android:exported="true">
+      <intent-filter>
+        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider" android:resource="@xml/recent_classes_widget_info_2x2"/>
+    </receiver>
+    <receiver android:name=".widgets.providers.RecentClassesProvider4x2" android:exported="true">
+      <intent-filter>
+        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider" android:resource="@xml/recent_classes_widget_info_4x2"/>
+    </receiver>
   </application>
 </manifest>

@@ -1,10 +1,12 @@
 import { Href, Redirect, SplashScreen } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
+import { Platform } from 'react-native';
 
 import useCourse from '@/store/course';
 
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
+import { updateCourseData } from '@/utils/updateWidget';
 
 // 由于 expo 没有 initialRoutes
 // 重定向到 tabs
@@ -28,13 +30,22 @@ const Index = () => {
       setupGlobalErrorHandler();
       // 等待 AsyncStorage 加载
       if (hydrated) await SplashScreen.hideAsync();
-
       if (!token) {
         if (firstLaunch === null) {
           // 是首次启动，设置标记并跳转到guide
           setItem('firstLaunch', 'false');
           setInitialRoute('/auth/guide');
         } else {
+          if (Platform.OS === 'android') {
+            updateCourseData()
+              .then(() => {
+                console.log('updateWidget');
+              })
+              .catch(error => {
+                console.error('更新小组件失败:', error);
+              });
+          }
+
           // 不是首次启动但没有token，去登录
           setInitialRoute('/auth/guide');
         }
