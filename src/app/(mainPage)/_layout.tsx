@@ -19,7 +19,10 @@ export default function Layout() {
     state => state.CurrentComponents
   );
   return (
-    <SafeAreaView edges={['bottom']} style={[styles.container]}>
+    <SafeAreaView
+      edges={['bottom']}
+      style={[styles.container, currentStyle?.background_style]}
+    >
       <Stack
         screenOptions={{
           contentStyle:

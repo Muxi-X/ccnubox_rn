@@ -35,7 +35,7 @@ jobs:
         run: pnpm install
 
       - name: Run Prettier
-        run: pnpm prettier --check .
+        run: pnpm format --check .
         continue-on-error: false
 
       - name: Run ESLint
