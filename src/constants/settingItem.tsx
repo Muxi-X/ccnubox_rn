@@ -4,6 +4,11 @@ import { deleteItemAsync } from 'expo-secure-store';
 
 import Modal from '@/components/modal';
 
+import about from '@/assets/images/about.png';
+import checkUpdate from '@/assets/images/check-update.png';
+import exit from '@/assets/images/exit.png';
+import person from '@/assets/images/person.png';
+
 import { SettingItem } from '@/types/settingItem';
 
 export const SettingItems: SettingItem[] = [
@@ -11,7 +16,7 @@ export const SettingItems: SettingItem[] = [
     title: '界面样式设置',
     name: 'theme',
     id: 1,
-    icon: require('@/assets/images/person.png'),
+    icon: { uri: person },
     text: '界面样式设置',
     to: '/(setting)/theme',
   },
@@ -27,7 +32,7 @@ export const SettingItems: SettingItem[] = [
     title: '检查更新',
     name: 'checkUpdate',
     id: 4,
-    icon: require('@/assets/images/check-update.png'),
+    icon: { uri: checkUpdate },
     text: '检查更新',
     to: '/(setting)/checkUpdate',
   },
@@ -35,7 +40,7 @@ export const SettingItems: SettingItem[] = [
     title: '关于',
     name: 'about',
     id: 5,
-    icon: require('@/assets/images/about.png'),
+    icon: { uri: about },
     text: '关于',
     to: '/(setting)/about',
   },
@@ -43,7 +48,7 @@ export const SettingItems: SettingItem[] = [
     title: '退出',
     name: 'exit',
     id: 6,
-    icon: require('@/assets/images/exit.png'),
+    icon: { uri: exit },
     text: '退出',
     to: () => {
       const navigation = useRouter();
@@ -51,6 +56,29 @@ export const SettingItems: SettingItem[] = [
         mode: 'middle',
         title: '退出登录',
         children: '确定要退出登录吗？',
+        confirmText: '确定',
+        cancelText: '取消',
+        onConfirm: () => {
+          AsyncStorage.multiRemove(['courses']);
+          deleteItemAsync('longToken').then(() => {
+            navigation.replace('/auth/login');
+          });
+        },
+      });
+    },
+  },
+  {
+    title: '注销',
+    name: 'delete',
+    id: 6,
+    icon: { uri: exit },
+    text: '注销账户',
+    to: () => {
+      const navigation = useRouter();
+      Modal.show({
+        mode: 'middle',
+        title: '注销账户',
+        children: '确定要注销账户吗？',
         confirmText: '确定',
         cancelText: '取消',
         onConfirm: () => {
