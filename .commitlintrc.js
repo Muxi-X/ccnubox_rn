@@ -39,7 +39,7 @@ module.exports = {
       ], // 提交信息的 scope 必须在指定的范围内
     ],
     'scope-case': [2, 'always', 'lower-case'], // 提交信息的 scope 必须小写
-    'scope-empty': [2, 'never'], // 提交信息的 scope 不能为空
+    'scope-empty': [0], // 提交信息的 scope 可以为空
 
     // Subject 相关规则
     'subject-case': [2, 'never', ['start-case', 'pascal-case']], // 提交信息的 subject 必须符合指定的大小写规范
