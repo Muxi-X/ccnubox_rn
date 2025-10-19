@@ -10,6 +10,8 @@ export type courseType = {
   weeks: number[];
   where: string;
   year: string;
+  note?: string; // 添加 note 字段
+  is_official: boolean; // 是否为教务系统课程
 };
 
 export interface CourseTableProps {
@@ -33,6 +35,8 @@ export interface CourseTransferType {
   credit: number;
   class_when: string;
   weeks: number[]; // 添加 weeks 字段
+  note?: string; // 添加 note 字段
+  is_official: boolean; // 是否为教务系统课程
 }
 
 export interface WeekSelectorProps {
