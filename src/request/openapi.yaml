@@ -2141,14 +2141,14 @@ components:
           description: 学年
     class.DeleteCourseNoteRequest:
       required:
-      - id
+      - classId
       - semester
       - year
       type: object
       properties:
-        id:
+        classId:
           type: string
-          description: 备注ID
+          description: 课程ID
         semester:
           type: string
           description: 学期

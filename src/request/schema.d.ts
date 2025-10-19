@@ -3202,7 +3202,7 @@ export interface components {
       year: string;
     };
     'class.DeleteCourseNoteRequest': {
-      /** @description 备注ID */
+      /** @description 课程ID */
       classId: string;
       /** @description 学期 */
       semester: string;
