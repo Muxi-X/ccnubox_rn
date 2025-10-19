@@ -937,6 +937,100 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/class/note/insert': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 添加课程备注
+     * @description 为指定课程添加备注
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 添加课程备注请求 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['class.AddCourseNoteRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功添加课程备注 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/class/note/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 删除课程备注
+     * @description 删除指定课程的备注
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 删除课程备注请求 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['class.DeleteCourseNoteRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功删除课程备注 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/classroom/getFreeClassRoom': {
     parameters: {
       query?: never;
@@ -3029,6 +3123,8 @@ export interface components {
       day: number;
       /** @description 集合了课程信息的字符串，便于标识（课程ID） */
       id: string;
+      /** @description 课程备注 */
+      note?: string;
       /** @description 学期 */
       semester: string;
       /** @description 任课教师 */
@@ -3092,6 +3188,24 @@ export interface components {
       weeks?: number[];
       /** @description 地点 */
       where?: string;
+      /** @description 学年 */
+      year: string;
+    };
+    'class.AddCourseNoteRequest': {
+      /** @description 课程ID */
+      classId: string;
+      /** @description 备注内容 */
+      note: string;
+      /** @description 学期 */
+      semester: string;
+      /** @description 学年 */
+      year: string;
+    };
+    'class.DeleteCourseNoteRequest': {
+      /** @description 备注ID */
+      classId: string;
+      /** @description 学期 */
+      semester: string;
       /** @description 学年 */
       year: string;
     };

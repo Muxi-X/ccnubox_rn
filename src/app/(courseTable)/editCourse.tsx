@@ -60,6 +60,7 @@ export default function EditCourse() {
                               ? `第${data.weeks[0]}周`
                               : `第${Math.min(...data.weeks)}-${Math.max(...data.weeks)}周`,
                           credit: data.credit || 0,
+                          is_official: c.is_official,
                         }
                       : c
                   )
