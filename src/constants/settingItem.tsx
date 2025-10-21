@@ -67,7 +67,7 @@ export const SettingItems: SettingItem[] = [
     name: 'exit',
     id: 7,
     icon: require('@/assets/images/exit.png'),
-    text: '退出',
+    text: '注销',
     to: () => {
       const navigation = useRouter();
       Modal.show({

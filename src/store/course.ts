@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NativeModules, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { courseType } from '@/modules/courseTable/components/courseTable/type';
-
 import { updateCourseData } from '@/utils/updateWidget';
 
 interface CourseState {
@@ -21,7 +20,7 @@ interface CourseState {
   schoolTime: number;
   setSchoolTime: (_time: number) => void;
 }
-const { WidgetManager } = NativeModules;
+
 const useCourse = create<CourseState>()(
   persist(
     set => {
