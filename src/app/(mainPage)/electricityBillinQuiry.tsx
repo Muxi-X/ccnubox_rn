@@ -1,4 +1,5 @@
-import { PickerView } from '@ant-design/react-native';
+// import { PickerView } from '@ant-design/react-native';
+import PickerView from '@/components/pickerView/index';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -95,8 +96,11 @@ const ElectricityBillinQuiry = () => {
     try {
       const response: any = await getRoomInfo(architectureId, floor);
 
-      // API 实际返回的是 data，而不是 schema 中定义的 msg
+      // API 实际返回的是 data
       const roomList = response?.data?.room_list;
+
+      console.log('房间数据响应:', response);
+      console.log('房间列表:', roomList);
 
       if (roomList && roomList.length > 0) {
         setRooms(roomList);
@@ -202,14 +206,15 @@ const ElectricityBillinQuiry = () => {
         key={item.value}
         style={[
           styles.addressItem,
-          selectedArea === item.value ? styles.addressItemActive : {},
+          currentStyle?.secondary_background_style,
+          selectedArea === item.value ? currentStyle?.button_style : {},
         ]}
         onPress={() => handleAreaClick(item.value)}
       >
         <Text
           style={[
             styles.addressText,
-            selectedArea === item.value ? styles.addressTextActive : {},
+            selectedArea === item.value ? currentStyle?.text_style : {},
           ]}
         >
           {item.label}
@@ -229,7 +234,9 @@ const ElectricityBillinQuiry = () => {
           />
         </View>
         <ScrollView horizontal style={{ marginBottom: 39 }}>
-          <View style={styles.addressContainer}>
+          <View
+            style={[styles.addressContainer, currentStyle?.background_style]}
+          >
             {areaData.map(item => renderAddressItem(item))}
           </View>
         </ScrollView>
@@ -256,7 +263,6 @@ const ElectricityBillinQuiry = () => {
               itemHeight={37}
               itemStyle={{
                 paddingVertical: 9,
-                backgroundColor: '#F5F5F5',
                 borderRadius: 4,
               }}
             />
@@ -293,7 +299,6 @@ const ElectricityBillinQuiry = () => {
               itemHeight={37}
               itemStyle={{
                 paddingVertical: 9,
-                backgroundColor: '#F5F5F5',
                 borderRadius: 4,
               }}
             />
@@ -366,12 +371,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 16,
     color: '#ABAAAA',
-  },
-  addressItemActive: {
-    backgroundColor: '#BAB9FC',
-  },
-  addressTextActive: {
-    color: '#FFFFFF',
   },
   loadingText: {
     textAlign: 'center',
