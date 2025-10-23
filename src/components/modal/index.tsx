@@ -135,7 +135,7 @@ const Modal: React.FC<ModalProps> & {
                   <Text
                     style={[
                       styles.bottomChoiceText,
-                      !isBottomMode && currentStyle?.text_style,
+                      !isBottomMode && styles.cancelMiddleText,
                       isBottomMode
                         ? commonStyles.fontLarge
                         : commonStyles.fontMedium,
@@ -159,7 +159,7 @@ const Modal: React.FC<ModalProps> & {
                   <Text
                     style={[
                       styles.bottomChoiceText,
-                      !isBottomMode && currentStyle?.text_style,
+                      !isBottomMode && styles.confirmMiddleText,
                       isBottomMode
                         ? commonStyles.fontLarge
                         : commonStyles.fontMedium,
@@ -424,6 +424,12 @@ const styles = StyleSheet.create({
   },
   bottomChoiceText: {
     color: commonColors.purple,
+  },
+  cancelMiddleText: {
+    color: 'black',
+  },
+  confirmMiddleText: {
+    color: 'white',
   },
   modalContent: {
     width: '80%',

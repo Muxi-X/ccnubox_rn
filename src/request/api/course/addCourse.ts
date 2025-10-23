@@ -10,7 +10,6 @@ interface AddCourseRequest {
   weeks: number[];
   where: string;
   year: string;
-  is_official: boolean;
 }
 
 // 添加课程
