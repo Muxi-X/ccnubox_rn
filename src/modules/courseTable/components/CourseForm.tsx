@@ -153,6 +153,7 @@ export const CourseForm = (props: CourseFormProps) => {
       credit: data.credit || 0,
       semester: curSemester,
       year: curYear,
+      is_official: false, // 自主添加而非教务系统的课
     };
 
     addCourseToStore(courseData);
@@ -194,6 +195,7 @@ export const CourseForm = (props: CourseFormProps) => {
         ...formData,
         semester: semester || '1',
         year: year || new Date().getFullYear().toString(),
+        is_official: false, // 自主添加而非教务系统的课
       } as any;
 
       await addCourse(data);
