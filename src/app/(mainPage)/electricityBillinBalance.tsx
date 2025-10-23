@@ -1,8 +1,21 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { getPrice } from '@/request/api/electricity';
+import Modal from '@/components/modal';
+import {
+  cancelStandard,
+  getPrice,
+  getStandardList,
+  setStandard,
+} from '@/request/api/electricity';
 import useVisualScheme from '@/store/visualScheme';
 
 interface PriceData {
@@ -22,11 +35,13 @@ const ElectricityBillinBalance = () => {
 
   const [priceData, setPriceData] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [standardLimit, setStandardLimit] = useState<number | null>(null);
 
   // 加载电费数据
   useEffect(() => {
     if (room_id) {
       loadPriceData(room_id);
+      loadStandardData();
     }
   }, [room_id]);
 
@@ -50,6 +65,110 @@ const ElectricityBillinBalance = () => {
       console.error('加载电费数据失败:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 加载电费标准数据
+  const loadStandardData = async () => {
+    try {
+      console.log('开始加载电费标准数据');
+      const response: any = await getStandardList();
+      console.log('电费标准响应:', response);
+
+      const standardList =
+        response?.data?.standard_list || response?.msg?.standard_list;
+
+      if (standardList && standardList.length > 0) {
+        // 查找当前房间的电费标准
+        const currentRoomStandard = standardList.find(
+          (item: any) => item.room_name === `${building}    ${room}`
+        );
+        if (currentRoomStandard) {
+          setStandardLimit(currentRoomStandard.limit);
+          console.log('当前房间电费标准:', currentRoomStandard.limit);
+        }
+      }
+    } catch (error) {
+      console.error('加载电费标准失败:', error);
+    }
+  };
+
+  // 打开设置电费标准弹窗
+  const handleSetStandard = () => {
+    // 使用 ref 来存储临时输入值，避免闭包问题
+    let tempInputValue = standardLimit ? String(standardLimit) : '';
+
+    Modal.show({
+      title: '设置电费标准',
+      mode: 'middle',
+      children: (
+        <View style={styles.inputContainer}>
+          <Text style={[styles.inputLabel, currentStyle?.text_style]}>
+            请输入电费提醒标准（元）
+          </Text>
+          <TextInput
+            style={[
+              styles.input,
+              currentStyle?.text_style,
+              {
+                backgroundColor:
+                  currentStyle?.secondary_background_style?.backgroundColor,
+              },
+            ]}
+            defaultValue={tempInputValue}
+            onChangeText={text => {
+              tempInputValue = text;
+            }}
+            keyboardType="numeric"
+            placeholder="请输入金额"
+            placeholderTextColor={currentStyle?.text_style?.color}
+            autoFocus
+          />
+          <Text style={[styles.inputHint, currentStyle?.text_style]}>
+            清空输入框后点击确定将取消电费提醒
+          </Text>
+        </View>
+      ),
+      onConfirm: () => handleConfirmStandard(tempInputValue),
+      confirmText: '确定',
+      showCancel: true,
+      cancelText: '取消',
+    });
+  };
+
+  // 确认设置电费标准
+  const handleConfirmStandard = async (value: string) => {
+    if (!room_id || !building || !room) {
+      console.error('缺少必要参数');
+      return;
+    }
+
+    try {
+      if (value === '' || value === null) {
+        // 清空输入框，取消电费标准
+        console.log('取消电费标准');
+        await cancelStandard({ room_id });
+        setStandardLimit(null);
+        console.log('取消电费标准成功');
+      } else {
+        // 设置电费标准
+        const limitValue = parseInt(value, 10);
+        if (isNaN(limitValue) || limitValue <= 0) {
+          console.error('请输入有效的金额');
+          return;
+        }
+
+        console.log('设置电费标准:', limitValue);
+        await setStandard({
+          room_id,
+          room_name: `${building}    ${room}`,
+          limit: limitValue,
+        });
+        setStandardLimit(limitValue);
+        console.log('设置电费标准成功');
+      }
+    } catch (error) {
+      console.error('设置电费标准失败:', error);
     }
   };
 
@@ -96,7 +215,10 @@ const ElectricityBillinBalance = () => {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconContainer}>
-                  <Text style={styles.iconText}>💡</Text>
+                  <Image
+                    source={require('@/assets/images/zhaoming.png')}
+                    style={styles.iconImage}
+                  />
                 </View>
                 <Text style={[styles.cardTitle, currentStyle?.text_style]}>
                   照明
@@ -124,7 +246,10 @@ const ElectricityBillinBalance = () => {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconContainer}>
-                  <Text style={styles.iconText}>❄️</Text>
+                  <Image
+                    source={require('@/assets/images/kongtiao.png')}
+                    style={styles.iconImage}
+                  />
                 </View>
                 <Text style={[styles.cardTitle, currentStyle?.text_style]}>
                   空调
@@ -144,29 +269,41 @@ const ElectricityBillinBalance = () => {
             </View>
 
             {/* 电费标准设置卡片 */}
-            <View
-              style={[styles.card, currentStyle?.elecprice_standard_card_style]}
-            >
-              <View style={styles.alertCardContent}>
-                <View style={styles.alertIconContainer}>
-                  <Text style={styles.alertIconText}>🔔</Text>
-                </View>
-                <View style={styles.alertTextContainer}>
-                  <Text style={[styles.alertTitle, currentStyle?.text_style]}>
-                    电费标准设置:{' '}
-                    <Text style={[styles.alertValue, currentStyle?.text_style]}>
-                      _____
+            <TouchableOpacity onPress={handleSetStandard}>
+              <View
+                style={[
+                  styles.card,
+                  currentStyle?.elecprice_standard_card_style,
+                ]}
+              >
+                <View style={styles.alertCardContent}>
+                  <View style={styles.alertIconContainer}>
+                    <Image
+                      source={require('@/assets/images/tishi.png')}
+                      style={styles.iconImage}
+                    />
+                  </View>
+                  <View style={styles.alertTextContainer}>
+                    <Text style={[styles.alertTitle, currentStyle?.text_style]}>
+                      电费标准设置:{' '}
+                      <Text
+                        style={[styles.alertValue, currentStyle?.text_style]}
+                      >
+                        {standardLimit !== null ? standardLimit : '_____'}
+                      </Text>
+                      元
                     </Text>
-                    元
+                  </View>
+                </View>
+                <View style={styles.alertCardFooter}>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    一旦低于电费低于此标准,将推送电费告急提醒哦~
                   </Text>
                 </View>
               </View>
-              <View style={styles.cardFooter}>
-                <Text style={[styles.cardFooterText, currentStyle?.text_style]}>
-                  一旦低于电费低于此标准,将推送电费告急提醒哦~
-                </Text>
-              </View>
-            </View>
+            </TouchableOpacity>
           </>
         ) : (
           <Text style={styles.loadingText}>暂无数据</Text>
@@ -251,6 +388,11 @@ const styles = StyleSheet.create({
   iconText: {
     fontSize: 28,
   },
+  iconImage: {
+    width: 48,
+    height: 48,
+    resizeMode: 'contain',
+  },
   cardTitle: {
     fontSize: 28,
     fontWeight: '600',
@@ -258,7 +400,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardPrice: {
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: '700',
     color: '#000000',
     marginRight: 15,
@@ -283,20 +425,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
   },
-  alertIconText: {
-    fontSize: 28,
-  },
   alertTextContainer: {
     flex: 1,
   },
   alertTitle: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 8,
+    marginTop: 8,
+    marginLeft: 20,
   },
   alertValue: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '700',
   },
   alertSubtitle: {
@@ -304,10 +444,43 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 18,
   },
+  alertCardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 5,
+    marginTop: 25,
+  },
   loadingText: {
     textAlign: 'center',
     fontSize: 14,
     color: '#999',
     paddingVertical: 20,
+  },
+  inputContainer: {
+    width: '100%',
+    paddingVertical: 10,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    backgroundColor: '#FFF',
+  },
+  inputHint: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 10,
+    textAlign: 'center',
   },
 });
