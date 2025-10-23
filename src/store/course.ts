@@ -13,6 +13,7 @@ interface CourseState {
   updateCourses: (courses: courseType[]) => void;
   addCourse: (course: courseType) => void;
   deleteCourse: (id: string) => void;
+  updateCourseNote: (id: string, note: string) => void;
   lastUpdate: number;
   setLastUpdate: (time: number) => void;
   holidayTime: number;
@@ -42,6 +43,13 @@ const useCourse = create<CourseState>()(
         deleteCourse: (id: string) => {
           set(state => ({
             courses: state.courses.filter(c => c.id !== id),
+          }));
+        },
+        updateCourseNote: (id: string, note: string) => {
+          set(state => ({
+            courses: state.courses.map(course =>
+              course.id === id ? { ...course, note } : course
+            ),
           }));
         },
         lastUpdate: 0,
