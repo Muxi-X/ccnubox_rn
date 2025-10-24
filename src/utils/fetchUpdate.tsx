@@ -45,7 +45,8 @@ const fetchUpdate = async () => {
   try {
     const update = await Updates.checkForUpdateAsync();
     if (update.isAvailable) {
-      showUpdateModal(updateInfo);
+      // showUpdateModal(updateInfo);
+      Updates.fetchUpdateAsync().then(_r => {});
       return updateInfo;
     }
   } catch (error) {

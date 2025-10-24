@@ -3,8 +3,8 @@
     "name": "华师匣子",
     "slug": "ccnubox",
     "owner": "muxi_fe",
-    "version": "3.0.0",
-    "runtimeVersion": "3.0.0",
+    "version": "3.1.0",
+    "runtimeVersion": "3.1.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "ccnubox",
@@ -64,6 +64,15 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Default",
+            "enforceNavigationBarContrast": false
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {

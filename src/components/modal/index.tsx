@@ -125,12 +125,13 @@ const Modal: React.FC<ModalProps> & {
             {showCancel && (cancelText || onCancel) && (
               <TouchableOpacity onPress={handleCancel}>
                 <View
-                  style={
+                  style={[
                     !isBottomMode && {
                       ...styles.cancelViewStyle,
                       ...styles.buttonStyle,
-                    }
-                  }
+                    },
+                    currentStyle?.secondary_background_style,
+                  ]}
                 >
                   <Text
                     style={[
