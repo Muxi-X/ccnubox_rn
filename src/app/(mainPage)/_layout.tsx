@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import * as React from 'react';
 import { StyleProp, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -9,7 +8,11 @@ import useVisualScheme from '@/store/visualScheme';
 import { mainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils';
 
-import { MainPageGridDataType } from '@/types/mainPageGridTypes';
+// 定义需要统一 header 的子页面配置
+// const pagesWithHeader = [
+//   { name: 'electricityBillinBalance', title: '电费查询' },
+//   { name: 'webview', title: '常用网站' },
+// ];
 
 export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
@@ -18,6 +21,26 @@ export default function Layout() {
   const CurrentComponents = useThemeBasedComponents(
     state => state.CurrentComponents
   );
+  // 通用的 header 配置
+  const createHeaderOptions = (title?: string) => ({
+    headerTitle: () => (
+      <>
+        {CurrentComponents && (
+          <CurrentComponents.HeaderCenter title={title || ''} />
+        )}
+      </>
+    ),
+    headerLeft: () => (
+      <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
+    ),
+    headerStyle: currentStyle?.header_background_style as StyleProp<{
+      backgroundColor: string | undefined;
+      flexDirection: 'row';
+      justifyContent: 'space-between';
+      alignItems: 'center';
+    }>,
+  });
+
   return (
     <SafeAreaView
       edges={['bottom']}
@@ -31,38 +54,25 @@ export default function Layout() {
           headerShadowVisible: false,
         }}
       >
+        {/* 主页面 - 来自 mainPageApplications */}
         {mainPageApplications
           .filter(app => app.href)
-          .concat({
-            title: '常用网站',
-            name: 'webview',
-          } as MainPageGridDataType)
           .map(config => (
             <Stack.Screen
               key={keyGenerator.next().value as unknown as number}
               name={config.name}
-              options={{
-                headerTitle: () => (
-                  <>
-                    {CurrentComponents && (
-                      <CurrentComponents.HeaderCenter title={config.title} />
-                    )}
-                  </>
-                ),
-                headerStyle:
-                  currentStyle?.header_background_style as StyleProp<{
-                    backgroundColor: string | undefined;
-                    flexDirection: 'row';
-                    justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-                    alignItems: 'center';
-                  }>,
-              }}
+              options={createHeaderOptions(config.title)}
             ></Stack.Screen>
-          ))
-          .filter(item => item)}
+          ))}
+        {/* 特殊页面 - 不需要 header */}
         <Stack.Screen
           name="scoreCalculation"
           options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="electricityBillinBalance"
+          key={keyGenerator.next().value as unknown as number}
+          options={createHeaderOptions('电费查询')}
         ></Stack.Screen>
       </Stack>
     </SafeAreaView>
