@@ -1,4 +1,4 @@
-import { Stack, usePathname } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StyleProp, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,7 +18,6 @@ export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
-  const pathname = usePathname();
   const CurrentComponents = useThemeBasedComponents(
     state => state.CurrentComponents
   );

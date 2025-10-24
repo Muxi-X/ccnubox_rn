@@ -164,9 +164,25 @@ const ElectricityBillinBalance = () => {
   // 格式化显示信息
   const formatDormInfo = () => {
     if (!building || !room) return '未选择宿舍';
-    console.log('building', building);
-    const buildingFormatted = building.replace(/0(\d)栋/, '$1栋');
-    return `${buildingFormatted}    ${room}`;
+
+    // 处理楼栋信息：去除重复的"南湖"，去除前导零
+    let buildingFormatted = building;
+    // 去除重复的"南湖"（如"南湖南湖04栋" -> "南湖04栋"）
+    buildingFormatted = buildingFormatted.replace(/南湖南湖/, '南湖');
+    // 去除前导零（如"南湖04栋" -> "南湖4栋"）
+    buildingFormatted = buildingFormatted.replace(/0(\d)栋/, '$1栋');
+
+    // 处理房间信息：提取房间号并添加"室"后缀
+    let roomFormatted = room;
+    // 如果房间号包含"南"或"北"等前缀，提取数字部分
+    const roomMatch = room.match(/([南北]?\d+-\d+)/);
+    if (roomMatch) {
+      roomFormatted = roomMatch[1].replace(/[南北]/, ''); // 去除南北前缀
+    }
+    // 添加"室"后缀
+    roomFormatted = `${roomFormatted}室`;
+
+    return `${buildingFormatted}    ${roomFormatted}`;
   };
 
   const handleChangeDorm = () => {
