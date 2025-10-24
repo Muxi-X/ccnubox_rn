@@ -544,6 +544,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/web.Response'
       x-codegen-request-body-name: request
+  /class/note/insert:
+    post:
+      tags:
+      - class
+      summary: 添加课程备注
+      description: 为指定课程添加备注
+      parameters:
+      - name: Authorization
+        in: header
+        description: Bearer Token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: 添加课程备注请求
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/class.AddCourseNoteRequest'
+        required: true
+      responses:
+        "200":
+          description: 成功添加课程备注
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      x-codegen-request-body-name: request
+  /class/note/delete:
+    post:
+      tags:
+      - class
+      summary: 删除课程备注
+      description: 删除指定课程的备注
+      parameters:
+      - name: Authorization
+        in: header
+        description: Bearer Token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: 删除课程备注请求
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/class.DeleteCourseNoteRequest'
+        required: true
+      responses:
+        "200":
+          description: 成功删除课程备注
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      x-codegen-request-body-name: request
   /classroom/getFreeClassRoom:
     get:
       tags:
@@ -1924,6 +1980,9 @@ components:
         id:
           type: string
           description: 集合了课程信息的字符串，便于标识（课程ID）
+        note:
+          type: string
+          description: 课程备注
         semester:
           type: string
           description: 学期
@@ -2057,6 +2116,42 @@ components:
         where:
           type: string
           description: 地点
+        year:
+          type: string
+          description: 学年
+    class.AddCourseNoteRequest:
+      required:
+      - classId
+      - note
+      - semester
+      - year
+      type: object
+      properties:
+        classId:
+          type: string
+          description: 课程ID
+        note:
+          type: string
+          description: 备注内容
+        semester:
+          type: string
+          description: 学期
+        year:
+          type: string
+          description: 学年
+    class.DeleteCourseNoteRequest:
+      required:
+      - classId
+      - semester
+      - year
+      type: object
+      properties:
+        classId:
+          type: string
+          description: 课程ID
+        semester:
+          type: string
+          description: 学期
         year:
           type: string
           description: 学年

@@ -38,6 +38,28 @@ const CourseContent: React.FC<CourseContentProps> = memo(
       [originalData, props.colIndex, class_when]
     );
 
+    const renderCourse = (c: courseType, idx: number) => (
+      <View
+        key={c.id}
+        style={{
+          marginBottom: idx === slotCourses.length - 1 ? 0 : 12,
+        }}
+      >
+        <ModalContent
+          id={c.id}
+          class_when={c.class_when}
+          isThisWeek={c.weeks.includes(currentWeek)}
+          courseName={c.classname}
+          teacher={c.teacher}
+          classroom={c.where}
+          week_duration={c.week_duration}
+          credit={c.credit}
+          date={daysOfWeek[props.colIndex]}
+          is_official={c.is_official}
+        />
+      </View>
+    );
+
     return (
       <>
         <Pressable
@@ -53,36 +75,22 @@ const CourseContent: React.FC<CourseContentProps> = memo(
           onPress={() => {
             Modal.show({
               isTransparent: true,
+              // 这里的三元是因为前面去掉了高度，如果统一放在ScollView中会导致单个课表在垂直方向上居上，因此独立出来
               children: (
                 <View
                   style={{
                     minHeight: 220,
-                    height: slotCourses.length * 260 + 30,
+                    // height: slotCourses.length * 260 + 30,
                     maxHeight: 600,
-                  }}
+                  }} // 这里固定高度会导致用户打开备注时课表高度超出容器，加上滚动条也需要向下滚动，感觉体验不太好，所以去掉了
                 >
-                  <ScrollView style={{ width: '100%' }}>
-                    {slotCourses.map((c, idx) => (
-                      <View
-                        key={`${c.id}`}
-                        style={{
-                          marginBottom: idx === slotCourses.length - 1 ? 0 : 12,
-                        }}
-                      >
-                        <ModalContent
-                          id={c.id}
-                          class_when={c.class_when}
-                          isThisWeek={c.weeks.includes(currentWeek)}
-                          courseName={c.classname}
-                          teacher={c.teacher}
-                          classroom={c.where}
-                          week_duration={c.week_duration}
-                          credit={c.credit}
-                          date={daysOfWeek[props.colIndex]}
-                        />
-                      </View>
-                    ))}
-                  </ScrollView>
+                  {slotCourses.length > 1 ? (
+                    <ScrollView style={{ width: '100%' }}>
+                      {slotCourses.map((c, i) => renderCourse(c, i))}
+                    </ScrollView>
+                  ) : (
+                    slotCourses.map((c, i) => renderCourse(c, i))
+                  )}
                 </View>
               ),
               mode: 'middle',

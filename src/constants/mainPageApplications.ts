@@ -170,4 +170,22 @@ export const mainPageApplications: MainPageGridDataType[] = [
     key: 'grid-13',
     href: '/more' as Href,
   },
+  // {
+  //   title: '更新小组件',
+  //   name: 'updateWidget',
+  //   imageUrl:
+  //     Platform.select({
+  //       ios: IosMoreSvg,
+  //       android: AndroidMoreSvg,
+  //     }) || AndroidMoreSvg,
+  //   key: 'grid-14',
+  //   action: () =>
+  //     updateCourseData()
+  //       .then(() => {
+  //         console.log('updateWidget');
+  //       })
+  //       .catch(error => {
+  //         console.error('更新小组件失败:', error);
+  //       }),
+  // },
 ];

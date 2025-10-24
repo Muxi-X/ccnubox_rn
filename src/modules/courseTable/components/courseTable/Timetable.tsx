@@ -148,6 +148,8 @@ const Timetable: React.FC<CourseTableProps> = ({
         weeks,
         week_duration,
         credit,
+        note,
+        is_official,
       } = course;
 
       // 计算课程的时间跨度（占几节课）
@@ -182,6 +184,8 @@ const Timetable: React.FC<CourseTableProps> = ({
           week_duration,
           credit,
           class_when,
+          note,
+          is_official,
         });
       }
     });

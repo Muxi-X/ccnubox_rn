@@ -6,7 +6,6 @@ import { Image, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import Button from '@/components/button';
-import Modal from '@/components/modal';
 import Toast from '@/components/toast';
 import { TypoText } from '@/components/typography/TypoText';
 import ThemeBasedView from '@/components/view';
@@ -34,14 +33,7 @@ function CheckUpdate(): React.ReactNode {
   }, [isUpdatePending]);
 
   useEffect(() => {
-    if (isUpdateAvailable)
-      Modal.show({
-        title: '检测到更新',
-        children: '是否更新',
-        onConfirm: () => {
-          Updates.fetchUpdateAsync().then(_r => {});
-        },
-      });
+    if (isUpdateAvailable) Updates.fetchUpdateAsync().then(_r => {});
   }, [isUpdateAvailable]);
 
   return (
