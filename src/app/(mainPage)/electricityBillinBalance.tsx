@@ -11,6 +11,7 @@ import {
 
 import Modal from '@/components/modal';
 
+import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
@@ -29,6 +30,9 @@ interface PriceData {
 
 const ElectricityBillinBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const clearSelectedDorm = useElectricityStore(
+    state => state.clearSelectedDorm
+  );
   const { building, room, area, room_id } = useLocalSearchParams<{
     building?: string;
     room?: string;
@@ -160,12 +164,14 @@ const ElectricityBillinBalance = () => {
   // 格式化显示信息
   const formatDormInfo = () => {
     if (!building || !room) return '未选择宿舍';
+    console.log('building', building);
     const buildingFormatted = building.replace(/0(\d)栋/, '$1栋');
     return `${buildingFormatted}    ${room}`;
   };
 
   const handleChangeDorm = () => {
-    router.back();
+    clearSelectedDorm();
+    router.replace('/electricityBillinQuiry');
   };
 
   return (
@@ -253,8 +259,8 @@ const ElectricityBillinBalance = () => {
               </View>
             </View>
 
-            {/* 电费标准设置卡片 */}
-            <TouchableOpacity onPress={handleSetStandard}>
+            {/* TODO)) 这块等消息提醒一起上线 电费标准设置卡片 */}
+            {/* <TouchableOpacity onPress={handleSetStandard}>
               <View
                 style={[
                   styles.card,
@@ -288,7 +294,7 @@ const ElectricityBillinBalance = () => {
                   </Text>
                 </View>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </>
         ) : (
           <Text style={styles.loadingText}>暂无数据</Text>

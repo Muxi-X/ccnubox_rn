@@ -1,4 +1,3 @@
-// import { PickerView } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -12,6 +11,7 @@ import {
 
 import PickerView from '@/components/pickerView/index';
 
+import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
 
 import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
@@ -24,7 +24,6 @@ const areaData = [
   { label: '元宝山', value: '元宝山学生宿舍' },
   { label: '南湖', value: '南湖学生宿舍' },
   { label: '国交', value: '国际园区' },
-  // TODO 添加新区域
 ];
 
 interface Architecture {
@@ -41,6 +40,7 @@ interface Room {
 
 const ElectricityBillinQuiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const setSelectedDorm = useElectricityStore(state => state.setSelectedDorm);
 
   // 状态管理
   const [selectedArea, setSelectedArea] = useState('南湖学生宿舍');
@@ -54,7 +54,6 @@ const ElectricityBillinQuiry = () => {
   const [loading, setLoading] = useState(false);
 
   // 加载楼栋数据
-  // TODO 后端返回时不是完全顺序的, 可以前端根据 architecture_id 排序
   const loadArchitectures = async (area: string) => {
     try {
       setLoading(true);
@@ -99,8 +98,6 @@ const ElectricityBillinQuiry = () => {
     try {
       const response: any = await getRoomInfo(architectureId, floor);
       const roomList = response?.data?.room_list;
-      console.log('房间数据响应:', response);
-      console.log('房间列表:', roomList);
 
       if (roomList && roomList.length > 0) {
         setRooms(roomList);
@@ -187,14 +184,19 @@ const ElectricityBillinQuiry = () => {
     const areaLabel =
       areaData.find(item => item.value === selectedArea)?.label || '';
 
+    const dormInfo = {
+      building: `${areaLabel}${selectedArch.architecture_name}`,
+      room: selectedRoom.room_name,
+      area: selectedArea,
+      room_id: selectedRoom.room_id,
+    };
+
+    // 保存选择的宿舍信息
+    setSelectedDorm(dormInfo);
+
     router.push({
       pathname: '/electricityBillinBalance',
-      params: {
-        building: `${areaLabel}${selectedArch.architecture_name}`,
-        room: selectedRoom.room_name,
-        area: selectedArea,
-        room_id: selectedRoom.room_id,
-      },
+      params: dormInfo,
     });
   };
 
@@ -255,7 +257,6 @@ const ElectricityBillinQuiry = () => {
             <PickerView
               data={buildingColumns}
               cascade={false}
-              // value={pickerValue}
               onChange={handleBuildingPickerChange}
               style={{ height: 100 }}
               itemHeight={37}
