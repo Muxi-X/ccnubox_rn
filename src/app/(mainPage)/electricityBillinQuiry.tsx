@@ -52,6 +52,22 @@ const ElectricityBillinQuiry = () => {
   const [pickerValue2, setPickerValue2] = useState<[number]>([0]);
 
   const [loading, setLoading] = useState(false);
+  const selectedDorm = useElectricityStore(state => state.selectedDorm);
+
+  useEffect(() => {
+    if (selectedDorm) {
+      // 如果已经选择过宿舍，直接跳转到电费查询页面
+      router.push({
+        pathname: '/electricityBillinBalance',
+        params: {
+          building: selectedDorm.building,
+          room: selectedDorm.room,
+          area: selectedDorm.area,
+          room_id: selectedDorm.room_id,
+        },
+      });
+    }
+  }, [selectedDorm]);
 
   // 加载楼栋数据
   const loadArchitectures = async (area: string) => {
