@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useGridOrder from '@/store/gridOrder';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { FC, memo, useEffect, useState } from 'react';
+import React, { FC, memo, useEffect, useLayoutEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
@@ -29,30 +30,12 @@ const IndexPage: FC = () => {
     }[]
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [data, setData] =
-    useState<MainPageGridDataType[]>(mainPageApplications);
+  // const [data, setData] = useState<MainPageGridDataType[]>(mainPageApplications);
+
+  const gridData = useGridOrder(state => state.gridData);
+  const updateGridOrder = useGridOrder(state => state.updateGridOrder);
 
   useEffect(() => {
-    const loadSavedOrder = async () => {
-      try {
-        const savedOrder = await AsyncStorage.getItem('@draggable_grid_order');
-        if (savedOrder) {
-          const order = JSON.parse(savedOrder);
-          // Reconstruct full data while preserving original items
-          const newData = order
-            .map(
-              ({ key }: { key: string }) =>
-                mainPageApplications.find(item => item.key === key) || { key }
-            )
-            .filter((item: MainPageGridDataType) => item.key); // Filter out invalid items
-          setData(newData.length ? newData : mainPageApplications);
-        }
-      } catch (e) {
-        console.error('Failed to load grid order', e);
-      }
-    };
-    loadSavedOrder();
-
     queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(
@@ -64,13 +47,9 @@ const IndexPage: FC = () => {
       );
     });
   }, []);
-  const onDragRelease = async (data: any[]) => {
-    setData(data);
-    try {
-      await AsyncStorage.setItem('@draggable_grid_order', JSON.stringify(data));
-    } catch (e) {
-      console.error('Failed to save grid order', e);
-    }
+  const onDragRelease = async (data: MainPageGridDataType[]) => {
+    // 直接更新 store，自动同步到 AsyncStorage
+    updateGridOrder(data);
   };
 
   const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
@@ -84,12 +63,8 @@ const IndexPage: FC = () => {
   const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
-        <Skeleton>
-          <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
-        </Skeleton>
-        <Skeleton>
-          <Text style={styles.itemText}>{title}</Text>
-        </Skeleton>
+        <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
+        <Text style={styles.itemText}>{title}</Text>
       </View>
     );
   };
@@ -142,7 +117,7 @@ const IndexPage: FC = () => {
         numColumns={3}
         onDragItemActive={() => Haptics.selectionAsync()}
         renderItem={render}
-        data={data}
+        data={gridData}
         onDragRelease={onDragRelease}
       ></DraggableGrid>
     </ThemeChangeView>
