@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import { StyleProp, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -9,19 +9,19 @@ import { mainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils';
 
 // 定义需要统一 header 的子页面配置
-const pagesWithHeader = [
-  { name: 'electricityBillinBalance', title: '电费查询' },
-  { name: 'webview', title: '常用网站' },
-];
+// const pagesWithHeader = [
+//   { name: 'electricityBillinBalance', title: '电费查询' },
+//   { name: 'webview', title: '常用网站' },
+// ];
 
 export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
+  const pathname = usePathname();
   const CurrentComponents = useThemeBasedComponents(
     state => state.CurrentComponents
   );
-
   // 通用的 header 配置
   const createHeaderOptions = (title?: string) => ({
     headerTitle: () => (
@@ -30,6 +30,9 @@ export default function Layout() {
           <CurrentComponents.HeaderCenter title={title || ''} />
         )}
       </>
+    ),
+    headerLeft: () => (
+      <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
     ),
     headerStyle: currentStyle?.header_background_style as StyleProp<{
       backgroundColor: string | undefined;
@@ -62,20 +65,15 @@ export default function Layout() {
               options={createHeaderOptions(config.title)}
             ></Stack.Screen>
           ))}
-
-        {/* 特殊页面 - 需要统一 header 的页面 */}
-        {pagesWithHeader.map(config => (
-          <Stack.Screen
-            key={config.name}
-            name={config.name}
-            options={createHeaderOptions(config.title)}
-          ></Stack.Screen>
-        ))}
-
         {/* 特殊页面 - 不需要 header */}
         <Stack.Screen
           name="scoreCalculation"
           options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="electricityBillinBalance"
+          key={keyGenerator.next().value as unknown as number}
+          options={createHeaderOptions('电费查询')}
         ></Stack.Screen>
       </Stack>
     </SafeAreaView>
