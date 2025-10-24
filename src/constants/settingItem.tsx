@@ -62,4 +62,27 @@ export const SettingItems: SettingItem[] = [
       });
     },
   },
+  {
+    title: '注销账号',
+    name: 'exit',
+    id: 7,
+    icon: require('@/assets/images/exit.png'),
+    text: '注销',
+    to: () => {
+      const navigation = useRouter();
+      Modal.show({
+        mode: 'middle',
+        title: '注销账号',
+        children: '确定要注销账号吗？',
+        confirmText: '确定',
+        cancelText: '取消',
+        onConfirm: () => {
+          AsyncStorage.multiRemove(['courses']);
+          deleteItemAsync('longToken').then(() => {
+            navigation.replace('/auth/login');
+          });
+        },
+      });
+    },
+  },
 ];

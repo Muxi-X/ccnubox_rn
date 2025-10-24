@@ -15,6 +15,7 @@ import com.facebook.soloader.SoLoader
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+import com.muxixyz.ccnubox.widgets.WidgetManagerPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -22,7 +23,9 @@ class MainApplication : Application(), ReactApplication {
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-            val packages = PackageList(this).packages
+            val packages = PackageList(this).packages.also {
+              it.add(WidgetManagerPackage())
+            }
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(MyReactNativePackage())
             return packages
