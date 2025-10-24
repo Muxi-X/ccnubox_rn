@@ -10,13 +10,16 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
+
+import useVisualScheme from '@/store/visualScheme';
+
 import {
   cancelStandard,
   getPrice,
   getStandardList,
   setStandard,
 } from '@/request/api/electricity';
-import useVisualScheme from '@/store/visualScheme';
+import { log } from '@/utils/logger';
 
 interface PriceData {
   remain_money: string;
@@ -48,21 +51,13 @@ const ElectricityBillinBalance = () => {
   const loadPriceData = async (id: string) => {
     try {
       setLoading(true);
-      console.log('开始加载电费数据，房间ID:', id);
       const response: any = await getPrice(id);
-      console.log('电费数据响应:', response);
 
       // API 实际返回的是 data，而不是 schema 中定义的 msg
       const priceInfo = response?.data?.price || response?.msg?.price;
-
-      if (priceInfo) {
-        console.log('电费信息:', priceInfo);
-        setPriceData(priceInfo);
-      } else {
-        console.log('没有电费数据，响应结构:', response);
-      }
+      setPriceData(priceInfo);
     } catch (error) {
-      console.error('加载电费数据失败:', error);
+      log.error(error);
     } finally {
       setLoading(false);
     }
@@ -71,9 +66,7 @@ const ElectricityBillinBalance = () => {
   // 加载电费标准数据
   const loadStandardData = async () => {
     try {
-      console.log('开始加载电费标准数据');
       const response: any = await getStandardList();
-      console.log('电费标准响应:', response);
 
       const standardList =
         response?.data?.standard_list || response?.msg?.standard_list;
@@ -85,11 +78,10 @@ const ElectricityBillinBalance = () => {
         );
         if (currentRoomStandard) {
           setStandardLimit(currentRoomStandard.limit);
-          console.log('当前房间电费标准:', currentRoomStandard.limit);
         }
       }
     } catch (error) {
-      console.error('加载电费标准失败:', error);
+      log.error(error);
     }
   };
 
@@ -139,36 +131,29 @@ const ElectricityBillinBalance = () => {
   // 确认设置电费标准
   const handleConfirmStandard = async (value: string) => {
     if (!room_id || !building || !room) {
-      console.error('缺少必要参数');
       return;
     }
 
     try {
       if (value === '' || value === null) {
-        // 清空输入框，取消电费标准
-        console.log('取消电费标准');
         await cancelStandard({ room_id });
         setStandardLimit(null);
-        console.log('取消电费标准成功');
       } else {
         // 设置电费标准
         const limitValue = parseInt(value, 10);
         if (isNaN(limitValue) || limitValue <= 0) {
-          console.error('请输入有效的金额');
           return;
         }
 
-        console.log('设置电费标准:', limitValue);
         await setStandard({
           room_id,
           room_name: `${building}    ${room}`,
           limit: limitValue,
         });
         setStandardLimit(limitValue);
-        console.log('设置电费标准成功');
       }
     } catch (error) {
-      console.error('设置电费标准失败:', error);
+      log.error(error);
     }
   };
 
@@ -285,11 +270,11 @@ const ElectricityBillinBalance = () => {
                   </View>
                   <View style={styles.alertTextContainer}>
                     <Text style={[styles.alertTitle, currentStyle?.text_style]}>
-                      电费标准设置:{' '}
+                      电费标准设置:
                       <Text
                         style={[styles.alertValue, currentStyle?.text_style]}
                       >
-                        {standardLimit !== null ? standardLimit : '_____'}
+                        {standardLimit !== null ? standardLimit : '____'}
                       </Text>
                       元
                     </Text>

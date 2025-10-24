@@ -1,5 +1,4 @@
 // import { PickerView } from '@ant-design/react-native';
-import PickerView from '@/components/pickerView/index';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -11,8 +10,12 @@ import {
   View,
 } from 'react-native';
 
-import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
+import PickerView from '@/components/pickerView/index';
+
 import useVisualScheme from '@/store/visualScheme';
+
+import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
+import { log } from '@/utils/logger';
 
 // 区域数据
 const areaData = [
@@ -95,10 +98,7 @@ const ElectricityBillinQuiry = () => {
   const loadRooms = async (architectureId: string, floor: string) => {
     try {
       const response: any = await getRoomInfo(architectureId, floor);
-
-      // API 实际返回的是 data
       const roomList = response?.data?.room_list;
-
       console.log('房间数据响应:', response);
       console.log('房间列表:', roomList);
 
@@ -108,8 +108,8 @@ const ElectricityBillinQuiry = () => {
         throw new Error('没有房间数据');
       }
     } catch (error) {
-      console.error('加载房间数据失败:', error);
       setRooms([]);
+      log.error(error);
     }
   };
 
@@ -183,8 +183,6 @@ const ElectricityBillinQuiry = () => {
 
     const selectedArch = architectures[archIndex];
     const selectedRoom = rooms[roomIndex];
-    const base = parseInt(selectedArch.base_floor);
-    const floor = base + floorIndex;
 
     const areaLabel =
       areaData.find(item => item.value === selectedArea)?.label || '';
@@ -229,7 +227,7 @@ const ElectricityBillinQuiry = () => {
         <View style={styles.title1}>
           <Text style={[styles.text1, currentStyle?.text_style]}>选择区域</Text>
           <Image
-            style={{ width: 17, height: 21 }}
+            style={{ width: 16, height: 16 }}
             source={require('../../assets/images/area.png')}
           />
         </View>
@@ -246,7 +244,7 @@ const ElectricityBillinQuiry = () => {
         <View style={styles.title1}>
           <Text style={[styles.text1, currentStyle?.text_style]}>选择楼栋</Text>
           <Image
-            style={{ width: 17, height: 21 }}
+            style={{ width: 16, height: 16 }}
             source={require('../../assets/images/building.png')}
           />
         </View>
@@ -282,7 +280,7 @@ const ElectricityBillinQuiry = () => {
         <View style={styles.title1}>
           <Text style={[styles.text1, currentStyle?.text_style]}>选择寝室</Text>
           <Image
-            style={{ width: 17, height: 21 }}
+            style={{ width: 16, height: 16 }}
             source={require('../../assets/images/dormitory.png')}
           />
         </View>
