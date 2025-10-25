@@ -1,10 +1,13 @@
-import { Stack } from 'expo-router';
-import { StyleProp, StyleSheet } from 'react-native';
+import { router, Stack, usePathname } from 'expo-router';
+import { StyleProp, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import Text from '@/components/text';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
+import StarIcon from '@/assets/icons/star.svg';
 import { mainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils';
 
@@ -18,6 +21,7 @@ export default function Layout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
+  const pathname = usePathname();
   const CurrentComponents = useThemeBasedComponents(
     state => state.CurrentComponents
   );
@@ -33,6 +37,25 @@ export default function Layout() {
     headerLeft: () => (
       <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
     ),
+    headerRight: () => {
+      if (pathname.endsWith('classroom')) {
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              router.push({
+                pathname: '/(mainPage)/classroomStar',
+              });
+            }}
+            // style={styles.starButton}
+          >
+            <StarIcon width={24} height={24} color="#FFD700" />
+            <Text style={[{ fontSize: 6 }, currentStyle?.header_text_style]}>
+              我的收藏
+            </Text>
+          </TouchableOpacity>
+        );
+      }
+    },
     headerStyle: currentStyle?.header_background_style as StyleProp<{
       backgroundColor: string | undefined;
       flexDirection: 'row';
@@ -73,6 +96,11 @@ export default function Layout() {
           name="electricityBillinBalance"
           key={keyGenerator.next().value as unknown as number}
           options={createHeaderOptions('电费查询')}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="classroomStar"
+          key={keyGenerator.next().value as unknown as number}
+          options={createHeaderOptions('我的收藏')}
         ></Stack.Screen>
       </Stack>
     </SafeAreaView>

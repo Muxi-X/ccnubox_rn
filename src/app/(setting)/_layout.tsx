@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import * as React from 'react';
 import { StyleProp, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -40,6 +39,9 @@ export default function Layout() {
                     <CurrentComponents.HeaderCenter title={config.title} />
                   )}
                 </>
+              ),
+              headerLeft: () => (
+                <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
               ),
               headerStyle: currentStyle?.header_background_style as StyleProp<{
                 backgroundColor: string | undefined;

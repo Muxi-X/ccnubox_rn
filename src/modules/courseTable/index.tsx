@@ -7,35 +7,12 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { getSemesterAndYear } from '@/utils/getSemesterAndYear';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
 import { courseType } from './components/courseTable/type';
 import WeekSelector from './components/weekSelector';
-
-// 根据开学时间计算学期和年份
-const computeSemesterAndYear = (startTimestamp: number) => {
-  const startDate = new Date(startTimestamp * 1000);
-  const month = startDate.getMonth() + 1; // 获取开学时间的月份
-  let semester = '1'; // 默认学期为 '1'
-  let year = startDate.getFullYear().toString(); // 默认年份为当前年
-
-  // 根据开学时间计算学期和年份
-  if (month >= 1 && month <= 5) {
-    // 1月到5月 => 第二学期
-    semester = '2';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 6 && month <= 7) {
-    // 6月到7月 => 第三学期
-    semester = '3';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 8 && month <= 12) {
-    // 8月到12月 => 第一学期
-    semester = '1';
-    year = new Date().getFullYear().toString(); // 当前年
-  }
-  return { semester, year };
-};
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -65,7 +42,7 @@ const CourseTablePage: FC = () => {
       if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
         setSchoolTime(res.data.school_time);
         setHolidayTime(res.data.holiday_time);
-        const { semester, year } = computeSemesterAndYear(res.data.school_time);
+        const { semester, year } = getSemesterAndYear(res.data.school_time);
         setSemester(semester);
         setYear(year);
         setTimeout(
