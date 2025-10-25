@@ -1,13 +1,7 @@
-import { router } from 'expo-router';
-import * as React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import Text from '@/components/text';
+import { StyleSheet, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import StarIcon from '@/assets/icons/star.svg';
 import {
   ClassroomContent,
   useClassroomData,
@@ -21,38 +15,6 @@ export default function Classroom() {
 
   return (
     <>
-      <SafeAreaView style={currentStyle?.header_background_style}>
-        {/* 自定义头部 */}
-        <View style={[styles.header, currentStyle?.header_background_style]}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={() => router.back()}>
-              <Image
-                style={styles.backIcon}
-                source={require('../../assets/images/arrow-left.png')}
-              />
-            </TouchableOpacity>
-            <Text style={[styles.headerTitle, currentStyle?.header_text_style]}>
-              空闲教室
-            </Text>
-          </View>
-          <View style={styles.headerRight}>
-            <TouchableOpacity
-              onPress={() => {
-                router.push({
-                  pathname: '/(mainPage)/classroomStar',
-                });
-              }}
-              style={styles.starButton}
-            >
-              <StarIcon width={24} height={24} color="#FFD700" />
-              <Text style={[{ fontSize: 6 }, currentStyle?.header_text_style]}>
-                我的收藏
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
-
       <View style={styles.container}>
         {/* 教室内容 */}
         <ClassroomContent {...classroomProps} />

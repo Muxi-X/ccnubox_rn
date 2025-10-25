@@ -64,7 +64,7 @@ export const SettingItems: SettingItem[] = [
   },
   {
     title: '注销账号',
-    name: 'exit',
+    name: 'logout',
     id: 7,
     icon: require('@/assets/images/exit.png'),
     text: '注销',

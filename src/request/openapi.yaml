@@ -547,16 +547,16 @@ paths:
   /class/note/insert:
     post:
       tags:
-      - class
+        - class
       summary: 添加课程备注
       description: 为指定课程添加备注
       parameters:
-      - name: Authorization
-        in: header
-        description: Bearer Token
-        required: true
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          description: Bearer Token
+          required: true
+          schema:
+            type: string
       requestBody:
         description: 添加课程备注请求
         content:
@@ -565,7 +565,7 @@ paths:
               $ref: '#/components/schemas/class.AddCourseNoteRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: 成功添加课程备注
           content:
             application/json:
@@ -575,16 +575,16 @@ paths:
   /class/note/delete:
     post:
       tags:
-      - class
+        - class
       summary: 删除课程备注
       description: 删除指定课程的备注
       parameters:
-      - name: Authorization
-        in: header
-        description: Bearer Token
-        required: true
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          description: Bearer Token
+          required: true
+          schema:
+            type: string
       requestBody:
         description: 删除课程备注请求
         content:
@@ -593,7 +593,7 @@ paths:
               $ref: '#/components/schemas/class.DeleteCourseNoteRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: 成功删除课程备注
           content:
             application/json:
@@ -2121,10 +2121,10 @@ components:
           description: 学年
     class.AddCourseNoteRequest:
       required:
-      - classId
-      - note
-      - semester
-      - year
+        - classId
+        - note
+        - semester
+        - year
       type: object
       properties:
         classId:
@@ -2141,9 +2141,9 @@ components:
           description: 学年
     class.DeleteCourseNoteRequest:
       required:
-      - classId
-      - semester
-      - year
+        - classId
+        - semester
+        - year
       type: object
       properties:
         classId:
