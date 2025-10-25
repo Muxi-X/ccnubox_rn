@@ -6,10 +6,8 @@ import { mainPageApplications } from '@/constants/mainPageApplications';
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 interface GridOrderState {
-  // 状态
   gridData: MainPageGridDataType[];
 
-  // 方法
   updateGridOrder: (newOrder: MainPageGridDataType[]) => void;
   resetGridOrder: () => void;
 }
@@ -27,28 +25,30 @@ const useGridOrder = create<GridOrderState>()(
       resetGridOrder: () => set({ gridData: mainPageApplications }),
     }),
     {
-      name: 'grid-order-storage', // AsyncStorage key
+      name: 'grid-order-storage',
       storage: createJSONStorage(() => AsyncStorage),
 
-      // 【关键配置】只持久化必要的数据
       partialize: state => ({
-        // 只保存 key 顺序，不保存完整数据（节省存储空间）
         gridData: state.gridData.map(item => ({ key: item.key })),
       }),
 
-      // 【关键配置】数据恢复时的处理
       onRehydrateStorage: () => state => {
-        if (state) {
-          // 从保存的 key 顺序重建完整数据
-          const savedOrder = state.gridData;
-          const fullData = savedOrder
-            .map(({ key }) =>
-              mainPageApplications.find(item => item.key === key)
-            )
-            .filter(Boolean) as MainPageGridDataType[];
+        if (!state) return;
 
-          state.gridData = fullData.length ? fullData : mainPageApplications;
-        }
+        const savedOrder = state.gridData;
+        const savedKeys = new Set(savedOrder.map(item => item.key));
+
+        // 保留存在的应用(按保存的顺序)
+        const existingApps = savedOrder
+          .map(({ key }) => mainPageApplications.find(item => item.key === key))
+          .filter((item): item is MainPageGridDataType => Boolean(item));
+
+        // 添加新增的应用
+        const newApps = mainPageApplications.filter(
+          app => !savedKeys.has(app.key)
+        );
+
+        state.gridData = [...existingApps, ...newApps];
       },
     }
   )
