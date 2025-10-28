@@ -2,16 +2,14 @@ name: iOS Build Test
 
 on:
     push:
-        branches:
-            - main
+        branches: [main]
     pull_request:
-        branches:
-            - main
+        branches: [main]
 
 jobs:
     build-ios:
-        runs-on: macos-latest
-        timeout-minutes: 30
+        runs-on: macos-14
+        timeout-minutes: 60
 
         steps:
             - name: Checkout repository
@@ -21,30 +19,44 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
+                  cache: "pnpm"
 
             - name: Set up pnpm
               uses: pnpm/action-setup@v3
               with:
-                  version: "9.14.4"
-
-            - name: Cache pnpm dependencies
-              uses: actions/cache@v3
-              with:
-                  path: ~/.pnpm-store
-                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-
+                  version: 9.14.4
 
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
+            - name: Cache CocoaPods
+              uses: actions/cache@v3
+              with:
+                  path: ios/Pods
+                  key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pods-
 
+            # ⚡️ 仅首次预构建 Expo iOS 项目
             - name: Prebuild iOS project
-              run: pnpm expo prebuild --platform ios
-
-            - name: Try building iOS
-              run: pnpm run ios
+              run: pnpm expo prebuild --platform ios --non-interactive --no-install
               env:
                   EXPO_NO_DOCTOR: 1
+
+            - name: Install CocoaPods
+              run: |
+                  cd ios
+                  pod install
+
+            - name: Build iOS app
+              run: |
+                  cd ios
+                  xcodebuild \
+                    -workspace ccnubox.xcworkspace \
+                    -scheme ccnubox \
+                    -configuration Release \
+                    -sdk iphonesimulator \
+                    -derivedDataPath build
+              env:
                   CI: true
 
             - name: Notify on failure

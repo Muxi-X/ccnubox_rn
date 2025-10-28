@@ -2,16 +2,14 @@ name: Android Build Test
 
 on:
     push:
-        branches:
-            - main
+        branches: [main]
     pull_request:
-        branches:
-            - main
+        branches: [main]
 
 jobs:
     build-android:
         runs-on: ubuntu-latest
-        timeout-minutes: 30
+        timeout-minutes: 25
 
         steps:
             - name: Checkout repository
@@ -21,30 +19,39 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
+                  cache: "pnpm"
 
             - name: Set up pnpm
               uses: pnpm/action-setup@v3
               with:
-                  version: "9.14.4"
-
-            - name: Cache pnpm dependencies
-              uses: actions/cache@v3
-              with:
-                  path: ~/.pnpm-store
-                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-
+                  version: 9.14.4
 
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
 
+            # ⚡️ 跳过 Expo 预编译（如果 android 文件夹已经存在）
             - name: Prebuild Android project
-              run: pnpm expo prebuild --platform android
-
-            - name: Try building Android
-              run: pnpm run android
+              run: pnpm expo prebuild --platform android --non-interactive --no-install
               env:
                   EXPO_NO_DOCTOR: 1
+
+            # 🧠 缓存 Gradle 依赖（极大加速 Android 构建）
+            - name: Cache Gradle
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            # ⚙️ 构建 Android Debug APK（最快）
+            - name: Build Android Debug APK
+              run: |
+                  cd android
+                  ./gradlew assembleDebug --no-daemon --parallel --build-cache --configure-on-demand
+              env:
                   CI: true
 
             - name: Notify on failure
