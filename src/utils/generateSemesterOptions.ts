@@ -1,6 +1,6 @@
-import { getItem } from 'expo-secure-store';
-
 import { PickerDataType } from '@/components/picker/types';
+
+import useUserStore from '@/store/user';
 
 /**
  * Generates semester options from 2021 to current year
@@ -14,8 +14,9 @@ import { PickerDataType } from '@/components/picker/types';
  * // ]]
  */
 export const generateSemesterOptions = (): PickerDataType => {
-  const userInfo = getItem('userInfo');
-  const admissionYear = JSON.parse(userInfo as string).student_id.slice(0, 4);
+  const admissionYear = Number(
+    useUserStore(state => state.student_id).slice(0, 4)
+  );
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const options = [];

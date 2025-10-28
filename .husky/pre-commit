@@ -1,26 +1,3 @@
 #!/usr/bin/bash
 
-printf "正在执行 Eslint 检查... "
-start_time=$(date +%s)
-
-if pnpm run lint; then
-    eslint_end_time=$(date +%s)
-    echo -e "\r\033[32m✅ Eslint 检查通过 (耗时 $((eslint_end_time - start_time)) 秒)\033[0m"
-else
-    echo -e "\r\033[31m❌ Eslint检查失败\033[0m"
-    exit 1
-fi
-
-printf "正在执行 Prettier 格式化... "
-prettier_start_time=$(date +%s)
-
-if pnpx prettier --write "**/*.{ts,tsx,js,jsx,mjs}" --log-level error ; then
-    prettier_end_time=$(date +%s)
-    echo -e "\r\033[32m✅ Prettier 格式化完成 (耗时 $((prettier_end_time - prettier_start_time)) 秒)\033[0m"
-else
-    echo -e "\r\033[31m❌ Prettier格式化失败\033[0m"
-    exit 1
-fi
-
-printf "正在执行 git add... "
-git add -u
+pnpm exec lint-staged
