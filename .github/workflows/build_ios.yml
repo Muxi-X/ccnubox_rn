@@ -1,0 +1,52 @@
+name: iOS Build Test
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build-ios:
+        runs-on: macos-latest
+        timeout-minutes: 30
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Set up pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: "9.14.4"
+
+            - name: Cache pnpm dependencies
+              uses: actions/cache@v3
+              with:
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Prebuild iOS project
+              run: pnpm expo prebuild --platform ios
+
+            - name: Try building iOS
+              run: pnpm run ios --no-interactive
+              env:
+                  EXPO_NO_DOCTOR: 1
+                  CI: true
+
+            - name: Notify on failure
+              if: failure()
+              run: echo "❌ iOS build failed. Please check the logs above."
