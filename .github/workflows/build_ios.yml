@@ -1,4 +1,4 @@
-name: iOS Build Test
+name: iOS Build Test (Fast)
 
 on:
     push:
@@ -8,8 +8,8 @@ on:
 
 jobs:
     build-ios:
-        runs-on: macos-14
-        timeout-minutes: 60
+        runs-on: macos-14 # M2 runner，比 Intel 快很多
+        timeout-minutes: 40
 
         steps:
             - name: Checkout repository
@@ -21,33 +21,41 @@ jobs:
                   node-version: 20
                   cache: "pnpm"
 
-            - name: Set up pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: 9.14.4
+            - name: Ensure pnpm available
+              run: npm install -g pnpm@9.14.4
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
-            - name: Cache CocoaPods
+
+            # ⚡️ 跳过 prebuild（你已有 ios 文件夹）
+            - name: Prebuild iOS project (only if needed)
+              run: |
+                if [ ! -f ios/Podfile ]; then
+                  echo "🧩 No Podfile found, running expo prebuild..."
+                  pnpm expo prebuild --platform ios --non-interactive --no-install
+                else
+                  echo "✅ Podfile exists, skip prebuild."
+                fi
+              env:
+                EXPO_NO_DOCTOR: 1
+
+            - name: Cache CocoaPods & DerivedData
               uses: actions/cache@v3
               with:
-                  path: ios/Pods
+                  path: |
+                      ios/Pods
+                      ~/Library/Caches/CocoaPods
+                      ~/Library/Developer/Xcode/DerivedData
                   key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
                   restore-keys: |
                       ${{ runner.os }}-pods-
 
-            # ⚡️ 仅首次预构建 Expo iOS 项目
-            - name: Prebuild iOS project
-              run: pnpm expo prebuild --platform ios --non-interactive --no-install
-              env:
-                  EXPO_NO_DOCTOR: 1
-
             - name: Install CocoaPods
               run: |
                   cd ios
-                  pod install
+                  pod install --silent
 
-            - name: Build iOS app
+            - name: Build iOS app (Release)
               run: |
                   cd ios
                   xcodebuild \
@@ -55,7 +63,11 @@ jobs:
                     -scheme ccnubox \
                     -configuration Release \
                     -sdk iphonesimulator \
-                    -derivedDataPath build
+                    -derivedDataPath build \
+                    -quiet \
+                    -parallelizeTargets \
+                    -enableCodeCoverage NO \
+                    -UseNewBuildSystem=YES
               env:
                   CI: true
 
