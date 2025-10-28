@@ -42,7 +42,7 @@ jobs:
               run: pnpm expo prebuild --platform android
 
             - name: Try building Android
-              run: pnpm run android --no-interactive
+              run: pnpm run android
               env:
                   EXPO_NO_DOCTOR: 1
                   CI: true

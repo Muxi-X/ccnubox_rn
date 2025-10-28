@@ -42,7 +42,7 @@ jobs:
               run: pnpm expo prebuild --platform ios
 
             - name: Try building iOS
-              run: pnpm run ios --no-interactive
+              run: pnpm run ios
               env:
                   EXPO_NO_DOCTOR: 1
                   CI: true
