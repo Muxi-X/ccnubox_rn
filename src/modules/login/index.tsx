@@ -21,7 +21,7 @@ import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 
-// import usePrivacy from '@/store/privacy';
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
@@ -35,16 +35,13 @@ const LoginPage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);
   const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
-  // const { agreement: privacyChecked, setAgreement: setPrivacyChecked } =
-  //   usePrivacy();
 
-  const [userInfo, setUserInfo] = useState({
-    password: '',
-    student_id: '',
-  });
+  const [studentId, setStudentId] = useState(
+    useUserStore(state => state.student_id)
+  );
+  const [password, setPassword] = useState('');
   // use custom axios instance to avoid global error handler
   const request = axios.create({
-    // baseURL: process.env.EXPO_PUBLIC_API_URL,
     baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
     adapter: axios.defaults.adapter,
   });
@@ -54,20 +51,24 @@ const LoginPage: FC = () => {
   const handleLogin = async () => {
     setLoginTriggered(true);
 
-    if (!userInfo.student_id || !userInfo.password) {
+    if (!studentId || !password) {
       Toast.fail('请输入账号密码', 2);
     }
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例', 2);
     }
-    //console.log(userInfo);
+
     try {
-      const response = await request.post('/users/login_ccnu', userInfo, {
+      const payload = { student_id: studentId, password };
+      const response = await request.post('/users/login_ccnu', payload, {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
         //  console.log(response.headers);
-        setItem('userInfo', JSON.stringify(userInfo));
+        useUserStore.setState({
+          student_id: studentId,
+          password: password,
+        });
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
         router.navigate('/(tabs)');
@@ -111,10 +112,8 @@ const LoginPage: FC = () => {
           prefix={<View style={styles.suffixStyle}></View>}
           suffix={<View style={styles.suffixStyle}></View>}
           placeholder="请输入学号"
-          value={userInfo.student_id}
-          onChangeText={text =>
-            setUserInfo(prev => ({ ...prev, student_id: text.toString() }))
-          }
+          value={studentId}
+          onChangeText={text => setStudentId(text.toString())}
           placeholderTextColor={styles.textColor.color}
           textAlign="center"
         ></Input>
@@ -125,10 +124,8 @@ const LoginPage: FC = () => {
           textAlign="center"
           /* 前后缀都要有，不然对不齐 */
           prefix={<View style={styles.suffixStyle}></View>}
-          value={userInfo.password}
-          onChangeText={text =>
-            setUserInfo(prev => ({ ...prev, password: text.toString() }))
-          }
+          value={password}
+          onChangeText={text => setPassword(text.toString())}
           type={isPasswordShow ? 'text' : 'password'}
           suffix={
             <Icon
