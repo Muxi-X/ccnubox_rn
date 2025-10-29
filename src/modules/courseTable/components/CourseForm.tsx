@@ -247,7 +247,7 @@ export const CourseForm = (props: CourseFormProps) => {
     <>
       <View style={styles.addContainer}>
         <Input
-          inputStyle={styles.addText}
+          inputStyle={[currentStyle?.text_style, styles.addText]}
           allowClear
           placeholder={`请输入${props.pageText === 'test' ? '考试' : '课程'}名称`}
           placeholderTextColor={currentStyle?.placeholder_text_style?.color}
@@ -374,6 +374,7 @@ export const CourseForm = (props: CourseFormProps) => {
                 )
               ) : (
                 <Input
+                  inputStyle={currentStyle?.text_style}
                   placeholder={item.value}
                   placeholderTextColor="#75757B"
                   allowClear
