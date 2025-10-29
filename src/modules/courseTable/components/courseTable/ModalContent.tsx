@@ -73,6 +73,8 @@ function handleDeleteCourseConfirm(id: string) {
 
 // 封装modal
 function showModal(title: string, message: string, isSuccess: boolean = true) {
+  const currentStyle = useVisualScheme.getState().currentStyle;
+
   const icon = isSuccess ? (
     <SuccessIcon height={150} width={150} />
   ) : (
@@ -91,7 +93,14 @@ function showModal(title: string, message: string, isSuccess: boolean = true) {
         }}
       >
         {icon}
-        <Text style={{ fontSize: 20, textAlign: 'center' }}>{message}</Text>
+        <Text
+          style={[
+            currentStyle?.text_style,
+            { fontSize: 20, textAlign: 'center' },
+          ]}
+        >
+          {message}
+        </Text>
       </View>
     ),
     mode: 'middle',
@@ -270,7 +279,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
             <>
               <View style={styles.noteInputArea}>
                 <TextInput
-                  style={styles.noteInput}
+                  style={[styles.noteInput, currentStyle.text_style]}
                   value={noteText}
                   onChangeText={setNoteText}
                   multiline
