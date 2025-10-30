@@ -11,7 +11,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "genapi": "node ./scripts/genapi.js"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,mjs}":["expo lint", "prettier --write"]

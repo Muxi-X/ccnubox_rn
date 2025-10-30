@@ -705,9 +705,10 @@ export interface paths {
       parameters: {
         query: {
           refresh: boolean;
-          semester: string;
-          /** @description 学年,格式为"2024"代表"2024-2025学年"` */
-          year: string;
+          /** @description binding:"required" // 为添加默认值处理的妥协做法 */
+          semester?: string;
+          /** @description binding:"required" //学年,格式为"2024"代表"2024-2025学年"` */
+          year?: string;
         };
         header: {
           /** @description Bearer Token */
@@ -782,6 +783,100 @@ export interface paths {
     };
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/class/note/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 删除课程备注
+     * @description 根据课程 ID 删除课程备注
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 删除课程备注请求 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['class.DeleteClassNoteReq'];
+        };
+      };
+      responses: {
+        /** @description 成功删除课程备注 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/class/note/insert': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 插入课程备注
+     * @description 根据课程 ID 更新课程备注
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 更新课程备注请求 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['class.UpdateClassNoteReq'];
+        };
+      };
+      responses: {
+        /** @description 成功插入课程备注 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
     delete?: never;
     options?: never;
     head?: never;
@@ -931,100 +1026,6 @@ export interface paths {
       };
     };
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/class/note/insert': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 添加课程备注
-     * @description 为指定课程添加备注
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 添加课程备注请求 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['class.AddCourseNoteRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功添加课程备注 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/class/note/delete': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 删除课程备注
-     * @description 删除指定课程的备注
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 删除课程备注请求 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['class.DeleteCourseNoteRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功删除课程备注 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
     delete?: never;
     options?: never;
     head?: never;
@@ -2573,6 +2574,725 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/library/cancel_reserve': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 取消预约
+     * @description 取消预约
+     */
+    post: {
+      parameters: {
+        query: {
+          id: string;
+        };
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回取消预约成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/create_comment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 创建评论
+     * @description 创建座位评论
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 评论参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.CreateCommentReq'];
+        };
+      };
+      responses: {
+        /** @description 成功返回创建信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 系统异常，创建失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/delete_comment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 删除评论
+     * @description 通过评论 ID 删除评论
+     */
+    get: {
+      parameters: {
+        query: {
+          /** @description 评论 ID */
+          id: number;
+        };
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回删除信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 系统异常，删除失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/get_comments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取评论
+     * @description 获取某个座位的评论列表
+     */
+    get: {
+      parameters: {
+        query: {
+          /** @description 座位 ID (devID) */
+          id: number;
+        };
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回评论列表 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.Comment'][];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/get_credit_points': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取信誉分
+     * @description 获取信誉分及扣分记录
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回信誉分 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.GetCreditPointResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/get_discussion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 获取图书馆研讨间信息
+     * @description 传入时间获取图书馆研讨间信息
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 获取研讨间信息的请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.GetDiscussionRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功返回图书馆研讨间信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.GetDiscussionResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/get_history_records': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取历史预约记录
+     * @description 获取1年内的预约记录和三个月内的取消记录
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回历史预约记录 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.GetHistoryResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/get_seat': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 获取图书馆座位信息
+     * @description 默认获取当天图书馆座位信息
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 获取座位请求 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.GetSeatRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功返回图书馆座位信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.GetSeatResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/get_seat_records': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取未来预约
+     * @description 获取即将到来的预约
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回即将到来的预约 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.GetSeatRecordResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/reserve_discussion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 预约研讨间
+     * @description 传入学生ID,时间,主题等预约研讨间
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 预约研讨间所需要的参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.ReserveDiscussionRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功返回预约研讨间成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/reserve_randomly': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 随机预约座位
+     * @description 全校随机选座（可指定楼层）
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 随机预约参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.ReserveSeatRandomlyRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功返回预约信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.ReserveSeatRandomlyResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，预约失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/reserve_seat': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 预约图书馆座位
+     * @description 预约图书馆座位
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 预约座位的请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.ReserveSeatRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功返回预约成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 系统异常，预约失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/library/search_user': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 搜索学生ID
+     * @description 传入学生学号获取对应的学生ID
+     */
+    post: {
+      parameters: {
+        query: {
+          student_id: string;
+        };
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回学生的ID */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.SearchUserResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/metrics/:type/:name': {
     parameters: {
       query?: never;
@@ -2596,7 +3316,7 @@ export interface paths {
       /** @description 打点附带的信息,将会计入日志 */
       requestBody: {
         content: {
-          '*/*': components['schemas']['metrics.MetricsReq'];
+          'application/json': components['schemas']['metrics.MetricsReq'];
         };
       };
       responses: {
@@ -2778,6 +3498,50 @@ export interface paths {
     };
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/users/deactivate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 注销账户
+     * @description 用户输入密码验明身份后注销
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 注销账户请求体 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['user.DeleteAccountReq'];
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
     delete?: never;
     options?: never;
     head?: never;
@@ -3123,8 +3887,10 @@ export interface components {
       day: number;
       /** @description 集合了课程信息的字符串，便于标识（课程ID） */
       id: string;
-      /** @description 课程备注 */
-      note?: string;
+      /** @description 是否为官方课程 */
+      is_official: boolean;
+      /** @description 备注 */
+      note: string;
       /** @description 学期 */
       semester: string;
       /** @description 任课教师 */
@@ -3135,6 +3901,14 @@ export interface components {
       weeks: number[];
       /** @description 上课地点 */
       where: string;
+      /** @description 学年 */
+      year: string;
+    };
+    'class.DeleteClassNoteReq': {
+      /** @description 课程ID */
+      classId: string;
+      /** @description 学期 */
+      semester: string;
       /** @description 学年 */
       year: string;
     };
@@ -3169,6 +3943,16 @@ export interface components {
     'class.SearchClassResp': {
       classInfos: components['schemas']['class.ClassInfo'][];
     };
+    'class.UpdateClassNoteReq': {
+      /** @description 课程ID */
+      classId: string;
+      /** @description 备注 */
+      note: string;
+      /** @description 学期 */
+      semester: string;
+      /** @description 学年 */
+      year: string;
+    };
     'class.UpdateClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
       classId: string;
@@ -3188,24 +3972,6 @@ export interface components {
       weeks?: number[];
       /** @description 地点 */
       where?: string;
-      /** @description 学年 */
-      year: string;
-    };
-    'class.AddCourseNoteRequest': {
-      /** @description 课程ID */
-      classId: string;
-      /** @description 备注内容 */
-      note: string;
-      /** @description 学期 */
-      semester: string;
-      /** @description 学年 */
-      year: string;
-    };
-    'class.DeleteCourseNoteRequest': {
-      /** @description 课程ID */
-      classId: string;
-      /** @description 学期 */
-      semester: string;
       /** @description 学年 */
       year: string;
     };
@@ -3373,9 +4139,13 @@ export interface components {
     };
     'feedback_help.FrequentlyAskedQuestion': {
       answer?: string;
-      /** @description Utime      time.Time
-       *     Ctime      time.Time */
+      /**
+       * Format: int64
+       * @description Utime      time.Time
+       *     Ctime      time.Time
+       */
       clickTimes?: number;
+      /** Format: int64 */
       id?: number;
       question?: string;
     };
@@ -3461,6 +4231,152 @@ export interface components {
       link: string;
       name: string;
     };
+    'library.Comment': {
+      /** @description 评论内容 */
+      content?: string;
+      /** @description 创建时间 */
+      created_at?: string;
+      /** @description 评论ID */
+      id?: number;
+      /** @description 评分（1-5） */
+      rating?: number;
+      /** @description 关联座位 */
+      seat_id?: string;
+      /** @description 发表评论的用户 */
+      user_id?: string;
+    };
+    'library.CreateCommentReq': {
+      content?: string;
+      rating?: number;
+      seat_id?: string;
+      username?: string;
+    };
+    'library.CreditPoints': {
+      records?: components['schemas']['library.CreditRecord'][];
+      summary?: components['schemas']['library.CreditSummary'];
+    };
+    'library.CreditRecord': {
+      /** @description 地点及备注 */
+      location?: string;
+      /** @description 扣分及时间 */
+      subtitle?: string;
+      /** @description 原因标题 */
+      title?: string;
+    };
+    'library.CreditSummary': {
+      remain?: string;
+      /** @description 个人预约制度 */
+      system?: string;
+      total?: string;
+    };
+    'library.Discussion': {
+      devId?: string;
+      devName?: string;
+      kindId?: string;
+      kindName?: string;
+      labId?: string;
+      labName?: string;
+      ts?: components['schemas']['library.DiscussionTS'][];
+    };
+    'library.DiscussionTS': {
+      end?: string;
+      occupy?: boolean;
+      owner?: string;
+      start?: string;
+      state?: string;
+      title?: string;
+    };
+    'library.GetCreditPointResponse': {
+      creditPoints?: components['schemas']['library.CreditPoints'];
+    };
+    'library.GetDiscussionRequest': {
+      class_id?: string;
+      date?: string;
+    };
+    'library.GetDiscussionResponse': {
+      discussions?: components['schemas']['library.Discussion'][];
+    };
+    'library.GetHistoryResponse': {
+      history?: components['schemas']['library.History'][];
+    };
+    'library.GetSeatRecordResponse': {
+      records?: components['schemas']['library.Record'][];
+    };
+    'library.GetSeatRequest': {
+      room_ids?: string[];
+    };
+    'library.GetSeatResponse': {
+      rooms?: components['schemas']['library.Room'][];
+    };
+    'library.History': {
+      date?: string;
+      floor?: string;
+      place?: string;
+      status?: string;
+      submitTime?: string;
+    };
+    'library.Record': {
+      devName?: string;
+      end?: string;
+      id?: string;
+      labName?: string;
+      owner?: string;
+      roomId?: string;
+      roomName?: string;
+      start?: string;
+      states?: string;
+      timeDesc?: string;
+    };
+    'library.ReserveDiscussionRequest': {
+      dev_id?: string;
+      end?: string;
+      kind_id?: string;
+      lab_id?: string;
+      list?: string[];
+      start?: string;
+      title?: string;
+    };
+    'library.ReserveSeatRandomlyRequest': {
+      dev_id?: string;
+      end?: string;
+      room_ids?: string[];
+      start?: string;
+    };
+    'library.ReserveSeatRandomlyResponse': {
+      message?: string;
+    };
+    'library.ReserveSeatRequest': {
+      dev_id?: string;
+      end?: string;
+      start?: string;
+    };
+    'library.Room': {
+      room_id?: string;
+      seats?: components['schemas']['library.Seat'][];
+    };
+    'library.Search': {
+      Pid?: string;
+      id?: string;
+      label?: string;
+      name?: string;
+    };
+    'library.SearchUserResponse': {
+      search?: components['schemas']['library.Search'];
+    };
+    'library.Seat': {
+      devId?: string;
+      devName?: string;
+      kindName?: string;
+      labName?: string;
+      ts?: components['schemas']['library.TimeSlot'][];
+    };
+    'library.TimeSlot': {
+      end?: string;
+      occupy?: boolean;
+      owner?: string;
+      start?: string;
+      state?: string;
+    };
     'metrics.MetricsReq': {
       /** @description 错误等级,分为info,error,warn,debug四个等级 */
       level?: string;
@@ -3488,6 +4404,9 @@ export interface components {
       access_token?: string;
       domain_name?: string;
     };
+    'user.DeleteAccountReq': {
+      password: string;
+    };
     'user.LoginByCCNUReq': {
       /** @description 密码 */
       password: string;
@@ -3495,7 +4414,7 @@ export interface components {
     };
     'web.Response': {
       code?: number;
-      data?: Record<string, never>;
+      data?: unknown;
       msg?: string;
     };
     'website.DelWebsiteRequest': {
