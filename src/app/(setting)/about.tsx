@@ -1,7 +1,6 @@
 import * as Application from 'expo-application';
 import * as Constants from 'expo-constants';
 import { Link } from 'expo-router';
-import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
