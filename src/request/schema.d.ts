@@ -3599,13 +3599,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
     /**
      * 登出(销毁token)
      * @description 通过短token登出
      */
-    post: {
+    get: {
       parameters: {
         query?: never;
         header?: never;
@@ -3625,6 +3623,8 @@ export interface paths {
         };
       };
     };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;

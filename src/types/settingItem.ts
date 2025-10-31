@@ -5,7 +5,7 @@ import { SinglePageType } from '@/types/tabBarTypes';
 export interface SettingItem
   extends Omit<SinglePageType, 'iconName' | 'headerLeft'> {
   id: number;
-  icon: { uri: string };
+  icon: string;
   text: string;
   to: Href | (() => void);
 }
