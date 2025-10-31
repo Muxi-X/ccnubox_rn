@@ -21,8 +21,8 @@ object TimeTableUtils {
         6 to 14 * 60L + 55,
         7 to 16 * 60L + 10,
         8 to 17 * 60L + 5,
-        9 to 19 * 60L,
-        10 to 19 * 60L + 55,
+        9 to 18 * 60L + 30,
+        10 to 19 * 60L + 20,
         11 to 20 * 60L + 15,
         12 to 21 * 60L + 5
     )

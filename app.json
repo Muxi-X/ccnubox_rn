@@ -3,7 +3,7 @@
     "name": "华师匣子",
     "slug": "ccnubox",
     "owner": "muxi_fe",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "runtimeVersion": "3.1.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
