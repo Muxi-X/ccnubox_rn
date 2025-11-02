@@ -14,9 +14,6 @@
     "prepare": "husky",
     "genapi": "node ./scripts/genapi.js"
   },
-  "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,mjs}":["expo lint", "prettier --write"]
-  },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.4.1",
