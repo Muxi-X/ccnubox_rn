@@ -389,7 +389,7 @@ eas env:pull # 运行后可以选择 development 或 production 环境
 ### 生成API类型定义
 
 ```bash
-npx openapi-typescript src/request/openapi.yaml -o src/request/schema.d.ts
+pnpm run genapi
 ```
 
 ### 修改资源文件

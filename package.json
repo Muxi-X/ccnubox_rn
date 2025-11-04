@@ -11,7 +11,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "genapi": "node ./scripts/genapi.js"
   },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
@@ -82,6 +83,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "miragejs": "^0.1.48",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3"

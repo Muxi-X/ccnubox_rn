@@ -1,10 +1,10 @@
 import { ActivityIndicator } from '@ant-design/react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BackHandler, Platform, StyleSheet, View } from 'react-native';
 import WebView, { WebViewNavigation } from 'react-native-webview';
 
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors } from '@/styles/common';
@@ -13,13 +13,8 @@ export default function ClassRoom() {
   const currentTheme = useVisualScheme().themeName;
   const [loading, setLoading] = useState(true);
   const { link } = useLocalSearchParams();
-  let student_id = '';
-  let password = '';
-  const userInfo = getItem('userInfo');
-  if (userInfo) {
-    student_id = JSON.parse(userInfo as string)?.student_id;
-    password = JSON.parse(userInfo as string)?.password;
-  }
+  const student_id = useUserStore(state => state.student_id);
+  const password = useUserStore(state => state.password);
 
   const webview = useRef<WebView>(null);
   const loginCount = useRef(0);

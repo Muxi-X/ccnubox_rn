@@ -26,6 +26,15 @@ export default function Layout() {
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackVisible: false,
+          headerLeft: () => (
+            <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
+          ),
+          headerStyle: currentStyle?.header_background_style as StyleProp<{
+            backgroundColor: string | undefined;
+            flexDirection: 'row';
+            justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+            alignItems: 'center';
+          }>,
         }}
       >
         {SettingItems.map(config => (
@@ -62,12 +71,6 @@ export default function Layout() {
                 )}
               </>
             ),
-            headerStyle: currentStyle?.header_background_style as StyleProp<{
-              backgroundColor: string | undefined;
-              flexDirection: 'row';
-              justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-              alignItems: 'center';
-            }>,
           }}
         />
         <Stack.Screen
@@ -80,12 +83,6 @@ export default function Layout() {
                 )}
               </>
             ),
-            headerStyle: currentStyle?.header_background_style as StyleProp<{
-              backgroundColor: string | undefined;
-              flexDirection: 'row';
-              justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-              alignItems: 'center';
-            }>,
           }}
         />
       </Stack>
