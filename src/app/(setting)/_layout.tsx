@@ -49,6 +49,15 @@ export default function Layout() {
                   )}
                 </>
               ),
+              headerLeft: () => (
+                <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
+              ),
+              headerStyle: currentStyle?.header_background_style as StyleProp<{
+                backgroundColor: string | undefined;
+                flexDirection: 'row';
+                justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+                alignItems: 'center';
+              }>,
             }}
           ></Stack.Screen>
         ))}
