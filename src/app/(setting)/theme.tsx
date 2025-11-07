@@ -1,12 +1,11 @@
-import * as React from 'react';
 import { StyleSheet } from 'react-native';
 
 // import TabBar from '@/components/tabbar';
 import TabBar from '@/components/tabs';
 import View from '@/components/view';
 
-import SelectStyle from '@/modules/selectStyle';
-import SelectTheme from '@/modules/selectTheme';
+import SelectStyle from '@/modules/setting/components/selectStyle';
+import SelectTheme from '@/modules/setting/components/selectTheme';
 
 export default function Theme() {
   return (
