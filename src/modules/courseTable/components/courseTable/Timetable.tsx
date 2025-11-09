@@ -8,12 +8,19 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { StyleSheet, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
+import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
@@ -45,10 +52,67 @@ const Timetable: React.FC<CourseTableProps> = ({
   const { currentStyle, themeName } = useVisualScheme(
     ({ currentStyle, themeName }) => ({ currentStyle, themeName })
   );
+  const {
+    backgroundUri,
+    backgroundMode,
+    foregroundOpacity,
+    backgroundMaskEnabled,
+  } = useCourseTableAppearance();
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
+
+  const renderBackgroundContent = (
+    children: React.ReactNode,
+    style?: StyleProp<ViewStyle>
+  ) => {
+    const flattenedStyle = (StyleSheet.flatten(style) || {}) as ViewStyle;
+    const baseStyle: ViewStyle = { ...flattenedStyle };
+
+    if (baseStyle.position !== 'absolute' && baseStyle.flex === undefined) {
+      baseStyle.flex = 1;
+    }
+
+    if (!backgroundUri) {
+      return (
+        <View
+          style={[
+            baseStyle,
+            {
+              backgroundColor: currentStyle?.background_style?.backgroundColor,
+            },
+          ]}
+        >
+          {children}
+        </View>
+      );
+    }
+
+    const maskOpacity = foregroundOpacity * 0.5;
+    const maskColor =
+      themeName === 'dark'
+        ? `rgba(0, 0, 0, ${maskOpacity})`
+        : `rgba(255, 255, 255, ${maskOpacity})`;
+
+    return (
+      <ImageBackground
+        source={{ uri: backgroundUri }}
+        style={[baseStyle, { backgroundColor: 'transparent' }]}
+        imageStyle={{ resizeMode: backgroundMode }}
+      >
+        {backgroundMaskEnabled && (
+          <View
+            style={[
+              StyleSheet.absoluteFillObject,
+              { backgroundColor: maskColor },
+            ]}
+          />
+        )}
+        {children}
+      </ImageBackground>
+    );
+  };
 
   const onSaveImageAsync = async () => {
     try {
@@ -226,9 +290,10 @@ const Timetable: React.FC<CourseTableProps> = ({
         <View
           style={[
             styles.courseWrapperStyle,
-            //不设置截图会截出来透明的
             {
-              backgroundColor: currentStyle?.background_style?.backgroundColor,
+              backgroundColor: backgroundUri
+                ? 'transparent'
+                : currentStyle?.background_style?.backgroundColor,
             },
           ]}
         >
@@ -267,7 +332,7 @@ const Timetable: React.FC<CourseTableProps> = ({
           ))}
         </View>
       );
-    }, [timetableMatrix, courses, currentStyle])
+    }, [timetableMatrix, courses, currentStyle, backgroundUri])
   );
 
   // 创建完整课表内容的视图，用于截图
@@ -275,81 +340,103 @@ const Timetable: React.FC<CourseTableProps> = ({
     <View
       ref={fullTableRef}
       collapsable={false}
-      style={{
-        position: 'absolute',
-        // opacity: 0, // 隐藏这个视图，只用于截图
-        zIndex: -100,
-        backgroundColor: currentStyle?.background_style?.backgroundColor,
-      }}
+      style={styles.fullTableWrapper}
     >
-      <View style={{ flexDirection: 'row' }}>
-        {/* 左上角空白区域 */}
-        <View
-          style={{
-            width: TIME_WIDTH,
-            height: COURSE_HEADER_HEIGHT,
-            backgroundColor:
-              themeName === 'light' ? commonColors.gray : commonColors.black,
-          }}
-        />
-        {/* 顶部周标题 */}
-        <StickyTop />
-      </View>
-      <View style={{ flexDirection: 'row' }}>
-        {/* 左侧时间栏 */}
-        <View>
-          <StickyLeft />
-        </View>
-        {/* 课表内容 */}
-        {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
-      </View>
+      {renderBackgroundContent(
+        <View style={{ opacity: foregroundOpacity }}>
+          <View style={{ flexDirection: 'row' }}>
+            {/* 左上角空白区域 */}
+            <View
+              style={{
+                width: TIME_WIDTH,
+                height: COURSE_HEADER_HEIGHT,
+                backgroundColor:
+                  themeName === 'light'
+                    ? commonColors.gray
+                    : commonColors.black,
+              }}
+            />
+            {/* 顶部周标题 */}
+            <StickyTop />
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            {/* 左侧时间栏 */}
+            <View>
+              <StickyLeft />
+            </View>
+            {/* 课表内容 */}
+            {data ? (
+              content
+            ) : (
+              <ThemeChangeText>正在获取课表...</ThemeChangeText>
+            )}
+          </View>
+        </View>,
+        styles.fullTableBackground
+      )}
     </View>
   );
 
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.container}>
-        {/* 用于截图的完整课表内容 */}
-        {snapshot && fullTableContent}
-        <ScrollableView
-          // 上方导航栏
-          stickyTop={<StickyTop />}
-          ref={imageRef}
-          collapsable={false}
-          cornerStyle={{
-            backgroundColor:
-              themeName === 'light'
+  const timetableForeground = (
+    <View style={[styles.container, { opacity: foregroundOpacity }]}>
+      {/* 用于截图的完整课表内容 */}
+      {snapshot && fullTableContent}
+      <ScrollableView
+        // 上方导航栏
+        stickyTop={<StickyTop />}
+        ref={imageRef}
+        collapsable={false}
+        cornerStyle={{
+          backgroundColor: backgroundUri
+            ? 'transparent'
+            : currentStyle?.schedule_item_background_style?.backgroundColor ||
+              (themeName === 'light'
                 ? commonColors.lightGray
-                : commonColors.black,
-          }}
-          onRefresh={async (handleSuccess, handleFail) => {
-            try {
-              setIsFetching(true);
-              // onTimetableRefresh returns a Promise so we need to await it
-              await onTimetableRefresh(true);
-              handleSuccess();
-            } catch {
-              //console.error('刷新失败:', error);
-              handleFail();
-            } finally {
-              setIsFetching(false);
-            }
-          }}
-          // 学霸也是要睡觉的 ！！！！！！
-          stickyBottom={<StickyBottom />}
-          // 左侧时间栏
-          stickyLeft={<StickyLeft />}
-          style={{ flex: 1 }}
-        >
-          {/* 内容部分 (课程表) */}
-          {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
-        </ScrollableView>
-      </View>
+                : commonColors.black),
+        }}
+        onRefresh={async (handleSuccess, handleFail) => {
+          try {
+            setIsFetching(true);
+            // onTimetableRefresh returns a Promise so we need to await it
+            await onTimetableRefresh(true);
+            handleSuccess();
+          } catch {
+            //console.error('刷新失败:', error);
+            handleFail();
+          } finally {
+            setIsFetching(false);
+          }
+        }}
+        // 学霸也是要睡觉的 ！！！！！！
+        stickyBottom={<StickyBottom />}
+        // 左侧时间栏
+        stickyLeft={<StickyLeft />}
+        style={{ flex: 1 }}
+        backgroundLayer={renderBackgroundContent(
+          <View style={styles.scrollBackgroundFill} />,
+          styles.scrollBackground
+        )}
+      >
+        {/* 内容部分 (课程表) */}
+        {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+      </ScrollableView>
     </View>
   );
+
+  const rootStyle = [
+    styles.root,
+    !backgroundUri && {
+      backgroundColor: currentStyle?.background_style?.backgroundColor,
+    },
+  ];
+
+  return <View style={rootStyle}>{timetableForeground}</View>;
 };
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   container: {
     display: 'flex',
     flexDirection: 'row',
@@ -357,12 +444,28 @@ const styles = StyleSheet.create({
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
     paddingBottom: 20,
   },
+  fullTableWrapper: {
+    position: 'absolute',
+    zIndex: -100,
+  },
+  fullTableBackground: {},
   courseWrapperStyle: {
     position: 'relative',
     width: COURSE_ITEM_WIDTH * daysOfWeek.length,
     height: COURSE_ITEM_HEIGHT * timeSlots.length,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
     zIndex: -1,
+  },
+  scrollBackground: {
+    position: 'absolute',
+    top: -COURSE_HEADER_HEIGHT,
+    left: -TIME_WIDTH,
+    width: TIME_WIDTH + COURSE_ITEM_WIDTH * daysOfWeek.length,
+    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * timeSlots.length,
+    zIndex: -2,
+  },
+  scrollBackgroundFill: {
+    flex: 1,
   },
   timeSideBar: {
     width: TIME_WIDTH,

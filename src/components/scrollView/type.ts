@@ -57,6 +57,14 @@ export interface ScrollableViewProps {
    */
   cornerStyle?: StyleProps;
   /**
+   * 背景层，会随内容一起滚动
+   */
+  backgroundLayer?: ReactNode;
+  /**
+   * 下拉刷新背景颜色
+   */
+  refreshBackgroundColor?: string;
+  /**
    * 是否可折叠
    */
   collapsable?: boolean;

@@ -1,9 +1,10 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
 
 import useCourse from '@/store/course';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -17,7 +18,18 @@ export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { selectedWeek } = useTimeStore();
   const schoolTime = useCourse(state => state.schoolTime);
+  const { backgroundUri } = useCourseTableAppearance();
   const [dates, setDates] = useState<string[]>([]);
+
+  const scheduleBackgroundStyle = useMemo(() => {
+    const flattened = StyleSheet.flatten(
+      currentStyle?.schedule_item_background_style
+    );
+    if (!backgroundUri || !flattened) {
+      return currentStyle?.schedule_item_background_style;
+    }
+    return { ...flattened, backgroundColor: 'transparent' };
+  }, [currentStyle?.schedule_item_background_style, backgroundUri]);
 
   useEffect(() => {
     const calculateDates = async () => {
@@ -61,7 +73,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
             key={index}
             style={[
               styles.headerCell,
-              currentStyle?.schedule_item_background_style,
+              scheduleBackgroundStyle,
               currentStyle?.schedule_border_style,
             ]}
           >
