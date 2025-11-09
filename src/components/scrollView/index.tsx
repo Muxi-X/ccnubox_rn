@@ -51,6 +51,8 @@ const ScrollLikeView = (props: ScrollableViewProps, ref: React.Ref<View>) => {
     cornerStyle,
     onRefresh,
     collapsable,
+    refreshBackgroundColor = commonColors.lightPurple,
+    backgroundLayer,
   } = props;
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -385,7 +387,7 @@ const ScrollLikeView = (props: ScrollableViewProps, ref: React.Ref<View>) => {
             opacity: 1,
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: commonColors.lightPurple,
+            backgroundColor: refreshBackgroundColor,
             overflow: 'hidden',
             alignItems: 'center',
             position: 'absolute',
@@ -459,7 +461,12 @@ const ScrollLikeView = (props: ScrollableViewProps, ref: React.Ref<View>) => {
             }}
           >
             <GestureDetector gesture={panGesture}>
-              <Animated.View style={[animatedStyle]}>
+              <Animated.View style={[styles.contentContainer, animatedStyle]}>
+                {backgroundLayer && (
+                  <View pointerEvents="none" style={styles.backgroundLayer}>
+                    {backgroundLayer}
+                  </View>
+                )}
                 {/* 给 children 加上 onLayout 检测，以便滚动距离能正常测量 */}
                 {children &&
                   React.cloneElement(children, {
@@ -509,6 +516,13 @@ const styles = StyleSheet.create({
   stickyContent: {
     flexShrink: 0,
     flexGrow: 0,
+  },
+  contentContainer: {
+    position: 'relative',
+  },
+  backgroundLayer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
   },
   text: {
     fontSize: 18,
