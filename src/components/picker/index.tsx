@@ -9,7 +9,7 @@ import { DatePickerProps } from '@/components/picker/types';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
-import { keyGenerator, percent2px } from '@/utils';
+import { percent2px } from '@/utils';
 
 // picker 左侧紫色条宽度
 const BORDER_LEFT_WIDTH = 8;
@@ -135,7 +135,7 @@ const Picker: React.FC<DatePickerProps> = ({
       >
         {/* FIX_ME：前缀，目前采用手动计算 */}
         {prefixes &&
-          prefixes.map(prefix => (
+          prefixes.map((prefix, idx) => (
             <Text
               style={[
                 styles.prefix,
@@ -147,7 +147,7 @@ const Picker: React.FC<DatePickerProps> = ({
                     2,
                 },
               ]}
-              key={keyGenerator.next() as unknown as number}
+              key={`${idx}-${String(prefix)}`}
             >
               {prefix ?? '1'}
             </Text>

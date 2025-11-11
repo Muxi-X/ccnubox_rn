@@ -14,13 +14,6 @@ import StarIcon from '@/assets/icons/star.svg';
 import { ClassroomColumns, ClassroomPrefix } from '@/constants/Classroom';
 import { queryFreeClassroom } from '@/request/api/queryClassroom';
 
-// 共享常量
-
-// TOFIX: 手动硬编码判断当前学年和学期，需添加自动获取逻辑
-export const currentYear = '2024-2025';
-export const currentSemester = 1;
-
-// 共享接口类型
 export interface ClassroomClassroomAvailableStat {
   availableStat?: boolean[];
   classroom?: string;
@@ -169,7 +162,7 @@ export const useClassroomData = (filterStarred: boolean = false) => {
   );
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
-
+  const { semester, year } = useTimeStore();
   const handlePickerConfirm = (result: string[]) => {
     if (result.length > 0) {
       const [locationValue, floorValue, timeValue] = result;
@@ -204,8 +197,8 @@ export const useClassroomData = (filterStarred: boolean = false) => {
       const sections = getSelectedPeriods(timeSlot);
 
       const queryParams = {
-        year: currentYear.toString(),
-        semester: currentSemester.toString(),
+        year: year,
+        semester: semester.toString(),
         week: currentWeek,
         day: currentDayOfWeek,
         sections: sections,
