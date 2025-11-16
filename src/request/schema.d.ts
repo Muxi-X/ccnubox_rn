@@ -985,6 +985,87 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/class/toBeStudied': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取人培课程(全部)
+     * @description 获取需要上的课程, 返回全部课程
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功获取待修课程 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['class.GetToBeStudiedClassResp'] & {
+                common_educate?: components['schemas']['class.ClassToBeStudiedInfo'][];
+                identity_develop?: components['schemas']['class.ClassToBeStudiedInfo'][];
+                specific_skill?: components['schemas']['class.ClassToBeStudiedInfo'][];
+              };
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    /**
+     * 获取人培课程(部分)
+     * @description 根据用户选择返回各种状态的课程
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          /** @description Bearer Token */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 获取待修课请求 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['class.GetToBeStudiedClassReq'];
+        };
+      };
+      responses: {
+        /** @description 成功获取待修课程 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['class.GetToBeStudiedClassResp'];
+            };
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/class/update': {
     parameters: {
       query?: never;
@@ -2574,6 +2655,100 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/grade/getRankByTerm': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 查询学分绩排名
+     * @description 根据学年号和学期号获取用户的学分绩排名以及分数和统计的科目，全为0则查总排名
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 获取学年和学期的学分绩排名请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['grade.GetRankByTermReq'];
+        };
+      };
+      responses: {
+        /** @description 成功返回学年和学期的排名信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['grade.GetRankByTermResp'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/grade/loadRank': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 预加载总排名
+     * @description 当用户点开app时前端发现从未预加载过，调用该接口预加载总排名，每个用户只需调用一次即可
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 返回信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/library/cancel_reserve': {
     parameters: {
       query?: never;
@@ -3504,6 +3679,47 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/tube/upload/official': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取官网上传令牌
+     * @description 获取用于前端 CD 部署时上传官网资源到七牛云的令牌
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['tube.GetTubeTokenData'];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/users/deactivate': {
     parameters: {
       query?: never;
@@ -3904,6 +4120,20 @@ export interface components {
       /** @description 学年 */
       year: string;
     };
+    'class.ClassToBeStudiedInfo': {
+      /** @description 学分 */
+      credit: string;
+      /** @description 课程ID */
+      id: string;
+      /** @description 课程名称 */
+      name: string;
+      /** @description 课程性质， */
+      property: string;
+      /** @description 课程状态，未修读/修读中/已修读 */
+      status: string;
+      /** @description 开设学年期 */
+      studiable: string;
+    };
     'class.DeleteClassNoteReq': {
       /** @description 课程ID */
       classId: string;
@@ -3931,6 +4161,18 @@ export interface components {
     'class.GetSchoolDayResp': {
       holiday_time: number;
       school_time: number;
+    };
+    'class.GetToBeStudiedClassReq': {
+      /** @description 课程状态，未修读/修读中/已修读 */
+      status: string;
+    };
+    'class.GetToBeStudiedClassResp': {
+      /** @description 通识教育课 */
+      common_educate: components['schemas']['class.ClassToBeStudiedInfo'][];
+      /** @description 个性发展课 */
+      identity_develop: components['schemas']['class.ClassToBeStudiedInfo'][];
+      /** @description 专业主干课 */
+      specific_skill: components['schemas']['class.ClassToBeStudiedInfo'][];
     };
     'class.RecoverClassRequest': {
       /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
@@ -4170,6 +4412,19 @@ export interface components {
     };
     'grade.GetGradeScoreResp': {
       type_of_grade_scores: components['schemas']['grade.TypeOfGradeScore'][];
+    };
+    'grade.GetRankByTermReq': {
+      refresh?: boolean;
+      /** @description 学年学期四个字段为空则获取总成绩 */
+      xnm_begin?: number;
+      xnm_end?: number;
+      xqm_begin?: number;
+      xqm_end?: number;
+    };
+    'grade.GetRankByTermResp': {
+      include?: string[];
+      rank?: string;
+      score?: string;
     };
     'grade.Grade': {
       /** @description 课程类别名称 */
