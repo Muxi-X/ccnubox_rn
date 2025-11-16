@@ -31,20 +31,63 @@ function runCommand(command, args) {
   });
 }
 
-(async () => {
-  const rl = createInterface({ input, output });
-
-  let username = '',
-    password = '';
+(function loadEnvVariables() {
   try {
-    username = (await rl.question('BasicAuth 用户名：')).trim();
-    password = (await rl.question('BasicAuth 密码：')).trim();
+    // eslint-disable-next-line global-require
+    const dotenvFlow = require('dotenv-flow');
+    dotenvFlow.config({
+      silent: true,
+      override: false,
+      purge_dotenv: false,
+    });
+  } catch (err) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      console.warn('未安装 dotenv-flow，无法自动加载 .env/.env.local');
+      console.warn('请运行 `pnpm add -D dotenv-flow` 后重试。');
+    } else {
+      console.warn('加载 dotenv-flow 失败：', err.message);
+    }
+  }
+})();
+
+(async () => {
+  let username = '';
+  let password = '';
+
+  const envUsername = process.env.API_USERNAME;
+  if (typeof envUsername === 'string') {
+    username = envUsername.trim();
+  }
+
+  const envPassword = process.env.API_PASSWORD;
+  if (typeof envPassword === 'string') {
+    password = envPassword.trim();
+  }
+
+  let rl;
+  try {
+    if (!username || !password) {
+      rl = createInterface({ input, output });
+
+      if (!username) {
+        username = (await rl.question('BasicAuth 用户名：')).trim();
+      }
+
+      if (!password) {
+        password = (await rl.question('BasicAuth 密码：')).trim();
+      }
+    }
   } catch (err) {
     console.error('输入过程出错：', err.message);
-    rl.close();
+    if (rl) {
+      rl.close();
+    }
     process.exit(1);
   }
-  rl.close();
+
+  if (rl) {
+    rl.close();
+  }
 
   // 获取 swagger 文档
   let apidocText = '';
@@ -85,6 +128,15 @@ function runCommand(command, args) {
     console.log('类型定义生成完毕！');
   } catch (err) {
     console.error('类型定义生成/命令执行失败：', err.message);
+    process.exit(1);
+  }
+
+  // 格式化
+  try {
+    await runCommand('pnpm', ['format']);
+    console.log('格式化完成！');
+  } catch (err) {
+    console.error('格式化失败：', err.message);
     process.exit(1);
   }
 })();

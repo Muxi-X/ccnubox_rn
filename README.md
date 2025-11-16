@@ -389,6 +389,7 @@ eas env:pull # 运行后可以选择 development 或 production 环境
 ### 生成API类型定义
 
 ```bash
+# pull 过 development 环境的 env 后可以自动输入 Basic Auth 的验证信息
 pnpm run genapi
 ```
 
