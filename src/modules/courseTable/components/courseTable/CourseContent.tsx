@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import Modal from '@/components/modal';
@@ -30,13 +30,45 @@ const CourseContent: React.FC<CourseContentProps> = memo(
       state => state.CurrentComponents?.CourseItem
     );
 
-    const slotCourses = React.useMemo(
-      () =>
-        originalData.filter(
-          c => c.day - 1 === props.colIndex && c.class_when === class_when
-        ),
-      [originalData, props.colIndex, class_when]
-    );
+    // 解析课程范围
+    function parseRange(str: string) {
+      const [start, end] = str.split('-').map(Number);
+      return { start, end };
+    }
+
+    // 缓存当前的范围
+    const currRange = useMemo(() => parseRange(class_when), [class_when]);
+
+    // 现在slotCourses在课表重叠的时候会全包含
+    // (比如之前在课程重叠时，点击1-4只包含1-4的信息，现在1-4会额外包含1-2和3-4的信息)
+    const slotCourses = useMemo(() => {
+      return originalData.filter(c => {
+        if (c.day - 1 !== props.colIndex) return false;
+
+        const { start, end } = parseRange(c.class_when);
+        return !(end < currRange.start || start > currRange.end);
+      });
+    }, [originalData, props.colIndex, currRange]);
+
+    // 在长课程重叠短课程且均为非本周的情况下，因为背景色的问题，会导致重叠后颜色变深
+    // 所以这里判断是否其它课程完全覆盖了当前课程的时间段，且当前课程非本周
+    // 如果是那么就不渲染当前课程，规避背景色问题
+    const isCoveredAndNotInCurrWeek = useMemo(() => {
+      return slotCourses.some(c => {
+        if (c.id === props.id) return false;
+
+        const { start, end } = parseRange(c.class_when);
+
+        const isFullCovers =
+          start <= currRange.start &&
+          end >= currRange.end &&
+          (start < currRange.start || end > currRange.end);
+
+        return !props.isThisWeek && isFullCovers;
+      });
+    }, [slotCourses, props.id, currentWeek, currRange]);
+
+    const isRender = slotCourses.length <= 1 || !isCoveredAndNotInCurrWeek;
 
     const renderCourse = (c: courseType, idx: number) => (
       <View
@@ -66,7 +98,10 @@ const CourseContent: React.FC<CourseContentProps> = memo(
           style={{
             position: 'absolute',
             width: styles.cell.width - COURSE_HORIZONTAL_PADDING * 2,
-            zIndex: 99,
+            zIndex:
+              100 -
+              props.rowIndex +
+              (slotCourses.length > 1 && props.isThisWeek ? 100 : 0),
             height: 'auto',
             top: COURSE_VERTICAL_PADDING + COURSE_ITEM_HEIGHT * props.rowIndex,
             left:
@@ -97,8 +132,8 @@ const CourseContent: React.FC<CourseContentProps> = memo(
             });
           }}
         >
-          {CourseItem && <CourseItem {...props}></CourseItem>}
-          {slotCourses.length > 1 && (
+          {CourseItem && isRender ? <CourseItem {...props} /> : null}
+          {slotCourses.length > 1 && isRender && (
             <View
               pointerEvents="none"
               style={{
