@@ -132,7 +132,6 @@ const Modal: React.FC<ModalProps> & {
                       ...styles.cancelViewStyle,
                       ...styles.buttonStyle,
                     },
-                    currentStyle?.secondary_background_style,
                   ]}
                 >
                   <Text
