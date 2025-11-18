@@ -159,15 +159,14 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
 
   function createQuickSelect(
     e: { target: { checked: boolean } },
-    selectedValues: Set<string | number>,
-    isCheckedAll: boolean
+    selectedValues: Set<string | number>
   ) {
     const checkedItems: Set<string | number> = e.target.checked
       ? selectedValues
       : new Set();
     setCheckedList(checkedItems);
     onPick?.(checkedItems);
-    setCheckAll(isCheckedAll);
+    setCheckAll(checkedItems.size === plainOptions.length);
   }
 
   const allSet = useMemo(() => {
@@ -191,15 +190,15 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   }, [plainOptions]);
 
   const onCheckAllChange = (e: { target: { checked: boolean } }) => {
-    createQuickSelect(e, allSet, e.target.checked);
+    createQuickSelect(e, allSet);
   };
 
   const onOddWeeksChange = (e: { target: { checked: boolean } }) => {
-    createQuickSelect(e, oddSet, checkedList.size === plainOptions.length);
+    createQuickSelect(e, oddSet);
   };
 
   const onEvenWeeksChange = (e: { target: { checked: boolean } }) => {
-    createQuickSelect(e, evenSet, checkedList.size === plainOptions.length);
+    createQuickSelect(e, evenSet);
   };
 
   const isEqualSet = (a: Set<string | number>, b: Set<string | number>) =>

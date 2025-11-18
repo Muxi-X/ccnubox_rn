@@ -128,7 +128,7 @@ const Timetable: React.FC<CourseTableProps> = ({
   }, []);
 
   // 计算课程表内容的memoized值
-  const { timetableMatrix, courses } = React.useMemo(() => {
+  const { timetableMatrix, courses, visibleIds } = React.useMemo(() => {
     // 时刻表
     const timetableMatrix: ({
       classname: string;
@@ -137,7 +137,8 @@ const Timetable: React.FC<CourseTableProps> = ({
     const courses: CourseTransferType[] = [];
     // 先按时间槽和日期分组课程
     const coursesBySlot = new Map();
-    data.forEach((course: courseType) => {
+    const idxMap = new Map<string, number>();
+    data.forEach((course: courseType, idx: number) => {
       const {
         id,
         day,
@@ -152,6 +153,8 @@ const Timetable: React.FC<CourseTableProps> = ({
         is_official,
       } = course;
 
+      // 将课程id映射为优先级
+      idxMap.set(course.id, idx);
       // 计算课程的时间跨度（占几节课）
       const timeSpan = class_when
         .split('-')
@@ -194,19 +197,24 @@ const Timetable: React.FC<CourseTableProps> = ({
     for (const [key, slotCourses] of coursesBySlot) {
       const [rowIndex, colIndex] = key.split('-').map(Number);
 
-      // 当一个时间槽有多节课时，优先显示当前周的课程
+      // 这里之前的显示标准只有本周优先，而没有区分是否为用户添加，会出现用户加课后而课表显示没有变化的情况
+      // 所以下面稍微更改了显示的优先级：
+      // 用户添加且本周 > 教务系统且本周 > 用户添加且非本周 > 教务系统且非本周
+      // 且同一优先级中后加入 > 先加入
       let courseToShow: CourseTransferType | null = null;
 
-      // 1. 首先尝试找到当前周应该显示的课程
-      courseToShow =
-        slotCourses.find((course: CourseTransferType) =>
-          course.weeks.includes(currentWeek)
-        ) || null;
-
-      // 2. 如果当前周没有课程，则选择第一节课作为默认显示
-      if (!courseToShow && slotCourses.length > 0) {
-        courseToShow = slotCourses[0];
-      }
+      const getPriority = (c: CourseTransferType) => {
+        const idx = idxMap.get(c.id) || 0; // 查找序列，越往后越大
+        const base = (c.isThisWeek ? 2 : 0) + (!c.is_official ? 1 : 0); // 3/2/1/0
+        return base * 100 + idx; // 乘100是因为有时idx的影响太大了，覆盖了base，而且后面加大比重直接改100方便
+      };
+      const sorted = slotCourses
+        .slice()
+        .sort(
+          (a: CourseTransferType, b: CourseTransferType) =>
+            getPriority(b) - getPriority(a)
+        );
+      courseToShow = sorted[0] ?? null;
 
       if (courseToShow) {
         timetableMatrix[rowIndex][colIndex] = {
@@ -216,7 +224,8 @@ const Timetable: React.FC<CourseTableProps> = ({
         courses.push(courseToShow);
       }
     }
-    return { timetableMatrix, courses };
+    const visibleIds = courses.map(c => c.id);
+    return { timetableMatrix, courses, visibleIds };
   }, [data, currentWeek]); // 只在data或currentWeek改变时重新计算，返回memoized结果
 
   // 内容部分
@@ -263,11 +272,12 @@ const Timetable: React.FC<CourseTableProps> = ({
               {...item}
               originalData={data}
               currentWeek={currentWeek}
+              visibleIds={visibleIds}
             />
           ))}
         </View>
       );
-    }, [timetableMatrix, courses, currentStyle])
+    }, [timetableMatrix, courses, visibleIds, currentStyle])
   );
 
   // 创建完整课表内容的视图，用于截图
