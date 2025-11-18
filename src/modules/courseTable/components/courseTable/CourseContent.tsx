@@ -19,6 +19,7 @@ import { CourseTransferType, courseType } from './type';
 type CourseContentProps = CourseTransferType & {
   originalData: courseType[];
   currentWeek: number;
+  visibleIds: string[]; // visibleIds缓存当前显示的课程id，加入这个是因为某些神秘bug
 };
 
 // 课程内容组件
@@ -53,20 +54,24 @@ const CourseContent: React.FC<CourseContentProps> = memo(
     // 在长课程重叠短课程且均为非本周的情况下，因为背景色的问题，会导致重叠后颜色变深
     // 所以这里判断是否其它课程完全覆盖了当前课程的时间段，且当前课程非本周
     // 如果是那么就不渲染当前课程，规避背景色问题
+    const visibleIdSet = useMemo(
+      () => new Set(props.visibleIds),
+      [props.visibleIds]
+    );
     const isCoveredAndNotInCurrWeek = useMemo(() => {
       return slotCourses.some(c => {
         if (c.id === props.id) return false;
 
         const { start, end } = parseRange(c.class_when);
-
         const isFullCovers =
           start <= currRange.start &&
           end >= currRange.end &&
           (start < currRange.start || end > currRange.end);
 
-        return !props.isThisWeek && isFullCovers;
+        const isCoveringRendered = visibleIdSet.has(c.id); // 覆盖当前课程的课程也必须被显示
+        return !props.isThisWeek && isFullCovers && isCoveringRendered;
       });
-    }, [slotCourses, props.id, currentWeek, currRange]);
+    }, [slotCourses, props.id, props.isThisWeek, currRange, visibleIdSet]);
 
     const isRender = slotCourses.length <= 1 || !isCoveredAndNotInCurrWeek;
 
