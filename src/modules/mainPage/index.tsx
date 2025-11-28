@@ -1,8 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import useGridOrder from '@/store/gridOrder';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { FC, memo, useEffect, useLayoutEffect, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import Carousel from 'react-native-reanimated-carousel';
@@ -12,9 +10,9 @@ import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
 
+import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
 
-import { mainPageApplications } from '@/constants/mainPageApplications';
 import { queryBanners } from '@/request/api';
 import { keyGenerator, percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
@@ -30,7 +28,6 @@ const IndexPage: FC = () => {
     }[]
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  // const [data, setData] = useState<MainPageGridDataType[]>(mainPageApplications);
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { mainPageApplications } from '@/constants/mainPageApplications';
+
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 interface GridOrderState {
@@ -32,23 +33,36 @@ const useGridOrder = create<GridOrderState>()(
         gridData: state.gridData.map(item => ({ key: item.key })),
       }),
 
-      onRehydrateStorage: () => state => {
-        if (!state) return;
+      merge: (persistedState, currentState) => {
+        const inbound = persistedState as Partial<GridOrderState> | undefined;
+        if (!inbound) {
+          return currentState;
+        }
 
-        const savedOrder = state.gridData;
+        const { gridData: inboundGridData, ...rest } = inbound;
+        const savedOrder = Array.isArray(inboundGridData)
+          ? inboundGridData
+          : [];
+
         const savedKeys = new Set(savedOrder.map(item => item.key));
-
-        // 保留存在的应用(按保存的顺序)
         const existingApps = savedOrder
           .map(({ key }) => mainPageApplications.find(item => item.key === key))
           .filter((item): item is MainPageGridDataType => Boolean(item));
 
-        // 添加新增的应用
         const newApps = mainPageApplications.filter(
           app => !savedKeys.has(app.key)
         );
 
-        state.gridData = [...existingApps, ...newApps];
+        const reconstructedGrid =
+          existingApps.length || newApps.length
+            ? [...existingApps, ...newApps]
+            : mainPageApplications;
+
+        return {
+          ...currentState,
+          ...rest,
+          gridData: reconstructedGrid,
+        };
       },
     }
   )
