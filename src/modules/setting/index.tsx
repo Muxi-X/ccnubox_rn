@@ -3,7 +3,8 @@ import { FlatList } from 'react-native';
 import ThemeBasedView from '@/components/view';
 
 import { SettingItems } from '@/constants/settingItem';
-import SettingItem from '@/modules/setting/components/settingItem';
+
+import SettingItem from './components/settingItem';
 
 export default function SettingPage() {
   return (
