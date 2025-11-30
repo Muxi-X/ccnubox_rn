@@ -2,6 +2,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import {
   BackHandler,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -130,7 +132,6 @@ const Modal: React.FC<ModalProps> & {
                       ...styles.cancelViewStyle,
                       ...styles.buttonStyle,
                     },
-                    currentStyle?.secondary_background_style,
                   ]}
                 >
                   <Text
@@ -198,50 +199,56 @@ const Modal: React.FC<ModalProps> & {
   }, [visible, currentKey]);
   return (
     <ModalBack visible={visible} style={{ zIndex: currentKey }}>
-      <View
-        style={[
-          styles.modalOverlay,
-          {
-            justifyContent: isBottomMode ? 'flex-end' : 'center',
-            paddingBottom: isBottomMode ? percent2px(20) : 0,
-          },
-        ]}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
       >
-        <ModalBackground onPress={handleClose} />
-        {/* 底部 modal 与中部动画不一致 */}
-        {isBottomMode ? (
-          <AnimatedSlide
-            distance={100}
-            direction="vertical"
-            duration={200}
-            trigger={visible}
-            style={[
-              isTransparent
-                ? styles.transparentModalContent
-                : styles.modalContent,
-              !isTransparent && currentStyle?.modal_background_style,
-            ]}
-          >
-            {isTransparent && <ModalBackground onPress={handleClose} />}
-            {modalContent}
-          </AnimatedSlide>
-        ) : (
-          <AnimatedScale
-            duration={400}
-            outputRange={[0.6, 1]}
-            trigger={visible}
-            style={[
-              isTransparent
-                ? styles.transparentModalContent
-                : styles.modalContent,
-              !isTransparent && currentStyle?.modal_background_style,
-            ]}
-          >
-            {isTransparent && <ModalBackground onPress={handleClose} />}
-            {modalContent}
-          </AnimatedScale>
-        )}
-      </View>
+        <View
+          style={[
+            styles.modalOverlay,
+            {
+              justifyContent: isBottomMode ? 'flex-end' : 'center',
+              paddingBottom: isBottomMode ? percent2px(20) : 0,
+            },
+          ]}
+        >
+          <ModalBackground onPress={handleClose} />
+          {/* 底部 modal 与中部动画不一致 */}
+          {isBottomMode ? (
+            <AnimatedSlide
+              distance={100}
+              direction="vertical"
+              duration={200}
+              trigger={visible}
+              style={[
+                isTransparent
+                  ? styles.transparentModalContent
+                  : styles.modalContent,
+                !isTransparent && currentStyle?.modal_background_style,
+              ]}
+            >
+              {isTransparent && <ModalBackground onPress={handleClose} />}
+              {modalContent}
+            </AnimatedSlide>
+          ) : (
+            <AnimatedScale
+              duration={400}
+              outputRange={[0.6, 1]}
+              trigger={visible}
+              style={[
+                isTransparent
+                  ? styles.transparentModalContent
+                  : styles.modalContent,
+                !isTransparent && currentStyle?.modal_background_style,
+              ]}
+            >
+              {isTransparent && <ModalBackground onPress={handleClose} />}
+              {modalContent}
+            </AnimatedScale>
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </ModalBack>
   );
 };

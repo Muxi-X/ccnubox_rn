@@ -255,8 +255,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
               >
                 <NoteIcon
-                  width={16}
-                  height={16}
+                  width={20}
+                  height={20}
                   color={currentStyle?.text_style?.color}
                   style={styles.icon}
                 />
@@ -269,7 +269,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                     ? '备注'
                     : currNote
                       ? truncateText(currNote)
-                      : '点击可添加备注:D'}
+                      : '点击可添加备注'}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -514,16 +514,20 @@ const styles = StyleSheet.create({
   },
   noteInput: {
     width: '100%',
+    minHeight: 80,
     borderRadius: 12,
     padding: 6,
     borderWidth: 1,
     borderColor: '#E1E2F1',
+    marginBottom: 24,
   },
   charCount: {
     position: 'absolute',
-    bottom: -20,
+    bottom: 4,
     right: 0,
     paddingVertical: 2,
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
 
   noteActionsArea: {

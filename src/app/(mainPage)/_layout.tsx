@@ -74,6 +74,11 @@ export default function Layout() {
           key={keyGenerator.next().value as unknown as number}
           options={createHeaderOptions('电费查询')}
         ></Stack.Screen>
+        <Stack.Screen
+          name="webview"
+          key={keyGenerator.next().value as unknown as number}
+          options={createHeaderOptions('常用网站')}
+        ></Stack.Screen>
       </Stack>
     </SafeAreaView>
   );

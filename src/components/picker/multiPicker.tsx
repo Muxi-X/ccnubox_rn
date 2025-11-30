@@ -157,14 +157,82 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     onPick?.(newCheckedList);
   };
 
-  const onCheckAllChange = (e: { target: { checked: boolean } }) => {
+  function createQuickSelect(
+    e: { target: { checked: boolean } },
+    selectedValues: Set<string | number>
+  ) {
     const checkedItems: Set<string | number> = e.target.checked
-      ? new Set(plainOptions.map(item => item.value))
+      ? selectedValues
       : new Set();
     setCheckedList(checkedItems);
     onPick?.(checkedItems);
-    setCheckAll(e.target.checked);
+    setCheckAll(checkedItems.size === plainOptions.length);
+  }
+
+  const allSet = useMemo(() => {
+    return new Set(plainOptions.map(item => item.value));
+  }, [plainOptions]);
+
+  const oddSet = useMemo(() => {
+    return new Set(
+      plainOptions
+        .filter(item => Number(item.value) % 2 === 1)
+        .map(item => item.value)
+    );
+  }, [plainOptions]);
+
+  const evenSet = useMemo(() => {
+    return new Set(
+      plainOptions
+        .filter(item => Number(item.value) % 2 === 0)
+        .map(item => item.value)
+    );
+  }, [plainOptions]);
+
+  const onCheckAllChange = (e: { target: { checked: boolean } }) => {
+    createQuickSelect(e, allSet);
   };
+
+  const onOddWeeksChange = (e: { target: { checked: boolean } }) => {
+    createQuickSelect(e, oddSet);
+  };
+
+  const onEvenWeeksChange = (e: { target: { checked: boolean } }) => {
+    createQuickSelect(e, evenSet);
+  };
+
+  const isEqualSet = (a: Set<string | number>, b: Set<string | number>) =>
+    a.size === b.size && Array.from(a).every(v => b.has(v));
+
+  const renderCheckboxItem = (
+    label: string,
+    checked: boolean,
+    onChange: (e: { target: { checked: boolean } }) => void
+  ) => (
+    <CheckboxItem
+      onChange={onChange}
+      checked={checked}
+      styles={{
+        Item: {
+          borderRadius: 5,
+          margin: 2,
+          backgroundColor: 'rgba(0,0,0,0)',
+        },
+        Line: {
+          borderColor: 'rgba(0, 0, 0, 0)',
+        },
+      }}
+    >
+      <Text
+        style={{
+          color: currentStyle?.text_style?.color,
+          fontSize: 14,
+        }}
+      >
+        {label}
+      </Text>
+    </CheckboxItem>
+  );
 
   return (
     <ScrollView
@@ -184,29 +252,17 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
           },
         }}
       >
-        <CheckboxItem
-          onChange={onCheckAllChange}
-          checked={checkAll}
-          styles={{
-            Item: {
-              borderRadius: 5,
-              margin: 2,
-              backgroundColor: 'rgba(0,0,0,0)',
-            },
-            Line: {
-              borderColor: 'rgba(0, 0, 0, 0)',
-            },
-          }}
-        >
-          <Text
-            style={{
-              color: currentStyle?.text_style?.color,
-              fontSize: 14,
-            }}
-          >
-            全选
-          </Text>
-        </CheckboxItem>
+        {renderCheckboxItem('全选', checkAll, onCheckAllChange)}
+        {renderCheckboxItem(
+          '单周',
+          isEqualSet(checkedList, oddSet),
+          onOddWeeksChange
+        )}
+        {renderCheckboxItem(
+          '双周',
+          isEqualSet(checkedList, evenSet),
+          onEvenWeeksChange
+        )}
         <>
           {plainOptions.map(a => (
             <CheckboxItem

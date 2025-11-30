@@ -556,6 +556,77 @@ paths:
       summary: 搜索课程
       tags:
         - class
+  /class/toBeStudied:
+    get:
+      description: 获取需要上的课程, 返回全部课程
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取待修课程
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/class.GetToBeStudiedClassResp'
+                          - properties:
+                              common_educate:
+                                items:
+                                  $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
+                                type: array
+                              identity_develop:
+                                items:
+                                  $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
+                                type: array
+                              specific_skill:
+                                items:
+                                  $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
+                                type: array
+                            type: object
+                    type: object
+      summary: 获取人培课程(全部)
+      tags:
+        - class
+    post:
+      description: 根据用户选择返回各种状态的课程
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/class.GetToBeStudiedClassReq'
+        description: 获取待修课请求
+        required: true
+      responses:
+        '200':
+          description: 成功获取待修课程
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/class.GetToBeStudiedClassResp'
+                    type: object
+      summary: 获取人培课程(部分)
+      tags:
+        - class
   /class/update:
     put:
       description: 根据课表ID更新课表信息
@@ -1538,6 +1609,50 @@ paths:
       summary: 查询学分
       tags:
         - grade
+  /grade/getRankByTerm:
+    get:
+      description: 根据学年号和学期号获取用户的学分绩排名以及分数和统计的科目，全为0则查总排名
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/grade.GetRankByTermReq'
+        description: 获取学年和学期的学分绩排名请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功返回学年和学期的排名信息
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/grade.GetRankByTermResp'
+                    type: object
+        '500':
+          description: 系统异常，获取失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 查询学分绩排名
+      tags:
+        - grade
+  /grade/loadRank:
+    get:
+      description: 当用户点开app时前端发现从未预加载过，调用该接口预加载总排名，每个用户只需调用一次即可
+      responses:
+        '200':
+          description: 返回信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 预加载总排名
+      tags:
+        - grade
   /library/cancel_reserve:
     post:
       description: 取消预约
@@ -2088,6 +2203,24 @@ paths:
       summary: 获取图床访问令牌
       tags:
         - tube
+  /tube/upload/official:
+    get:
+      description: 获取用于前端 CD 部署时上传官网资源到七牛云的令牌
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/tube.GetTubeTokenData'
+                    type: object
+      summary: 获取官网上传令牌
+      tags:
+        - tube
   /users/deactivate:
     post:
       description: 用户输入密码验明身份后注销
@@ -2131,7 +2264,7 @@ paths:
       tags:
         - user
   /users/logout:
-    post:
+    get:
       description: 通过短token登出
       responses:
         '200':
@@ -2434,6 +2567,34 @@ components:
         - where
         - year
       type: object
+    class.ClassToBeStudiedInfo:
+      properties:
+        credit:
+          description: 学分
+          type: string
+        id:
+          description: 课程ID
+          type: string
+        name:
+          description: 课程名称
+          type: string
+        property:
+          description: 课程性质，
+          type: string
+        status:
+          description: 课程状态，未修读/修读中/已修读
+          type: string
+        studiable:
+          description: 开设学年期
+          type: string
+      required:
+        - credit
+        - id
+        - name
+        - property
+        - status
+        - studiable
+      type: object
     class.DeleteClassNoteReq:
       properties:
         classId:
@@ -2497,6 +2658,36 @@ components:
       required:
         - holiday_time
         - school_time
+      type: object
+    class.GetToBeStudiedClassReq:
+      properties:
+        status:
+          description: 课程状态，未修读/修读中/已修读
+          type: string
+      required:
+        - status
+      type: object
+    class.GetToBeStudiedClassResp:
+      properties:
+        common_educate:
+          description: 通识教育课
+          items:
+            $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
+          type: array
+        identity_develop:
+          description: 个性发展课
+          items:
+            $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
+          type: array
+        specific_skill:
+          description: 专业主干课
+          items:
+            $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
+          type: array
+      required:
+        - common_educate
+        - identity_develop
+        - specific_skill
       type: object
     class.RecoverClassRequest:
       properties:
@@ -3033,6 +3224,31 @@ components:
           type: array
       required:
         - type_of_grade_scores
+      type: object
+    grade.GetRankByTermReq:
+      properties:
+        refresh:
+          type: boolean
+        xnm_begin:
+          description: 学年学期四个字段为空则获取总成绩
+          type: integer
+        xnm_end:
+          type: integer
+        xqm_begin:
+          type: integer
+        xqm_end:
+          type: integer
+      type: object
+    grade.GetRankByTermResp:
+      properties:
+        include:
+          items:
+            type: string
+          type: array
+        rank:
+          type: string
+        score:
+          type: string
       type: object
     grade.Grade:
       properties:
