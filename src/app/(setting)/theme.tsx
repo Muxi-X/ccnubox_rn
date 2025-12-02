@@ -12,7 +12,7 @@ export default function Theme() {
   return (
     <View style={styles.container}>
       <TabBar
-        // swipeable={false}
+
         tabs={[
           {
             title: '布局',
