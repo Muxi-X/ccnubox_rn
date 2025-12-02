@@ -75,7 +75,7 @@ const Timetable: React.FC<CourseTableProps> = ({
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
   // Canvas引用，用于截图背景
-  const canvasRef = useCanvasRef();
+
   // 合成Canvas引用，用于合成背景和前景
   const compositeCanvasRef = useCanvasRef();
   // 前景截图的Skia Image
