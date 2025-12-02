@@ -2,7 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { mainPageApplications } from '@/constants/mainPageApplications';
+import { getMainPageApplications } from '@/constants/mainPageApplications';
+import globalEventBus from '@/utils/eventBus';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
@@ -13,17 +14,33 @@ interface GridOrderState {
   resetGridOrder: () => void;
 }
 
+const buildGridDataWithOrder = (
+  order: MainPageGridDataType[] | { key: string }[]
+) => {
+  const apps = getMainPageApplications();
+  const appMap = new Map(apps.map(app => [app.key, app]));
+
+  const ordered = order
+    .map(item => appMap.get(item.key))
+    .filter((item): item is MainPageGridDataType => Boolean(item));
+
+  const orderedKeys = new Set(ordered.map(item => item.key));
+  const remaining = apps.filter(app => !orderedKeys.has(app.key));
+
+  return ordered.length || remaining.length ? [...ordered, ...remaining] : apps;
+};
+
 const useGridOrder = create<GridOrderState>()(
   persist(
     set => ({
       // 初始状态
-      gridData: mainPageApplications,
+      gridData: getMainPageApplications(),
 
       // 更新顺序
       updateGridOrder: newOrder => set({ gridData: newOrder }),
 
       // 重置为默认顺序
-      resetGridOrder: () => set({ gridData: mainPageApplications }),
+      resetGridOrder: () => set({ gridData: getMainPageApplications() }),
     }),
     {
       name: 'grid-order-storage',
@@ -44,28 +61,20 @@ const useGridOrder = create<GridOrderState>()(
           ? inboundGridData
           : [];
 
-        const savedKeys = new Set(savedOrder.map(item => item.key));
-        const existingApps = savedOrder
-          .map(({ key }) => mainPageApplications.find(item => item.key === key))
-          .filter((item): item is MainPageGridDataType => Boolean(item));
-
-        const newApps = mainPageApplications.filter(
-          app => !savedKeys.has(app.key)
-        );
-
-        const reconstructedGrid =
-          existingApps.length || newApps.length
-            ? [...existingApps, ...newApps]
-            : mainPageApplications;
-
         return {
           ...currentState,
           ...rest,
-          gridData: reconstructedGrid,
+          gridData: buildGridDataWithOrder(savedOrder),
         };
       },
     }
   )
 );
+
+globalEventBus.on('layoutChange', () => {
+  const state = useGridOrder.getState();
+  const currentOrder = state.gridData.map(item => ({ key: item.key }));
+  state.updateGridOrder(buildGridDataWithOrder(currentOrder));
+});
 
 export default useGridOrder;
