@@ -23,6 +23,8 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@rneui/base": "4.0.0-rc.8",
+    "@rneui/themed": "4.0.0-rc.8",
     "@shopify/react-native-skia": "v2.0.0-next.4",
     "axios": "^1.9.0",
     "expo": "~53.0.23",

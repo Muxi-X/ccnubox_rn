@@ -1,4 +1,5 @@
-import { Slider, Switch } from '@ant-design/react-native';
+import { Switch } from '@ant-design/react-native';
+import { Slider } from '@rneui/themed';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -19,6 +20,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { COURSE_ITEM_WIDTH, daysOfWeek } from '@/constants/courseTable';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
+import { commonColors } from '@/styles/common';
 
 const PREVIEW_COURSE_DATA: CourseTransferType = {
   id: 'preview',
@@ -86,20 +88,24 @@ export default function OtherStyle() {
     </View>
   );
 
-  const renderPreviewContent = () => (
-    <View style={styles.previewContent}>
-      <View style={[styles.previewCourse, { opacity: localOpacity }]}>
-        {previewCourse}
+  const renderPreviewContent = () => {
+    const normalizedOpacity = localOpacity / 100;
+    return (
+      <View style={styles.previewContent}>
+        <View style={[styles.previewCourse, { opacity: normalizedOpacity }]}>
+          {previewCourse}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const renderPreview = () => {
     if (!backgroundUri) {
       return renderPreviewContent();
     }
 
-    const maskOpacity = localOpacity * 0.5;
+    const normalizedOpacity = localOpacity / 100;
+    const maskOpacity = normalizedOpacity * 0.5;
     const maskColor =
       themeName === 'dark'
         ? `rgba(0, 0, 0, ${maskOpacity})`
@@ -166,7 +172,8 @@ export default function OtherStyle() {
 
   const handleOpacityChange = (value: number) => {
     // 立即更新本地 state 以保持 UI 响应
-    setLocalOpacity(value);
+    const roundedValue = Math.round(value);
+    setLocalOpacity(roundedValue);
 
     // 清除之前的定时器
     if (updateTimerRef.current) {
@@ -175,7 +182,7 @@ export default function OtherStyle() {
 
     // 延迟更新 store，减少更新频率
     updateTimerRef.current = setTimeout(() => {
-      setForegroundOpacity(value);
+      setForegroundOpacity(roundedValue);
       updateTimerRef.current = null;
     }, 100);
   };
@@ -250,15 +257,17 @@ export default function OtherStyle() {
       {/* 前景透明度设置 */}
       <View style={styles.sliderSection}>
         <Text style={[currentStyle?.text_style, styles.sliderTitle]}>
-          前景透明度：{Math.round(localOpacity * 100)}%
+          前景透明度：{localOpacity}%
         </Text>
         <Slider
           value={localOpacity}
-          min={0}
-          max={1}
-          step={0.01}
-          onChange={handleOpacityChange}
+          minimumValue={0}
+          maximumValue={100}
+          step={1}
+          onValueChange={handleOpacityChange}
+          thumbStyle={styles.sliderThumb}
           style={{ paddingVertical: 0 }}
+          minimumTrackTintColor={commonColors.purple}
         />
         <View style={styles.sliderLabelRow}>
           <Text style={[currentStyle?.text_style, styles.sliderLabel]}>0%</Text>
@@ -358,6 +367,17 @@ const styles = StyleSheet.create({
   sliderTitle: {
     fontSize: 18,
     marginBottom: 10,
+  },
+  sliderThumb: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: commonColors.purple,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
   sliderLabelRow: {
     flexDirection: 'row',
