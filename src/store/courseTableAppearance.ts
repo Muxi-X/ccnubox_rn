@@ -19,21 +19,23 @@ const useCourseTableAppearance = create<CourseTableAppearanceState>()(
     set => ({
       backgroundUri: undefined,
       backgroundMode: 'cover',
-      foregroundOpacity: 1,
+      foregroundOpacity: 100,
       backgroundMaskEnabled: false,
 
       setBackgroundUri: (uri?: string) => set({ backgroundUri: uri }),
       setBackgroundMode: (mode: 'cover' | 'contain' | 'stretch') =>
         set({ backgroundMode: mode }),
       setForegroundOpacity: (opacity: number) =>
-        set({ foregroundOpacity: Math.max(0, Math.min(1, opacity)) }), // 限制在 0-1 之间
+        set({
+          foregroundOpacity: Math.max(0, Math.min(100, Math.round(opacity))),
+        }), // 限制在 0-100 之间并转为整数
       setBackgroundMaskEnabled: (enabled: boolean) =>
         set({ backgroundMaskEnabled: enabled }),
       reset: () =>
         set({
           backgroundUri: undefined,
           backgroundMode: 'cover',
-          foregroundOpacity: 1,
+          foregroundOpacity: 100,
           backgroundMaskEnabled: false,
         }),
     }),

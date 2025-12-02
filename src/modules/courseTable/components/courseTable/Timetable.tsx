@@ -1,7 +1,6 @@
 import {
   Canvas,
   makeImageFromView,
-  Paint,
   Rect,
   Skia,
   Image as SkImage,
@@ -9,7 +8,10 @@ import {
   useCanvasRef,
   useImage,
 } from '@shopify/react-native-skia';
-import * as ImageManipulator from 'expo-image-manipulator';
+import {
+  ImageManipulator as ExpoImageManipulator,
+  SaveFormat,
+} from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
 import React, {
   RefObject,
@@ -62,6 +64,12 @@ const Timetable: React.FC<CourseTableProps> = ({
     foregroundOpacity,
     backgroundMaskEnabled,
   } = useCourseTableAppearance();
+  const foregroundOpacityRatio = Math.min(
+    Math.max(foregroundOpacity / 100, 0),
+    1
+  );
+  const maskOpacity = Math.min(Math.max(foregroundOpacityRatio * 0.5, 0), 1);
+  const maskBaseColor = themeName === 'dark' ? '#000000' : '#FFFFFF';
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
   // 完整课表内容的引用
@@ -129,17 +137,11 @@ const Timetable: React.FC<CourseTableProps> = ({
         </View>
       );
     }
-    const maskOpacity = foregroundOpacity * 0.5;
-    const maskColor =
-      themeName === 'dark'
-        ? `rgba(0, 0, 0, ${maskOpacity})`
-        : `rgba(255, 255, 255, ${maskOpacity})`;
-
     const width = (baseStyle.width as number) || 0;
     const height = (baseStyle.height as number) || 0;
 
     return (
-      <View style={[baseStyle, { backgroundColor: 'transparent' }]}>
+      <View style={[baseStyle, currentStyle?.background_style]}>
         <Canvas
           style={{
             position: 'absolute',
@@ -156,11 +158,15 @@ const Timetable: React.FC<CourseTableProps> = ({
             height={height}
             fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
           />
-          {/* 遮罩层 */}
           {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={width} height={height}>
-              <Paint color={maskColor} />
-            </Rect>
+            <Rect
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              color={maskBaseColor}
+              opacity={maskOpacity}
+            />
           )}
         </Canvas>
         {children}
@@ -168,117 +174,122 @@ const Timetable: React.FC<CourseTableProps> = ({
     );
   };
 
-  const onSaveImageAsync = async () => {
-    try {
-      // 在真正需要使用权限时才请求
-      if (status?.status !== 'granted') {
-        const permissionResult = await requestPermission();
-        if (permissionResult.status !== 'granted') {
-          Toast.show({
-            text: '需要相册权限才能保存截图',
-            icon: 'fail',
-          });
-          return;
-        }
-      }
-      setSnapShot(true);
-      // 确保截图前视图已完全渲染
-      setTimeout(async () => {
+  const onSaveImageAsync = () => {
+    const renderAndSaveImage = async (sourceUri: string) => {
+      const context = ExpoImageManipulator.manipulate(sourceUri);
+      try {
+        const renderedImage = await context.renderAsync();
         try {
-          // 将滚动位置重置到顶部
-          globalEventBus.emit('ResetScrollPosition');
+          return await renderedImage.saveAsync({
+            compress: 1,
+            format: SaveFormat.PNG,
+          });
+        } finally {
+          renderedImage.release();
+        }
+      } finally {
+        context.release();
+      }
+    };
 
-          // 给予时间让滚动位置重置
-          await new Promise(resolve => setTimeout(resolve, 100));
-          if (backgroundUri) {
-            // 先截取前景View
-            const fgSnapshot = await makeImageFromView(
-              fullTableRef as RefObject<View>
-            );
+    const handleError = (error: unknown) => {
+      Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+      setSnapShot(false);
+    };
 
-            if (fgSnapshot) {
-              // 保存前景图到state，触发合成Canvas重新渲染
-              setForegroundImage(fgSnapshot as any);
+    const run = async () => {
+      const delay = (ms: number) =>
+        new Promise(resolve => setTimeout(resolve, ms));
 
-              // 等待Canvas渲染完成
-              await new Promise(resolve => setTimeout(resolve, 200));
-
-              // 截取合成后的Canvas
-              if (compositeCanvasRef.current) {
-                const compositeSnapshot =
-                  await compositeCanvasRef.current.makeImageSnapshotAsync();
-
-                if (compositeSnapshot) {
-                  const data = compositeSnapshot.encodeToBase64();
-                  const uri = `data:image/png;base64,${data}`;
-
-                  const manipulateResult =
-                    await ImageManipulator.manipulateAsync(uri, [], {
-                      compress: 1,
-                      format: ImageManipulator.SaveFormat.PNG,
-                    });
-
-                  if (manipulateResult && manipulateResult.uri) {
-                    await MediaLibrary.createAssetAsync(manipulateResult.uri);
-                    Toast.show({
-                      text: '截图成功',
-                      icon: 'success',
-                    });
-                    setForegroundImage(null);
-                    setSnapShot(false);
-                    return;
-                  }
-                }
-              }
-            }
-            setForegroundImage(null);
+      try {
+        // 在真正需要使用权限时才请求
+        if (status?.status !== 'granted') {
+          const permissionResult = await requestPermission();
+          if (permissionResult.status !== 'granted') {
+            Toast.show({
+              text: '需要相册权限才能保存截图',
+              icon: 'fail',
+            });
+            return;
           }
+        }
+        setSnapShot(true);
+        await delay(40); // 等待状态更新推动布局刷新
+        // 将滚动位置重置到顶部
+        globalEventBus.emit('ResetScrollPosition');
+        await delay(60); // 给予滚动归位的时间
 
-          // 没有背景图，直接截取View
-
-          const snapshot = await makeImageFromView(
+        if (backgroundUri) {
+          // 先截取前景View
+          const fgSnapshot = await makeImageFromView(
             fullTableRef as RefObject<View>
           );
 
-          if (!snapshot) {
-            Toast.show({
-              text: '截图失败',
-              icon: 'fail',
-            });
-            setSnapShot(false);
-            return;
-          }
+          if (fgSnapshot) {
+            // 保存前景图到state，触发合成Canvas重新渲染
+            setForegroundImage(fgSnapshot as any);
+            await delay(80); // 等待Canvas接收前景图
 
-          const data = snapshot.encodeToBase64();
-          const uri = `data:image/png;base64,${data}`;
+            // 截取合成后的Canvas
+            if (compositeCanvasRef.current) {
+              const compositeSnapshot =
+                await compositeCanvasRef.current.makeImageSnapshotAsync();
 
-          const manipulateResult = await ImageManipulator.manipulateAsync(
-            uri,
-            [],
-            {
-              compress: 1,
-              format: ImageManipulator.SaveFormat.PNG,
+              if (compositeSnapshot) {
+                const data = compositeSnapshot.encodeToBase64();
+                const uri = `data:image/png;base64,${data}`;
+
+                const manipulateResult = await renderAndSaveImage(uri);
+
+                if (manipulateResult && manipulateResult.uri) {
+                  await MediaLibrary.createAssetAsync(manipulateResult.uri);
+                  Toast.show({
+                    text: '截图成功',
+                    icon: 'success',
+                  });
+                  setForegroundImage(null);
+                  setSnapShot(false);
+                  return;
+                }
+              }
             }
-          );
-
-          if (manipulateResult && manipulateResult.uri) {
-            await MediaLibrary.createAssetAsync(manipulateResult.uri);
-            Toast.show({
-              text: '截图成功',
-              icon: 'success',
-            });
-            setSnapShot(false);
           }
-        } catch (error) {
-          Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+          setForegroundImage(null);
+        }
+
+        // 没有背景图，直接截取View
+        const snapshot = await makeImageFromView(
+          fullTableRef as RefObject<View>
+        );
+
+        if (!snapshot) {
+          Toast.show({
+            text: '截图失败',
+            icon: 'fail',
+          });
           setSnapShot(false);
           return;
         }
-      }, 500); // 给予足够的时间让视图完全渲染
-    } catch (e) {
-      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
-      setSnapShot(false);
-    }
+
+        const data = snapshot.encodeToBase64();
+        const uri = `data:image/png;base64,${data}`;
+
+        const manipulateResult = await renderAndSaveImage(uri);
+
+        if (manipulateResult && manipulateResult.uri) {
+          await MediaLibrary.createAssetAsync(manipulateResult.uri);
+          Toast.show({
+            text: '截图成功',
+            icon: 'success',
+          });
+          setSnapShot(false);
+        }
+      } catch (error) {
+        handleError(error);
+      }
+    };
+
+    run().catch(handleError);
   };
 
   useEffect(() => {
@@ -401,6 +412,7 @@ const Timetable: React.FC<CourseTableProps> = ({
               backgroundColor: backgroundUri
                 ? 'transparent'
                 : currentStyle?.background_style?.backgroundColor,
+              opacity: foregroundOpacityRatio,
             },
           ]}
         >
@@ -473,15 +485,14 @@ const Timetable: React.FC<CourseTableProps> = ({
           />
           {/* 遮罩层 */}
           {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={fullTableWidth} height={fullTableHeight}>
-              <Paint
-                color={
-                  themeName === 'dark'
-                    ? `rgba(0, 0, 0, ${foregroundOpacity * 0.5})`
-                    : `rgba(255, 255, 255, ${foregroundOpacity * 0.5})`
-                }
-              />
-            </Rect>
+            <Rect
+              x={0}
+              y={0}
+              width={fullTableWidth}
+              height={fullTableHeight}
+              color={maskBaseColor}
+              opacity={maskOpacity}
+            />
           )}
           {/* 前景内容 */}
           <SkImage
@@ -491,7 +502,7 @@ const Timetable: React.FC<CourseTableProps> = ({
             width={fullTableWidth}
             height={fullTableHeight}
             fit="fill"
-            opacity={foregroundOpacity}
+            opacity={foregroundOpacityRatio}
           />
         </Canvas>
       )}
@@ -531,7 +542,7 @@ const Timetable: React.FC<CourseTableProps> = ({
   );
 
   const timetableForeground = (
-    <View style={[styles.container, { opacity: foregroundOpacity }]}>
+    <View style={styles.container}>
       {/* 用于截图的完整课表内容 */}
       {snapshot && fullTableContent}
       <ScrollableView
