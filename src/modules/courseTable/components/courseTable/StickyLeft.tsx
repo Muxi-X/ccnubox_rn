@@ -1,8 +1,9 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
 
+import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
@@ -13,6 +14,18 @@ import {
 
 export const StickyLeft: React.FC = memo(function StickyLeft() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const { backgroundUri } = useCourseTableAppearance();
+
+  const timeSlotBackground = useMemo(() => {
+    const flattened = StyleSheet.flatten(
+      currentStyle?.schedule_item_background_style
+    );
+    if (!backgroundUri || !flattened) {
+      return currentStyle?.schedule_item_background_style;
+    }
+    return { ...flattened, backgroundColor: 'transparent' };
+  }, [currentStyle?.schedule_item_background_style, backgroundUri]);
+
   return (
     <>
       {timeSlots.map((time, index) => (
@@ -20,7 +33,7 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
           key={index}
           style={[
             styles.timeSlot,
-            currentStyle?.schedule_item_background_style,
+            timeSlotBackground,
             currentStyle?.schedule_border_style,
           ]}
         >

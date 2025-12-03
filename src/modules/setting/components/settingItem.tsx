@@ -1,16 +1,23 @@
 import { Href, useRouter } from 'expo-router';
-import * as React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 interface ItemProps {
-  icon: { uri: string };
+  icon: string;
   text: string;
   // with a Href, will navigate to the page
   // with a function, will execute the function
   to: Href | (() => void);
 }
+
 function SettingItem({ icon, text, to }: ItemProps) {
   const currentScheme = useVisualScheme(state => state.currentStyle);
   const navigation = useRouter();
@@ -26,7 +33,10 @@ function SettingItem({ icon, text, to }: ItemProps) {
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={handlePress}>
       <View style={styles.iconContainer}>
-        <Image source={icon} style={styles.icon} />
+        <Image
+          source={icon as unknown as ImageSourcePropType}
+          style={styles.icon}
+        />
       </View>
       <Text style={[styles.title, currentScheme?.text_style]}>{text}</Text>
       <Text style={styles.arrow}>➔</Text>

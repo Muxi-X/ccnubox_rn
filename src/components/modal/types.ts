@@ -29,7 +29,8 @@ export interface ModalProps extends PortalBaseProps {
 }
 
 export interface ModalTriggerProps
-  extends ViewProps, Omit<ModalProps, 'visible'> {
+  extends ViewProps,
+    Omit<ModalProps, 'visible'> {
   onPress?: () => void;
   triggerComponent?: ReactElement;
 }

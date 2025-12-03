@@ -25,13 +25,13 @@ import { handleOpenURL } from '@/utils/handleOpenURL';
 import type { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const getMainPageApplications = (): MainPageGridDataType[] => {
-  const { layoutSelect } = useVisualScheme.getState();
+  const { iconStyleSelect } = useVisualScheme.getState();
 
   return [
     {
       title: '查算学分绩',
       name: 'scoreInquiry',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosGradesSvg,
         android: AndroidGradesSvg,
         default: AndroidGradesSvg,
@@ -43,7 +43,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
       title: '电费查询',
       name: 'electricity',
       href: '/electricity',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosEnergySvg,
         android: AndroidEnergySvg,
         default: AndroidEnergySvg,
@@ -53,7 +53,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '地图',
       name: 'map',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosMapSvg,
         android: AndroidMapSvg,
         default: AndroidMapSvg,
@@ -64,7 +64,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '校园卡',
       name: 'schoolCard',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosCardSvg,
         android: AndroidCardSvg,
         default: AndroidCardSvg,
@@ -99,7 +99,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '部门信息',
       name: 'departments',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosInformationSvg,
         android: AndroidInformationSvg,
         default: AndroidInformationSvg,
@@ -110,7 +110,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '校历',
       name: 'calendar',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosDateSvg,
         android: AndroidDateSvg,
         default: AndroidDateSvg,
@@ -121,7 +121,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '常用网站',
       name: 'websites',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosWebSvg,
         android: AndroidWebSvg,
         default: AndroidWebSvg,
@@ -155,7 +155,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '座位预约',
       name: 'site',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosSiteSvg,
         android: AndroidSiteSvg,
         default: AndroidSiteSvg,
@@ -166,7 +166,7 @@ export const getMainPageApplications = (): MainPageGridDataType[] => {
     {
       title: '更多',
       name: 'more',
-      imageUrl: layoutSelect({
+      imageUrl: iconStyleSelect({
         ios: IosMoreSvg,
         android: AndroidMoreSvg,
         default: AndroidMoreSvg,

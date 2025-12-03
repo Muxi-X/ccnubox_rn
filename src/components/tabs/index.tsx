@@ -19,6 +19,22 @@ import useVisualScheme from '@/store/visualScheme';
 export const TabBar: React.FC<TabsProps> = props => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const themeName = useVisualScheme(state => state.themeName);
+  const tabCount =
+    props.tabs?.length || React.Children.count(props.children) || 2;
+
+  const getUnderlineStyle = () => {
+    const singleTabWidth = 100 / tabCount;
+    const underlineWidth = singleTabWidth * 0.65;
+    const margin = (singleTabWidth - underlineWidth) / 2;
+
+    return {
+      backgroundColor: '#9379F6',
+      marginHorizontal: `${margin}%`,
+      width: `${underlineWidth}%`,
+      height: 3,
+    } as const;
+  };
+
   return (
     <Tabs
       styles={{
@@ -33,12 +49,7 @@ export const TabBar: React.FC<TabsProps> = props => {
           }}
           tabBarInactiveTextColor={themeName === 'dark' ? '#969696' : '#3D3D3D'}
           tabBarActiveTextColor="#9379F6"
-          tabBarUnderlineStyle={{
-            backgroundColor: '#9379F6',
-            marginHorizontal: '10%',
-            width: '30%',
-            height: 3,
-          }}
+          tabBarUnderlineStyle={getUnderlineStyle()}
           tabBarBackgroundColor={
             currentStyle?.background_style?.backgroundColor as string
           }
