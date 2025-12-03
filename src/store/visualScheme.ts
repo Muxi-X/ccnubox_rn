@@ -8,18 +8,18 @@ import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 import globalEventBus from '@/utils/eventBus';
 import { setSystemUITheme } from '@/utils/systemUI';
 
-import { visualSchemeType } from './types';
+import { LayoutSelectSpec, visualSchemeType } from './types';
 
 /** 配色、布局整体store类型 */
 const useVisualScheme = create<visualSchemeType>()(
   persist(
-    set => ({
+    (set, get) => ({
       isAutoTheme: true,
       themeName: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
       layoutName: Platform.OS === 'ios' ? 'ios' : 'android',
       currentStyle: null,
       layouts: new Map(),
-      init: () =>
+      init: () => {
         set(state => {
           const newLayouts = new Map(Object.entries(layoutMap)) as Map<
             LayoutName,
@@ -31,8 +31,6 @@ const useVisualScheme = create<visualSchemeType>()(
               : 'light'
             : state.themeName;
           setSystemUITheme(currentTheme);
-          globalEventBus.emit('layoutSet');
-          globalEventBus.emit('layoutChange', state.layoutName);
           return {
             ...state,
             themeName: currentTheme,
@@ -41,13 +39,39 @@ const useVisualScheme = create<visualSchemeType>()(
             ] as SingleThemeType,
             layouts: newLayouts,
           };
-        }),
+        });
+
+        const { layoutName } = get();
+        globalEventBus.emit('layoutSet');
+        globalEventBus.emit('layoutChange', layoutName);
+      },
       removeLayouts: name =>
         set(state => {
           const newLayouts = new Map(state.layouts);
           newLayouts.delete(name);
           return { ...state, layouts: newLayouts };
         }),
+      layoutSelect: <T>(spec: LayoutSelectSpec<T>) => {
+        const { layoutName } = get();
+        const layoutSpecific = spec[layoutName];
+        if (layoutSpecific !== undefined) {
+          return layoutSpecific;
+        }
+
+        if (spec.default !== undefined) {
+          return spec.default;
+        }
+
+        const fallbackLayouts: LayoutName[] = ['ios', 'android'];
+        for (const fallback of fallbackLayouts) {
+          const candidate = spec[fallback];
+          if (candidate !== undefined) {
+            return candidate;
+          }
+        }
+
+        throw new Error('layoutSelect expected at least one layout value.');
+      },
       changeTheme: themeName =>
         set(state => {
           setSystemUITheme(themeName);
@@ -64,19 +88,21 @@ const useVisualScheme = create<visualSchemeType>()(
           }
           return state;
         }),
-      changeLayout: layoutName =>
+      changeLayout: layoutName => {
         set(state => {
           const { themeName, layouts, currentStyle } = state;
           const newStyle = layouts.get(layoutName)![
             themeName
           ] as SingleThemeType;
-          globalEventBus.emit('layoutChange', layoutName);
           return {
             ...state,
             currentStyle: newStyle ?? currentStyle,
             layoutName,
           };
-        }),
+        });
+
+        globalEventBus.emit('layoutChange', layoutName);
+      },
       setAutoTheme: value =>
         set(state => {
           const isAutoTheme = !!value;
