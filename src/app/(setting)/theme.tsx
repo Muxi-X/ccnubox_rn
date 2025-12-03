@@ -12,7 +12,6 @@ export default function Theme() {
   return (
     <View style={styles.container}>
       <TabBar
-
         tabs={[
           {
             title: '布局',

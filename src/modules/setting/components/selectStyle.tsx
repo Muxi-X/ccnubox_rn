@@ -7,9 +7,17 @@ import ThemeBasedView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SelectStyle() {
-  const { currentStyle, themeName, changeTheme, isAutoTheme, setAutoTheme } =
-    useVisualScheme();
+  const {
+    currentStyle,
+    themeName,
+    changeTheme,
+    isAutoTheme,
+    setAutoTheme,
+    iconStyleName,
+    changeIconStyle,
+  } = useVisualScheme();
   const isApplied = (layout: string) => layout === themeName;
+  const isIconStyleApplied = (style: string) => style === iconStyleName;
   return (
     <ThemeBasedView style={{ flex: 1, paddingVertical: 20 }}>
       <View
@@ -45,6 +53,36 @@ export default function SelectStyle() {
           justifyContent: 'space-between',
           display: 'flex',
           alignItems: 'center',
+          paddingTop: 20,
+        }}
+      >
+        <Text
+          style={[
+            currentStyle?.text_style,
+            {
+              fontSize: 18,
+              paddingLeft: 40,
+            },
+          ]}
+        >
+          是否开启深夜模式
+        </Text>
+        <Switch
+          checked={isApplied('dark')}
+          onChange={() => {
+            if (!isAutoTheme) {
+              changeTheme(isApplied('dark') ? 'light' : 'dark');
+            }
+          }}
+          style={{ marginRight: 20 }}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          display: 'flex',
+          alignItems: 'center',
           marginTop: 40,
         }}
       >
@@ -57,24 +95,75 @@ export default function SelectStyle() {
             },
           ]}
         >
-          深夜模式
+          iOS风格
         </Text>
         <Button
-          style={[
-            { width: '40%', borderRadius: 10, marginRight: 10 },
-            isAutoTheme && { opacity: 0.4 },
-          ]}
-          enabled={!isAutoTheme}
+          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
           onPress={() => {
-            if (!isApplied('dark') && !isAutoTheme) {
-              changeTheme(themeName === 'dark' ? 'light' : 'dark');
+            if (!isIconStyleApplied('ios')) {
+              changeIconStyle('ios');
             }
           }}
         >
-          {isAutoTheme ? '应用' : isApplied('dark') ? '已应用' : '应用'}
+          {isIconStyleApplied('ios') ? '已应用' : '应用'}
         </Button>
       </View>
       <Image
+        source={require('@/assets/images/theme/iosIcon.png')}
+        style={{
+          borderRadius: 20,
+          justifyContent: 'center',
+          marginTop: 20,
+          width: 300,
+          height: 100,
+          alignSelf: 'center',
+          resizeMode: 'contain',
+        }}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          display: 'flex',
+          alignItems: 'center',
+          marginTop: 40,
+        }}
+      >
+        <Text
+          style={[
+            currentStyle?.text_style,
+            {
+              fontSize: 18,
+              paddingLeft: 40,
+            },
+          ]}
+        >
+          Android风格
+        </Text>
+        <Button
+          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
+          onPress={() => {
+            if (!isIconStyleApplied('android')) {
+              changeIconStyle('android');
+            }
+          }}
+        >
+          {isIconStyleApplied('android') ? '已应用' : '应用'}
+        </Button>
+      </View>
+      <Image
+        source={require('@/assets/images/theme/baseIcon.png')}
+        style={{
+          borderRadius: 20,
+          justifyContent: 'center',
+          marginTop: 20,
+          width: 300,
+          height: 100,
+          alignSelf: 'center',
+          resizeMode: 'contain',
+        }}
+      />
+      {/* <Image
         source={require('@/assets/images/theme/darkStyle.png')}
         style={{
           borderRadius: 60,
@@ -85,8 +174,8 @@ export default function SelectStyle() {
           alignSelf: 'center',
           resizeMode: 'contain',
         }}
-      />
-      <View
+      /> */}
+      {/* <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -120,8 +209,8 @@ export default function SelectStyle() {
         >
           {isAutoTheme ? '应用' : isApplied('light') ? '已应用' : '应用'}
         </Button>
-      </View>
-      <Image
+      </View> */}
+      {/* <Image
         source={require('@/assets/images/theme/baseStyle.png')}
         style={{
           borderRadius: 20,
@@ -132,7 +221,7 @@ export default function SelectStyle() {
           alignSelf: 'center',
           resizeMode: 'contain',
         }}
-      />
+      /> */}
     </ThemeBasedView>
   );
 }

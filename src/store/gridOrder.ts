@@ -77,4 +77,10 @@ globalEventBus.on('layoutChange', () => {
   state.updateGridOrder(buildGridDataWithOrder(currentOrder));
 });
 
+globalEventBus.on('iconStyleChange', () => {
+  const state = useGridOrder.getState();
+  const currentOrder = state.gridData.map(item => ({ key: item.key }));
+  state.updateGridOrder(buildGridDataWithOrder(currentOrder));
+});
+
 export default useGridOrder;
