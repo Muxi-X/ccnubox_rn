@@ -10,6 +10,10 @@ import {
 import { ConfigurableComponentName } from '@/themeBasedComponents/type';
 
 /** 配色、布局整体store类型 */
+export type LayoutSelectSpec<T> = Partial<Record<LayoutName, T>> & {
+  default?: T;
+};
+
 export type visualSchemeType = {
   /** 是否自动跟随系统主题 */
   isAutoTheme: boolean;
@@ -27,6 +31,8 @@ export type visualSchemeType = {
   changeTheme: (_name: ThemeName) => void;
   /** 更改布局 ios | android */
   changeLayout: (_type: LayoutName) => void;
+  /** 根据当前 layout 选择配置 */
+  layoutSelect: <T>(_spec: LayoutSelectSpec<T>) => T;
   /** 注册style中样式 */
   init: () => void;
   removeLayouts: (_name: LayoutName) => void;

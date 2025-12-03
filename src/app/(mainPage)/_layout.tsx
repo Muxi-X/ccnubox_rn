@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { mainPageApplications } from '@/constants/mainPageApplications';
+import { getMainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils';
 
 // 定义需要统一 header 的子页面配置
@@ -55,7 +55,7 @@ export default function Layout() {
         }}
       >
         {/* 主页面 - 来自 mainPageApplications */}
-        {mainPageApplications
+        {getMainPageApplications()
           .filter(app => app.href)
           .map(config => (
             <Stack.Screen
