@@ -19,8 +19,10 @@ export type visualSchemeType = {
   isAutoTheme: boolean;
   /** 注册的样式名 */
   themeName: ThemeName;
-  /** 布局类型 */
+  /** 布局类型（用于课表等组件样式） */
   layoutName: LayoutName;
+  /** Icon样式类型（独立于布局） */
+  iconStyleName: LayoutName;
   /** 所有注册的 layout */
   layouts: Map<LayoutName, LayoutType>;
   /** 当前样式表 */
@@ -31,8 +33,12 @@ export type visualSchemeType = {
   changeTheme: (_name: ThemeName) => void;
   /** 更改布局 ios | android */
   changeLayout: (_type: LayoutName) => void;
+  /** 更改icon样式 ios | android */
+  changeIconStyle: (_type: LayoutName) => void;
   /** 根据当前 layout 选择配置 */
   layoutSelect: <T>(_spec: LayoutSelectSpec<T>) => T;
+  /** 根据当前 iconStyle 选择配置 */
+  iconStyleSelect: <T>(_spec: LayoutSelectSpec<T>) => T;
   /** 注册style中样式 */
   init: () => void;
   removeLayouts: (_name: LayoutName) => void;
