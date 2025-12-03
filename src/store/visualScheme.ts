@@ -17,6 +17,7 @@ const useVisualScheme = create<visualSchemeType>()(
       isAutoTheme: true,
       themeName: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
       layoutName: Platform.OS === 'ios' ? 'ios' : 'android',
+      iconStyleName: Platform.OS === 'ios' ? 'ios' : 'android',
       currentStyle: null,
       layouts: new Map(),
       init: () => {
@@ -72,6 +73,27 @@ const useVisualScheme = create<visualSchemeType>()(
 
         throw new Error('layoutSelect expected at least one layout value.');
       },
+      iconStyleSelect: <T>(spec: LayoutSelectSpec<T>) => {
+        const { iconStyleName } = get();
+        const iconStyleSpecific = spec[iconStyleName];
+        if (iconStyleSpecific !== undefined) {
+          return iconStyleSpecific;
+        }
+
+        if (spec.default !== undefined) {
+          return spec.default;
+        }
+
+        const fallbackLayouts: LayoutName[] = ['ios', 'android'];
+        for (const fallback of fallbackLayouts) {
+          const candidate = spec[fallback];
+          if (candidate !== undefined) {
+            return candidate;
+          }
+        }
+
+        throw new Error('iconStyleSelect expected at least one layout value.');
+      },
       changeTheme: themeName =>
         set(state => {
           setSystemUITheme(themeName);
@@ -102,6 +124,13 @@ const useVisualScheme = create<visualSchemeType>()(
         });
 
         globalEventBus.emit('layoutChange', layoutName);
+      },
+      changeIconStyle: iconStyleName => {
+        set(state => ({
+          ...state,
+          iconStyleName,
+        }));
+        globalEventBus.emit('iconStyleChange', iconStyleName);
       },
       setAutoTheme: value =>
         set(state => {
