@@ -1,7 +1,6 @@
 package com.muxixyz.ccnubox.widgets.utils
 
 import android.content.Context
-import android.util.Log
 import com.muxixyz.ccnubox.widgets.CourseInfo
 import org.json.JSONArray
 import java.util.Calendar
@@ -87,8 +86,11 @@ object TimeTableUtils {
         val stored = sp.getString("all_courses", null) ?: return emptyList()
 
         val currentWeek = sp.getString("current_week", null)?.toIntOrNull() ?: return emptyList()
-
-        Log.d("stored", stored)
+        
+        // 验证当前周数是否在合理范围内（1-20周）
+        if (currentWeek < 1 || currentWeek > 20) {
+            return emptyList()
+        }
 
         val result = mutableListOf<CourseInfo>()
 
@@ -105,7 +107,25 @@ object TimeTableUtils {
                 if (courseWeekday != weekday) continue
 
                 val bitmask = obj.getInt("weekBitMask")
-                if (((bitmask shr (currentWeek - 1)) and 1) == 1) {
+                
+                // 检查当前周是否在课程的周数范围内
+                // weekBitMask 是一个位掩码，第 0 位代表第 1 周，第 1 位代表第 2 周，以此类推
+                // 例如：如果课程只在第 1 周有，位掩码是 1 (0b0001)，第 0 位是 1
+                //      如果课程只在第 2 周有，位掩码是 2 (0b0010)，第 1 位是 1
+                //      如果课程在第 1 和第 2 周都有，位掩码是 3 (0b0011)，第 0 位和第 1 位都是 1
+                // 我们需要检查第 (currentWeek - 1) 位是否为 1
+                val weekIndex = currentWeek - 1
+                
+                // 严格检查：只有当位掩码中对应周的位置为 1 时才显示
+                // 使用无符号右移避免符号扩展问题，并确保检查的是正确的位
+                val isThisWeek = if (weekIndex >= 0 && weekIndex < 32) {
+                    ((bitmask ushr weekIndex) and 1) == 1
+                } else {
+                    false
+                }
+                
+                // 只添加当前周有效的课程
+                if (isThisWeek) {
                     val startPeriod = obj.getInt("startPeriod")
                     val endPeriod = obj.getInt("endPeriod")
 
@@ -122,14 +142,12 @@ object TimeTableUtils {
                             weekBitMask = bitmask
                         )
                         result.add(course)
-                        Log.d("TAG", "course:${course}")
                     }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        Log.d("result", result.toString())
 
         // 排序 + 取前两个未结束的课程
         return result.sortedBy { it.startPeriod }
