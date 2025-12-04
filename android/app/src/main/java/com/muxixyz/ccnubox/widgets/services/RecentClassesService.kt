@@ -6,6 +6,9 @@ import com.muxixyz.ccnubox.widgets.ScheduleRemoteViewsFactory
 
 class RecentClassesService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return ScheduleRemoteViewsFactory(applicationContext, intent.getStringExtra("widget_type") ?: "2x2")
+        val widgetType = intent.getStringExtra("widget_type") ?: "2x2"
+        val dayOffset = intent.getIntExtra("day_offset", 0)
+        val onlyUpcoming = intent.getBooleanExtra("only_upcoming", true)
+        return ScheduleRemoteViewsFactory(applicationContext, widgetType, dayOffset, onlyUpcoming)
     }
 }
