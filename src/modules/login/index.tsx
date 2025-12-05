@@ -53,9 +53,13 @@ const LoginPage: FC = () => {
 
     if (!studentId || !password) {
       Toast.fail('请输入账号密码', 2);
+      setLoginTriggered(false);
+      return;
     }
     if (!privacyChecked) {
       Toast.fail('请先阅读隐私条例', 2);
+      setLoginTriggered(false);
+      return;
     }
 
     try {
