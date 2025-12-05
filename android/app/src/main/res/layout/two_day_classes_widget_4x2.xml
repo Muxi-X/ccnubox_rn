@@ -1,0 +1,135 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <!-- 今天 -->
+    <LinearLayout
+        android:id="@+id/layout_today"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp">
+
+            <TextView
+                android:id="@+id/title_today_prefix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="今天 "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/date_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#222222" />
+
+            <TextView
+                android:id="@+id/weekday_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#5A81CF"
+                android:paddingStart="4dp" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_today"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"
+            android:scrollbars="none" />
+
+        <LinearLayout
+            android:id="@+id/layout_empty_today"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/today_no_class"
+                android:textColor="#AAAAAA" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 明天 -->
+    <LinearLayout
+        android:id="@+id/layout_tomorrow"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp">
+
+            <TextView
+                android:id="@+id/title_tomorrow_prefix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="明天 "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/date_tomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#222222" />
+
+            <TextView
+                android:id="@+id/weekday_tomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#5A81CF"
+                android:paddingStart="4dp" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_tomorrow"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"
+            android:scrollbars="none" />
+
+        <LinearLayout
+            android:id="@+id/layout_empty_tomorrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/today_no_class"
+                android:textColor="#AAAAAA" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
+
+

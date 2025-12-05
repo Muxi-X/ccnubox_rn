@@ -33,15 +33,21 @@ object TimeTableUtils {
 //        this.startTimestamp = startTimestamp;
 //    }
 
-    public fun getDateString(): String {
+    fun getDateString(offsetDays: Int = 0): String {
         val calendar = Calendar.getInstance()
+        if (offsetDays != 0) {
+            calendar.add(Calendar.DAY_OF_YEAR, offsetDays)
+        }
         val month = calendar.get(Calendar.MONTH) + 1 // 月份从 0 开始，所以要 +1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         return "${month}月${day}日"
     }
 
-    public fun getWeekday(): Int {
+    fun getWeekday(offsetDays: Int = 0): Int {
         val calendar = Calendar.getInstance()
+        if (offsetDays != 0) {
+            calendar.add(Calendar.DAY_OF_YEAR, offsetDays)
+        }
         // 注意：Calendar.DAY_OF_WEEK 返回的是 1~7（周日是1，周一是2...）
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
@@ -81,7 +87,25 @@ object TimeTableUtils {
 
 
     fun getTodayCourses(context: Context): List<CourseInfo> {
-        val weekday = getWeekday()
+        // 兼容旧接口：今天 + 仅未下课课程
+        return getCoursesForDay(context, dayOffset = 0, onlyUpcoming = true)
+    }
+
+    /**
+     * 获取指定天的课程列表。
+     *
+     * @param dayOffset 0 表示今天，1 表示明天，-1 表示昨天，以此类推
+     * @param onlyUpcoming true 表示只返回「尚未下课」的课程（仅对今天有意义），false 表示返回当天所有课程
+     */
+    fun getCoursesForDay(
+        context: Context,
+        dayOffset: Int,
+        onlyUpcoming: Boolean
+    ): List<CourseInfo> {
+        // 基于当前星期几计算目标天的星期几（1=周一 ... 7=周日）
+        val todayWeekday = getWeekday()
+        val weekday = ((todayWeekday - 1 + dayOffset).floorMod(7)) + 1
+
         val sp = context.getSharedPreferences("WidgetData", Context.MODE_PRIVATE)
         val stored = sp.getString("all_courses", null) ?: return emptyList()
 
@@ -94,7 +118,7 @@ object TimeTableUtils {
 
         val result = mutableListOf<CourseInfo>()
 
-        // 当前时间（分钟）
+        // 当前时间（分钟），仅在需要过滤「未结束课程」时才使用
         val now = Calendar.getInstance()
         val currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
 
@@ -129,9 +153,15 @@ object TimeTableUtils {
                     val startPeriod = obj.getInt("startPeriod")
                     val endPeriod = obj.getInt("endPeriod")
 
-                    // 判断是否课程还没结束
-                    val endMinutes = getStartMinuteOfSection(endPeriod).plus(45)
-                    if (currentMinutes < endMinutes) {
+                    val shouldAdd = if (onlyUpcoming && dayOffset == 0) {
+                        // 仅今天需要根据当前时间过滤「未结束」课程
+                        val endMinutes = getStartMinuteOfSection(endPeriod).plus(DEFAULT_DURATION)
+                        currentMinutes < endMinutes
+                    } else {
+                        true
+                    }
+
+                    if (shouldAdd) {
                         val course = CourseInfo(
                             name = obj.getString("name"),
                             weekday = courseWeekday,
@@ -149,7 +179,7 @@ object TimeTableUtils {
             e.printStackTrace()
         }
 
-        // 排序 + 取前两个未结束的课程
+        // 按节次排序
         return result.sortedBy { it.startPeriod }
     }
 
@@ -163,9 +193,17 @@ object TimeTableUtils {
         return "${formatMinutes(start)}-${formatMinutes(end)}"
     }
 
-    private fun getStartMinuteOfSection(section: Int): Long {
+    internal fun getStartMinuteOfSection(section: Int): Long {
         return sectionStartMinutes[section]
             ?: throw IllegalArgumentException("无效的节数: $section")
+    }
+
+    /**
+     * Int 的取模运算，始终返回非负结果
+     */
+    private fun Int.floorMod(mod: Int): Int {
+        val r = this % mod
+        return if (r < 0) r + mod else r
     }
 
     private fun formatMinutes(minutes: Long): String {
