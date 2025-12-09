@@ -75,6 +75,13 @@
         }
       ],
       [
+         "mx-jpush-expo",
+        {
+          "appKey": "3fdd1ecdd0325fa2a197df7e",
+          "channel": "coursetable"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#7D82F4",
