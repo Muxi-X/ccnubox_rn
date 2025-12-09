@@ -60,7 +60,8 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "edgeToEdgeEnabled": true,
-      "package": "com.muxixyz.ccnubox"
+      "package": "com.muxixyz.ccnubox",
+      "versionCode": 13
     },
     "plugins": [
       "expo-router",
