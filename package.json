@@ -66,6 +66,7 @@
     "react-native-svg-transformer": "^1.5.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
+    "mx-jpush-expo": "^1.0.3",
     "zustand": "^4"
   },
   "devDependencies": {
