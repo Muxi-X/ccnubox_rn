@@ -94,6 +94,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 16
         versionName "3.1.4"
+        manifestPlaceholders = [
+            JPUSH_APPKEY: "3fdd1ecdd0325fa2a197df7e",
+            JPUSH_CHANNEL: "coursetable"
+        ]
     }
     signingConfigs {
         debug {
@@ -148,6 +152,8 @@ android {
 }
 
 dependencies {
+    implementation project(':jcore-react-native')
+    implementation project(':jpush-react-native')
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 

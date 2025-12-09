@@ -1,3 +1,8 @@
+#import "AppDelegate.h"
+#import <UserNotifications/UserNotifications.h>
+#import <RCTJPushModule.h>
+#import <React/RCTBridge.h>
+#import <React/RCTRootView.h>
 import Expo
 import React
 import ReactAppDependencyProvider
