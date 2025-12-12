@@ -1,11 +1,13 @@
 import 'dotenv-flow/config';
 
-import { ConfigContext, ExpoConfig } from 'expo/config';
+import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 import updateInfo from './src/assets/data/updateInfo.json';
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const iosNotificationEnv = __DEV__ ? 'development' : 'production';
+  const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';
+  const apsEnvironment = isProduction ? 'production' : 'development';
+
   return {
     ...config,
     slug: 'ccnubox',
@@ -14,9 +16,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config.ios,
       entitlements: {
         ...config.ios?.entitlements,
-        'aps-environment': iosNotificationEnv,
+        'aps-environment': apsEnvironment,
       },
     },
+    plugins: (config.plugins || []).map(plugin => {
+      const [name, configurations] = plugin;
+      if (name === 'mx-jpush-expo') {
+        return [
+          name,
+          {
+            ...configurations,
+            apsForProduction: isProduction,
+          },
+        ];
+      }
+      return plugin;
+    }),
     extra: {
       ...config.extra,
       updateInfo: updateInfo,
