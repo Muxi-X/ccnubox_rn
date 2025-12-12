@@ -36,9 +36,12 @@ rootProject.name = '华师匣子'
 expoAutolinking.useExpoVersionCatalog()
 
 include ':app'
-includeBuild(expoAutolinking.reactNativeGradlePlugin)
+// @generated begin jpush-modules - expo prebuild (DO NOT MODIFY) sync-3cd48541553f286ec2d69adb354af59a95f8a404
 
 include ':jpush-react-native'
 project(':jpush-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/jpush-react-native/android')
 include ':jcore-react-native'
 project(':jcore-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/jcore-react-native/android')
+// @generated end jpush-modules
+
+includeBuild(expoAutolinking.reactNativeGradlePlugin)

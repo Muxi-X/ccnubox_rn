@@ -1,20 +1,30 @@
 const { getDefaultConfig } = require('expo/metro-config');
-const {
-  wrapWithReanimatedMetroConfig,
-} = require('react-native-reanimated/metro-config');
-module.exports = (async () => {
-  const config = await getDefaultConfig(__dirname);
+const path = require('path');
+const config = getDefaultConfig(__dirname);
 
-  config.transformer = {
-    ...config.transformer,
-    babelTransformerPath: require.resolve('react-native-svg-transformer'),
-  };
+config.watchFolders = [__dirname];
+config.projectRoot = __dirname;
 
-  config.resolver = {
-    ...config.resolver,
-    assetExts: config.resolver.assetExts.filter(ext => ext !== 'svg'),
-    sourceExts: [...config.resolver.sourceExts, 'svg'],
-  };
+config.transformer = {
+  ...config.transformer,
+  babelTransformerPath: require.resolve('react-native-svg-transformer'),
+  assetPlugins: ['expo-asset/tools/hashAssetFiles'],
+  getTransformOptions: async () => ({
+    transform: {
+      experimentalImportSupport: false,
+      inlineRequires: true,
+    },
+  }),
+};
 
-  return wrapWithReanimatedMetroConfig(config);
-})();
+config.resolver = {
+  ...config.resolver,
+  assetExts: config.resolver.assetExts.filter(ext => ext !== 'svg'),
+  sourceExts: [...config.resolver.sourceExts, 'svg', 'd.ts'],
+  blockList: [
+    /\/\.expo\/.*/,
+    /\/node_modules\/.*\/node_modules\/react-native\/.*/,
+  ],
+};
+
+module.exports = config;
