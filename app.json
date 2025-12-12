@@ -43,6 +43,9 @@
           "NSAllowsArbitraryLoads": true
         },
         "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
+      },
+      "entitlements": {
+        "aps-environment": "development"
       }
     },
     "android": {
