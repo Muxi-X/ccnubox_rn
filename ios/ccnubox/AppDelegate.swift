@@ -50,7 +50,7 @@ public class AppDelegate: ExpoAppDelegate {
 
     // 初始化 JPush
     JPUSHService.setup(withOption: launchOptions,
-                       appKey: "3fdd1ecdd0325fa2a197df7e",
+                       appKey: "85271fccfbf4106a0e78556c",
                        channel: "coursetable",
                        apsForProduction: false)
 
