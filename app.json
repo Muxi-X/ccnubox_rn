@@ -42,7 +42,12 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
+        "LSApplicationQueriesSchemes": [
+          "weixin",
+          "alipays",
+          "tel",
+          "sms"
+        ]
       },
       "entitlements": {
         "aps-environment": "development"
@@ -78,9 +83,9 @@
         }
       ],
       [
-         "mx-jpush-expo",
+        "mx-jpush-expo",
         {
-          "appKey": "3fdd1ecdd0325fa2a197df7e",
+          "appKey": "85271fccfbf4106a0e78556c",
           "channel": "coursetable",
           "apsForProduction": false
         }
@@ -109,8 +114,16 @@
       [
         "./plugins/config-android-url-scheme.js",
         {
-          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
-          "schemes": ["weixin", "alipays", "tel", "sms"]
+          "packages": [
+            "com.tencent.mm",
+            "com.eg.android.AlipayGphone"
+          ],
+          "schemes": [
+            "weixin",
+            "alipays",
+            "tel",
+            "sms"
+          ]
         }
       ]
     ],

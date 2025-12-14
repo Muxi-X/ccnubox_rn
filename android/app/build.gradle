@@ -96,7 +96,7 @@ android {
         versionName "3.1.4"
         manifestPlaceholders = [
 // @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-da23916a7ea9b11e7b38a6e2c1578bf019418bba
-            JPUSH_APPKEY: "3fdd1ecdd0325fa2a197df7e",
+            JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
             JPUSH_CHANNEL: "coursetable"
         ]
 // @generated end jpush-manifest-placeholders

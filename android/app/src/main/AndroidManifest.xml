@@ -63,6 +63,12 @@
         <data android:scheme="exp+ccnubox"/>
       </intent-filter>
     </activity>
+    <receiver android:name="CustomReceiver" android:enabled="true" android:exported="false">
+      <intent-filter>
+        <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE"/>
+        <category android:name="com.muxixyz.ccnubox"/>
+      </intent-filter>
+    </receiver>
     <receiver android:name=".widgets.providers.RecentClassesProvider2x2" android:exported="true">
       <intent-filter>
         <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
