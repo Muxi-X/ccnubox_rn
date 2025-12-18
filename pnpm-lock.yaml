@@ -117,17 +117,17 @@ importers:
         specifier: ~14.2.0
         version: 14.2.0(expo@53.0.24(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))
       jcore-react-native:
-        specifier: ^2.3.0
+        specifier: ^2.3.2
         version: 2.3.2(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))
       jpush-react-native:
-        specifier: 3.1.9
-        version: 3.1.9(jcore-react-native@2.3.2(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))
+        specifier: 3.2.1
+        version: 3.2.1(jcore-react-native@2.3.2(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))
       lottie-react-native:
         specifier: 7.2.2
         version: 7.2.2(@lottiefiles/dotlottie-react@0.13.5(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       mx-jpush-expo:
-        specifier: ^1.0.6
-        version: 1.0.6(expo@53.0.24(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
+        specifier: ^1.0.10
+        version: 1.0.10(expo@53.0.24(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -3905,8 +3905,8 @@ packages:
     resolution: {integrity: sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==}
     hasBin: true
 
-  jpush-react-native@3.1.9:
-    resolution: {integrity: sha512-QiTyKS64FzqHAmQq/KN/nioSQxNclC0KpU+hGLAUrmJuan5gjOnsHp7H290uF8De4nlXUzx+Eia7rgQufYiHqA==}
+  jpush-react-native@3.2.1:
+    resolution: {integrity: sha512-2ynwABfS1gOQFtriaQejLE8s/gbSVh1MDe3ePTc1X2MQGYzeA8Zkdx/9LyIatUL58d5pLxDr5GL/zmfJJLpijw==}
     peerDependencies:
       jcore-react-native: '>= 1.9.3'
       react-native: '>= 0.50'
@@ -4364,8 +4364,8 @@ packages:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  mx-jpush-expo@1.0.6:
-    resolution: {integrity: sha512-Set8pN9XygaeI/Pjc52w14Bz359mh6bBnXEe3nqdNIstFuZww+JfaGYvw2/x1iivUOCKdnJAm2wuSRfoq3tS0w==}
+  mx-jpush-expo@1.0.10:
+    resolution: {integrity: sha512-5b8fBu13SuzL/bM2Hwog0lnfL41ZUOwZ4WCxBqgmK6thCLxNhIjIAgxhV5o3yOXAA8BzIE/VCFDBIbZOVGxuEA==}
     peerDependencies:
       expo: '*'
 
@@ -10390,7 +10390,7 @@ snapshots:
 
   jiti@2.4.2: {}
 
-  jpush-react-native@3.1.9(jcore-react-native@2.3.2(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)):
+  jpush-react-native@3.2.1(jcore-react-native@2.3.2(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)):
     dependencies:
       jcore-react-native: 2.3.2(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))
       react-native: 0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)
@@ -10927,7 +10927,7 @@ snapshots:
 
   mute-stream@2.0.0: {}
 
-  mx-jpush-expo@1.0.6(expo@53.0.24(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)):
+  mx-jpush-expo@1.0.10(expo@53.0.24(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)):
     dependencies:
       expo: 53.0.24(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
 
