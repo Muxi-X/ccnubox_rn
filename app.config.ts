@@ -27,6 +27,21 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           {
             ...configurations,
             apsForProduction: isProduction,
+            vendorChannels: {
+              vivo: {
+                appKey: process.env.JPUSH_VIVO_APP_KEY,
+                appId: process.env.JPUSH_VIVO_APP_ID,
+              },
+              xiaomi: {
+                appId: process.env.JPUSH_XIAOMI_APP_ID,
+                appKey: process.env.JPUSH_XIAOMI_APP_KEY,
+              },
+              oppo: {
+                appKey: process.env.JPUSH_OPPO_APP_KEY,
+                appId: process.env.JPUSH_OPPO_APP_ID,
+                appSecret: process.env.JPUSH_OPPO_APP_SECRET,
+              },
+            },
           },
         ];
       }
