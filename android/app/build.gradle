@@ -89,17 +89,31 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-322c134d72264aacfd92a262bc8395f66c0ca22e
+manifestPlaceholders = [
+                JPUSH_PKGNAME: "com.muxixyz.ccnubox",
+                JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
+                JPUSH_CHANNEL: "coursetable",
+                XIAOMI_APPID: "2882303761520462016",
+                XIAOMI_APPKEY: "5942046278016",
+                OPPO_APPKEY: "OP-f3b392058cb1444988f03f8064dbcb53",
+                OPPO_APPID: "OP-36447274",
+                OPPO_APPSECRET: "OP-45d5f56d33fa4633829df14e660d118c",
+                VIVO_APPKEY: "105980992",
+                VIVO_APPID: "6fd7494bed347bcc3a7eae7973aa1042"
+            ]
+// @generated end jpush-manifest-placeholders
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 13
         versionName "3.1.1"
-// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-da23916a7ea9b11e7b38a6e2c1578bf019418bba
-manifestPlaceholders = [
-            JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
-            JPUSH_CHANNEL: "coursetable"
-        ]
-// @generated end jpush-manifest-placeholders
+// @generated begin jpush-ndk-config - expo prebuild (DO NOT MODIFY) sync-b1dec770741d2eaa7867c32a8a866f8899231079
+ndk {
+                //选择要添加的对应 cpu 类型的 .so 库。
+                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+            }
+// @generated end jpush-ndk-config
     }
     signingConfigs {
         debug {
@@ -154,9 +168,18 @@ manifestPlaceholders = [
 }
 
 dependencies {
-// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-c54c58bfbb5c456b2a4ea68b366217fb3412d036
-implementation project(':jpush-react-native')
+// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-04ded4eb25a3e4aa216ce304bf78591245ecb0ac
+// JPush React Native 桥接（已包含 JPush 核心 SDK）
+    implementation project(':jpush-react-native')
     implementation project(':jcore-react-native')
+    
+    // 厂商通道 SDK（JPush 5.9.0）
+    // VIVO 厂商
+    implementation 'cn.jiguang.sdk.plugin:vivo:5.9.0'
+    // 小米厂商
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:5.9.0'
+    // OPPO 厂商
+    implementation 'cn.jiguang.sdk.plugin:oppo:5.9.0'
 // @generated end jpush-dependencies
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")

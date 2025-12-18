@@ -1,6 +1,9 @@
 import Expo
 import React
 import UserNotifications
+import UserNotifications
+import UserNotifications
+import UserNotifications
 import ReactAppDependencyProvider
 
 @UIApplicationMain
@@ -29,7 +32,7 @@ public class AppDelegate: ExpoAppDelegate {
       in: window,
       launchOptions: launchOptions)
 #endif
-// @generated begin jpush-swift-initialization - expo prebuild (DO NOT MODIFY) sync-9d3cc9bb929598715d69d8a308fb1bd52a497427
+// @generated begin jpush-swift-initialization - expo prebuild (DO NOT MODIFY) sync-b92d0ea2fb5c0655240a598324108e26e1af4229
 
     // JPush 注册配置
     let entity = JPUSHRegisterEntity()
@@ -75,6 +78,7 @@ public class AppDelegate: ExpoAppDelegate {
   ) -> Bool {
     return super.application(app, open: url, options: options) || RCTLinkingManager.application(app, open: url, options: options)
   }
+// @generated begin jpush-swift-remote-notification-methods - expo prebuild (DO NOT MODIFY) sync-4f3c6a094ada6e1279c7e6dd249a97258a9e0d4a
 
   public override func application(_ application: UIApplication,
                                   didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -96,6 +100,7 @@ public class AppDelegate: ExpoAppDelegate {
     print("❌ 注册推送通知失败: \(error.localizedDescription)")
     return super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
   }
+// @generated end jpush-swift-remote-notification-methods
 
   // Universal Links
   public override func application(
