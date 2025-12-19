@@ -1,17 +1,16 @@
-import { FC, memo, useCallback, useEffect, useMemo } from 'react';
-
 import View from '@/components/view';
-
+import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
+import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-
-import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
-import { ExtensionStorage } from "@bacons/apple-targets";
+import { courseLiveActivity } from '@/utils/courseLiveActivity';
 import { log } from '@/utils/logger';
-
+import { ExtensionStorage } from '@bacons/apple-targets';
+import { type FC, memo, useCallback, useEffect, useMemo } from 'react';
+import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import CourseTable from './components/courseTable';
-import { courseType } from './components/courseTable/type';
+import type { courseType } from './components/courseTable/type';
 import WeekSelector from './components/weekSelector';
 
 // 根据开学时间计算学期和年份
@@ -41,10 +40,8 @@ const computeSemesterAndYear = (startTimestamp: number) => {
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const extensionStorage = useMemo(() => {
-    return new ExtensionStorage(
-      "group.release-20240916"
-    );
-  }, [])
+    return new ExtensionStorage('group.release-20240916');
+  }, []);
 
   const {
     courses,
@@ -64,8 +61,8 @@ const CourseTablePage: FC = () => {
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
-
-  const fetchCurrentWeek = async () => {
+  // setSchoolTime, setHolidayTime, setSelectedWeek
+  const fetchCurrentWeek = useCallback(async () => {
     try {
       const res = await queryCurrentWeek();
       if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
@@ -82,7 +79,7 @@ const CourseTablePage: FC = () => {
     } catch (err) {
       log.error('Failed to fetch current week:', err);
     }
-  };
+  }, [setSchoolTime, setHolidayTime, setSelectedWeek, setSemester, setYear]);
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
@@ -104,7 +101,14 @@ const CourseTablePage: FC = () => {
           const courses = res.data.classes as courseType[];
           // 缓存课表
           updateCourses(courses);
-          extensionStorage.set('courseTable', JSON.stringify(courses));
+          extensionStorage.set(
+            'courseTable',
+            courses.map(course => ({
+              ...course,
+              is_official: course.is_official ? 1 : 0,
+              weeks: JSON.stringify(course.weeks),
+            }))
+          );
           ExtensionStorage.reloadWidget();
           setLastUpdate(res.data.last_refresh_time);
         }
@@ -112,13 +116,20 @@ const CourseTablePage: FC = () => {
         log.error('Failed to refresh timetable:', error);
       }
     },
-    [schoolTime, updateCourses, setLastUpdate]
+    [
+      semester,
+      year,
+      updateCourses,
+      setLastUpdate,
+      extensionStorage.set,
+      fetchCurrentWeek,
+    ]
   );
 
   // 获取当前周数
   useEffect(() => {
     fetchCurrentWeek();
-  }, [setSchoolTime, setHolidayTime, setSelectedWeek]);
+  }, [fetchCurrentWeek]);
 
   // 刷新课表数据
   useEffect(() => {
@@ -126,6 +137,57 @@ const CourseTablePage: FC = () => {
       onTimetableRefresh();
     }
   }, [schoolTime, onTimetableRefresh]);
+
+  // 启用 Live Activity 自动提醒
+  useCourseLiveActivity(courses);
+
+  // 测试 Live Activity
+  const handleTestLiveActivity = useCallback(() => {
+    if (Platform.OS !== 'ios') {
+      alert('Live Activity 仅支持 iOS');
+      return;
+    }
+
+    if (!courses || courses.length === 0) {
+      alert('没有课程数据');
+      return;
+    }
+
+    // 获取今天的第一节课
+    const now = new Date();
+    const weekday = now.getDay();
+    const adjustedWeekday = weekday === 0 ? 7 : weekday;
+
+    const todayCourses = courses
+      .filter(course => course.day === adjustedWeekday)
+      .sort((a, b) => {
+        const aStart = parseInt(a.class_when.split('-')[0]);
+        const bStart = parseInt(b.class_when.split('-')[0]);
+        return aStart - bStart;
+      });
+
+    // if (todayCourses.length === 0) {
+    // 	alert("今天没有课程");
+    // 	return;
+    // }
+
+    // const testCourse = todayCourses[0];
+    // const { start, end } = formatClassTime(testCourse.class_when);
+
+    // 启动 Live Activity，模拟 10 分钟倒计时
+    const classStartTime = new Date(Date.now() + 10 * 60 * 1000); // 10分钟后
+    courseLiveActivity.startCourseReminder(
+      {
+        courseName: 'test',
+        location: 'a108',
+        startTime: '08:00',
+        endTime: '09:40',
+      },
+      classStartTime
+    );
+
+    alert('Live Activity 已启动！\n查看动态岛或锁屏');
+  }, [courses]);
 
   return (
     <View
@@ -146,8 +208,40 @@ const CourseTablePage: FC = () => {
           }}
         />
       )}
+
+      {/* 测试 Live Activity 按钮 */}
+      {Platform.OS === 'ios' && (
+        <TouchableOpacity
+          style={styles.testButton}
+          onPress={handleTestLiveActivity}
+        >
+          <Text style={styles.testButtonText}>🧪 测试动态岛</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  testButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  testButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
 
 export default memo(CourseTablePage);
