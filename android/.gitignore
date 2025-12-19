@@ -12,6 +12,12 @@ local.properties
 *.iml
 *.hprof
 .cxx/
+keystore.properties
+*.keystore
+*.jks
+
+# 华为 AGConnect 配置文件（包含隐私信息）
+app/agconnect-services.json
 
 # Bundle artifacts
 *.jsbundle
