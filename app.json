@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "华师匣子",
+    "name": "ccnubox",
     "slug": "ccnubox",
     "owner": "muxi_fe",
     "version": "3.1.1",
@@ -43,6 +43,7 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
+        "CFBundleAllowMixedLocalizations": true,
         "LSApplicationQueriesSchemes": [
           "weixin",
           "alipays",
@@ -56,6 +57,10 @@
           "group.release-20240916"
         ]
       }
+    },
+    "locales": {
+      "zh-CN": "./languages/zh-CN.json",
+      "en-US": "./languages/en-US.json"
     },
     "android": {
       "adaptiveIcon": {

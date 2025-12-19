@@ -11,7 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
     slug: 'ccnubox',
-    name: '华师匣子',
+    name: 'ccnubox',
     ios: {
       ...config.ios,
       entitlements: {
