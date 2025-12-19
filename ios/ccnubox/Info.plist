@@ -68,6 +68,8 @@
     <string>我们需要将图片保存到您的照片库。</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>我们需要访问您的照片库用于保存截图。</string>
+    <key>NSSupportsLiveActivities</key>
+    <true/>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>

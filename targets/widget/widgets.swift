@@ -1,30 +1,61 @@
 import WidgetKit
 import SwiftUI
 
-// 课程数据模型
+// MARK: - 数据模型
+
 struct Course: Codable, Identifiable {
     let id: String
-    let name: String
-    let teacher: String?
-    let location: String?
-    let weekday: Int
-    let startSection: Int
-    let endSection: Int
-    let weeks: [Int]
+    let classname: String
+    let teacher: String
+    let `where`: String
+    let day: Int
+    let classWhen: String
+    let weeksString: String
+    let credit: Double
+    let isOfficialInt: Int
+    let note: String
+    let semester: String
+    let weekDuration: String
+    let year: String
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case teacher
-        case location
-        case weekday
-        case startSection = "start_section"
-        case endSection = "end_section"
-        case weeks
+        case id, classname, teacher
+        case `where`
+        case day
+        case classWhen = "class_when"
+        case weeksString = "weeks"
+        case credit
+        case isOfficialInt = "is_official"
+        case note, semester
+        case weekDuration = "week_duration"
+        case year
+    }
+    
+    var weeks: [Int] {
+        guard let data = weeksString.data(using: .utf8),
+              let array = try? JSONDecoder().decode([Int].self, from: data) else {
+            return []
+        }
+        return array
+    }
+    
+    var isOfficial: Bool {
+        return isOfficialInt != 0
+    }
+    
+    var startSection: Int {
+        let parts = classWhen.split(separator: "-")
+        return Int(parts.first ?? "1") ?? 1
+    }
+    
+    var endSection: Int {
+        let parts = classWhen.split(separator: "-")
+        return Int(parts.last ?? "1") ?? 1
     }
 }
 
-// 时间线提供者
+// MARK: - Timeline Provider
+
 struct CourseProvider: TimelineProvider {
     func placeholder(in context: Context) -> CourseEntry {
         CourseEntry(date: Date(), courses: [])
@@ -39,28 +70,18 @@ struct CourseProvider: TimelineProvider {
         let currentDate = Date()
         let courses = loadCourses()
         let entry = CourseEntry(date: currentDate, courses: courses)
-        
-        // 每小时更新一次
         let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
         completion(timeline)
     }
     
-    // 从 UserDefaults 加载课程数据
     private func loadCourses() -> [Course] {
         guard let defaults = UserDefaults(suiteName: "group.release-20240916"),
-              let courseData = defaults.string(forKey: "courseTable"),
-              let jsonData = courseData.data(using: .utf8) else {
+              let courseData = defaults.data(forKey: "courseTable"),
+              let courses = try? JSONDecoder().decode([Course].self, from: courseData) else {
             return []
         }
-        
-        do {
-            let courses = try JSONDecoder().decode([Course].self, from: jsonData)
-            return courses
-        } catch {
-            print("Failed to decode courses: \(error)")
-            return []
-        }
+        return courses
     }
 }
 
@@ -69,7 +90,8 @@ struct CourseEntry: TimelineEntry {
     let courses: [Course]
 }
 
-// 小组件视图
+// MARK: - Widget Entry View
+
 struct CourseWidgetEntryView: View {
     var entry: CourseProvider.Entry
     @Environment(\.widgetFamily) var family
@@ -79,30 +101,24 @@ struct CourseWidgetEntryView: View {
         case .systemSmall:
             SmallWidgetView(courses: getTodayCourses())
         case .systemMedium:
-            MediumWidgetView(courses: getTodayCourses())
+            MediumWidgetView(courses: entry.courses)
         case .systemLarge:
-            LargeWidgetView(courses: getWeekCourses())
+            LargeWidgetView(courses: entry.courses)
         default:
             SmallWidgetView(courses: getTodayCourses())
         }
     }
     
-    // 获取今天的课程
     private func getTodayCourses() -> [Course] {
         let weekday = Calendar.current.component(.weekday, from: Date())
         let adjustedWeekday = weekday == 1 ? 7 : weekday - 1
-        
-        return entry.courses.filter { $0.weekday == adjustedWeekday }
+        return entry.courses.filter { $0.day == adjustedWeekday }
             .sorted { $0.startSection < $1.startSection }
-    }
-    
-    // 获取本周课程
-    private func getWeekCourses() -> [Course] {
-        return entry.courses
     }
 }
 
-// 小尺寸视图
+// MARK: - Small Widget
+
 struct SmallWidgetView: View {
     let courses: [Course]
     
@@ -119,7 +135,7 @@ struct SmallWidgetView: View {
             } else {
                 ForEach(courses.prefix(3)) { course in
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(course.name)
+                        Text(course.classname)
                             .font(.caption)
                             .fontWeight(.medium)
                             .lineLimit(1)
@@ -129,106 +145,222 @@ struct SmallWidgetView: View {
                     }
                 }
             }
-            
             Spacer()
         }
         .padding()
     }
 }
 
-// 中等尺寸视图
+// MARK: - Medium Widget
+
 struct MediumWidgetView: View {
     let courses: [Course]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("今日课程")
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            if courses.isEmpty {
-                Text("今天没有课程")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-            } else {
-                ForEach(courses.prefix(4)) { course in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(course.name)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .lineLimit(1)
-                            HStack {
-                                Text("第\(course.startSection)-\(course.endSection)节")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                if let location = course.location {
-                                    Text("·")
-                                        .foregroundColor(.secondary)
-                                    Text(location)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(1)
-                                }
-                            }
-                        }
-                        Spacer()
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        let today = weekday == 1 ? 7 : weekday - 1
+        let tomorrow = today == 7 ? 1 : today + 1
+        
+        let todayCourses = courses.filter { $0.day == today }.sorted { $0.startSection < $1.startSection }
+        let tomorrowCourses = courses.filter { $0.day == tomorrow }.sorted { $0.startSection < $1.startSection }
+        
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 4) {
+                    Text("今天")
+                        .font(.system(size: 14, weight: .medium))
+                    Text(dateString(for: 0))
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                    Text(weekdayName(today))
+                        .font(.system(size: 12))
+                        .foregroundColor(.blue)
+                }
+                
+                if todayCourses.isEmpty {
+                    Text("无课程")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
+                } else {
+                    ForEach(todayCourses.prefix(3)) { course in
+                        CourseCardView(course: course, color: .purple)
                     }
                 }
+                Spacer()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
-            Spacer()
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 4) {
+                    Text("明天")
+                        .font(.system(size: 14, weight: .medium))
+                    Text(dateString(for: 1))
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                    Text(weekdayName(tomorrow))
+                        .font(.system(size: 12))
+                        .foregroundColor(.blue)
+                }
+                
+                if tomorrowCourses.isEmpty {
+                    Text("无课程")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
+                } else {
+                    ForEach(tomorrowCourses.prefix(3)) { course in
+                        CourseCardView(course: course, color: .orange)
+                    }
+                }
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding()
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
+    }
+    
+    private func dateString(for daysFromNow: Int) -> String {
+        let date = Calendar.current.date(byAdding: .day, value: daysFromNow, to: Date()) ?? Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd"
+        return formatter.string(from: date)
+    }
+    
+    private func weekdayName(_ weekday: Int) -> String {
+        let names = ["", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+        return names[weekday]
     }
 }
 
-// 大尺寸视图
+// MARK: - Course Card
+
+struct CourseCardView: View {
+    let course: Course
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 6) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(color)
+                .frame(width: 4)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(course.classname)
+                    .font(.system(size: 13, weight: .medium))
+                    .lineLimit(1)
+                
+                Text(course.where)
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                
+                Text(timeString(from: course.classWhen))
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.vertical, 8)
+            .padding(.trailing, 8)
+            
+            Spacer()
+        }
+        .padding(.leading, 6)
+    }
+    
+    private func timeString(from classWhen: String) -> String {
+        let parts = classWhen.split(separator: "-")
+        guard let start = Int(parts.first ?? "1") else { return classWhen }
+        
+        let times = ["", "08:00-09:40", "10:10-11:50", "14:00-15:40",
+                     "16:10-17:50", "19:00-20:40", "20:50-22:30"]
+        
+        return start < times.count ? times[start] : "第\(classWhen)节"
+    }
+}
+
+// MARK: - Large Widget
+
 struct LargeWidgetView: View {
     let courses: [Course]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("本周课程")
-                .font(.headline)
-                .foregroundColor(.primary)
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        let today = weekday == 1 ? 7 : weekday - 1
+        let tomorrow = today == 7 ? 1 : today + 1
+        
+        let todayCourses = courses.filter { $0.day == today }.sorted { $0.startSection < $1.startSection }
+        let tomorrowCourses = courses.filter { $0.day == tomorrow }.sorted { $0.startSection < $1.startSection }
+        
+        VStack(alignment: .leading, spacing: 12) {
+            Text("课程安排")
+                .font(.system(size: 18, weight: .bold))
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
             
-            if courses.isEmpty {
-                Text("暂无课程数据")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-            } else {
-                ScrollView {
-                    ForEach(1...7, id: \.self) { weekday in
-                        let dayCourses = courses.filter { $0.weekday == weekday }
-                            .sorted { $0.startSection < $1.startSection }
-                        
-                        if !dayCourses.isEmpty {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(weekdayName(weekday))
-                                    .font(.subheadline)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.blue)
-                                
-                                ForEach(dayCourses) { course in
-                                    HStack {
-                                        Text(course.name)
-                                            .font(.caption)
-                                            .lineLimit(1)
-                                        Spacer()
-                                        Text("第\(course.startSection)-\(course.endSection)节")
-                                            .font(.caption2)
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                            }
-                            .padding(.bottom, 4)
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("今天")
+                            .font(.system(size: 15, weight: .semibold))
+                        Text(dateString(for: 0))
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                        Text(weekdayName(today))
+                            .font(.system(size: 12))
+                            .foregroundColor(.blue)
+                    }
+                    
+                    if todayCourses.isEmpty {
+                        Text("无课程")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                            .padding(.top, 4)
+                    } else {
+                        ForEach(todayCourses) { course in
+                            LargeCourseCardView(course: course, color: .purple)
                         }
                     }
+                    Spacer()
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 4) {
+                        Text("明天")
+                            .font(.system(size: 15, weight: .semibold))
+                        Text(dateString(for: 1))
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                        Text(weekdayName(tomorrow))
+                            .font(.system(size: 12))
+                            .foregroundColor(.blue)
+                    }
+                    
+                    if tomorrowCourses.isEmpty {
+                        Text("无课程")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                            .padding(.top, 4)
+                    } else {
+                        ForEach(tomorrowCourses) { course in
+                            LargeCourseCardView(course: course, color: .orange)
+                        }
+                    }
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .padding(.horizontal, 16)
         }
-        .padding()
+        .padding(.bottom, 12)
+    }
+    
+    private func dateString(for daysFromNow: Int) -> String {
+        let date = Calendar.current.date(byAdding: .day, value: daysFromNow, to: Date()) ?? Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd"
+        return formatter.string(from: date)
     }
     
     private func weekdayName(_ weekday: Int) -> String {
@@ -237,17 +369,99 @@ struct LargeWidgetView: View {
     }
 }
 
-// 小组件配置
+struct LargeCourseCardView: View {
+    let course: Course
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 6) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(color)
+                .frame(width: 4)
+            
+            VStack(alignment: .leading, spacing: 3) {
+                Text(course.classname)
+                    .font(.system(size: 13, weight: .medium))
+                    .lineLimit(1)
+                
+                Text(course.where)
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                
+                Text(timeString(from: course.classWhen))
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.vertical, 8)
+            .padding(.trailing, 6)
+            
+            Spacer()
+        }
+        .padding(.leading, 6)
+    }
+    
+    private func timeString(from classWhen: String) -> String {
+        let parts = classWhen.split(separator: "-")
+        guard let start = Int(parts.first ?? "1") else { return classWhen }
+        
+        let times = ["", "08:00-09:40", "10:10-11:50", "14:00-15:40",
+                     "16:10-17:50", "19:00-20:40", "20:50-22:30"]
+        
+        return start < times.count ? times[start] : "第\(classWhen)节"
+    }
+}
+
+// MARK: - Widget Configuration
+
 struct widget: Widget {
     let kind: String = "CourseWidget"
     
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: CourseProvider()) { entry in
             CourseWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(Color(UIColor.systemBackground), for: .widget)
         }
         .configurationDisplayName("课程表")
         .description("查看今日或本周的课程安排")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
+}
+
+// MARK: - Previews
+
+#Preview("Small", as: .systemSmall) {
+    widget()
+} timeline: {
+    CourseEntry(date: .now, courses: previewCourses())
+}
+
+#Preview("Medium", as: .systemMedium) {
+    widget()
+} timeline: {
+    CourseEntry(date: .now, courses: previewCourses())
+}
+
+#Preview("Large", as: .systemLarge) {
+    widget()
+} timeline: {
+    CourseEntry(date: .now, courses: previewCourses())
+}
+
+func previewCourses() -> [Course] {
+    let weekday = Calendar.current.component(.weekday, from: Date())
+    let today = weekday == 1 ? 7 : weekday - 1
+    let tomorrow = today == 7 ? 1 : today + 1
+    
+    return [
+        Course(id: "1", classname: "高等数学", teacher: "张老师", where: "n201", day: today,
+               classWhen: "1-2", weeksString: "[1,2,3,4,5]", credit: 4, isOfficialInt: 1,
+               note: "", semester: "1", weekDuration: "1-15周", year: "2025"),
+        Course(id: "2", classname: "大学英语", teacher: "李老师", where: "n305", day: today,
+               classWhen: "3-4", weeksString: "[1,2,3,4,5]", credit: 2, isOfficialInt: 1,
+               note: "", semester: "1", weekDuration: "1-15周", year: "2025"),
+        Course(id: "3", classname: "数据结构", teacher: "王老师", where: "n526", day: tomorrow,
+               classWhen: "1-2", weeksString: "[1,2,3,4,5]", credit: 4, isOfficialInt: 1,
+               note: "", semester: "1", weekDuration: "1-15周", year: "2025")
+    ]
 }
