@@ -28,6 +28,7 @@
       }
     },
     "ios": {
+      "appleTeamId": "7K67YDYQD8",
       "icon": {
         "light": "./src/assets/images/icon-ios-light.png",
         "dark": "./src/assets/images/icon-ios-dark.png",
@@ -50,7 +51,10 @@
         ]
       },
       "entitlements": {
-        "aps-environment": "development"
+        "aps-environment": "development",
+        "com.apple.security.application-groups": [
+          "group.release-20240916"
+        ]
       }
     },
     "android": {
@@ -126,7 +130,8 @@
             "sms"
           ]
         }
-      ]
+      ],
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true

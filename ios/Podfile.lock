@@ -352,6 +352,8 @@ PODS:
   - ExpoWebBrowser (14.2.0):
     - ExpoModulesCore
   - EXStructuredHeaders (4.1.0)
+  - ExtensionStorage (1.0.0):
+    - ExpoModulesCore
   - EXUpdates (0.28.17):
     - DoubleConversion
     - EASClient
@@ -393,7 +395,7 @@ PODS:
   - hermes-engine/Pre-built (0.79.6)
   - JCoreRN (2.3.2):
     - React
-  - JPushRN (3.1.9):
+  - JPushRN (3.2.1):
     - React
   - libavif/core (0.11.1)
   - libavif/libdav1d (0.11.1):
@@ -2535,6 +2537,7 @@ DEPENDENCIES:
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - EXStructuredHeaders (from `../node_modules/expo-structured-headers/ios`)
+  - "ExtensionStorage (from `../node_modules/@bacons/apple-targets/ios`)"
   - EXUpdates (from `../node_modules/expo-updates/ios`)
   - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -2706,6 +2709,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-web-browser/ios"
   EXStructuredHeaders:
     :path: "../node_modules/expo-structured-headers/ios"
+  ExtensionStorage:
+    :path: "../node_modules/@bacons/apple-targets/ios"
   EXUpdates:
     :path: "../node_modules/expo-updates/ios"
   EXUpdatesInterface:
@@ -2909,6 +2914,7 @@ SPEC CHECKSUMS:
   ExpoSystemUI: 433a971503b99020318518ed30a58204288bab2d
   ExpoWebBrowser: dc39a88485f007e61a3dff05d6a75f22ab4a2e92
   EXStructuredHeaders: 32bec6771c2db18c4cd47cecae530d1d06cdf972
+  ExtensionStorage: 5796de20bf181317c376d693fedb64c6781a33ba
   EXUpdates: 004cca5223d04b5a0702b5712fbd5d9318024d47
   EXUpdatesInterface: 7ff005b7af94ee63fa452ea7bb95d7a8ff40277a
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
@@ -2917,7 +2923,7 @@ SPEC CHECKSUMS:
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 44bb6fe76a6eb400d3a992e2d0b21946ae999fa9
   JCoreRN: d985de509185b381c177fde4bb6bfc686089fdbd
-  JPushRN: 51c191160a18aa4191eb9b5cf2b206b1a2dcd9d2
+  JPushRN: 807bc962b2f25860e5c0caa5fcb7b4910572b890
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
@@ -3002,6 +3008,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: dc7c21200195acacb62fa920c588e7c2106de45e
 
-PODFILE CHECKSUM: 978c2d6c3f28644d109e9cd650952ad9ad1ee97e
+PODFILE CHECKSUM: 97cbfed6e718bd13027f982813a568f7b33d7d1f
 
 COCOAPODS: 1.16.2

@@ -17,6 +17,7 @@
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.4.1",
+    "@bacons/apple-targets": "^3.0.6",
     "@expo/vector-icons": "^14.1.0",
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@react-native-async-storage/async-storage": "2.1.2",
@@ -54,7 +55,7 @@
     "jcore-react-native": "^2.3.2",
     "jpush-react-native": "3.2.1",
     "lottie-react-native": "7.2.2",
-    "mx-jpush-expo": "^1.0.10",
+    "mx-jpush-expo": "^1.0.12",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.6",
