@@ -41,6 +41,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 appId: process.env.JPUSH_OPPO_APP_ID,
                 appSecret: process.env.JPUSH_OPPO_APP_SECRET,
               },
+              honor: {
+                appId: process.env.JPUSH_HONOR_APP_ID,
+              },
+              huawei: {
+                enabled: true,
+              },
             },
           },
         ];
