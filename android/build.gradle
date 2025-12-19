@@ -4,11 +4,21 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    // @generated begin jpush-honor-maven-buildscript - expo prebuild (DO NOT MODIFY) sync-0e8491aca27d8519bc8ba0e0de742f9ae8393b4b
+maven { url 'https://developer.hihonor.com/repo' }
+// @generated end jpush-honor-maven-buildscript
+// @generated begin jpush-huawei-maven-buildscript - expo prebuild (DO NOT MODIFY) sync-6c5a142c29c85ed1be7bd5f4607f4daff13f6092
+maven { url 'https://developer.huawei.com/repo/' }
+// @generated end jpush-huawei-maven-buildscript
   }
   dependencies {
-    classpath('com.android.tools.build:gradle')
+    classpath('com.android.tools.build:gradle:8.13.2')
     classpath('com.facebook.react:react-native-gradle-plugin')
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    // @generated begin jpush-vendor-classpaths - expo prebuild (DO NOT MODIFY) sync-078b642a68c2525c32c29a0ec73198642e65adb5
+// Huawei AGConnect
+        classpath 'com.huawei.agconnect:agcp:1.9.3.302'
+// @generated end jpush-vendor-classpaths
   }
 }
 
@@ -30,6 +40,12 @@ allprojects {
     google()
     mavenCentral()
     maven { url 'https://www.jitpack.io' }
+    // @generated begin jpush-honor-maven-allprojects - expo prebuild (DO NOT MODIFY) sync-0e8491aca27d8519bc8ba0e0de742f9ae8393b4b
+maven { url 'https://developer.hihonor.com/repo' }
+// @generated end jpush-honor-maven-allprojects
+// @generated begin jpush-huawei-maven-allprojects - expo prebuild (DO NOT MODIFY) sync-6c5a142c29c85ed1be7bd5f4607f4daff13f6092
+maven { url 'https://developer.huawei.com/repo/' }
+// @generated end jpush-huawei-maven-allprojects
   }
 }
 

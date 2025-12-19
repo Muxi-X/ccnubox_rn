@@ -96,7 +96,7 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
-// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-322c134d72264aacfd92a262bc8395f66c0ca22e
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-c557ee5b4e81c385f11a83e42a1fe99d0c989b88
 manifestPlaceholders = [
                 JPUSH_PKGNAME: "com.muxixyz.ccnubox",
                 JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
@@ -107,7 +107,8 @@ manifestPlaceholders = [
                 OPPO_APPID: "OP-36447274",
                 OPPO_APPSECRET: "OP-45d5f56d33fa4633829df14e660d118c",
                 VIVO_APPKEY: "105980992",
-                VIVO_APPID: "6fd7494bed347bcc3a7eae7973aa1042"
+                VIVO_APPID: "6fd7494bed347bcc3a7eae7973aa1042",
+                HONOR_APPID: "104528678"
             ]
 // @generated end jpush-manifest-placeholders
         applicationId 'com.muxixyz.ccnubox'
@@ -190,19 +191,30 @@ ndk {
 }
 
 dependencies {
-// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-04ded4eb25a3e4aa216ce304bf78591245ecb0ac
+// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-a3ee33ea53985ca4f0c4db0b3233f4a89978ccfe
 // JPush React Native 桥接（已包含 JPush 核心 SDK）
     implementation project(':jpush-react-native')
     implementation project(':jcore-react-native')
     
     // 厂商通道 SDK（JPush 5.9.0）
+    // 华为厂商
+    implementation 'com.huawei.agconnect:agconnect-core:1.9.3.302'
+    implementation 'cn.jiguang.sdk.plugin:huawei:5.9.0'
     // VIVO 厂商
     implementation 'cn.jiguang.sdk.plugin:vivo:5.9.0'
     // 小米厂商
     implementation 'cn.jiguang.sdk.plugin:xiaomi:5.9.0'
     // OPPO 厂商
     implementation 'cn.jiguang.sdk.plugin:oppo:5.9.0'
+    // OPPO 3.1.0 aar 及其以上版本需要添加以下依赖
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    // 荣耀厂商
+    implementation 'cn.jiguang.sdk.plugin:honor:5.9.0'
 // @generated end jpush-dependencies
+// @generated begin jpush-libs-filetree - expo prebuild (DO NOT MODIFY) sync-b49c55821fcfaf640a644f68fa2264b8adfed2f2
+implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+// @generated end jpush-libs-filetree
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -230,3 +242,8 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+
+// // @generated begin jpush-apply-plugins - expo prebuild (DO NOT MODIFY)
+apply plugin: 'com.huawei.agconnect'
+// // @generated end jpush-apply-plugins
