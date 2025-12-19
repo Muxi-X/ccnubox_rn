@@ -1,9 +1,8 @@
 import Expo
 import React
+// @generated begin jpush-swift-import-usernotifications - expo prebuild (DO NOT MODIFY) sync-768cde893f7334c1cbf88f4f0a878cfb3548fdbe
 import UserNotifications
-import UserNotifications
-import UserNotifications
-import UserNotifications
+// @generated end jpush-swift-import-usernotifications
 import ReactAppDependencyProvider
 
 @UIApplicationMain
