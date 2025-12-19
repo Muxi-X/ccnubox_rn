@@ -1,4 +1,4 @@
-import { FC, memo, useCallback, useEffect } from 'react';
+import { FC, memo, useCallback, useEffect, useMemo } from 'react';
 
 import View from '@/components/view';
 
@@ -7,6 +7,7 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { ExtensionStorage } from "@bacons/apple-targets";
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
@@ -39,6 +40,11 @@ const computeSemesterAndYear = (startTimestamp: number) => {
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const extensionStorage = useMemo(() => {
+    return new ExtensionStorage(
+      "group.release-20240916"
+    );
+  }, [])
 
   const {
     courses,
@@ -98,6 +104,8 @@ const CourseTablePage: FC = () => {
           const courses = res.data.classes as courseType[];
           // 缓存课表
           updateCourses(courses);
+          extensionStorage.set('courseTable', JSON.stringify(courses));
+          ExtensionStorage.reloadWidget();
           setLastUpdate(res.data.last_refresh_time);
         }
       } catch (error) {
