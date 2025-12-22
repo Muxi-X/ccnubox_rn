@@ -1,14 +1,19 @@
-import View from '@/components/view';
-import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
-import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
-import useCourse from '@/store/course';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-import { courseLiveActivity } from '@/utils/courseLiveActivity';
-import { log } from '@/utils/logger';
 import { ExtensionStorage } from '@bacons/apple-targets';
 import { type FC, memo, useCallback, useEffect, useMemo } from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
+
+import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
+
+import View from '@/components/view';
+
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
+
+import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { courseLiveActivity } from '@/utils/courseLiveActivity';
+import { log } from '@/utils/logger';
+
 import CourseTable from './components/courseTable';
 import type { courseType } from './components/courseTable/type';
 import WeekSelector from './components/weekSelector';
@@ -71,6 +76,12 @@ const CourseTablePage: FC = () => {
         const { semester, year } = computeSemesterAndYear(res.data.school_time);
         setSemester(semester);
         setYear(year);
+
+        // 保存当前周数据到 UserDefaults 供 widget 使用
+        extensionStorage.set('schoolTime', res.data.school_time);
+        extensionStorage.set('holidayTime', res.data.holiday_time);
+        ExtensionStorage.reloadWidget();
+
         setTimeout(
           () => setSelectedWeek(useTimeStore.getState().getCurrentWeek()),
           0
@@ -79,7 +90,14 @@ const CourseTablePage: FC = () => {
     } catch (err) {
       log.error('Failed to fetch current week:', err);
     }
-  }, [setSchoolTime, setHolidayTime, setSelectedWeek, setSemester, setYear]);
+  }, [
+    setSchoolTime,
+    setHolidayTime,
+    setSelectedWeek,
+    setSemester,
+    setYear,
+    extensionStorage,
+  ]);
 
   // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
@@ -152,27 +170,6 @@ const CourseTablePage: FC = () => {
       alert('没有课程数据');
       return;
     }
-
-    // 获取今天的第一节课
-    const now = new Date();
-    const weekday = now.getDay();
-    const adjustedWeekday = weekday === 0 ? 7 : weekday;
-
-    const todayCourses = courses
-      .filter(course => course.day === adjustedWeekday)
-      .sort((a, b) => {
-        const aStart = parseInt(a.class_when.split('-')[0]);
-        const bStart = parseInt(b.class_when.split('-')[0]);
-        return aStart - bStart;
-      });
-
-    // if (todayCourses.length === 0) {
-    // 	alert("今天没有课程");
-    // 	return;
-    // }
-
-    // const testCourse = todayCourses[0];
-    // const { start, end } = formatClassTime(testCourse.class_when);
 
     // 启动 Live Activity，模拟 10 分钟倒计时
     const classStartTime = new Date(Date.now() + 10 * 60 * 1000); // 10分钟后

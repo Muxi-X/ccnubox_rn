@@ -120,7 +120,49 @@ struct CourseProvider: TimelineProvider {
               let courses = try? JSONDecoder().decode([Course].self, from: courseData) else {
             return []
         }
-        return courses
+        
+        // 获取当前周并过滤课程
+        let currentWeek = getCurrentWeek(from: defaults)
+        return filterCoursesByCurrentWeek(courses, currentWeek: currentWeek)
+    }
+    
+    // 计算当前周
+    private func getCurrentWeek(from defaults: UserDefaults) -> Int {
+        // 从 UserDefaults 读取开学时间（秒级时间戳）
+        let schoolTime = defaults.double(forKey: "schoolTime")
+        
+        // 如果没有开学时间，返回 1（默认第一周）
+        guard schoolTime > 0 else {
+            return 1
+        }
+        
+        // 将秒级时间戳转换为 Date
+        let startDate = Date(timeIntervalSince1970: schoolTime)
+        let now = Date()
+        
+        // 计算时间差（秒）
+        let diffTime = now.timeIntervalSince(startDate)
+        
+        // 如果还没开学，返回 1
+        guard diffTime >= 0 else {
+            return 1
+        }
+        
+        // 计算天数差
+        let diffDays = Int(diffTime / (24 * 60 * 60))
+        
+        // 计算周数（从第 1 周开始）
+        let week = (diffDays / 7) + 1
+        
+        return max(1, week) // 确保至少是第 1 周
+    }
+    
+    // 过滤课程，只返回当前周的课程
+    private func filterCoursesByCurrentWeek(_ courses: [Course], currentWeek: Int) -> [Course] {
+        return courses.filter { course in
+            // 检查当前周是否在课程的周数范围内
+            return course.weeks.contains(currentWeek)
+        }
     }
 }
 
@@ -187,9 +229,9 @@ struct SmallWidgetView: View {
                     }
                 }
             }
-            Spacer()
         }
         .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
     
     // 获取排序后的课程列表（未上完的在前，已上完的在后）
@@ -232,7 +274,7 @@ struct MediumWidgetView: View {
             // 计算能完整显示的课程数量（向下取整，确保不截断）
             let actualMaxCourses = max(1, Int(floor(actualAvailableHeight / courseCardHeight)))
             
-            HStack(spacing: columnSpacing) {
+            HStack(alignment: .top, spacing: columnSpacing) {
                 // 今天列
                 CourseColumnView(
                     title: "今天",
@@ -259,6 +301,7 @@ struct MediumWidgetView: View {
             }
             .padding(.horizontal, widgetPadding)
             .padding(.vertical, widgetPadding)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
     
@@ -328,10 +371,9 @@ struct CourseColumnView: View {
                     CourseCardView(course: course, color: color, isFinished: isFinished)
                 }
             }
-            
-            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -424,9 +466,9 @@ struct LargeWidgetView: View {
                             LargeCourseCardView(course: course, color: .purple, isFinished: course.isFinished(for: today))
                         }
                     }
-                    Spacer()
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity)
+                .fixedSize(horizontal: false, vertical: true)
                 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 4) {
@@ -450,13 +492,14 @@ struct LargeWidgetView: View {
                             LargeCourseCardView(course: course, color: .orange, isFinished: false)
                         }
                     }
-                    Spacer()
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity)
+                .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 16)
         }
         .padding(.bottom, 12)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
     
     private func dateString(for daysFromNow: Int) -> String {
