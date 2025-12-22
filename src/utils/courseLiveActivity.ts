@@ -204,3 +204,16 @@ export function formatClassTime(classWhen: string): {
     end: sectionTimes[endSection + 1] || '00:00',
   };
 }
+
+/**
+ * 计算距离上课还有多少分钟
+ * @param classWhen 节次字符串，如 "1-2"
+ * @returns 距离上课的分钟数，如果已经过了上课时间则返回负数或0
+ */
+export function calculateMinutesUntilClass(classWhen: string): number {
+  const classStartTime = getClassStartTime(classWhen);
+  const now = new Date();
+  const diffMs = classStartTime.getTime() - now.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  return diffMinutes;
+}

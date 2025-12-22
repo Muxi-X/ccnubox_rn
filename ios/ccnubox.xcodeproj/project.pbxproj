@@ -1,7 +1,7 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	objectVersion = 70;
+	objectVersion = 54;
 	classes = {
 	};
 	objects = {
@@ -59,8 +59,8 @@
 		B28F8190E8B7578EDEC9DA5F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = undefined; name = PrivacyInfo.xcprivacy; path = ccnubox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		CEF22587302E021D3222B5D5 /* Pods-ccnubox.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.debug.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.debug.xcconfig"; sourceTree = "<group>"; };
-		CF0C278A2EF5AE60002CF895 /* CourseLiveActivityModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CourseLiveActivityModule.swift; path = ccnubox/CourseLiveActivityModule.swift; sourceTree = "<group>"; fileEncoding = 4; includeInIndex = 0; };
-		CF0C278C2EF5AE6C002CF895 /* CourseLiveActivityModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CourseLiveActivityModule.m; path = ccnubox/CourseLiveActivityModule.m; sourceTree = "<group>"; fileEncoding = 4; includeInIndex = 0; };
+		CF0C278A2EF5AE60002CF895 /* CourseLiveActivityModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = CourseLiveActivityModule.swift; path = ccnubox/CourseLiveActivityModule.swift; sourceTree = "<group>"; };
+		CF0C278C2EF5AE6C002CF895 /* CourseLiveActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CourseLiveActivityModule.m; path = ccnubox/CourseLiveActivityModule.m; sourceTree = "<group>"; };
 		E0C4D6365826ED2A0DEF5346 /* libPods-ccnubox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; path = "libPods-ccnubox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F082C21F40401009A25D21C8 /* Pods-ccnubox.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ccnubox.release.xcconfig"; path = "Target Support Files/Pods-ccnubox/Pods-ccnubox.release.xcconfig"; sourceTree = "<group>"; };
@@ -273,7 +273,7 @@
 		};
 		XX919852F6EEA878C70780XX /* widget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = XX839CCA62261CE09F1FCEXX /* Build configuration list for PBXNativeTarget "widget" */;
+			buildConfigurationList = XXB1711B499F3355791FD5XX /* Build configuration list for PBXNativeTarget "widget" */;
 			buildPhases = (
 				XX074B8811C1CF8E8A3D74XX /* Frameworks */,
 				XXE45443DC38DCFE1DB622XX /* Sources */,
@@ -398,8 +398,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXApplication/ExpoApplication_privacy.bundle",
@@ -425,8 +423,6 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native/Lottie_React_Native_Privacy.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoApplication_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
@@ -454,21 +450,21 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+			outputFileListPaths = (
+			);
+			inputFileListPaths = (
+			);
 		};
 		890D8C58CEC05CD216D9C0AC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 			);
@@ -476,6 +472,10 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ccnubox/Pods-ccnubox-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+			outputFileListPaths = (
+			);
+			inputFileListPaths = (
+			);
 		};
 		98A922B56E130E395E70F47E /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -651,7 +651,10 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -706,7 +709,10 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -754,7 +760,7 @@
 				DEVELOPMENT_TEAM = 7K67YDYQD8;
 			};
 		};
-		XXA67F4EE0D61AB2B33FDAXX /* Release */ = {
+		XX0DD35575A7936592F8CCXX /* Release */ = {
 			isa = XCBuildConfiguration;
 			name = Release;
 			buildSettings = {
@@ -794,7 +800,7 @@
 				DEVELOPMENT_TEAM = 7K67YDYQD8;
 			};
 		};
-		XXEA1D94F291201653F91AXX /* Release */ = {
+		XXA67F4EE0D61AB2B33FDAXX /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
@@ -823,6 +829,7 @@
 				);
 				MARKETING_VERSION = 3.1.1;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916.widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -856,12 +863,12 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		XX839CCA62261CE09F1FCEXX /* Build configuration list for PBXNativeTarget "widget" */ = {
+		XXB1711B499F3355791FD5XX /* Build configuration list for PBXNativeTarget "widget" */ = {
 			isa = XCConfigurationList;
 			defaultConfigurationIsVisible = 0;
 			buildConfigurations = (
 				XX07EDEE75D8C5FD9BCB19XX /* Debug */,
-				XXA67F4EE0D61AB2B33FDAXX /* Release */,
+				XX0DD35575A7936592F8CCXX /* Release */,
 			);
 			defaultConfigurationName = Release;
 		};
