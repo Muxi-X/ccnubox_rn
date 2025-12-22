@@ -1,11 +1,13 @@
+import { useEffect, useRef } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
+
 import type { courseType } from '@/modules/courseTable/components/courseTable/type';
 import {
   calculateMinutesUntilClass,
   courseLiveActivity,
   formatClassTime,
+  getClassStartTime,
 } from '@/utils/courseLiveActivity';
-import { useEffect, useRef } from 'react';
-import { AppState, type AppStateStatus } from 'react-native';
 
 /**
  * 自动管理课程 Live Activity 的 Hook
@@ -46,7 +48,10 @@ export function useCourseLiveActivity(courses: courseType[]) {
   const startPeriodicCheck = () => {
     stopPeriodicCheck();
     // 每分钟检查一次
-    checkIntervalRef.current = setInterval(checkUpcomingCourse, 60000);
+    checkIntervalRef.current = setInterval(
+      checkUpcomingCourse,
+      60000
+    ) as unknown as NodeJS.Timeout;
     // 立即检查一次
     checkUpcomingCourse();
   };
@@ -97,6 +102,7 @@ export function useCourseLiveActivity(courses: courseType[]) {
     if (minutesUntil <= 10 && minutesUntil > 0) {
       if (!courseLiveActivity.hasActiveActivity()) {
         const { start, end } = formatClassTime(nextCourse.class_when);
+        const classStartTime = getClassStartTime(nextCourse.class_when);
 
         courseLiveActivity.startCourseReminder(
           {
@@ -105,7 +111,7 @@ export function useCourseLiveActivity(courses: courseType[]) {
             startTime: start,
             endTime: end,
           },
-          minutesUntil
+          classStartTime
         );
       }
     }
