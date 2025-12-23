@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "华师匣子",
+    "name": "ccnubox",
     "slug": "ccnubox",
     "owner": "muxi_fe",
     "version": "3.1.2",
@@ -28,6 +28,7 @@
       }
     },
     "ios": {
+      "appleTeamId": "7K67YDYQD8",
       "icon": {
         "light": "./src/assets/images/icon-ios-light.png",
         "dark": "./src/assets/images/icon-ios-dark.png",
@@ -42,8 +43,24 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
+        "CFBundleAllowMixedLocalizations": true,
+        "LSApplicationQueriesSchemes": [
+          "weixin",
+          "alipays",
+          "tel",
+          "sms"
+        ]
+      },
+      "entitlements": {
+        "aps-environment": "development",
+        "com.apple.security.application-groups": [
+          "group.release-20240916"
+        ]
       }
+    },
+    "locales": {
+      "zh-CN": "./languages/zh-CN.json",
+      "en-US": "./languages/en-US.json"
     },
     "android": {
       "adaptiveIcon": {
@@ -75,6 +92,15 @@
         }
       ],
       [
+        "mx-jpush-expo",
+        {
+          "appKey": "85271fccfbf4106a0e78556c",
+          "channel": "coursetable",
+          "apsForProduction": false,
+          "packageName": "com.muxixyz.ccnubox"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#7D82F4",
@@ -98,10 +124,19 @@
       [
         "./plugins/config-android-url-scheme.js",
         {
-          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
-          "schemes": ["weixin", "alipays", "tel", "sms"]
+          "packages": [
+            "com.tencent.mm",
+            "com.eg.android.AlipayGphone"
+          ],
+          "schemes": [
+            "weixin",
+            "alipays",
+            "tel",
+            "sms"
+          ]
         }
-      ]
+      ],
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true
