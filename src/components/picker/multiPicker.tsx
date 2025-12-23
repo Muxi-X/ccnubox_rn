@@ -173,36 +173,9 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     return new Set(plainOptions.map(item => item.value));
   }, [plainOptions]);
 
-  const oddSet = useMemo(() => {
-    return new Set(
-      plainOptions
-        .filter(item => Number(item.value) % 2 === 1)
-        .map(item => item.value)
-    );
-  }, [plainOptions]);
-
-  const evenSet = useMemo(() => {
-    return new Set(
-      plainOptions
-        .filter(item => Number(item.value) % 2 === 0)
-        .map(item => item.value)
-    );
-  }, [plainOptions]);
-
   const onCheckAllChange = (e: { target: { checked: boolean } }) => {
     createQuickSelect(e, allSet);
   };
-
-  const onOddWeeksChange = (e: { target: { checked: boolean } }) => {
-    createQuickSelect(e, oddSet);
-  };
-
-  const onEvenWeeksChange = (e: { target: { checked: boolean } }) => {
-    createQuickSelect(e, evenSet);
-  };
-
-  const isEqualSet = (a: Set<string | number>, b: Set<string | number>) =>
-    a.size === b.size && Array.from(a).every(v => b.has(v));
 
   const renderCheckboxItem = (
     label: string,
@@ -253,16 +226,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
         }}
       >
         {renderCheckboxItem('全选', checkAll, onCheckAllChange)}
-        {renderCheckboxItem(
-          '单周',
-          isEqualSet(checkedList, oddSet),
-          onOddWeeksChange
-        )}
-        {renderCheckboxItem(
-          '双周',
-          isEqualSet(checkedList, evenSet),
-          onEvenWeeksChange
-        )}
         <>
           {plainOptions.map(a => (
             <CheckboxItem
