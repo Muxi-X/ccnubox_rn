@@ -75,21 +75,23 @@ struct Course: Codable, Identifiable {
     
     // 根据节次获取结束时间（分钟）
     private func getEndMinutes(for section: Int) -> Int {
-        // 节次对应的结束时间
+        // 节次对应的结束时间（该节的结束时间）
         let sectionEndTimes: [Int: Int] = [
-            1: 9 * 60 + 40,   // 09:40
-            2: 9 * 60 + 40,   // 09:40
-            3: 11 * 60 + 50,  // 11:50
-            4: 11 * 60 + 50,  // 11:50
-            5: 15 * 60 + 40,  // 15:40
-            6: 15 * 60 + 40,  // 15:40
-            7: 17 * 60 + 50,  // 17:50
-            8: 17 * 60 + 50,  // 17:50
-            9: 20 * 60 + 40,  // 20:40
-            10: 20 * 60 + 40  // 20:40
+            1: 8 * 60 + 45,   // 08:45 (第1节结束)
+            2: 9 * 60 + 40,   // 09:40 (第2节结束)
+            3: 10 * 60 + 55,  // 10:55 (第3节结束)
+            4: 11 * 60 + 50,  // 11:50 (第4节结束)
+            5: 14 * 60 + 45,  // 14:45 (第5节结束)
+            6: 15 * 60 + 40,  // 15:40 (第6节结束)
+            7: 16 * 60 + 55,  // 16:55 (第7节结束)
+            8: 17 * 60 + 50,  // 17:50 (第8节结束)
+            9: 19 * 60 + 15,  // 19:15 (第9节结束)
+            10: 20 * 60 + 5,  // 20:05 (第10节结束)
+            11: 21 * 60 + 0,  // 21:00 (第11节结束)
+            12: 21 * 60 + 50  // 21:50 (第12节结束)
         ]
         
-        return sectionEndTimes[section] ?? 20 * 60 + 40
+        return sectionEndTimes[section] ?? 21 * 60 + 50
     }
 }
 
@@ -415,12 +417,49 @@ struct CourseCardView: View {
     
     private func timeString(from classWhen: String) -> String {
         let parts = classWhen.split(separator: "-")
-        guard let start = Int(parts.first ?? "1") else { return classWhen }
+        guard let startSection = Int(parts.first ?? "1"),
+              let endSection = Int(parts.last ?? "1") else {
+            return classWhen
+        }
         
-        let times = ["", "08:00-09:40", "10:10-11:50", "14:00-15:40",
-                     "16:10-17:50", "19:00-20:40", "20:50-22:30"]
+        // 节次对应的开始时间
+        let sectionStartTimes: [Int: String] = [
+            1: "08:00",
+            2: "08:55",
+            3: "10:10",
+            4: "11:05",
+            5: "14:00",
+            6: "14:55",
+            7: "16:10",
+            8: "17:05",
+            9: "18:30",
+            10: "19:20",
+            11: "20:15",
+            12: "21:05"
+        ]
         
-        return start < times.count ? times[start] : "第\(classWhen)节"
+        // 节次对应的结束时间
+        let sectionEndTimes: [Int: String] = [
+            1: "08:45",
+            2: "09:40",
+            3: "10:55",
+            4: "11:50",
+            5: "14:45",
+            6: "15:40",
+            7: "16:55",
+            8: "17:50",
+            9: "19:15",
+            10: "20:05",
+            11: "21:00",
+            12: "21:50"
+        ]
+        
+        // 开始时间：开始节次的开始时间
+        let startTime = sectionStartTimes[startSection] ?? "08:00"
+        // 结束时间：结束节次的结束时间
+        let endTime = sectionEndTimes[endSection] ?? "09:40"
+        
+        return "\(startTime)-\(endTime)"
     }
 }
 
@@ -564,12 +603,49 @@ struct LargeCourseCardView: View {
     
     private func timeString(from classWhen: String) -> String {
         let parts = classWhen.split(separator: "-")
-        guard let start = Int(parts.first ?? "1") else { return classWhen }
+        guard let startSection = Int(parts.first ?? "1"),
+              let endSection = Int(parts.last ?? "1") else {
+            return classWhen
+        }
         
-        let times = ["", "08:00-09:40", "10:10-11:50", "14:00-15:40",
-                     "16:10-17:50", "19:00-20:40", "20:50-22:30"]
+        // 节次对应的开始时间
+        let sectionStartTimes: [Int: String] = [
+            1: "08:00",
+            2: "08:55",
+            3: "10:10",
+            4: "11:05",
+            5: "14:00",
+            6: "14:55",
+            7: "16:10",
+            8: "17:05",
+            9: "18:30",
+            10: "19:20",
+            11: "20:15",
+            12: "21:05"
+        ]
         
-        return start < times.count ? times[start] : "第\(classWhen)节"
+        // 节次对应的结束时间
+        let sectionEndTimes: [Int: String] = [
+            1: "08:45",
+            2: "09:40",
+            3: "10:55",
+            4: "11:50",
+            5: "14:45",
+            6: "15:40",
+            7: "16:55",
+            8: "17:50",
+            9: "19:15",
+            10: "20:05",
+            11: "21:00",
+            12: "21:50"
+        ]
+        
+        // 开始时间：开始节次的开始时间
+        let startTime = sectionStartTimes[startSection] ?? "08:00"
+        // 结束时间：结束节次的结束时间
+        let endTime = sectionEndTimes[endSection] ?? "09:40"
+        
+        return "\(startTime)-\(endTime)"
     }
 }
 
