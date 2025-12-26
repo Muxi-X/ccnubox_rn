@@ -85,9 +85,7 @@
       [
         "mx-jpush-expo",
         {
-          "appKey": "85271fccfbf4106a0e78556c",
           "channel": "coursetable",
-          "apsForProduction": false,
           "packageName": "com.muxixyz.ccnubox"
         }
       ],
