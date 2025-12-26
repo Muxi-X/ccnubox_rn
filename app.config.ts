@@ -1,5 +1,3 @@
-import 'dotenv-flow/config';
-
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 import updateInfo from './src/assets/data/updateInfo.json';
@@ -27,6 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           {
             ...configurations,
             apsForProduction: isProduction,
+            appKey: process.env.JPUSH_APP_KEY ?? '',
             vendorChannels: {
               vivo: {
                 appKey: process.env.JPUSH_VIVO_APP_KEY,
