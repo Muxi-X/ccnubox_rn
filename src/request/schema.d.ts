@@ -2655,6 +2655,56 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/grade/getGradeType': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取课程类别
+     * @description 获取课程类别
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功返回课程列表 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['grade.GetGradeTypeResp'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/grade/getRankByTerm': {
     parameters: {
       query?: never;
@@ -3420,13 +3470,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
     /**
      * 搜索学生ID
      * @description 传入学生学号获取对应的学生ID
      */
-    post: {
+    get: {
       parameters: {
         query: {
           student_id: string;
@@ -3462,6 +3510,47 @@ export interface paths {
         };
       };
     };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/metrics': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 导出 Prometheus 监控指标
+     * @description 暴露标准的 Prometheus 监控数据，供 Prometheus 定时拉取，使用BasicAuth进行验证
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Prometheus Exporter Text Data */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'text/plain': string;
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -3635,6 +3724,45 @@ export interface paths {
         };
       };
     };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/swag': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取 OpenAPI3 接口文档 (YAML)
+     * @description 接口直接返回 docs/openapi3.yaml yaml格式的原始内容，使用BasicAuth进行验证
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/x-yaml': string;
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -4413,6 +4541,10 @@ export interface components {
     'grade.GetGradeScoreResp': {
       type_of_grade_scores: components['schemas']['grade.TypeOfGradeScore'][];
     };
+    'grade.GetGradeTypeResp': {
+      /** @description 课程类别 */
+      kcxzmc?: string[];
+    };
     'grade.GetRankByTermReq': {
       refresh?: boolean;
       /** @description 学年学期四个字段为空则获取总成绩 */
@@ -4594,7 +4726,7 @@ export interface components {
     'library.ReserveSeatRandomlyRequest': {
       dev_id?: string;
       end?: string;
-      room_ids?: string[];
+      room_ids?: string;
       start?: string;
     };
     'library.ReserveSeatRandomlyResponse': {
