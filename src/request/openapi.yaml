@@ -1609,6 +1609,30 @@ paths:
       summary: 查询学分
       tags:
         - grade
+  /grade/getGradeType:
+    get:
+      description: 获取课程类别
+      responses:
+        '200':
+          description: 成功返回课程列表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/grade.GetGradeTypeResp'
+                    type: object
+        '500':
+          description: 系统异常，获取失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 获取课程类别
+      tags:
+        - grade
   /grade/getRankByTerm:
     get:
       description: 根据学年号和学期号获取用户的学分绩排名以及分数和统计的科目，全为0则查总排名
@@ -2062,7 +2086,7 @@ paths:
       tags:
         - library
   /library/search_user:
-    post:
+    get:
       description: 传入学生学号获取对应的学生ID
       parameters:
         - description: Bearer Token
@@ -2097,6 +2121,23 @@ paths:
       summary: 搜索学生ID
       tags:
         - library
+  /metrics:
+    get:
+      description:
+        暴露标准的 Prometheus 监控数据，供 Prometheus
+        定时拉取，使用BasicAuth进行验证
+      responses:
+        '200':
+          description: Prometheus Exporter Text Data
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+        - BasicAuth: []
+      summary: 导出 Prometheus 监控指标
+      tags:
+        - metrics
   /metrics/:type/:name:
     post:
       description: 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/banner/xxx)表示跳转banner的xxx页面,使用这一路由必须携带Auth请求头
@@ -2186,6 +2227,23 @@ paths:
       summary: 保存静态内容
       tags:
         - statics[Deprecation]
+  /swag:
+    get:
+      description:
+        接口直接返回 docs/openapi3.yaml
+        yaml格式的原始内容，使用BasicAuth进行验证
+      responses:
+        '200':
+          description: OK
+          content:
+            application/x-yaml:
+              schema:
+                type: string
+      security:
+        - BasicAuth: []
+      summary: 获取 OpenAPI3 接口文档 (YAML)
+      tags:
+        - swag
   /tube/access_token:
     get:
       responses:
@@ -3225,6 +3283,14 @@ components:
       required:
         - type_of_grade_scores
       type: object
+    grade.GetGradeTypeResp:
+      properties:
+        kcxzmc:
+          description: 课程类别
+          items:
+            type: string
+          type: array
+      type: object
     grade.GetRankByTermReq:
       properties:
         refresh:
@@ -3591,9 +3657,7 @@ components:
         end:
           type: string
         room_ids:
-          items:
-            type: string
-          type: array
+          type: string
         start:
           type: string
       type: object
