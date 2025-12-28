@@ -1,0 +1,8 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "华师匣子"
+  },
+  "android": {
+    "app_name": "华师匣子"
+  }
+}

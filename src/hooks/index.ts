@@ -1,5 +1,5 @@
 export { default as useDebounce } from './useDebounce';
-// export { default as useJPush } from './useJPush';
+export { default as useJPush } from './useJPush';
 export { default as useKeyboardShow } from './useKeyboardShow';
 // export {
 //   registerForPushNotificationsAsync,
