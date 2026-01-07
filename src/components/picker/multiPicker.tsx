@@ -75,7 +75,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
     handlePick(
       new Set(defaultValue ? defaultValue : data.map(item => item[0].value))
     );
-  }, []);
+  }, [defaultValue, data]);
   const handlePick = (items: Set<string | number>) => {
     setMultiPickerValue(Array.from(items));
   };
