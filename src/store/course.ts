@@ -10,7 +10,9 @@ interface CourseState {
   hydrated: boolean;
   setHydrated: (hydrated: boolean) => void;
   courses: courseType[];
+  courseCategories: string[];
   updateCourses: (courses: courseType[]) => void;
+  updatecourseCategories: (coursesCategory: string[]) => void;
   addCourse: (course: courseType) => void;
   deleteCourse: (id: string) => void;
   updateCourseNote: (id: string, note: string) => void;
@@ -29,13 +31,23 @@ const useCourse = create<CourseState>()(
         hydrated: false,
         setHydrated: (hydrated: boolean) => set({ hydrated }),
         courses: [],
+        courseCategories: [],
         updateCourses: (courses: courseType[]) => {
           // 推送到小组件
           if (Platform.OS === 'android') {
             updateCourseData();
           }
 
-          set({ courses });
+          set(state => ({
+            courses,
+            courseCategories: state.courseCategories,
+          }));
+        },
+        updatecourseCategories: (courseCategories: string[]) => {
+          set(state => ({
+            courses: state.courses,
+            courseCategories,
+          }));
         },
         addCourse: (course: courseType) => {
           set(state => ({ courses: [...state.courses, course] }));

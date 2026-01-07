@@ -92,7 +92,7 @@ export class EventBus {
   once(name: string, fn: (...args: any[]) => void): void {
     const onceFn = (...args: any[]) => {
       fn(...args);
-      this.off(name, fn);
+      this.off(name, onceFn);
     };
     this.on(name, onceFn);
   }
