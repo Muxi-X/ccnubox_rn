@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { FeedIconTypes } from '@/types/FeedIconTypes';
+import type { FeedIconTypes } from '@/types/FeedIconTypes';
 
 export const FeedIconList: FeedIconTypes[] = [
   {
@@ -28,19 +28,11 @@ export const FeedIconList: FeedIconTypes[] = [
     text: '假期临近',
   },
   {
-    name: 'air_conditioner',
+    name: 'energy',
     imageUrl: Platform.select({
       android: require('@/assets/images/icons/android/a-air.png'),
       ios: require('@/assets/images/icons/ios/i-air.png'),
     }),
-    text: '空调电费告急',
-  },
-  {
-    name: 'light',
-    imageUrl: Platform.select({
-      android: require('@/assets/images/icons/android/a-light.png'),
-      ios: require('@/assets/images/icons/ios/i-light.png'),
-    }),
-    text: '照明电费告急',
+    text: '电费告急',
   },
 ];

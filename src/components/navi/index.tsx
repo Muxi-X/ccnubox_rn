@@ -76,7 +76,13 @@ const TabBar: FC<BottomTabBarProps> = props => {
         />
       );
     });
-  }, [state.routes, state.index, descriptors, debouncedHandler]);
+  }, [
+    state.routes,
+    state.index,
+    descriptors,
+    debouncedHandler,
+    navigation.emit,
+  ]);
 
   return (
     <ColorTransitionView configurableThemeName="navbar_background_style">

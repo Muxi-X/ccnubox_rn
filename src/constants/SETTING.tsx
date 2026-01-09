@@ -1,17 +1,16 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { deleteItemAsync } from 'expo-secure-store';
-
-import Modal from '@/components/modal';
-
 import aboutPng from '@/assets/images/about.png';
 import checkUpdatePng from '@/assets/images/check-update.png';
 import exitPng from '@/assets/images/exit.png';
 import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
+import Modal from '@/components/modal';
 import { logout } from '@/request/api/auth';
+import { removeFeedToken } from '@/request/api/feeds';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { deleteItemAsync, getItem } from 'expo-secure-store';
 
-import { SettingItem } from '@/types/settingItem';
+import type { SettingItem } from '@/types/settingItem';
 
 export const SETTING_ITEMS: SettingItem[] = [
   {
@@ -70,7 +69,13 @@ export const SETTING_ITEMS: SettingItem[] = [
         children: '确定要退出登录吗？',
         confirmText: '确定',
         cancelText: '取消',
-        onConfirm: () => {
+        onConfirm: async () => {
+          // 退出前移除 feed token
+          const pushToken = await getItem('pushToken');
+          if (pushToken) {
+            removeFeedToken(pushToken).catch(() => {});
+          }
+
           logout()
             .then(() => {
               AsyncStorage.multiRemove(['courses']);
