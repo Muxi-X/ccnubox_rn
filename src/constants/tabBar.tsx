@@ -1,17 +1,14 @@
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import * as React from 'react';
-import { Text } from 'react-native';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   ScheduleHeaderRight,
   ScheduleHeaderTitle,
 } from '@/modules/courseTable/components/ScheduleHeader';
-//import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
+import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
+import { Text } from 'react-native';
 
-import { SinglePageType } from '@/types/tabBarTypes';
+import type { SinglePageType } from '@/types/tabBarTypes';
 
 /**
  * @enum tabBar颜色
@@ -58,6 +55,29 @@ export const tabConfig: SinglePageType[] = [
     headerRight: () => <ScheduleHeaderRight />,
   },
   {
+    name: 'notification',
+    title: '通知',
+    iconName: 'notification',
+    headerTitle: () => <></>,
+    headerLeft: () => (
+      <Text
+        style={[
+          commonStyles.fontLarge,
+          commonStyles.fontBold,
+          commonStyles.TabBarPadding,
+          {
+            lineHeight: 30,
+            height: 30,
+          },
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
+        消息通知
+      </Text>
+    ),
+    headerRight: () => <NotificationHeaderRight />,
+  },
+  {
     name: 'setting',
     title: '其他',
     iconName: 'setting',
@@ -72,27 +92,4 @@ export const tabConfig: SinglePageType[] = [
       </Text>
     ),
   },
-  // {
-  //   name: 'notification',
-  //   title: '通知',
-  //   iconName: 'notification',
-  //   headerTitle: () => <></>,
-  //   headerLeft: () => (
-  //     <Text
-  //       style={[
-  //         commonStyles.fontLarge,
-  //         commonStyles.fontBold,
-  //         commonStyles.TabBarPadding,
-  //         {
-  //           lineHeight: 30,
-  //           height: 30,
-  //         },
-  //         useVisualScheme.getState().currentStyle?.header_text_style,
-  //       ]}
-  //     >
-  //       消息通知
-  //     </Text>
-  //   ),
-  //   headerRight: () => <NotificationHeaderRight />,
-  // },
 ];

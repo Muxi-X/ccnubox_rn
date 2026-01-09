@@ -33,7 +33,6 @@ const useJPush = () => {
 
         // 初始化 JPush
         JPush.setLoggerEnable(__DEV__);
-        console.log('JPush Secrets', JPushSecrets);
 
         JPush.init({
           appKey: JPushSecrets.appKey,
@@ -44,7 +43,6 @@ const useJPush = () => {
         // 获取并保存 Registration ID
         JPush.getRegistrationID((result: { registerID?: string }) => {
           const id = result.registerID;
-          console.log(result);
           if (id) {
             setItem('pushToken', id);
             console.log('✅ JPush Registration ID:', id);
@@ -56,7 +54,7 @@ const useJPush = () => {
           const isConnected = result.connectEnable ?? false;
 
           if (isConnected) {
-            console.log(`✅ JPush 连接成功`);
+            console.log(`✅ JPush 连接成功`, result);
           } else {
             console.warn(`⚠️ JPush 连接失败`);
           }

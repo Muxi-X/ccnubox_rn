@@ -1,10 +1,16 @@
+import AnimatedFade from '@/components/animatedView/AnimatedFade';
+import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
+import Button from '@/components/button';
+import Modal from '@/components/modal';
+import { useKeyboardShow } from '@/hooks';
+import { saveFeedToken } from '@/request/api/feeds';
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
-import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import type { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import axios, { AxiosError } from 'axios';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { setItem } from 'expo-secure-store';
-import { FC, useState } from 'react';
+import { getItem, setItem } from 'expo-secure-store';
+import { type FC, useState } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -13,13 +19,6 @@ import {
   Text,
   View,
 } from 'react-native';
-
-import { useKeyboardShow } from '@/hooks';
-
-import AnimatedFade from '@/components/animatedView/AnimatedFade';
-import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
-import Button from '@/components/button';
-import Modal from '@/components/modal';
 
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
@@ -75,6 +74,15 @@ const LoginPage: FC = () => {
         });
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
+
+        // 登录成功后保存 feed token
+        const pushToken = await getItem('pushToken');
+        if (pushToken) {
+          saveFeedToken(pushToken).catch(err => {
+            log.error('保存 feed token 失败:', err);
+          });
+        }
+
         router.navigate('/(tabs)');
       }
     } catch (error) {
