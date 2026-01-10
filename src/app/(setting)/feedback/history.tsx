@@ -177,7 +177,7 @@ export default function FeedbackHistory() {
         ],
         key_field: '学号',
         key_value: userId,
-        table_identify: '001',
+        table_identify: 'ccnubox',
       };
 
       const res = (await queryUserFeedbackSheet(query)) as any;
