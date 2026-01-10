@@ -1,8 +1,9 @@
-import axios from 'axios';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
-// 重新实现Adler32计算，飞书接口可能需要这个校验
+import { request } from '@/request';
+import { FeishuUploadTokenConfig } from '@/request/api/feedback/otherTokenConfig';
+
 function calculateAdler32(arrayBuffer: ArrayBuffer): string {
   const view = new Uint8Array(arrayBuffer);
   let a = 1;
@@ -13,7 +14,7 @@ function calculateAdler32(arrayBuffer: ArrayBuffer): string {
     b = (b + a) % 65521;
   }
 
-  return ((b << 16) | a).toString();
+  return (((b << 16) | a) >>> 0).toString();
 }
 
 // 修复Base64解码函数在React Native中的使用
@@ -55,7 +56,6 @@ async function getFileInfo(
 }
 
 async function uploadFileToFeishuBitable(
-  accessToken: string,
   fileUri: string,
   fileName: string
 ): Promise<any> {
@@ -100,36 +100,30 @@ async function uploadFileToFeishuBitable(
       parentType: FIXED_CONFIG.parentType,
       parentNode: FIXED_CONFIG.parentNode,
       checkSum,
-      accessTokenPresent: !!accessToken,
     });
 
     // 发送请求
-    const response = await axios.post(
-      'https://open.feishu.cn/open-apis/drive/v1/medias/upload_all',
+    const res = (await request.post(
+      'https://open.feishu.cn/open-apis/drive/v1/medias/upload_all' as any,
       formData,
       {
+        otherToken: FeishuUploadTokenConfig,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data; boundary=---7MA4YWxkTrZu0gW',
+          'Content-Type': 'multipart/form-data',
         },
-        timeout: 30000,
-        transformRequest: [data => data],
       }
-    );
+    )) as any;
 
-    console.log('上传响应:', response.data);
-
-    if (response.data.code === 0) {
-      return response.data;
-    } else {
-      throw new Error(`上传失败: ${response.data.msg || '未知错误'}`);
+    if (res.code !== 0) {
+      throw new Error(res.msg || '飞书上传失败');
     }
+
+    return res;
   } catch (error: any) {
     console.error('上传错误详情:', {
       message: error.message,
       response: error.response?.data,
       status: error.response?.status,
-      accessTokenUsed: !!accessToken,
     });
     throw error;
   }

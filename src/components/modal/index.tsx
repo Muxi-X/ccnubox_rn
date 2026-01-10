@@ -132,6 +132,7 @@ const Modal: React.FC<ModalProps> & {
                       ...styles.cancelViewStyle,
                       ...styles.buttonStyle,
                     },
+                    currentStyle?.background_style,
                   ]}
                 >
                   <Text
@@ -434,7 +435,7 @@ const styles = StyleSheet.create({
     color: commonColors.purple,
   },
   cancelMiddleText: {
-    color: 'black',
+    color: commonColors.purple,
   },
   confirmMiddleText: {
     color: 'white',
@@ -471,6 +472,8 @@ const styles = StyleSheet.create({
     backgroundColor: commonColors.purple,
   },
   cancelViewStyle: {
+    borderWidth: 1,
+    borderColor: commonColors.purple,
     backgroundColor: commonColors.gray,
   },
   buttonStyle: {
