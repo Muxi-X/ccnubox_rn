@@ -162,8 +162,8 @@ function WriteFeedback() {
 
     setIsSubmitting(true);
     try {
-      const user = (await getItem('user')) || '';
-      const userId = JSON.parse(user!)?.state?.student_id;
+      const user = getItem('user');
+      const userId = user ? JSON.parse(user)?.state?.student_id : undefined;
 
       const fileTokens = images.map(img => img.token).filter(Boolean);
 

@@ -18,13 +18,13 @@ const HeaderRight: React.FC<HeaderRightProps> = ({
   const pathname = usePathname();
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle
-  }))
+  }));
 
   if (!mainPagePath || pathname !== mainPagePath) {
     return null;
   }
 
-  const handleBack = () => {
+  const handleNavigate = () => {
     if (target) {
       router.push(target as any);
     } 
@@ -32,7 +32,7 @@ const HeaderRight: React.FC<HeaderRightProps> = ({
 
   return (
     <View>
-      <TouchableOpacity onPress={handleBack}>
+      <TouchableOpacity onPress={handleNavigate}>
         <Text
           style={[
             currentStyle?.text_style
