@@ -5018,7 +5018,7 @@ export interface components {
     };
     'request.GenerateTableTokenReq': {
       /** @description 反馈表格 Identity，反馈表的唯一标识 */
-      table_identity: string;
+      table_identify: string;
     };
     'response.HealthCheckResponse': {
       /** @description Process 当前进程的运行状态 */
