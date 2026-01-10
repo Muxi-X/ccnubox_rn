@@ -4287,7 +4287,7 @@ components:
           description: 反馈表格 Identify，反馈表的唯一标识
           type: string
       required:
-        - table_identitfy
+        - table_identify
       type: object
     response.HealthCheckResponse:
       properties:

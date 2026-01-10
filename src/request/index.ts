@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { deleteItemAsync, getItem, setItem } from 'expo-secure-store';
+import { getItem, setItem } from 'expo-secure-store';
 
 import Toast from '@/components/toast';
 
@@ -28,7 +28,6 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
       return await refreshToken();
     }
 
-    await deleteItemAsync('FeishuUploadToken');
     if (config.token) return config.token;
 
     const token = await getItem(`${config.name}`);

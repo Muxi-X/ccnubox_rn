@@ -31,7 +31,7 @@ function FeedbackPage() {
   const router = useRouter();
   const number = '791185783';
   const user = getItem('user');
-  const userId = JSON.parse(user!)?.state?.student_id;
+  const userId = user ? JSON.parse(user)?.state?.student_id : '';
 
   const [value, setValue] = useState('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);

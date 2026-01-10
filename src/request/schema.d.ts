@@ -4993,7 +4993,7 @@ export interface components {
       link: string;
       name: string;
     };
-    'request.CreatTableRecordReg': {
+    'request.CreateTableRecordReg': {
       /** @description 联系方式，可选 */
       contact_info?: string;
       /** @description 反馈内容 */
@@ -5359,7 +5359,7 @@ export interface operations {
     /** @description 新增记录请求参数 */
     requestBody: {
       content: {
-        'application/json': components['schemas']['request.CreatTableRecordReg'];
+        'application/json': components['schemas']['request.CreateTableRecordReg'];
       };
     };
     responses: {
