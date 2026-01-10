@@ -11,6 +11,7 @@ const FeedbackItems = [
   { name: 'index', title: '帮助与反馈' },
   { name: 'history', title: '反馈历史' },
   { name: 'writefeedback', title: '我要反馈' },
+  { name: 'detail', title: '反馈详情' },
 ];
 
 export default function FeedbacksLayout() {

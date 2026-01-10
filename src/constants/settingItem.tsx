@@ -7,6 +7,7 @@ import Modal from '@/components/modal';
 import aboutPng from '@/assets/images/about.png';
 import checkUpdatePng from '@/assets/images/check-update.png';
 import exitPng from '@/assets/images/exit.png';
+import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
 import { logout } from '@/request/api/auth';
 
@@ -49,9 +50,11 @@ export const SettingItems: SettingItem[] = [
     title: '帮助与反馈',
     name: 'feedback',
     id: 6,
-    icon: exitPng,
+    icon: feedbackPng,
     text: '帮助与反馈',
     to: '/(setting)/feedback',
+    subTitle: '反馈历史',
+    sub: '/(setting)/feedback/history',
   },
   {
     title: '退出',

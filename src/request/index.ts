@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { getItem, setItem } from 'expo-secure-store';
+import { deleteItemAsync, getItem, setItem } from 'expo-secure-store';
 
 import Toast from '@/components/toast';
 
@@ -9,62 +9,90 @@ import requestBus from '@/store/currentRequests';
 
 import { paths } from './schema';
 
+import { OtherTokenConfig } from '@/types/axios';
+
+// 这一块逻辑和匣子接口强耦合，不适用反馈接口，所以加了些扩展，默认为原逻辑
 const axiosInstance: AxiosInstance = axios.create({
   // baseURL: process.env.EXPO_PUBLIC_API_URL,
   baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
   adapter: axios.defaults.adapter,
 });
 
-async function getStoredToken(): Promise<string> {
+async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
   try {
-    const shortToken = getItem('shortToken');
-    if (shortToken) return shortToken;
+    if (!config) {
+      const shortToken = await getItem('shortToken');
+      if (shortToken) return shortToken;
 
-    // 如果短 token 不存在，尝试刷新
-    return await refreshToken();
-  } catch (error) {
+      // 如果短 token 不存在，尝试刷新
+      return await refreshToken();
+    }
+
+    await deleteItemAsync('FeishuUploadToken');
+    if (config.token) return config.token;
+
+    const token = await getItem(`${config.name}`);
+
+    if (token) return token;
+
+    // config.refresh是必选，如果没选的话走refreshToken，那里有错误处理
+    if (config.refresh) {
+      return await config.refresh();
+    }
+
+    return await refreshToken(config);
+  } catch {
     //console.error('获取 token 失败:', error);
     throw new Error('token不存在');
   }
 }
 
-async function refreshToken(): Promise<string> {
-  const longToken = getItem('longToken');
-  if (!longToken) throw new Error('长 token 不存在');
+async function refreshToken(config?: OtherTokenConfig): Promise<string> {
+  if (!config) {
+    const longToken = getItem('longToken');
+    if (!longToken) throw new Error('长 token 不存在');
 
-  // 刷新短 token
-  const response = await axios.get(
-    // `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
-    `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
-    {
-      headers: { Authorization: `Bearer ${longToken}` },
+    // 刷新短 token
+    const response = await axios.get(
+      // `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
+      `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
+      {
+        headers: { Authorization: `Bearer ${longToken}` },
+      }
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      const newShortToken = response.headers['x-jwt-token'];
+      //   console.log(newShortToken);
+      setItem('shortToken', newShortToken);
+      return newShortToken;
     }
-  );
 
-  if (response.status === 200 || response.status === 201) {
-    const newShortToken = response.headers['x-jwt-token'];
-    //   console.log(newShortToken);
-    setItem('shortToken', newShortToken);
-    return newShortToken;
+    throw new Error('刷新短 token 失败');
   }
 
-  throw new Error('刷新短 token 失败');
+  if (config.refresh) {
+    return await config.refresh();
+  }
+
+  throw new Error(`${config.name} 未配置 refresh`);
 }
 
 axiosInstance.interceptors.request.use(
   async config => {
     requestBus.requestRegister();
 
-    if (config.isToken !== false) {
-      try {
-        const token = await getStoredToken();
-        if (token) {
-          config.headers['Authorization'] = `Bearer ${token.trim()}`;
-        }
-      } catch (error) {
-        throw Error('token不存在');
+    if (config.isToken === false) return config;
+
+    try {
+      const token = await getStoredToken(config?.otherToken);
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token.trim()}`;
       }
+    } catch {
+      throw Error('token不存在');
     }
+
     return config;
   },
   error => {
@@ -96,14 +124,21 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // 防止无限循环
-      try {
-        const newShortToken = await refreshToken();
 
-        originalRequest.headers['Authorization'] = `Bearer ${newShortToken}`;
+      const tokenConfig = originalRequest?.otherToken;
+      try {
+        const newToken = await refreshToken(tokenConfig);
+
+        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
         return axiosInstance(originalRequest); // 重新发送请求
       } catch (refreshError) {
-        //    console.error('刷新 token 失败:', refreshError);
+        if (tokenConfig) {
+          tokenConfig.onRefreshError?.(refreshError);
+          return Promise.reject(refreshError);
+        }
+
         router.replace('/auth/login');
+        return Promise.reject(refreshError);
       }
     }
 
@@ -147,7 +182,9 @@ function resolvePathWithParams<P extends Path>(
   if (typeof params === 'object' && 'query' in params) {
     // @ts-expect-error 2339 never type
     const query = params.query;
-    if (typeof query === 'object') {
+    if (typeof query === 'string') {
+      return `${path as string}?${query}`;
+    } else if (typeof query === 'object') {
       const queryParams = new URLSearchParams();
       for (const key in query) {
         if (Object.prototype.hasOwnProperty.call(query, key)) {
@@ -158,7 +195,7 @@ function resolvePathWithParams<P extends Path>(
       return `${path as string}?${queryString}`;
     } else {
       throw new Error(
-        `Expected query to be an object, but received: ${typeof query}`
+        `Expected query to be an object or string, but received: ${typeof query}`
       );
     }
   } else {

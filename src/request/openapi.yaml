@@ -2407,6 +2407,385 @@ paths:
       summary: 保存网站信息
       tags:
         - website
+  /api/v1/auth/table-config/refresh:
+    get:
+      description: 刷新并返回目前支持索引的表格的公开配置
+      operationId: refresh-table-config
+      responses:
+        '200':
+          description: 成功返回目前支持索引的表格的公开配置
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 刷新表格 token 配置接口
+      tags:
+        - Auth
+  /api/v1/auth/table-config/token:
+    post:
+      description: 获取 table token 接口
+      operationId: get-table-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.GenerateTableTokenReq'
+        description: 获取Token请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功返回 JWT 令牌
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取 table token 接口
+      tags:
+        - Auth
+  /api/v1/auth/tenant/token:
+    post:
+      description: 获取 tenant token 接口，用于上传图片等
+      operationId: get-tenant-token
+      responses:
+        '200':
+          description: 成功返回 JWT 令牌
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取 tenant token 接口
+      tags:
+        - Auth
+  /api/v1/health:
+    get:
+      description: 健康检查，返回当前服务占用的资源等信息
+      operationId: health-check
+      responses:
+        '200':
+          description: 成功返回健康检查结果
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/response.HealthCheckResponse'
+                    type: object
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        type: string
+                    type: object
+      summary: 健康检查，返回当前服务占用的资源等信息
+      tags:
+        - Health
+  /api/v1/openapi:
+    get:
+      description:
+        接口直接返回 docs/openapi3.yaml
+        yaml格式的原始内容，使用BasicAuth进行验证
+      operationId: get-openapi3
+      responses:
+        '200':
+          description: 成功返回 OpenAPI3 文档内容
+          content:
+            application/x-yaml:
+              schema:
+                type: string
+        '401':
+          description: 未授权，BasicAuth 验证失败
+          content:
+            application/x-yaml:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/x-yaml:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      security:
+        - BasicAuth: []
+      summary: 获取 OpenAPI3 接口文档 (YAML)
+      tags:
+        - Swag
+  /api/v1/sheet/photos/url:
+    get:
+      description: 根据文件Token获取截图的临时下载URL，URL有效期为24小时
+      operationId: get-photo-url
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 附件 token
+          in: query
+          name: file_tokens
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 成功返回临时URL信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取截图临时URL
+      tags:
+        - Sheet
+  /api/v1/sheet/records:
+    get:
+      description: 根据指定条件查询多维表格中的记录数据
+      operationId: get-table-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 用于查询记录的关键值，一般使用学号的字段名
+          in: query
+          name: key_field
+          required: true
+          schema:
+            type: string
+        - description: 用于查询记录的关键值，一般使用学号的字段值
+          in: query
+          name: key_value
+          required: true
+          schema:
+            type: string
+        - description: 分页参数,第一次不需要
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 需要查询的字段名
+          in: query
+          name: record_names
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回查询结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取多维表格记录
+      tags:
+        - Sheet
+    post:
+      description: 向指定的多维表格应用中添加记录数据
+      operationId: create-table-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreatTableRecordReg'
+        description: 新增记录请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功返回创建记录结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 创建多维表格记录
+      tags:
+        - Sheet
+  /api/v1/sheet/records/faq:
+    get:
+      description: 根据指定条件查询多维表格中的记录数据
+      operationId: get-faq-resolution-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 需要查询的字段名
+          in: query
+          name: record_names
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - description: 学号，用于标记用户身份
+          in: query
+          name: student_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回查询结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取常见问题记录
+      tags:
+        - Sheet
+    post:
+      description: 更新FAQ解决方案的 已解决/未解决 状态
+      operationId: update-faq-resolution
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.FAQResolutionUpdateReq'
+        description: 更新FAQ解决状态请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功更新FAQ解决状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 更新FAQ解决方案的 已解决/未解决 状态
+      tags:
+        - Sheet
 components:
   schemas:
     banner.Banner:
@@ -3852,4 +4231,125 @@ components:
         - image
         - link
         - name
+      type: object
+    request.CreatTableRecordReg:
+      properties:
+        contact_info:
+          description: 联系方式，可选
+          type: string
+        content:
+          description: 反馈内容
+          type: string
+        extra_record:
+          additionalProperties: {}
+          description: 额外记录列表，可选
+          type: object
+        images:
+          description: 图片附件 URL 列表，可选
+          items:
+            type: string
+          type: array
+        student_id:
+          description: 学号，用于标记用户身份
+          type: string
+        table_identify:
+          type: string
+      required:
+        - content
+        - student_id
+        - table_identify
+      type: object
+    request.FAQResolutionUpdateReq:
+      properties:
+        is_resolved:
+          type: boolean
+        record_id:
+          type: string
+        resolved_field_name:
+          type: string
+        table_identify:
+          type: string
+        unresolved_field_name:
+          type: string
+        user_id:
+          type: string
+      required:
+        - is_resolved
+        - record_id
+        - resolved_field_name
+        - table_identify
+        - unresolved_field_name
+        - user_id
+      type: object
+    request.GenerateTableTokenReq:
+      properties:
+        table_identity:
+          description: 反馈表格 Identity，反馈表的唯一标识
+          type: string
+      required:
+        - table_identity
+      type: object
+    response.HealthCheckResponse:
+      properties:
+        process:
+          allOf:
+            - $ref: '#/components/schemas/response.ProcessStats'
+          description: Process 当前进程的运行状态
+        response_ms:
+          description: ResponseMs 响应耗时，单位毫秒
+          type: string
+        status:
+          description: Status 服务状态，例如 "ok"
+          type: string
+        system:
+          allOf:
+            - $ref: '#/components/schemas/response.SystemStats'
+          description: System 系统资源使用情况
+      type: object
+    response.ProcessStats:
+      properties:
+        cpu_percent:
+          description: CPUPercent 进程 CPU 使用率（%）
+          type: string
+        go_heap_alloc_mb:
+          description: GoHeapAllocMB Go 堆分配的内存（MB）
+          type: string
+        goroutines:
+          description: Goroutines 当前运行的 goroutine 数
+          type: string
+        memory_rss_mb:
+          description: MemoryRSSMB 进程常驻内存（MB）
+          type: string
+      type: object
+    response.Response:
+      properties:
+        code:
+          type: integer
+        data: {}
+        msg:
+          type: string
+      type: object
+    response.SystemStats:
+      properties:
+        cpu_percent:
+          description: CPUPercent CPU 使用率（%）
+          type: string
+        disk_percent:
+          description: DiskPercent 磁盘使用率（%）
+          type: string
+        disk_total:
+          description: DiskTotalGB 磁盘总量（GB）
+          type: string
+        disk_used:
+          description: DiskUsedGB 已使用磁盘（GB）
+          type: string
+        memory_percent:
+          description: MemoryPercent 内存使用率（%）
+          type: string
+        memory_total:
+          description: MemoryTotalMB 内存总量（MB）
+          type: string
+        memory_used:
+          description: MemoryUsedMB 已使用内存（MB）
+          type: string
       type: object

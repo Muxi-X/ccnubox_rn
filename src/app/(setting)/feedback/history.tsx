@@ -1,183 +1,279 @@
-import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Toast } from '@ant-design/react-native';
+import { useRouter } from 'expo-router';
+import { getItem } from 'expo-secure-store';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  VirtualizedList,
+} from 'react-native';
 
-import ThemeBasedView from '@/components/view';
+import Loading from '@/components/loading';
 
-import api from '@/utils/api';
-// 定义反馈项的类型接口
-interface FeedbackItem {
-  record_id: string;
-  fields: {
-    反馈内容?: Array<{ text: string; type: string }>;
-    截图?: Array<{
-      file_token?: string;
-      name?: string;
-      size?: number;
-      tmp_url?: string;
-      type?: string;
-      url?: string;
-    }>;
-    提交时间?: number;
-    用户ID?: Array<{ text: string; type: string }>;
-    '联系方式（QQ/邮箱）'?: Array<{ text: string; type: string }>;
-    问题来源?: string;
-    问题状态?: string;
-    问题类型?: string;
-  };
-}
+import useVisualScheme from '@/store/visualScheme';
 
-function FeedbackHistory() {
+import { queryUserFeedbackSheet } from '@/request/api/feedback';
+
+import { FeedbackItem } from './type';
+
+const STATUS_COLORS: Record<string, string> = {
+  待处理: '#A8A8A8',
+  处理中: '#FFC107',
+  已完成: '#4CAF50',
+};
+
+const STATUS_BG_COLORS: Record<string, string> = {
+  待处理: '#F3F4F6',
+  处理中: '#FFC1071A',
+  已完成: '#4CAF501A',
+};
+
+const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
+  ({ item }) => {
+    const router = useRouter();
+
+    const handlePress = () => {
+      const itemData = encodeURIComponent(JSON.stringify(item));
+      router.push({
+        pathname: '/feedback/detail',
+        params: { item: itemData },
+      });
+    };
+
+    function spliceText(text: string, maxLength = 65) {
+      if (!text) return '';
+      return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+    }
+
+    return (
+      <TouchableOpacity
+        style={styles.itemcontainer}
+        onPress={handlePress}
+        activeOpacity={0.7}
+      >
+        <View style={styles.itemheader}>
+          <View style={styles.itemheaderleft}>
+            <View style={styles.itemheaderleftitem}>
+              <Text style={styles.itemheaderleftitemtext}>
+                {item.fields.source}
+              </Text>
+            </View>
+            <View style={styles.itemheaderleftitem}>
+              <Text style={styles.itemheaderleftitemtext}>
+                {item.fields.type}
+              </Text>
+            </View>
+          </View>
+
+          {/* 最简单的UTC转UTC+8😋 */}
+          <View style={{ paddingVertical: 8 }}>
+            <Text style={styles.itemheaderright}>
+              {item.fields.submitTime === '未知时间'
+                ? '未知时间'
+                : (() => {
+                    const d = new Date(
+                      (item.fields.submitTime as number) + 8 * 3600 * 1000
+                    );
+                    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+                  })()}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.itemcontent}>
+          <Text style={styles.itemcontenttitle}>反馈内容</Text>
+          <Text style={styles.itemcontenttext}>
+            {spliceText(item.fields.content)}
+          </Text>
+        </View>
+
+        <View style={styles.itemfooter}>
+          <View
+            style={[
+              styles.itemfootercontainer,
+              { backgroundColor: STATUS_BG_COLORS[item.fields.status] },
+            ]}
+          >
+            <Text
+              style={[
+                styles.itemfootertext,
+                { color: STATUS_COLORS[item.fields.status] },
+              ]}
+            >
+              {item.fields.status}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+);
+
+export default function FeedbackHistory() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [pageToken, setPageToken] = useState<string>('');
   const [feedbackHistory, setFeedbackHistory] = useState<FeedbackItem[]>([]);
+  const loadingRef = useRef<boolean>(false);
+  const user = getItem('user');
 
-  const getFeedbackHistory = async () => {
+  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+    currentStyle,
+  }));
+
+  function transformRecordsToFeedbackItems(
+    records: Array<{
+      RecordID: string;
+      Record: Record<string, any>;
+    }>
+  ): FeedbackItem[] {
+    return records.map(item => ({
+      record_id: item.RecordID,
+      fields: {
+        content: item.Record['反馈内容'] || '暂无内容',
+        screenshots: Array.isArray(item.Record['截图'])
+          ? item.Record['截图'].map((token: string) => ({ file_token: token }))
+          : [],
+        submitTime: item.Record['提交时间'] || '未知时间',
+        userId: item.Record['用户ID'] || '',
+        contact: item.Record['联系方式（QQ/邮箱）'] || '',
+        source: item.Record['问题来源'] || '未知来源',
+        status:
+          item.Record['进度'] === '待通知'
+            ? '处理中'
+            : item.Record['进度'] || '未知状态',
+        type: item.Record['问题类型'] || '未知类型',
+      },
+    }));
+  }
+
+  const getUserFeedbackSheet = async (isInit: boolean) => {
+    if (!isInit && (loadingRef.current || !hasMore)) return;
+
+    loadingRef.current = true;
+    setIsLoading(true);
+
     try {
-      const response = await api.post('/sheet/getrecord', {
-        desc: true,
-        field_names: [
-          '用户ID',
+      const userId = JSON.parse(user!)?.state?.student_id;
+
+      const query = {
+        page_token: pageToken,
+        record_names: [
+          '联系方式（QQ/邮箱）',
           '反馈内容',
           '截图',
           '问题类型',
           '问题来源',
-          '联系方式（QQ/邮箱）',
+          '进度',
           '提交时间',
-          '问题状态',
-          '关联需求',
         ],
-        filter_name: '用户ID',
-        filter_val: '2024214381',
-        pagetoken: '',
-        sort_orders: '提交时间',
-      });
-      if (response.data && response.data.data) {
-        console.log('反馈历史:', response.data.data.items);
-        setFeedbackHistory(response.data.data.items);
+        key_field: '学号',
+        key_value: userId,
+        table_identify: '001',
+      };
+
+      const res = (await queryUserFeedbackSheet(query)) as any;
+
+      if (res.code === 0) {
+        const list = transformRecordsToFeedbackItems(res.data.Records);
+        setFeedbackHistory([...feedbackHistory, ...list]);
+        setHasMore(res.data.HasMore);
+        setPageToken(res.data.PageToken || null);
       }
-    } catch (error) {
-      console.error('获取反馈历史失败:', error);
+    } catch (err) {
+      console.error('获取用户反馈失败', err);
+      Toast.fail('获取反馈历史失败，请稍后再试');
+    } finally {
+      loadingRef.current = false;
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    getFeedbackHistory();
+    getUserFeedbackSheet(true);
   }, []);
 
+  const handleEndReached = () => {
+    getUserFeedbackSheet(false);
+  };
+
+  const renderItem = useCallback(
+    ({ item }: { item: FeedbackItem }) => <FeedbackListItem item={item} />,
+    []
+  );
+
+  const keyExtractor = useCallback((item: FeedbackItem, index: number) => {
+    const id = item.record_id ?? 'unknown';
+    const time = item.fields.submitTime ?? 0;
+    return `${id}_${time}-${index}`;
+  }, []);
+
+  const ListFooter = useMemo(() => {
+    if (isLoading) {
+      return <Loading text="加载中..." color="#847AF2" />;
+    }
+    if (!hasMore) {
+      return (
+        <Text style={{ textAlign: 'center', margin: 16, color: '#999' }}>
+          再往下也没有了
+        </Text>
+      );
+    }
+    return null;
+  }, [isLoading, hasMore]);
+
   return (
-    <ThemeBasedView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={true}
-      >
-        <View>
-          {Array.isArray(feedbackHistory) &&
-            feedbackHistory.map((item, index) => (
-              <View key={index} style={styles.itemcontainer}>
-                <View style={styles.itemheader}>
-                  <View style={styles.itemheaderleft}>
-                    {/* 将问题类型按照-符号分割并显示 */}
-                    {item.fields?.['问题类型']?.includes('-') ? (
-                      item.fields['问题类型'].split('-').map((part, i) => (
-                        <View key={i} style={styles.itemheaderleftitem}>
-                          <Text style={styles.itemheaderleftitemtext}>
-                            {part}
-                          </Text>
-                        </View>
-                      ))
-                    ) : (
-                      <View style={styles.itemheaderleftitem}>
-                        <Text style={styles.itemheaderleftitemtext}>
-                          {item.fields?.['问题类型'] || '未知类型'}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                  <View style={{ paddingVertical: 8 }}>
-                    <Text style={styles.itemheaderright}>
-                      {item.fields?.['提交时间']
-                        ? new Date(item.fields['提交时间']).toLocaleDateString(
-                            'zh-CN'
-                          )
-                        : '未知时间'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.itemcontent}>
-                  <Text style={styles.itemcontenttitle}>反馈内容</Text>
-                  <Text style={styles.itemcontenttext}>
-                    {item.fields?.['反馈内容']?.[0]?.text || '暂无内容'}
-                  </Text>
-                </View>
-                <View style={styles.itemfooter}>
-                  <View style={[styles.itemfootercontainer]}>
-                    <Text
-                      style={[
-                        styles.itemfootertext,
-                        item.fields?.['问题状态'] === '处理中'
-                          ? styles.itemyellowtext
-                          : item.fields?.['问题状态'] === '已解决'
-                            ? styles.itemgreentext
-                            : null,
-                      ]}
-                    >
-                      {item.fields?.['问题状态'] || '未知状态'}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-        </View>
-      </ScrollView>
-
-      {/*<View style={styles.itemcontainer}>
-        <View style={styles.itemheader}>
-          <View style={styles.itemheaderleft}>
-            <View style={styles.itemheaderleftitem}><Text style={styles.itemheaderleftitemtext}>功能异常</Text></View>
-            <View style={styles.itemheaderleftitem}><Text style={styles.itemheaderleftitemtext}>其他问题</Text></View>
-          </View>
-          <View style={{paddingVertical:8}}>
-          <Text style={styles.itemheaderright}>2023-08-01</Text>
-          </View>
-
-        </View>
-        <View style={styles.itemcontent}>
-          <Text style={styles.itemcontenttitle}>登录页面无法正常显示验证码</Text>
-          <Text style={styles.itemcontenttext}>在使用Chrome浏览器时，登录页面的验证码图片
-无法正常加载，显示空白。已尝试清除浏览器缓存
-但问题依然存在。</Text>
-        </View>
-        <View style={styles.itemfooter}>
-          <View style={[styles.itemfootercontainer]}>
-          <Text style={styles.itemfootertext}>待解决</Text>
-        </View>
-        </View>
-      </View>*/}
-    </ThemeBasedView>
+    <View style={[styles.container, currentStyle?.page_background_style]}>
+      {feedbackHistory.length === 0 && isLoading ? (
+        <Loading text="加载中..." color="#847AF2" />
+      ) : (
+        <VirtualizedList
+          data={feedbackHistory}
+          initialNumToRender={4}
+          windowSize={5}
+          maxToRenderPerBatch={4}
+          getItemCount={data => (data ? data.length : 0)}
+          getItem={(data, index) => (data ? data[index] : null)}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.3}
+          ListFooterComponent={ListFooter}
+        />
+      )}
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FB',
+    position: 'relative',
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-  },
   itemcontainer: {
     backgroundColor: 'white',
-    padding: 16,
+    margin: 8,
+    padding: 12,
     borderRadius: 12,
     marginBottom: 8,
     marginTop: 8,
-    elevation: 4,
+    elevation: 2,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 0.5,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.02,
     shadowRadius: 1,
   },
   itemheader: {
@@ -185,7 +281,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   itemcontent: {
-    marginVertical: 12,
+    marginVertical: -4,
   },
   itemfooter: {
     flexDirection: 'row',
@@ -195,16 +291,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   itemheaderleftitem: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 16,
+    width: 72,
+    height: 27,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 999,
     backgroundColor: '#F6F5FF',
     marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemheaderleftitemtext: {
-    fontSize: 14,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: '400',
     color: '#7B70F1',
+    textAlign: 'center',
   },
   itemheaderright: {
     fontSize: 14,
@@ -215,35 +317,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#000000',
-    marginBottom: 15,
+    marginBottom: 6,
+    marginTop: 6,
   },
   itemcontenttext: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#4B5563',
-  },
-  itemfootertext: {
     fontSize: 14,
     fontWeight: '400',
     color: '#4B5563',
   },
+  itemfootertext: {
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 16,
+  },
   itemfootercontainer: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    marginVertical: 12,
+    paddingHorizontal: 10,
+    height: 24,
     borderRadius: 16,
     backgroundColor: '#F3F4F6',
-  },
-  itemyellow: {
-    backgroundColor: '#FFF7D4',
-  },
-  itemgreen: {
-    backgroundColor: '#E6FFED',
-  },
-  itemyellowtext: {
-    color: '#FFC107',
-  },
-  itemgreentext: {
-    color: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
-export default FeedbackHistory;

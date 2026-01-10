@@ -49,6 +49,17 @@ export default function Layout() {
                   )}
                 </>
               ),
+              headerRight: () => (
+                <>
+                  {CurrentComponents && config.subTitle && config.sub && (
+                    <CurrentComponents.HeaderRight
+                      title={config.subTitle}
+                      target={config.sub}
+                      mainPagePath={`/${config.name}`}
+                    />
+                  )}
+                </>
+              ),
             }}
           ></Stack.Screen>
         ))}
