@@ -7,6 +7,7 @@ import Modal from '@/components/modal';
 import aboutPng from '@/assets/images/about.png';
 import checkUpdatePng from '@/assets/images/check-update.png';
 import exitPng from '@/assets/images/exit.png';
+import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
 import { logout } from '@/request/api/auth';
 
@@ -46,9 +47,19 @@ export const SettingItems: SettingItem[] = [
     to: '/(setting)/about',
   },
   {
+    title: '帮助与反馈',
+    name: 'feedback',
+    id: 6,
+    icon: feedbackPng,
+    text: '帮助与反馈',
+    to: '/(setting)/feedback',
+    subTitle: '反馈历史',
+    sub: '/(setting)/feedback/history',
+  },
+  {
     title: '退出',
     name: 'exit',
-    id: 6,
+    id: 7,
     icon: exitPng,
     text: '退出',
     to: () => {
@@ -73,7 +84,7 @@ export const SettingItems: SettingItem[] = [
   {
     title: '注销账号',
     name: 'signOff',
-    id: 7,
+    id: 8,
     icon: exitPng,
     text: '注销',
     to: '/(setting)/signOff',

@@ -2,4 +2,5 @@
 export type ConfigurableComponentName =
   | 'HeaderLeft'
   | 'HeaderCenter'
+  | 'HeaderRight'
   | 'CourseItem';
