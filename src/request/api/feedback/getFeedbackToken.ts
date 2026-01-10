@@ -3,7 +3,7 @@ import { request } from '@/request';
 import { FEEDBACK_BASE_URL } from './constants';
 
 export interface GetFeedbackTokenRequest {
-  table_identity: string;
+  table_identify: string;
 }
 
 const getFeedbackToken = async (tableId: GetFeedbackTokenRequest) => {

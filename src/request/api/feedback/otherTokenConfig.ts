@@ -52,7 +52,7 @@ export const UserSheetTokenConfig = {
   refresh: () =>
     getAndSetToken<any>({
       tokenKey: 'UserSheetToken',
-      fetchToken: () => getFeedbackToken({ table_identity: 'ccnubox' }),
+      fetchToken: () => getFeedbackToken({ table_identify: 'ccnubox' }),
       getToken: res => res?.data?.access_token,
       errorMessage: '获取用户反馈表token失败',
     }),
@@ -63,7 +63,7 @@ export const FAQTokenConfig = {
   refresh: () =>
     getAndSetToken<any>({
       tokenKey: 'FAQToken',
-      fetchToken: () => getFeedbackToken({ table_identity: 'ccnubox-faq' }),
+      fetchToken: () => getFeedbackToken({ table_identify: 'ccnubox-faq' }),
       getToken: res => res?.data?.access_token,
       errorMessage: '获取FAQToken失败',
     }),
