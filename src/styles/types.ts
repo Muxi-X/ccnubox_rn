@@ -21,6 +21,7 @@ export type ConfigurableThemeNames =
   | 'schedule_item_text_style'
   | 'notification_text_style'
   | 'background_style'
+  | 'page_background_style'
   | 'picker_text_style'
   | 'picker_active_text_style'
   | 'secondary_background_style'

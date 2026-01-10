@@ -8,4 +8,6 @@ export interface SettingItem
   icon: string;
   text: string;
   to: Href | (() => void);
+  subTitle?: string;
+  sub?: Href | (() => void);
 }
