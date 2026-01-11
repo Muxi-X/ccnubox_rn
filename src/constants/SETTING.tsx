@@ -8,9 +8,10 @@ import { logout } from '@/request/api/auth';
 import { removeFeedToken } from '@/request/api/feeds';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { deleteItemAsync, getItem } from 'expo-secure-store';
+import { deleteItemAsync } from 'expo-secure-store';
 
 import type { SettingItem } from '@/types/settingItem';
+import { getPushToken } from '@/utils/pushToken';
 
 export const SETTING_ITEMS: SettingItem[] = [
   {
@@ -71,7 +72,7 @@ export const SETTING_ITEMS: SettingItem[] = [
         cancelText: '取消',
         onConfirm: async () => {
           // 退出前移除 feed token
-          const pushToken = await getItem('pushToken');
+          const pushToken = await getPushToken();
           if (pushToken) {
             removeFeedToken(pushToken).catch(() => {});
           }

@@ -1,10 +1,11 @@
+import Toast from '@/components/toast';
 import { FeedIconList } from '@/constants/notificationItem';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
 import useVisualScheme from '@/store/visualScheme';
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import {
   Image,
   Modal,
@@ -17,16 +18,9 @@ import {
 interface NotiPickerProps {
   visible: boolean;
   setVisible: (_visible: boolean) => void;
-  // onCancel?: () => void;
-  // onConfirm?: (type: string) => void;
 }
 
-const NotiPicker: FC<NotiPickerProps> = ({
-  visible,
-  setVisible,
-  // onCancel,
-  // onConfirm,
-}) => {
+const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   const [checkList, setCheckList] = useState<Record<string, boolean>>({
     muxi: true,
     grade: true,
@@ -34,161 +28,101 @@ const NotiPicker: FC<NotiPickerProps> = ({
     energy: true,
     feedback: true,
   });
-  const feedIcon = FeedIconList;
+  const [loading, setLoading] = useState(false);
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const getFeedList = useCallback(() => {
-    queryFeedAllowList().then(res => {
-      const data = res?.data;
-      if (data)
-        setCheckList({
-          ...checkList,
-          energy: data?.energy || false,
-          grade: data?.grade || false,
-          holiday: data?.holiday || false,
-          muxi: data?.muxi || false,
-        });
-    });
-  }, [checkList]);
-
+  // 只在 modal 打开时获取数据
   useEffect(() => {
-    getFeedList();
-  }, [getFeedList]);
+    if (visible) {
+      queryFeedAllowList().then(res => {
+        const data = res?.data;
+        if (data) {
+          setCheckList({
+            energy: data?.energy ?? true,
+            grade: data?.grade ?? true,
+            holiday: data?.holiday ?? true,
+            muxi: data?.muxi ?? true,
+            feedback: true,
+          });
+        }
+      });
+    }
+  }, [visible]);
 
-  const handleConfirm = () => {
-    const data = checkList;
-    changeFeedAllowList(data).then(() => {
-      getFeedList();
-    });
-    setVisible(false);
-    // setVisible(false);
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await changeFeedAllowList(checkList);
+      Toast.show({ icon: 'success', text: '修改成功' });
+    } finally {
+      setLoading(false);
+      setVisible(false);
+    }
   };
 
-  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const handleToggle = (name: string) => {
+    setCheckList(prev => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
 
   return (
     <Modal visible={visible} transparent={true}>
-      <View
-        style={[
-          {
-            flex: 1,
-            backgroundColor: 'rgba(151, 151, 151, 0.42)',
-          },
-        ]}
-      >
-        <View
-          style={[
-            {
-              position: 'absolute',
-              bottom: 0,
-              width: '100%', // 确保宽度占满
-            },
-          ]}
-        >
-          <View
-            style={[
-              {
-                paddingVertical: 16,
-              },
-              currentStyle?.background_style,
-            ]}
-          >
-            <View>
-              <Text
-                style={[
-                  { textAlign: 'center', fontSize: 18, fontWeight: 'bold' },
-                  currentStyle?.schedule_text_style,
-                ]}
-              >
-                请选择要推送的消息
-              </Text>
-            </View>
-            <View style={{ paddingTop: 10 }}>
-              <Text
-                style={[
-                  { textAlign: 'center', fontSize: 14 },
-                  currentStyle?.notification_text_style,
-                ]}
-              >
-                选择以后将为您推送以下消息
-              </Text>
-            </View>
-          </View>
-          <View
-            style={[
-              {
-                position: 'absolute',
-                right: 5,
-                top: 5,
-              },
-              currentStyle?.background_style,
-            ]}
-          >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={[styles.header, currentStyle?.background_style]}>
+            <Text
+              style={[styles.headerTitle, currentStyle?.schedule_text_style]}
+            >
+              请选择要推送的消息
+            </Text>
+            <Text
+              style={[
+                styles.headerSubtitle,
+                currentStyle?.notification_text_style,
+              ]}
+            >
+              选择以后将为您推送以下消息
+            </Text>
             <MaterialIcons
               name="close"
               color={currentStyle?.schedule_text_style?.color}
               size={24}
-              onPress={() => {
-                setVisible(false);
-              }}
-            ></MaterialIcons>
+              style={styles.closeIcon}
+              onPress={() => setVisible(false)}
+            />
           </View>
-          {feedIcon.map((item, index) => (
+
+          {FeedIconList.map(item => (
             <View
-              style={[
-                {
-                  display: 'flex',
-                  flexDirection: 'row',
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                },
-                currentStyle?.background_style,
-              ]}
-              key={item.title}
+              style={[styles.listItem, currentStyle?.background_style]}
+              key={item.name}
             >
-              <View>
-                <Image source={item.imageUrl} style={styles.icon} />
-              </View>
+              <Image source={item.imageUrl} style={styles.icon} />
               <View style={styles.content}>
                 <Text style={[styles.title, currentStyle?.schedule_text_style]}>
                   {item.text}提醒
                 </Text>
               </View>
-              <View style={styles.right}>
-                <Switch
-                  checked={!!checkList[item.name]}
-                  style={[{ width: 40, height: 20, marginRight: 10 }]}
-                  trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-                  thumbColor="#979797"
-                  onChange={() => {
-                    setCheckList(prev => ({
-                      ...prev,
-                      [item.name]: !prev[item.name],
-                    }));
-                  }}
-                />
-              </View>
+              <Switch
+                checked={!!checkList[item.name]}
+                style={styles.switch}
+                trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
+                thumbColor="#979797"
+                onChange={() => handleToggle(item.name)}
+              />
             </View>
           ))}
-          <View
-            style={[
-              {
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'row',
-              },
-              currentStyle?.background_style,
-            ]}
-          >
-            <TouchableHighlight style={[styles.button]} onPress={handleConfirm}>
-              <Text
-                style={[
-                  {
-                    color: '#FFFFFF',
-                    fontSize: 16,
-                  },
-                ]}
-              >
-                确认
+
+          <View style={[styles.footer, currentStyle?.background_style]}>
+            <TouchableHighlight
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleConfirm}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? '保存中...' : '确认'}
               </Text>
             </TouchableHighlight>
           </View>
@@ -199,13 +133,38 @@ const NotiPicker: FC<NotiPickerProps> = ({
 };
 
 const styles = StyleSheet.create({
-  listItem: {
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(151, 151, 151, 0.42)',
+    justifyContent: 'flex-end',
+  },
+  container: {
     width: '100%',
-    padding: 16,
-    display: 'flex',
+  },
+  header: {
+    paddingVertical: 16,
+    position: 'relative',
+  },
+  headerTitle: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerSubtitle: {
+    textAlign: 'center',
+    fontSize: 14,
+    paddingTop: 10,
+  },
+  closeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+  },
+  listItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   icon: {
     width: 30,
@@ -215,29 +174,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: '500',
   },
   content: {
     flex: 1,
   },
-  right: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
+  switch: {
+    width: 40,
+    height: 20,
+    marginRight: 10,
   },
-  time: {
-    fontSize: 10,
-    position: 'relative',
-    color: '#949494',
-  },
-  badge: {
+  footer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 16,
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 0,
-    backgroundColor: '#FF7474',
+    paddingBottom: 20,
   },
   button: {
     backgroundColor: '#7B70F1',
@@ -246,8 +196,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    marginBottom: 20,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
 });
 

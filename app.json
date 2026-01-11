@@ -25,7 +25,8 @@
       },
       "eas": {
         "projectId": "65d670f0-9625-4631-9603-f4b11f44e621"
-      }
+      },
+      "expoConfig": {}
     },
     "ios": {
       "icon": {

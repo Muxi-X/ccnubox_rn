@@ -5,7 +5,7 @@ PODS:
     - ExpoModulesCore
   - EXApplication (6.1.5):
     - ExpoModulesCore
-  - EXConstants (17.1.7):
+  - EXConstants (17.1.8):
     - ExpoModulesCore
   - EXImageLoader (5.1.0):
     - ExpoModulesCore
@@ -15,7 +15,7 @@ PODS:
     - ExpoModulesCore
   - EXNotifications (0.31.4):
     - ExpoModulesCore
-  - Expo (53.0.24):
+  - Expo (53.0.25):
     - DoubleConversion
     - ExpoModulesCore
     - glog
@@ -289,7 +289,7 @@ PODS:
     - ExpoModulesCore
   - ExpoHaptics (14.1.4):
     - ExpoModulesCore
-  - ExpoHead (5.1.8):
+  - ExpoHead (5.1.10):
     - ExpoModulesCore
   - ExpoImage (2.4.1):
     - ExpoModulesCore
@@ -393,7 +393,7 @@ PODS:
   - hermes-engine/Pre-built (0.79.6)
   - JCoreRN (2.3.2):
     - React
-  - JPushRN (3.1.9):
+  - JPushRN (3.2.1):
     - React
   - libavif/core (0.11.1)
   - libavif/libdav1d (0.11.1):
@@ -2877,12 +2877,12 @@ SPEC CHECKSUMS:
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EASClient: fe396f88189ce51edd819abe12df16c99e98bcd2
   EXApplication: 1e06972201838375ca1ec1ba34d586a98a5dc718
-  EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
+  EXConstants: d3d551cb154718f5161c4247304e96aa59f6cca7
   EXImageLoader: 4d3d3284141f1a45006cc4d0844061c182daf7ee
   EXJSONUtils: 1d3e4590438c3ee593684186007028a14b3686cd
   EXManifests: 691a779b04e4f2c96da46fb9bef4f86174fefcb5
   EXNotifications: be5e949edf1d60b70e77178b81aa505298fadd07
-  Expo: d68c92f4bee50a21f0f0d7d2481dd6dbbd51e82b
+  Expo: a9aaba7e05fb1445c5605b2b1be1904efa2aaaff
   expo-dev-client: 9b1e78baf0dd87b005f035d180bbb07c05917fad
   expo-dev-launcher: 35dc0269b5fc1f628abc00e08e5a969e7809eff4
   expo-dev-menu: 0771fa9c5c405e07aa15e55a699b8a4a984ea77a
@@ -2893,7 +2893,7 @@ SPEC CHECKSUMS:
   ExpoFileSystem: 7f92f7be2f5c5ed40a7c9efc8fa30821181d9d63
   ExpoFont: cf508bc2e6b70871e05386d71cab927c8524cc8e
   ExpoHaptics: 0ff6e0d83cd891178a306e548da1450249d54500
-  ExpoHead: 8c23ab7e63e8cf1431b2e4c57f4ebe06b66ee2e5
+  ExpoHead: f85951372332180434f1aae973f6e3c94fccbed4
   ExpoImage: b0b4a838c62bb9d5438bb475cccc85619a5f59dc
   ExpoImageManipulator: 1e06e7a1e56f454e75d01b7032c1e44963bfc865
   ExpoImagePicker: 0963da31800c906e01c03e25d7c849f16ebf02a2
@@ -2917,7 +2917,7 @@ SPEC CHECKSUMS:
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 44bb6fe76a6eb400d3a992e2d0b21946ae999fa9
   JCoreRN: d985de509185b381c177fde4bb6bfc686089fdbd
-  JPushRN: 51c191160a18aa4191eb9b5cf2b206b1a2dcd9d2
+  JPushRN: 807bc962b2f25860e5c0caa5fcb7b4910572b890
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
