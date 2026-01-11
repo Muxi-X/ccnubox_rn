@@ -44,7 +44,6 @@ const useJPush = () => {
         JPush.getRegistrationID((result: { registerID?: string }) => {
           const id = result.registerID;
           if (id) {
-            setItem('pushToken', id);
             console.log('✅ JPush Registration ID:', id);
           }
         });
