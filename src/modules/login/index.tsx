@@ -25,6 +25,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
+import { getPushToken } from '@/utils/pushToken';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -67,21 +68,21 @@ const LoginPage: FC = () => {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        //  console.log(response.headers);
         useUserStore.setState({
           student_id: studentId,
           password: password,
         });
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
-
-        // 登录成功后保存 feed token
-        const pushToken = await getItem('pushToken');
-        if (pushToken) {
-          saveFeedToken(pushToken).catch(err => {
-            log.error('保存 feed token 失败:', err);
-          });
+        const registerID = await getPushToken();
+        if (!registerID) {
+          log.warn('获取 push token 失败');
+          return;
         }
+        log.info('注册 push token:', registerID);
+        saveFeedToken(registerID).catch(err => {
+          log.error('保存 feed token 失败:', err);
+        });
 
         router.navigate('/(tabs)');
       }
