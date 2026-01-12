@@ -1,5 +1,4 @@
 import * as Notifications from 'expo-notifications';
-import { setItem } from 'expo-secure-store';
 import JPush from 'jpush-react-native';
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
