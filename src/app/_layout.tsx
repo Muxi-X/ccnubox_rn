@@ -8,7 +8,8 @@ import { SystemBars } from 'react-native-edge-to-edge';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
-import useJPush from '@/hooks/useJPush';
+
+import { useBadgeSync, useJPush } from '@/hooks';
 
 import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
@@ -37,6 +38,7 @@ export default function RootLayout() {
 
   // 配置 JPush 消息推送
   useJPush();
+  useBadgeSync();
 
   const initApp = React.useCallback(async () => {
     // 引入所有样式以及基于 theme 的组件

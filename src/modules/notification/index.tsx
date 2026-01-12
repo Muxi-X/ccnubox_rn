@@ -12,10 +12,12 @@ import {
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
-import { FeedIconList } from '@/constants/notificationItem';
+import Toast from '@/components/toast';
+
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
-import Toast from '@/components/toast';
+
+import { FeedIconList } from '@/constants/notificationItem';
 
 const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
