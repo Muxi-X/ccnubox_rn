@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+import JPush from 'jpush-react-native';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
@@ -26,10 +26,10 @@ const useBadgeSync = () => {
     };
   }, [getFeedEvents]);
 
-  // Sync badge count with unread events
+  // Sync badge count with unread events (使用极光推送)
   useEffect(() => {
     const unreadCount = feedEvents.filter(e => !e.read).length;
-    Notifications.setBadgeCountAsync(unreadCount).catch(console.error);
+    JPush.setBadge({ badge: unreadCount, appBadge: unreadCount });
   }, [feedEvents]);
 };
 
