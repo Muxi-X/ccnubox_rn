@@ -198,7 +198,6 @@ dependencies {
     
     // 厂商通道 SDK（JPush 5.9.0）
     // 华为厂商
-    implementation 'com.huawei.agconnect:agconnect-core:1.9.3.302'
     implementation 'cn.jiguang.sdk.plugin:huawei:5.9.0'
     // VIVO 厂商
     implementation 'cn.jiguang.sdk.plugin:vivo:5.9.0'
