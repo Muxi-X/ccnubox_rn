@@ -216,15 +216,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   right: {
-    display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    minWidth: 50,
+    flexShrink: 0,
   },
   time: {
     fontSize: 10,
-    position: 'relative',
     color: '#949494',
-    paddingBottom: 5,
+    marginBottom: 4,
   },
   badge: {
     marginRight: 3,
