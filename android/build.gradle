@@ -17,7 +17,7 @@ maven { url 'https://developer.huawei.com/repo/' }
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
     // @generated begin jpush-vendor-classpaths - expo prebuild (DO NOT MODIFY) sync-078b642a68c2525c32c29a0ec73198642e65adb5
 // Huawei AGConnect
-        classpath 'com.huawei.agconnect:agcp:1.9.3.302'
+        classpath 'com.huawei.agconnect:agcp:1.9.1.301'
 // @generated end jpush-vendor-classpaths
   }
 }

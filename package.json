@@ -12,7 +12,9 @@
     "lint": "expo lint",
     "format": "prettier --write .",
     "prepare": "husky",
-    "genapi": "node ./scripts/genapi.js"
+    "genapi": "node ./scripts/genapi.js",
+    "eas-build-pre-install": "./eas-hooks/eas-build-pre-install.sh",
+    "eas-build-post-install": "cd android && ./gradlew generateCodegenArtifactsFromSchema --no-daemon || true"
   },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
