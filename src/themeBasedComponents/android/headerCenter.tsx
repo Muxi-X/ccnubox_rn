@@ -19,7 +19,7 @@ const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
           commonStyles.TabBarPadding,
           commonStyles.fontLarge,
           //TODO)) 这块不知道为什么非要加margin 有空可以研究下
-          { marginLeft: 120 },
+          { marginLeft: 100 },
         ]}
       >
         {title}

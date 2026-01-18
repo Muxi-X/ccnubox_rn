@@ -204,189 +204,193 @@ function WriteFeedback() {
 
   return (
     <ThemeBasedView style={styles.container}>
-      <View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 16,
-            marginBottom: 6,
-          }}
-        >
-          <Text
-            style={[
-              { fontSize: 16, fontWeight: '400' },
-              currentStyle?.text_style,
-            ]}
-          >
-            问题类型
-          </Text>
-          <Text style={{ color: 'red', fontSize: 16, fontWeight: '400' }}>
-            *
-          </Text>
-        </View>
-
-        <View style={styles.choose1}>
-          <TouchableOpacity
-            style={[
-              styles.issueTypeOption,
-              styles.defaultOption,
-              selectedIssueType === 'function' && styles.selectedOption,
-            ]}
-            onPress={() => setSelectedIssueType('function')}
+      <ScrollView>
+        <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 16,
+              marginBottom: 6,
+            }}
           >
             <Text
               style={[
-                styles.defaultText,
-                selectedIssueType === 'function' && styles.selectedText,
+                { fontSize: 16, fontWeight: '400' },
+                currentStyle?.text_style,
               ]}
             >
-              功能异常
+              问题类型
             </Text>
-            <Text style={styles.optionDescription}>
-              页面加载缓慢、无法使用、闪退
+            <Text style={{ color: 'red', fontSize: 16, fontWeight: '400' }}>
+              *
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.issueTypeOption,
-              styles.defaultOption,
-              selectedIssueType === 'improvement' && styles.selectedOption,
-            ]}
-            onPress={() => setSelectedIssueType('improvement')}
-          >
-            <Text
-              style={[
-                styles.defaultText,
-                selectedIssueType === 'improvement' && styles.selectedText,
-              ]}
-            >
-              产品改进
-            </Text>
-            <Text style={styles.optionDescription}>
-              界面优化、功能建议、体验提升
-            </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
 
-        <View style={styles.choose2}>
-          {currentModules.map(module => (
+          <View style={styles.choose1}>
             <TouchableOpacity
-              key={module}
               style={[
-                styles.moduleOption,
+                styles.issueTypeOption,
                 styles.defaultOption,
-                selectedModule === module && styles.selectedOption,
+                selectedIssueType === 'function' && styles.selectedOption,
               ]}
-              onPress={() => {
-                setSelectedModule(module);
-              }}
+              onPress={() => setSelectedIssueType('function')}
             >
               <Text
                 style={[
                   styles.defaultText,
-                  selectedModule === module && styles.selectedText,
+                  selectedIssueType === 'function' && styles.selectedText,
                 ]}
               >
-                {module}
+                功能异常
+              </Text>
+              <Text style={styles.optionDescription}>
+                页面加载缓慢、无法使用、闪退
               </Text>
             </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <View>
-        <View style={styles.inputContainer}>
-          <Text style={[styles.label, currentStyle?.text_style]}>
-            问题描述{' '}
-            <Text style={{ color: 'red', fontSize: 16, fontWeight: '400' }}>
-              *
-            </Text>
-          </Text>
-
-          <TextInput
-            style={styles.textInput}
-            multiline={true}
-            placeholder={
-              '请详细描述您遇到的问题...\n如: "首页查算学分绩功能，点击查询后无法显示学分绩"'
-            }
-            value={description}
-            onChangeText={handleDescriptionChange}
-            maxLength={200}
-            textAlignVertical="top"
-          />
-          <Text style={styles.counter}>{description.length}/200</Text>
-        </View>
-      </View>
-
-      <View style={styles.uploadContainer}>
-        <Text style={[styles.label, currentStyle?.text_style]}>上传图片</Text>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.thumbnailList}>
-            {images.map(img => (
-              <View key={img.uri} style={styles.thumbnailWrapper}>
-                <Image source={{ uri: img.uri }} style={styles.thumbnail} />
-                {img.uploading && (
-                  <View style={styles.thumbnailOverlay}>
-                    <ActivityIndicator size="small" />
-                  </View>
-                )}
-                <TouchableOpacity
-                  style={styles.removeButton}
-                  onPress={() => handleRemoveImage(img.uri)}
-                >
-                  <Text style={styles.removeButtonText}>×</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-
             <TouchableOpacity
-              style={styles.addThumbnail}
-              onPress={handleSelectImage}
-              disabled={isAnyImageUploading}
+              style={[
+                styles.issueTypeOption,
+                styles.defaultOption,
+                selectedIssueType === 'improvement' && styles.selectedOption,
+              ]}
+              onPress={() => setSelectedIssueType('improvement')}
             >
-              <Ionicons
-                name="add"
-                size={18}
-                color={currentStyle?.information_text_style?.color}
-              />
+              <Text
+                style={[
+                  styles.defaultText,
+                  selectedIssueType === 'improvement' && styles.selectedText,
+                ]}
+              >
+                产品改进
+              </Text>
+              <Text style={styles.optionDescription}>
+                界面优化、功能建议、体验提升
+              </Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-      </View>
 
-      <View>
-        <View style={styles.inputContainer}>
-          <Text style={[styles.label, currentStyle?.text_style]}>联系方式</Text>
-          <TextInput
-            style={styles.contactInput}
-            placeholder="QQ/邮箱"
-            value={contact}
-            onChangeText={setContact}
-            keyboardType="default"
-          />
+          <View style={styles.choose2}>
+            {currentModules.map(module => (
+              <TouchableOpacity
+                key={module}
+                style={[
+                  styles.moduleOption,
+                  styles.defaultOption,
+                  selectedModule === module && styles.selectedOption,
+                ]}
+                onPress={() => {
+                  setSelectedModule(module);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.defaultText,
+                    selectedModule === module && styles.selectedText,
+                  ]}
+                >
+                  {module}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
 
-      <TouchableOpacity
-        style={[
-          styles.submitButton,
-          (!isSubmitEnabled || isSubmitting) && styles.submitButtonDisabled,
-        ]}
-        onPress={handleSubmit}
-        disabled={!isSubmitEnabled || isSubmitting}
-      >
-        <Text
+        <View>
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, currentStyle?.text_style]}>
+              问题描述{' '}
+              <Text style={{ color: 'red', fontSize: 16, fontWeight: '400' }}>
+                *
+              </Text>
+            </Text>
+
+            <TextInput
+              style={styles.textInput}
+              multiline={true}
+              placeholder={
+                '请详细描述您遇到的问题...\n如: "首页查算学分绩功能，点击查询后无法显示学分绩"'
+              }
+              value={description}
+              onChangeText={handleDescriptionChange}
+              maxLength={200}
+              textAlignVertical="top"
+            />
+            <Text style={styles.counter}>{description.length}/200</Text>
+          </View>
+        </View>
+
+        <View style={styles.uploadContainer}>
+          <Text style={[styles.label, currentStyle?.text_style]}>上传图片</Text>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.thumbnailList}>
+              {images.map(img => (
+                <View key={img.uri} style={styles.thumbnailWrapper}>
+                  <Image source={{ uri: img.uri }} style={styles.thumbnail} />
+                  {img.uploading && (
+                    <View style={styles.thumbnailOverlay}>
+                      <ActivityIndicator size="small" />
+                    </View>
+                  )}
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => handleRemoveImage(img.uri)}
+                  >
+                    <Text style={styles.removeButtonText}>×</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+
+              <TouchableOpacity
+                style={styles.addThumbnail}
+                onPress={handleSelectImage}
+                disabled={isAnyImageUploading}
+              >
+                <Ionicons
+                  name="add"
+                  size={18}
+                  color={currentStyle?.information_text_style?.color}
+                />
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
+
+        <View>
+          <View style={styles.inputContainer}>
+            <Text style={[styles.label, currentStyle?.text_style]}>
+              联系方式
+            </Text>
+            <TextInput
+              style={styles.contactInput}
+              placeholder="QQ/邮箱"
+              value={contact}
+              onChangeText={setContact}
+              keyboardType="default"
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
           style={[
-            styles.submitButtonText,
-            (!isSubmitEnabled || isSubmitting) &&
-              styles.submitButtonDisabledText,
+            styles.submitButton,
+            (!isSubmitEnabled || isSubmitting) && styles.submitButtonDisabled,
           ]}
+          onPress={handleSubmit}
+          disabled={!isSubmitEnabled || isSubmitting}
         >
-          {isSubmitting ? '提交中...' : '提交'}
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={[
+              styles.submitButtonText,
+              (!isSubmitEnabled || isSubmitting) &&
+                styles.submitButtonDisabledText,
+            ]}
+          >
+            {isSubmitting ? '提交中...' : '提交'}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </ThemeBasedView>
   );
 }
