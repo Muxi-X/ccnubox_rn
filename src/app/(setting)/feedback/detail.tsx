@@ -23,14 +23,14 @@ import { FeedbackDetailItem } from './type';
 
 const STATUS_COLORS: Record<string, string> = {
   待处理: '#A8A8A8',
-  处理中: '#FFC107',
-  已完成: '#4CAF50',
+  处理中: '#FFD248',
+  已完成: '#66D06A',
 };
 
 const STATUS_BG_COLORS: Record<string, string> = {
   待处理: '#F3F4F6',
-  处理中: '#FFC1071A',
-  已完成: '#4CAF501A',
+  处理中: '#FFF3CD',
+  已完成: '#EEF7EE',
 };
 
 const getStatusStep = (status: string) => {
