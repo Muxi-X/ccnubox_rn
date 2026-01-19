@@ -194,7 +194,7 @@ function FeedbackPage() {
           </Text>
         </View>
 
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {isLoading ? (
             <Loading text="搜索中..." color="#847AF2" />
           ) : sheetData.length > 0 ? (
