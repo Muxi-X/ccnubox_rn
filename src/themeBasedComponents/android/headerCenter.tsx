@@ -18,8 +18,7 @@ const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
           currentStyle?.header_text_style,
           commonStyles.TabBarPadding,
           commonStyles.fontLarge,
-          //TODO)) 这块不知道为什么非要加margin 有空可以研究下
-          { marginLeft: 100 },
+          { position: 'relative'},
         ]}
       >
         {title}
@@ -33,6 +32,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
+    justifyContent: 'flex-start',
   },
 });
 export default HeaderCenter;

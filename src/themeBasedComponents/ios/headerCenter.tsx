@@ -11,6 +11,7 @@ import { commonStyles } from '@/styles/common';
 
 const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
   return (
     <View style={styles.container}>
       <Text
@@ -18,8 +19,7 @@ const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
           currentStyle?.header_text_style,
           commonStyles.TabBarPadding,
           commonStyles.fontLarge,
-          //TODO)) 这块不知道为什么非要加margin才可以显示出来 有空可以研究下
-          { marginLeft: 120 },
+          {position: "relative"}
         ]}
       >
         {title}
@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
+    justifyContent: 'center',
   },
 });
 export default HeaderCenter;

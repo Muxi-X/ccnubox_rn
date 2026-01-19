@@ -1,18 +1,16 @@
-import { Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router, Stack } from 'expo-router';
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
-
-import { keyGenerator } from '@/utils';
-
-const FeedbackItems = [
-  { name: 'index', title: '帮助与反馈' },
-  { name: 'history', title: '反馈历史' },
-  { name: 'writefeedback', title: '我要反馈' },
-  { name: 'detail', title: '反馈详情' },
-];
 
 export default function FeedbacksLayout() {
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
@@ -29,49 +27,60 @@ export default function FeedbacksLayout() {
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
           headerBackVisible: false,
+          headerTitle: ({ children }) => (
+            <>
+              {CurrentComponents && (
+                <CurrentComponents.HeaderCenter title={children} />
+              )}
+            </>
+          ),
+          headerLeft: () => (
+            <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
+          ),
+          headerRight: () => <View style={{ height: 22, width: 22 }}></View>,
+          headerStyle: currentStyle?.header_background_style as StyleProp<{
+            backgroundColor: string | undefined;
+            flexDirection: 'row';
+            justifyContent: 'space-between'; // 确保 Header 内部均匀分布
+            alignItems: 'center';
+          }>,
         }}
       >
-        {FeedbackItems.map(config => (
-          <Stack.Screen
-            key={keyGenerator.next().value as unknown as number}
-            name={config.name}
-            options={{
-              headerShown: false,
-              //   headerTitle: () => (
-              //     <>
-              //       {CurrentComponents && (
-              //         <CurrentComponents.HeaderCenter title={config.title} />
-              //       )}
-              //       {config.name === 'index' && (
-              //         <TouchableOpacity
-              //           onPress={() => router.push('/feedback/history')}
-              //         >
-              //           <Text
-              //             style={{
-              //               marginLeft: -80,
-              //               fontSize: 14,
-              //               fontWeight: 400,
-              //               color: '#7B70F1',
-              //             }}
-              //           >
-              //             反馈历史
-              //           </Text>
-              //         </TouchableOpacity>
-              //       )}
-              //     </>
-              //   ),
-              //   headerStyle: {
-              //     ...currentStyle?.header_background_style,
-              //   } as StyleProp<{
-              //     backgroundColor?: string;
-              //     backgroundImage?: string;
-              //     flexDirection: 'row';
-              //     justifyContent: 'space-between';
-              //     alignItems: 'center';
-              //   }>,
-            }}
-          />
-        ))}
+        <Stack.Screen
+          name="index"
+          options={{
+            title: '帮助与反馈',
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => router.push('/feedback/history')}
+              >
+                <Ionicons
+                  name="time-outline"
+                  size={22}
+                  color={(currentStyle?.text_style as TextStyle).color}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="history"
+          options={{
+            title: '反馈历史',
+          }}
+        />
+        <Stack.Screen
+          name="writefeedback"
+          options={{
+            title: '我要反馈',
+          }}
+        />
+        <Stack.Screen
+          name="detail"
+          options={{
+            title: '反馈详情',
+          }}
+        />
       </Stack>
     </SafeAreaView>
   );
