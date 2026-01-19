@@ -232,7 +232,7 @@ function FeedbackPage() {
           <Text style={styles.buttonText}>我要反馈</Text>
         </TouchableOpacity>
 
-        <View style={[styles.groupContainer, currentStyle?.background_style]}>
+        <View style={currentStyle?.background_style}>
           <View style={styles.groupRow}>
             <Text style={currentStyle?.text_style}>匣子交流群：</Text>
             <Text style={[styles.groupNumber, currentStyle?.text_style]}>
@@ -288,7 +288,6 @@ const styles = StyleSheet.create({
   groupRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
   },
   groupNumber: {
     fontSize: 14,
@@ -300,16 +299,18 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
   },
   bottom: {
-    flex: 1,
+    flex: 0,
+    paddingVertical: 8,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   button: {
     backgroundColor: '#847AF2',
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 90,
+    marginVertical: 10,
   },
   buttonText: {
     fontSize: 18,

@@ -18,7 +18,7 @@ export default function Layout() {
 
   return (
     <SafeAreaView
-      edges={['bottom']}
+      edges={[]}
       style={[styles.container, currentStyle?.background_style]}
     >
       <Stack
