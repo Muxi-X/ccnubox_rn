@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { StyleProp, StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
@@ -29,6 +29,7 @@ export default function Layout() {
           headerLeft: () => (
             <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
           ),
+          headerRight: () => <View style={{ height: 22, width: 22 }}></View>,
           headerStyle: currentStyle?.header_background_style as StyleProp<{
             backgroundColor: string | undefined;
             flexDirection: 'row';
@@ -42,21 +43,11 @@ export default function Layout() {
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
             options={{
+              headerShown: config.sub ? false : true,
               headerTitle: () => (
                 <>
                   {CurrentComponents && (
                     <CurrentComponents.HeaderCenter title={config.title} />
-                  )}
-                </>
-              ),
-              headerRight: () => (
-                <>
-                  {CurrentComponents && config.subTitle && config.sub && (
-                    <CurrentComponents.HeaderRight
-                      title={config.subTitle}
-                      target={config.sub}
-                      mainPagePath={`/${config.name}`}
-                    />
                   )}
                 </>
               ),
