@@ -19,19 +19,8 @@ import useVisualScheme from '@/store/visualScheme';
 import { getFeedbackImg } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 
+import { STATUS_BG_COLORS, STATUS_COLORS, STATUS_LABELS } from './constants';
 import { FeedbackDetailItem } from './type';
-
-const STATUS_COLORS: Record<string, string> = {
-  待处理: '#A8A8A8',
-  处理中: '#FFD248',
-  已完成: '#66D06A',
-};
-
-const STATUS_BG_COLORS: Record<string, string> = {
-  待处理: '#F3F4F6',
-  处理中: '#FFF3CD',
-  已完成: '#EEF7EE',
-};
 
 const getStatusStep = (status: string) => {
   if (status === '待处理') return 1;
@@ -39,8 +28,6 @@ const getStatusStep = (status: string) => {
   if (status === '已完成') return 3;
   return 1;
 };
-
-const STATUESLABElS = ['待处理', '处理中', '已完成'];
 
 export default function FeedbackDetail() {
   const params = useLocalSearchParams<{ item?: string }>();
@@ -148,7 +135,7 @@ export default function FeedbackDetail() {
                 style={[
                   styles.circle,
                   statusStep === step && {
-                    backgroundColor: STATUS_COLORS[STATUESLABElS[step - 1]],
+                    backgroundColor: STATUS_COLORS[STATUS_LABELS[step - 1]],
                   },
                 ]}
               >
@@ -158,11 +145,11 @@ export default function FeedbackDetail() {
                 style={[
                   styles.stepLabel,
                   statusStep === step && {
-                    color: STATUS_COLORS[STATUESLABElS[step - 1]],
+                    color: STATUS_COLORS[STATUS_LABELS[step - 1]],
                   },
                 ]}
               >
-                {STATUESLABElS[index]}
+                {STATUS_LABELS[index]}
               </Text>
             </View>
 

@@ -22,19 +22,13 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
+import {
+  FEEDBACK_RECORD_NAMES,
+  FEEDBACK_TABLE_IDENTIFY,
+  STATUS_BG_COLORS,
+  STATUS_COLORS,
+} from './constants';
 import { FeedbackItem } from './type';
-
-const STATUS_COLORS: Record<string, string> = {
-  待处理: '#A8A8A8',
-  处理中: '#FFC107',
-  已完成: '#4CAF50',
-};
-
-const STATUS_BG_COLORS: Record<string, string> = {
-  待处理: '#F3F4F6',
-  处理中: '#FFC1071A',
-  已完成: '#4CAF501A',
-};
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
@@ -166,18 +160,10 @@ export default function FeedbackHistory() {
 
       const query = {
         page_token: pageToken,
-        record_names: [
-          '联系方式（QQ/邮箱）',
-          '反馈内容',
-          '截图',
-          '问题类型',
-          '问题来源',
-          '进度',
-          '提交时间',
-        ],
+        record_names: FEEDBACK_RECORD_NAMES,
         key_field: '学号',
         key_value: userId,
-        table_identify: 'ccnubox',
+        table_identify: FEEDBACK_TABLE_IDENTIFY,
       };
 
       const res = (await queryUserFeedbackSheet(query)) as any;

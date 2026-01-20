@@ -7,6 +7,7 @@ import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import {
   Image,
+  ImageSourcePropType,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -24,6 +25,7 @@ import Modal from '@/components/modal';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
+import MXLogo from '@/assets/images/mx-logo.png';
 import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
@@ -96,7 +98,7 @@ const LoginPage: FC = () => {
     >
       <AnimatedFade direction="vertical" distance={16} style={[styles.form]}>
         <Image
-          source={require('../../assets/images/mx-logo.png')}
+          source={MXLogo as unknown as ImageSourcePropType}
           style={styles.logo}
         ></Image>
         <AnimatedOpacity toVisible={!isKeyboardShow}>

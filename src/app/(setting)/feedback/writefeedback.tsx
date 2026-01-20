@@ -1,6 +1,7 @@
 import { Toast } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -22,23 +23,11 @@ import { createFeedbackRecord } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
-// 后端要求传中文，之前的是英文，懒得改了用map
-const ISSUE_TYPE_MAP: Record<string, string> = {
-  function: '功能异常',
-  improvement: '产品改进',
-};
-
-const MODULE_MAP: Record<string, string[]> = {
-  function: [
-    '首页板块',
-    '课表板块',
-    '其他板块',
-    '登录相关',
-    '加载/闪退',
-    '其他问题',
-  ],
-  improvement: ['界面设计', '功能建议', '体验问题', '账号相关', '其他问题'],
-};
+import {
+  FEEDBACK_TABLE_IDENTIFY,
+  ISSUE_TYPE_MAP,
+  MODULE_MAP,
+} from './constants';
 
 type ImageItem = {
   uri: string;
@@ -101,6 +90,7 @@ function WriteFeedback() {
   };
 
   const handleSelectImage = async () => {
+    Toast.info('应用将申请相册权限用于上传图片');
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -168,7 +158,7 @@ function WriteFeedback() {
       const fileTokens = images.map(img => img.token).filter(Boolean);
 
       const requestData = {
-        table_identify: 'ccnubox',
+        table_identify: FEEDBACK_TABLE_IDENTIFY,
         student_id: userId,
         content: description,
         contact_info: contact,
@@ -194,6 +184,7 @@ function WriteFeedback() {
       Toast.fail('提交失败,无法连接到服务器，请检查网络');
     } finally {
       setIsSubmitting(false);
+      router.back();
     }
   };
 

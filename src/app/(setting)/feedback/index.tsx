@@ -24,7 +24,9 @@ import { feedbackFAQ, getFAQ } from '@/request/api/feedback';
 import handleCopy from '@/utils/handleCopy';
 import { log } from '@/utils/logger';
 
+import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from './constants';
 import FAQItem from './components/normalquestions';
+
 import { SheetItem } from './type';
 
 function FeedbackPage() {
@@ -48,8 +50,8 @@ function FeedbackPage() {
       setIsLoading(true);
       const query = {
         student_id: userId,
-        record_names: ['问题名称', '问题描述', '解决方案', '已解决', '未解决'],
-        table_identify: 'ccnubox-faq',
+        record_names: FAQ_RECORD_NAMES,
+        table_identify: FAQ_TABLE_IDENTIFY,
       };
 
       const res = (await getFAQ(query)) as any;

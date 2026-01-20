@@ -2,12 +2,12 @@ import { Icon, Toast } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import * as React from 'react';
 import { FC, useCallback, useEffect, useState } from 'react';
 import {
   BackHandler,
   Dimensions,
   Image,
+  ImageSourcePropType,
   Platform,
   StyleSheet,
   Text,
@@ -31,6 +31,7 @@ import Pagination from '@/components/pagination';
 import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 
+import NextIcon from '@/assets/images/next.png';
 import { preloginGuide } from '@/constants/prelogin';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
@@ -47,6 +48,7 @@ const GuidePage: FC = () => {
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
   const { agreement, setAgreement } = usePrivacy();
   const gradientValue = useSharedValue(0);
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const timeoutFn = (activeIndex: number, timeout: number) => {
     setTimeout(() => {
       setActiveContentIndex(activeIndex);
@@ -160,7 +162,7 @@ const GuidePage: FC = () => {
                 style={styles.skip_container}
               >
                 <Text style={styles.skip_text}>跳过</Text>
-                <Image source={require('@/assets/images/next.png')} />
+                <Image source={NextIcon as unknown as ImageSourcePropType} />
               </TouchableOpacity>
             ) : (
               <View>
