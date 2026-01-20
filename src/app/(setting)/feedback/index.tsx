@@ -24,9 +24,8 @@ import { feedbackFAQ, getFAQ } from '@/request/api/feedback';
 import handleCopy from '@/utils/handleCopy';
 import { log } from '@/utils/logger';
 
-import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from './constants';
 import FAQItem from './components/normalquestions';
-
+import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from './constants';
 import { SheetItem } from './type';
 
 function FeedbackPage() {

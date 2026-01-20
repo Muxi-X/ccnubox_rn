@@ -25,13 +25,15 @@ import { queryUserFeedbackSheet } from '@/request/api/feedback';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
-  STATUS_BG_COLORS,
   STATUS_COLORS,
 } from './constants';
 import { FeedbackItem } from './type';
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
+    const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+      currentStyle,
+    }));
     const router = useRouter();
 
     const handlePress = () => {
@@ -49,7 +51,10 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
 
     return (
       <TouchableOpacity
-        style={styles.itemcontainer}
+        style={[
+          styles.itemcontainer,
+          currentStyle?.feedbackItem_background_style,
+        ]}
         onPress={handlePress}
         activeOpacity={0.7}
       >
@@ -67,24 +72,16 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
             </View>
           </View>
 
-          {/* 最简单的UTC转UTC+8😋 */}
           <View style={{ paddingVertical: 8 }}>
-            <Text style={styles.itemheaderright}>
-              {item.fields.submitTime === '未知时间'
-                ? '未知时间'
-                : (() => {
-                    const d = new Date(
-                      (item.fields.submitTime as number) + 8 * 3600 * 1000
-                    );
-                    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                  })()}
-            </Text>
+            <Text style={styles.itemheaderright}>{item.fields.submitTime}</Text>
           </View>
         </View>
 
         <View style={styles.itemcontent}>
-          <Text style={styles.itemcontenttitle}>反馈内容</Text>
-          <Text style={styles.itemcontenttext}>
+          <Text style={[styles.itemcontenttitle, currentStyle?.text_style]}>
+            反馈内容
+          </Text>
+          <Text style={[styles.itemcontenttext, currentStyle?.text_style]}>
             {spliceText(item.fields.content)}
           </Text>
         </View>
@@ -92,8 +89,13 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
         <View style={styles.itemfooter}>
           <View
             style={[
+              {
+                backgroundColor:
+                  (currentStyle!.feedbackStatus_background_style as any)[
+                    item.fields.status
+                  ] || '',
+              },
               styles.itemfootercontainer,
-              { backgroundColor: STATUS_BG_COLORS[item.fields.status] },
             ]}
           >
             <Text
@@ -123,6 +125,40 @@ export default function FeedbackHistory() {
     currentStyle,
   }));
 
+  function formatSubmitTime(timestamp: any): string {
+    if (timestamp === null || timestamp === undefined) {
+      return '未知时间';
+    }
+
+    const tsNum =
+      typeof timestamp === 'string' && /^\d+$/.test(timestamp)
+        ? Number(timestamp)
+        : timestamp;
+
+    const date = new Date(tsNum);
+    if (isNaN(date.getTime())) {
+      return '未知时间';
+    }
+
+    const parts = new Intl.DateTimeFormat('zh-CN', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(date)
+      .reduce((acc: any, part: any) => {
+        acc[part.type] = part.value;
+        return acc;
+      }, {});
+
+    const year = parts.year;
+    const month = parts.month;
+    const day = parts.day;
+
+    return `${year}-${month}-${day}`;
+  }
+
   function transformRecordsToFeedbackItems(
     records: Array<{
       RecordID: string;
@@ -136,7 +172,7 @@ export default function FeedbackHistory() {
         screenshots: Array.isArray(item.Record['截图'])
           ? item.Record['截图'].map((token: string) => ({ file_token: token }))
           : [],
-        submitTime: item.Record['提交时间'] || '未知时间',
+        submitTime: formatSubmitTime(item.Record['提交时间']),
         userId: item.Record['用户ID'] || '',
         contact: item.Record['联系方式（QQ/邮箱）'] || '',
         source: item.Record['问题来源'] || '未知来源',
@@ -209,7 +245,7 @@ export default function FeedbackHistory() {
     if (!hasMore) {
       return (
         <Text style={{ textAlign: 'center', margin: 16, color: '#999' }}>
-          再往下也没有了
+          没有更多了
         </Text>
       );
     }
@@ -321,7 +357,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 24,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
     alignItems: 'center',
   },

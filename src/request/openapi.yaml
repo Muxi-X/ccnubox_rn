@@ -2668,7 +2668,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/request.CreatTableRecordReg'
+              $ref: '#/components/schemas/request.CreateTableRecordReg'
         description: 新增记录请求参数
         required: true
       responses:
@@ -4232,7 +4232,7 @@ components:
         - link
         - name
       type: object
-    request.CreatTableRecordReg:
+    request.CreateTableRecordReg:
       properties:
         contact_info:
           description: 联系方式，可选

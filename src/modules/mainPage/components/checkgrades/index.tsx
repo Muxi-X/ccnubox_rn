@@ -14,7 +14,6 @@ import MultiPicker from '@/components/picker/multiPicker';
 import { PickerDataType } from '@/components/picker/types';
 
 import useCourse from '@/store/course';
-import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryGradeType } from '@/request/api/grade';
@@ -26,8 +25,7 @@ const formatCourseType = (types: string[]) => {
 
 const CheckGrades = () => {
   const { courseCategories, updatecourseCategories } = useCourse();
-  const studentId = useUserStore(state => state.student_id);
-  const semesterOptions = generateSemesterOptions(studentId);
+  const semesterOptions = generateSemesterOptions();
   const [loading, setLoading] = useState(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [courseType, setCourseType] = useState<PickerDataType>([
