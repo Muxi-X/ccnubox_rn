@@ -20,8 +20,8 @@ import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
 import { ScrollableViewProps } from './type';
-import Divider from '../divider';
-import Toast from '../toast';
+import Divider from '@/components/divider';
+import Toast from '@/components/toast';
 /** 触发刷新的阈值 */
 const REFRESH_THRESHOLD = 100;
 /** 最小触发阈值 */
@@ -42,7 +42,10 @@ const refreshTextMap: Record<RefreshState, string> = {
  */
 type RefreshState = 'pull' | 'release' | 'refreshing' | 'pullMore';
 
-const ScrollLikeView = (props: ScrollableViewProps, ref: React.Ref<View>) => {
+const TimetableScrollView = (
+  props: ScrollableViewProps,
+  ref: React.Ref<View>
+) => {
   const {
     stickyTop,
     stickyLeft,
@@ -485,7 +488,7 @@ const ScrollLikeView = (props: ScrollableViewProps, ref: React.Ref<View>) => {
   );
 };
 
-ScrollLikeView.displayName = 'ScrollLikeView';
+TimetableScrollView.displayName = 'TimetableScrollView';
 
 const styles = StyleSheet.create({
   largeWrapper: {
@@ -542,4 +545,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(forwardRef(ScrollLikeView));
+export default memo(forwardRef(TimetableScrollView));

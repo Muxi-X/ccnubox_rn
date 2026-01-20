@@ -20,7 +20,6 @@ import React, {
 } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import ScrollableView from '@/components/scrollView';
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
 
@@ -43,6 +42,7 @@ import CourseContent from './CourseContent';
 import { StickyBottom } from './StickyBottom';
 import { StickyLeft } from './StickyLeft';
 import { StickyTop } from './StickyTop';
+import TimetableScrollView from './timetableScrollView';
 import { CourseTableProps, CourseTransferType, courseType } from './type';
 
 const Timetable: React.FC<CourseTableProps> = ({
@@ -529,7 +529,7 @@ const Timetable: React.FC<CourseTableProps> = ({
     <View style={[styles.container, { opacity: foregroundOpacity }]}>
       {/* 用于截图的完整课表内容 */}
       {snapshot && fullTableContent}
-      <ScrollableView
+      <TimetableScrollView
         // 上方导航栏
         stickyTop={<StickyTop />}
         ref={imageRef}
@@ -567,7 +567,7 @@ const Timetable: React.FC<CourseTableProps> = ({
       >
         {/* 内容部分 (课程表) */}
         {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
-      </ScrollableView>
+      </TimetableScrollView>
     </View>
   );
 
