@@ -5,11 +5,16 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { SvgXml } from 'react-native-svg';
+import { SvgProps, SvgXml } from 'react-native-svg';
 
 import Modal from '@/components/modal';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import ResolvedIcon from '@/assets/icons/feedback/resolved.svg';
+import ResolvedSelectedIcon from '@/assets/icons/feedback/resolved_selected.svg';
+import UnresolvedIcon from '@/assets/icons/feedback/unresolved.svg';
+import UnresolvedSelectedIcon from '@/assets/icons/feedback/unresolved_selected.svg';
 
 type status = 'notSelected' | 'resolved' | 'unresolved';
 
@@ -25,7 +30,7 @@ interface FAQItemProps {
 
 interface ConfirmModalProps {
   titleText: string;
-  svgXml: string;
+  IconComponent: React.FC<SvgProps>;
   description: string;
   onConfirm: () => void;
 }
@@ -50,21 +55,17 @@ const FAQItem: React.FC<FAQItemProps> = ({
   }));
 
   // 图标旋转和颜色动画状态按钮SVG图标定义
-  const svgXml1 = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="16" height="16" viewBox="0 0 16 16"><g><path d="M14.9509,9.6L10.53,9.6C12.218,15.68,9.32424,16,9.32424,16C8.11852,16,8.35966,15.04,8.27928,14.88C8.27928,11.92,4.98364,9.6,4.98364,9.6L4.98364,1.12C4.98364,0.32,6.18936,0,6.59127,0L13.2629,0C13.906,0,14.3883,1.6,14.3883,1.6C15.9959,6.96,15.9959,8.56,15.9959,8.56C16.0763,9.68,14.9509,9.6,14.9509,9.6ZM3.21525,9.6L0.56267,9.6C0,9.6,0,9.04,0,9.04L0.56267,0.48C0.56267,0,1.12534,0,1.12534,0L3.37602,0C3.8583,0,3.8583,0.32,3.8583,0.32L3.8583,8.96C3.8583,9.6,3.21525,9.6,3.21525,9.6Z" fill="#847AF2" fill-opacity="1" style="mix-blend-mode:passthrough"/></g></svg>`;
-  const svgXml1Selected = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="16" height="16" viewBox="0 0 16 16"><g><path d="M14.9509,9.6L10.53,9.6C12.218,15.68,9.32424,16,9.32424,16C8.11852,16,8.35966,15.04,8.27928,14.88C8.27928,11.92,4.98364,9.6,4.98364,9.6L4.98364,1.12C4.98364,0.32,6.18936,0,6.59127,0L13.2629,0C13.906,0,14.3883,1.6,14.3883,1.6C15.9959,6.96,15.9959,8.56,15.9959,8.56C16.0763,9.68,14.9509,9.6,14.9509,9.6ZM3.21525,9.6L0.56267,9.6C0,9.6,0,9.04,0,9.04L0.56267,0.48C0.56267,0,1.12534,0,1.12534,0L3.37602,0C3.8583,0,3.8583,0.32,3.8583,0.32L3.8583,8.96C3.8583,9.6,3.21525,9.6,3.21525,9.6Z" fill="#FFFFFF" fill-opacity="1" style="mix-blend-mode:passthrough"/></g></svg>`;
-  const svgXml2 = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="14.572860717773438" height="13.720000267028809" viewBox="0 0 14.572860717773438 13.720000267028809"><g><path d="M13.12,4.76L9.88,4.76C9.64,4.72,9.56,4.48,9.52,4.36L9.52,1.44C9.52,0.64,8.88,0,8.08,0C7.36,0,6.76,0.56,6.64,1.24C6.2,4,4.52,4.92,3.44,5.2C3.48,5.32,3.48,5.4,3.48,5.48L3.48,13.24C3.48,13.4,3.44,13.56,3.36,13.72L11.2,13.72C11.96,13.56,12.48,13.28,12.84,12.52L14.48,6.76C14.8,5.72,14.28,4.72,13.12,4.76ZM2.8,13.28L2.8,5.48C2.8,5.24,2.48,5.04,2.12,5.04L1.04,5.04C0.48,5.04,0,5.52,0,6.08L0,12.64C0,13.24,0.44,13.72,1.04,13.72L2.12,13.72C2.48,13.72,2.8,13.52,2.8,13.28Z" fill="#847AF2" fill-opacity="1" style="mix-blend-mode:passthrough"/></g></svg>`;
-  const svgXml2Selected = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="14.572860717773438" height="13.720000267028809" viewBox="0 0 14.572860717773438 13.720000267028809"><g><path d="M13.12,4.76L9.88,4.76C9.64,4.72,9.56,4.48,9.52,4.36L9.52,1.44C9.52,0.64,8.88,0,8.08,0C7.36,0,6.76,0.56,6.64,1.24C6.2,4,4.52,4.92,3.44,5.2C3.48,5.32,3.48,5.4,3.48,5.48L3.48,13.24C3.48,13.4,3.44,13.56,3.36,13.72L11.2,13.72C11.96,13.56,12.48,13.28,12.84,12.52L14.48,6.76C14.8,5.72,14.28,4.72,13.12,4.76ZM2.8,13.28L2.8,5.48C2.8,5.24,2.48,5.04,2.12,5.04L1.04,5.04C0.48,5.04,0,5.52,0,6.08L0,12.64C0,13.24,0.44,13.72,1.04,13.72L2.12,13.72C2.48,13.72,2.8,13.52,2.8,13.28Z" fill="#FFFFFF" fill-opacity="1" style="mix-blend-mode:passthrough"/></g></svg>`;
 
   const showStatusConfirmModal = ({
     titleText,
-    svgXml,
+    IconComponent,
     description,
     onConfirm,
   }: ConfirmModalProps) => {
     Modal.show({
       title: (
         <View style={styles.titleWrapper}>
-          <SvgXml xml={svgXml} style={styles.titleIcon} />
+          <IconComponent style={styles.titleIcon} />
           <Text style={[styles.titleText, currentStyle?.text_style]}>
             {titleText}
           </Text>
@@ -163,10 +164,10 @@ const FAQItem: React.FC<FAQItemProps> = ({
                 onPress={() =>
                   showStatusConfirmModal({
                     titleText: '问题未解决',
-                    svgXml:
+                    IconComponent:
                       selectedStatus === 'unresolved'
-                        ? svgXml1Selected
-                        : svgXml1,
+                        ? UnresolvedSelectedIcon
+                        : UnresolvedIcon,
                     description:
                       '您确认您的问题仍未解决吗？我们会记录您的反馈并持续改进',
                     onConfirm: () => handleStatusSelect('unresolved'),
@@ -174,12 +175,11 @@ const FAQItem: React.FC<FAQItemProps> = ({
                 }
                 disabled={selectedStatus === 'unresolved'}
               >
-                <SvgXml
-                  xml={
-                    selectedStatus === 'unresolved' ? svgXml1Selected : svgXml1
-                  }
-                  style={styles.buttonIcon}
-                />
+                {selectedStatus === 'unresolved' ? (
+                  <UnresolvedSelectedIcon style={styles.buttonIcon} />
+                ) : (
+                  <UnresolvedIcon style={styles.buttonIcon} />
+                )}
                 <Text
                   style={[
                     styles.buttonText,
@@ -199,8 +199,10 @@ const FAQItem: React.FC<FAQItemProps> = ({
                 onPress={() =>
                   showStatusConfirmModal({
                     titleText: '问题已解决',
-                    svgXml:
-                      selectedStatus === 'resolved' ? svgXml2Selected : svgXml2,
+                    IconComponent:
+                      selectedStatus === 'resolved'
+                        ? ResolvedSelectedIcon
+                        : ResolvedIcon,
                     description:
                       '您确认您的问题解决了吗？这将帮助我们更好地优化内容',
                     onConfirm: () => handleStatusSelect('resolved'),
@@ -208,12 +210,11 @@ const FAQItem: React.FC<FAQItemProps> = ({
                 }
                 disabled={selectedStatus === 'resolved'}
               >
-                <SvgXml
-                  xml={
-                    selectedStatus === 'resolved' ? svgXml2Selected : svgXml2
-                  }
-                  style={styles.buttonIcon}
-                />
+                {selectedStatus === 'resolved' ? (
+                  <ResolvedSelectedIcon style={styles.buttonIcon} />
+                ) : (
+                  <ResolvedIcon style={styles.buttonIcon} />
+                )}
                 <Text
                   style={[
                     styles.buttonText,
