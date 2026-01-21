@@ -56,7 +56,7 @@ function FeedbackPage() {
       const res = (await getFAQ(query)) as any;
 
       if (res.code === 0) {
-        const FAQDatas = transformFAQToSheetData(res.data.Records);
+        const FAQDatas = transformFAQToSheetData(res.data.records);
         setFullSheetData(FAQDatas);
         setSheetData(FAQDatas);
         updateFAQs(FAQDatas);
@@ -121,15 +121,15 @@ function FeedbackPage() {
 
   const transformFAQToSheetData = (records: any[]): SheetItem[] => {
     return records.map(item => ({
-      record_id: item.RecordID,
+      record_id: item.record_id,
       fields: {
-        title: item.Record['问题名称'] || '未命名问题',
-        description: item.Record['问题描述'] || '暂无',
-        solution: item.Record['解决方案'] || '暂无',
+        title: item.record['问题名称'] || '未命名问题',
+        description: item.record['问题描述'] || '暂无',
+        solution: item.record['解决方案'] || '暂无',
         resolvedStatus:
-          item.IsResolved === '已解决'
+          item.is_resolved === '已解决'
             ? 'resolved'
-            : item.IsResolved === '未解决'
+            : item.is_resolved === '未解决'
               ? 'unresolved'
               : 'notSelected',
       },
