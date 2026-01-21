@@ -48,10 +48,12 @@ const baseStyle: ThemeType = {
       已完成: 'rgba(76, 175, 80, 0.1)',
     },
     feedbackItem_background_style: {
+      color: 'white',
       borderColor: '#3B3C3F',
       backgroundColor: '#303030',
     },
     FAQItem_background_style: {
+      color: 'white',
       borderColor: '#3B3C3F',
       backgroundColor: '#303030',
     },
@@ -104,10 +106,12 @@ const baseStyle: ThemeType = {
       已完成: '#EEF7EE',
     },
     feedbackItem_background_style: {
+      color: 'black',
       borderColor: '#E5E7EB',
       backgroundColor: '#ffffff',
     },
     FAQItem_background_style: {
+      color: 'black',
       borderColor: '#E5E7EB',
       backgroundColor: '#E5E7EB',
     },

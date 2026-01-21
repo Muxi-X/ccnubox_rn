@@ -1,8 +1,7 @@
 import { request } from '@/request';
 import { serializeQueryParams } from '@/utils/serializeQueryParams';
 
-import { FEEDBACK_BASE_URL } from './constants';
-import { FAQTokenConfig } from './otherTokenConfig';
+import { BASE_URL, FAQTokenConfig } from './config';
 
 export interface GetFAQRequest {
   record_names: string[];
@@ -18,7 +17,7 @@ const getFAQ = async (query: GetFAQRequest) => {
     { query: queryString } as any,
     {
       otherToken: FAQTokenConfig,
-      baseURL: FEEDBACK_BASE_URL,
+      baseURL: BASE_URL,
     }
   );
 };

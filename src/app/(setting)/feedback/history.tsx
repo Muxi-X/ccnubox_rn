@@ -161,26 +161,26 @@ export default function FeedbackHistory() {
 
   function transformRecordsToFeedbackItems(
     records: Array<{
-      RecordID: string;
-      Record: Record<string, any>;
+      record_id: string;
+      record: Record<string, any>;
     }>
   ): FeedbackItem[] {
     return records.map(item => ({
-      record_id: item.RecordID,
+      record_id: item.record_id,
       fields: {
-        content: item.Record['反馈内容'] || '暂无内容',
-        screenshots: Array.isArray(item.Record['截图'])
-          ? item.Record['截图'].map((token: string) => ({ file_token: token }))
+        content: item.record['反馈内容'] || '暂无内容',
+        screenshots: Array.isArray(item.record['截图'])
+          ? item.record['截图'].map((token: string) => ({ file_token: token }))
           : [],
-        submitTime: formatSubmitTime(item.Record['提交时间']),
-        userId: item.Record['用户ID'] || '',
-        contact: item.Record['联系方式（QQ/邮箱）'] || '',
-        source: item.Record['问题来源'] || '未知来源',
+        submitTime: formatSubmitTime(item.record['提交时间']),
+        userId: item.record['用户ID'] || '',
+        contact: item.record['联系方式（QQ/邮箱）'] || '',
+        source: item.record['问题来源'] || '未知来源',
         status:
-          item.Record['进度'] === '待通知'
+          item.record['进度'] === '待通知'
             ? '处理中'
-            : item.Record['进度'] || '未知状态',
-        type: item.Record['问题类型'] || '未知类型',
+            : item.record['进度'] || '未知状态',
+        type: item.record['问题类型'] || '未知类型',
       },
     }));
   }
@@ -205,7 +205,7 @@ export default function FeedbackHistory() {
       const res = (await queryUserFeedbackSheet(query)) as any;
 
       if (res.code === 0) {
-        const list = transformRecordsToFeedbackItems(res.data.Records);
+        const list = transformRecordsToFeedbackItems(res.data.records);
         setFeedbackHistory([...feedbackHistory, ...list]);
         setHasMore(res.data.HasMore);
         setPageToken(res.data.PageToken || null);
