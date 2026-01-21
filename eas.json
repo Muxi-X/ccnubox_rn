@@ -1,6 +1,8 @@
 {
   "cli": {
-    "version": ">= 10.2.1"
+    "version": ">= 10.2.1",
+    "updateAssetHostOverride": "assets.ota.ccnubox.muxixyz.com",
+    "updateManifestHostOverride": "manifest.ota.ccnubox.muxixyz.com"
   },
   "build": {
     "development": {
