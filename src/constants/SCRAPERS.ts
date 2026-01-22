@@ -9,7 +9,7 @@ export enum semesterMap {
   _second = 12,
   _third = 16,
 }
-export const scrapeLogin = (username = '', password = '') => {
+export const LOGIN_SCRAPER = (username = '', password = '') => {
   return `
         (() => {
           if (location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
@@ -27,7 +27,7 @@ export const scrapeLogin = (username = '', password = '') => {
       true; // note: this is required, or you'll sometimes get silent failures
   `;
 };
-export const scrapeGrade = (year?: number, semester?: semesterMap) => {
+export const GRADE_SCRAPER = (year?: number, semester?: semesterMap) => {
   return `
         (
          (year, semester) => {
@@ -58,7 +58,7 @@ export const scrapeGrade = (year?: number, semester?: semesterMap) => {
   `;
 };
 
-export const scrapeCourse = (year: number, semester: semesterMap) => {
+export const COURSE_SCRAPER = (year: number, semester: semesterMap) => {
   return `
     (
       (year, semester) => {
@@ -94,7 +94,7 @@ export const scrapeCourse = (year: number, semester: semesterMap) => {
     `;
 };
 
-export const ossLoginAndNavigate = (username: string, password: string) => `
+export const AUTO_LOGIN_SCRAPER = (username: string, password: string) => `
 (() => {
  window.ReactNativeWebView.postMessage('_pageStartLoading')
   window.originalAlert = window.alert;
@@ -109,7 +109,7 @@ export const ossLoginAndNavigate = (username: string, password: string) => `
   }
   // 研究生登录
   if(location.href.includes('grd.ccnu.edu.cn/yjsxt/xtgl/login_slogin.html')) {
-    ${scrapeLogin()}
+    ${LOGIN_SCRAPER()}
   }
   if (location.href.includes('cas/login')) {
     const usernameInput = document.getElementById('username');

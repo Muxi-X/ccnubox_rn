@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { SettingItems } from '@/constants/settingItem';
+import { SETTING_ITEMS } from '@/constants/SETTING';
 import { keyGenerator } from '@/utils';
 
 export default function Layout() {
@@ -38,7 +38,7 @@ export default function Layout() {
           }>,
         }}
       >
-        {SettingItems.map(config => (
+        {SETTING_ITEMS.map(config => (
           <Stack.Screen
             key={keyGenerator.next().value as unknown as number}
             name={config.name}

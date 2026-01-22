@@ -23,7 +23,7 @@ import {
   STATUS_BG_COLORS,
   STATUS_COLORS,
   STATUS_LABELS,
-} from '@/constants/feedback';
+} from '@/constants/FEEDBACK';
 
 interface FeedbackDetailItem {
   record_id: string;

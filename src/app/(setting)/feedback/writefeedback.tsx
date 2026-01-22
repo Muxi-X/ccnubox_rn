@@ -27,7 +27,7 @@ import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
   MODULE_MAP,
-} from '@/constants/feedback';
+} from '@/constants/FEEDBACK';
 
 type ImageItem = {
   uri: string;

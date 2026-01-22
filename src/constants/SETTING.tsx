@@ -13,7 +13,7 @@ import { logout } from '@/request/api/auth';
 
 import { SettingItem } from '@/types/settingItem';
 
-export const SettingItems: SettingItem[] = [
+export const SETTING_ITEMS: SettingItem[] = [
   {
     title: '界面样式设置',
     name: 'theme',
