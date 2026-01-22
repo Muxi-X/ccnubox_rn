@@ -27,8 +27,28 @@ import {
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_BG_COLORS,
   STATUS_COLORS,
-} from './constants';
-import { FeedbackItem } from './type';
+} from '@/constants/feedback';
+
+interface FeedbackItem {
+  record_id: string;
+  fields: {
+    content: string;
+    screenshots: Array<{
+      file_token?: string;
+      name?: string;
+      size?: number;
+      tmp_url?: string;
+      type?: string;
+      url?: string;
+    }>;
+    submitTime: number | string;
+    userId: string;
+    contact: string;
+    source: string;
+    status: string;
+    type: string;
+  };
+}
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
