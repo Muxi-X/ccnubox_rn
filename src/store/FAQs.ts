@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { SheetItem } from '@/app/(setting)/feedback/type';
+import { SheetItem } from '@/types/feedback';
 
 interface FAQState {
   FAQs: SheetItem[];

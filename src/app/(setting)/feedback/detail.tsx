@@ -19,8 +19,24 @@ import useVisualScheme from '@/store/visualScheme';
 import { getFeedbackImg } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 
-import { STATUS_BG_COLORS, STATUS_COLORS, STATUS_LABELS } from './constants';
-import { FeedbackDetailItem } from './type';
+import {
+  STATUS_BG_COLORS,
+  STATUS_COLORS,
+  STATUS_LABELS,
+} from '@/constants/feedback';
+
+interface FeedbackDetailItem {
+  record_id: string;
+  fields: {
+    content: string;
+    screenshots: Array<{ file_token: string }>;
+    submitTime: number;
+    contact: string;
+    source: string;
+    status: string;
+    type: string;
+  };
+}
 
 const getStatusStep = (status: string) => {
   if (status === '待处理') return 1;

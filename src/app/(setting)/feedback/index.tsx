@@ -20,14 +20,13 @@ import useFAQStore from '@/store/FAQs';
 import useVisualScheme from '@/store/visualScheme';
 
 import NormalIcon from '@/assets/images/normal-question.png.png';
+import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from '@/constants/feedback';
+import FAQItem from '@/modules/setting/components/faqitem';
 import { feedbackFAQ, getFAQ } from '@/request/api/feedback';
 import handleCopy from '@/utils/handleCopy';
 import { log } from '@/utils/logger';
 
-import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from './constants';
-import FAQItem from './components/normalquestions';
-
-import { SheetItem } from './type';
+import { SheetItem } from '@/types/feedback';
 
 function FeedbackPage() {
   const router = useRouter();
