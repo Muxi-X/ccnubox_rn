@@ -42,7 +42,7 @@ interface CourseFormProps {
   courseData?: courseType;
 }
 
-export const CourseForm = (props: CourseFormProps) => {
+export const CourseDataForm = (props: CourseFormProps) => {
   const text = props.pageText === 'test' ? '考试' : '上课';
   const submitText = props.submitText || props.buttonText || '提交';
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -410,7 +410,7 @@ export const CourseForm = (props: CourseFormProps) => {
     </>
   );
 };
-export default CourseForm;
+export default CourseDataForm;
 
 const styles = StyleSheet.create({
   container: {

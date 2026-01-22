@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import * as React from 'react';
 import { StyleProp, StyleSheet, View } from 'react-native';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
@@ -22,6 +21,9 @@ export default function Layout() {
           headerBackVisible: false,
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
+          headerLeft: () => (
+            <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
+          ),
         }}
       >
         {courseTableApplications.map(config => (

@@ -10,8 +10,7 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { tooltipActions } from '@/constants/courseTableApplications';
-
-import { commonStyles } from '../../../styles/common';
+import { commonStyles } from '@/styles/common';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();

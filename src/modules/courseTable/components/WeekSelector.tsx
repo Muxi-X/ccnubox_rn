@@ -9,7 +9,7 @@ import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
-import { WeekSelectorProps } from '../courseTable/type';
+import { WeekSelectorProps } from './courseTable/type';
 
 const WeekSelector: FC<WeekSelectorProps> = ({
   currentWeek,

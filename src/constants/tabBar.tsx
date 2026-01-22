@@ -7,7 +7,7 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   ScheduleHeaderRight,
   ScheduleHeaderTitle,
-} from '@/modules/courseTable/components/ScheduleHeader';
+} from '@/modules/courseTable/components/ScheduleHeaders';
 //import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
 
