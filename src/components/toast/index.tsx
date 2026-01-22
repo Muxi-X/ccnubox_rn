@@ -1,6 +1,12 @@
 import { View } from '@ant-design/react-native';
-import React, { FC, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { FC, useEffect, useState } from 'react';
+import {
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import { ModalBack } from '@/components/modal';
@@ -9,10 +15,14 @@ import { ToastProps } from '@/components/toast/type';
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
 
-import { statusImage } from '@/constants/toast';
+import SuccessIcon from '@/assets/images/success.png';
 import { commonColors, commonStyles } from '@/styles/common';
 
 const DURATION = 400;
+
+export const statusImage = {
+  success: SuccessIcon,
+};
 
 const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   visible: initVisible = false,
@@ -61,7 +71,7 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
           >
             {icon && (
               <Image
-                source={statusImage['success']}
+                source={statusImage['success'] as ImageSourcePropType}
                 style={{
                   margin: 10,
                   borderRadius: 15,

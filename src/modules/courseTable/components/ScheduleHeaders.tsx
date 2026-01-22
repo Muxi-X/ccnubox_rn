@@ -9,9 +9,8 @@ import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
-import { tooltipActions } from '@/constants/courseTableApplications';
-
-import { commonStyles } from '../../../styles/common';
+import { SCHEDULE_ACTIONS } from '@/constants/SCHEDULE';
+import { commonStyles } from '@/styles/common';
 
 export const ScheduleHeaderTitle: React.FC = () => {
   const { lastUpdate } = useCourse();
@@ -121,7 +120,7 @@ export const ScheduleHeaderRight: React.FC = () => {
       /> */}
       <View>
         <Tooltip.Menu
-          actions={tooltipActions}
+          actions={SCHEDULE_ACTIONS}
           placement="bottom-start"
           onAction={action => {
             if (action.onPress) {

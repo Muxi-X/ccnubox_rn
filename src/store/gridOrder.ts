@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { getMainPageApplications } from '@/constants/mainPageApplications';
 import globalEventBus from '@/utils/eventBus';
+import { getMainPageApplications } from '@/utils/getMainPageApps';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 

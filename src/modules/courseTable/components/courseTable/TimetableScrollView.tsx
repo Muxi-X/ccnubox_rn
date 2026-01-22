@@ -16,12 +16,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import Divider from '@/components/divider';
+import Toast from '@/components/toast';
+
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
 import { ScrollableViewProps } from './type';
-import Divider from '@/components/divider';
-import Toast from '@/components/toast';
 /** 触发刷新的阈值 */
 const REFRESH_THRESHOLD = 100;
 /** 最小触发阈值 */

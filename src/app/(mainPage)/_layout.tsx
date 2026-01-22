@@ -5,8 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { getMainPageApplications } from '@/constants/mainPageApplications';
 import { keyGenerator } from '@/utils';
+import { getMainPageApplications } from '@/utils/getMainPageApps';
 
 // 定义需要统一 header 的子页面配置
 // const pagesWithHeader = [

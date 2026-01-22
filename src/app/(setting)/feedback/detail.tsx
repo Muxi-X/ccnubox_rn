@@ -16,11 +16,22 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import { STATUS_COLORS, STATUS_LABELS } from '@/constants/FEEDBACK';
 import { getFeedbackImg } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 
-import { STATUS_COLORS, STATUS_LABELS } from './constants';
-import { FeedbackDetailItem } from './type';
+interface FeedbackDetailItem {
+  record_id: string;
+  fields: {
+    content: string;
+    screenshots: Array<{ file_token: string }>;
+    submitTime: number;
+    contact: string;
+    source: string;
+    status: string;
+    type: string;
+  };
+}
 
 const getStatusStep = (status: string) => {
   if (status === '待处理') return 1;

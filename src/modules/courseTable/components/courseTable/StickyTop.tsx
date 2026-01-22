@@ -11,8 +11,8 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   COURSE_HEADER_HEIGHT,
   COURSE_ITEM_WIDTH,
-  daysOfWeek,
-} from '@/constants/courseTable';
+  DAYS_OF_WEEK,
+} from '@/constants/SCHEDULE';
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -68,7 +68,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
   return (
     <View style={styles.header}>
       <View style={styles.headerRow}>
-        {daysOfWeek.map((day, index) => (
+        {DAYS_OF_WEEK.map((day, index) => (
           <View
             key={index}
             style={[

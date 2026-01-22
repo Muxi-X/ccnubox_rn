@@ -5,7 +5,7 @@ import Modal from '@/components/modal';
 
 import useCourse from '@/store/course';
 
-import { CourseForm } from '@/modules/courseTable/components/CourseForm';
+import { CourseDataForm } from '@/modules/courseTable/components/CourseDataForm';
 import { updateCourse } from '@/request/api/course';
 
 export default function EditCourse() {
@@ -19,7 +19,7 @@ export default function EditCourse() {
         margin: 20,
       }}
     >
-      <CourseForm
+      <CourseDataForm
         pageText="course"
         submitText="保存编辑"
         mode="edit"

@@ -1,10 +1,9 @@
 import { useRouter } from 'expo-router';
-import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { CourseForm } from '@/modules/courseTable/components/CourseForm';
+import { CourseDataForm } from '@/modules/courseTable/components/CourseDataForm';
 
 export default function AddCourse() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -31,7 +30,7 @@ export default function AddCourse() {
         <ManualAdd pageText="course" buttonText="添加课程" />
         <SearchAdd />
       </TabBar> */}
-      <CourseForm
+      <CourseDataForm
         pageText="course"
         submitText="添加课程"
         mode="create"
