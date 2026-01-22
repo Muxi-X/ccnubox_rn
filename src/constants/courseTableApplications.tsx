@@ -20,10 +20,6 @@ export const courseTableApplications: Omit<
     name: 'addCourse',
   },
   {
-    title: '添加测试',
-    name: 'addTest',
-  },
-  {
     title: '编辑课程',
     name: 'editCourse',
   },
