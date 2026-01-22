@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, View } from 'react-native';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { courseTableApplications } from '@/constants/courseTableApplications';
+import { SCHEDULE_PAGES } from '@/constants/SCHEDULE';
 import { keyGenerator } from '@/utils';
 
 export default function Layout() {
@@ -26,7 +26,7 @@ export default function Layout() {
           ),
         }}
       >
-        {courseTableApplications.map(config => (
+        {SCHEDULE_PAGES.map(config => (
           <Stack.Screen
             key={keyGenerator.next().value as unknown as number}
             name={config.name}

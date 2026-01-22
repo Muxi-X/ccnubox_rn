@@ -1,5 +1,4 @@
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import * as React from 'react';
 import { Text } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -22,7 +21,7 @@ export const TABBAR_COLOR = {
 };
 
 /** 导航栏配置 */
-export const tabConfig: SinglePageType[] = [
+export const TABS: SinglePageType[] = [
   {
     name: 'index',
     title: '首页',

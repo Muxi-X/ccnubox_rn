@@ -1,4 +1,4 @@
-import React, { FC, memo, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { TABBAR_COLOR } from '@/constants/tabBar';
+import { TABBAR_COLOR } from '@/constants/TABBAR';
 
 import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';

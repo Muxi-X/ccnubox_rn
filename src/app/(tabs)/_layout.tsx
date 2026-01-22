@@ -5,7 +5,7 @@ import TabBar from '@/components/navi';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { tabConfig } from '@/constants/tabBar';
+import { TABS } from '@/constants/TABBAR';
 import { keyGenerator } from '@/utils';
 
 import { SinglePageType } from '@/types/tabBarTypes';
@@ -45,7 +45,7 @@ export default function TabLayout() {
     });
   return (
     <Tabs initialRouteName="schedule" tabBar={props => <TabBar {...props} />}>
-      {render(tabConfig)}
+      {render(TABS)}
     </Tabs>
   );
 }

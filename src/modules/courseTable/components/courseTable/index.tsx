@@ -27,14 +27,14 @@ import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
+  COURSE_COLLAPSE,
   COURSE_HEADER_HEIGHT,
   COURSE_ITEM_HEIGHT,
   COURSE_ITEM_WIDTH,
-  courseCollapse,
-  daysOfWeek,
+  DAYS_OF_WEEK,
+  TIME_SLOTS,
   TIME_WIDTH,
-  timeSlots,
-} from '@/constants/courseTable';
+} from '@/constants/SCHEDULE';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -295,7 +295,7 @@ const Schedule: React.FC<CourseTableProps> = ({
     const timetableMatrix: ({
       classname: string;
       timeSpan: number;
-    } | null)[][] = timeSlots.map(() => Array(daysOfWeek.length).fill(null));
+    } | null)[][] = TIME_SLOTS.map(() => Array(DAYS_OF_WEEK.length).fill(null));
     const courses: CourseTransferType[] = [];
     // 先按时间槽和日期分组课程
     const coursesBySlot = new Map();
@@ -338,7 +338,7 @@ const Schedule: React.FC<CourseTableProps> = ({
           courseName: classname,
           timeSpan,
           teacher,
-          date: daysOfWeek[colIndex],
+          date: DAYS_OF_WEEK[colIndex],
           classroom: where,
           rowIndex,
           colIndex,
@@ -415,7 +415,7 @@ const Schedule: React.FC<CourseTableProps> = ({
                         // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
                         // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
                         borderBottomWidth:
-                          (rowIndex + 1) % courseCollapse ? 0 : 1,
+                          (rowIndex + 1) % COURSE_COLLAPSE ? 0 : 1,
                       },
                     ]}
                   ></View>
@@ -439,9 +439,9 @@ const Schedule: React.FC<CourseTableProps> = ({
   );
 
   // 计算完整课表的尺寸
-  const fullTableWidth = TIME_WIDTH + COURSE_ITEM_WIDTH * daysOfWeek.length;
+  const fullTableWidth = TIME_WIDTH + COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length;
   const fullTableHeight =
-    COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * timeSlots.length;
+    COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length;
 
   // 创建完整课表内容的视图，用于截图
   const fullTableContent = (
@@ -599,8 +599,8 @@ const styles = StyleSheet.create({
   fullTableBackground: {},
   courseWrapperStyle: {
     position: 'relative',
-    width: COURSE_ITEM_WIDTH * daysOfWeek.length,
-    height: COURSE_ITEM_HEIGHT * timeSlots.length,
+    width: COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length,
+    height: COURSE_ITEM_HEIGHT * TIME_SLOTS.length,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
     zIndex: -1,
   },
@@ -608,8 +608,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -COURSE_HEADER_HEIGHT,
     left: -TIME_WIDTH,
-    width: TIME_WIDTH + COURSE_ITEM_WIDTH * daysOfWeek.length,
-    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * timeSlots.length,
+    width: TIME_WIDTH + COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length,
+    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length,
     zIndex: -2,
   },
   scrollBackgroundFill: {

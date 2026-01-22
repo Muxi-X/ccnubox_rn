@@ -4,10 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
-  colorOptions,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
-} from '@/constants/courseTable';
+  ITEM_COLORS,
+} from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
@@ -31,8 +31,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: isThisWeek
-              ? colorOptions.find(item => item.label === date)?.color
-              : colorOptions.find(item => item.label === '无')?.color,
+              ? ITEM_COLORS.find(item => item.label === date)?.color
+              : ITEM_COLORS.find(item => item.label === '无')?.color,
             opacity: isThisWeek ? 1 : 0.4,
             borderRadius: 5,
             // minHeight: TOTAL_HEIGHT - COURSE_HEADER_HEIGHT,

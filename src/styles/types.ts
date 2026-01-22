@@ -70,6 +70,12 @@ export type ColorType = Record<
   | 'lightGray'
   | 'white'
   | 'lightDark'
-  | 'darkGray',
+  | 'darkGray'
+  | 'textLight'
+  | 'textDark'
+  | 'tintColorLight'
+  | 'iconLight'
+  | 'iconDark'
+  | 'backgroundDark',
   string
 >;

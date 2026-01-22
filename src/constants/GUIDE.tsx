@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export const preloginGuide: { title: string; content: ReactElement }[] = [
+export const GUIDE_CONTENTS: { title: string; content: ReactElement }[] = [
   {
     title: '木犀团队',
     content: (

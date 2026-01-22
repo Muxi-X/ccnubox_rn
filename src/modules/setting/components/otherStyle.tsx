@@ -18,7 +18,7 @@ import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { COURSE_ITEM_WIDTH, daysOfWeek } from '@/constants/courseTable';
+import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 import { commonColors } from '@/styles/common';
 
@@ -30,7 +30,7 @@ const PREVIEW_COURSE_DATA: CourseTransferType = {
   timeSpan: 2,
   rowIndex: 0,
   colIndex: 0,
-  date: daysOfWeek[0],
+  date: DAYS_OF_WEEK[0],
   isThisWeek: true,
   week_duration: '1-16周',
   credit: 3,

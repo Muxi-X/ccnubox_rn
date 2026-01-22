@@ -10,8 +10,8 @@ import {
   COURSE_ITEM_HEIGHT,
   COURSE_ITEM_WIDTH,
   COURSE_VERTICAL_PADDING,
-  daysOfWeek,
-} from '@/constants/courseTable';
+  DAYS_OF_WEEK,
+} from '@/constants/SCHEDULE';
 
 import ModalContent from './ModalContent';
 import { CourseTransferType, courseType } from './type';
@@ -91,7 +91,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
           classroom={c.where}
           week_duration={c.week_duration}
           credit={c.credit}
-          date={daysOfWeek[props.colIndex]}
+          date={DAYS_OF_WEEK[props.colIndex]}
           is_official={c.is_official}
         />
       </View>

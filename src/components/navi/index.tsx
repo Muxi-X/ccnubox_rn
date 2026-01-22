@@ -9,7 +9,7 @@ import ColorTransitionView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { tabConfig } from '@/constants/tabBar';
+import { TABS } from '@/constants/TABBAR';
 
 import TabBarItem from './TabBarItem';
 
@@ -46,7 +46,7 @@ const TabBar: FC<BottomTabBarProps> = props => {
       }
 
       const { options } = descriptors[route.key];
-      const iconName = tabConfig[index]?.iconName;
+      const iconName = TABS[index]?.iconName;
       const label =
         options?.tabBarLabel !== undefined
           ? options.tabBarLabel

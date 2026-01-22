@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { View } from 'react-native';
 import WebView from 'react-native-webview';
 
@@ -6,7 +6,7 @@ import { ScraperProps } from '@/components/scraper/types';
 
 import useUserStore from '@/store/user';
 
-import { scrapeLogin } from '@/constants/scraper';
+import { LOGIN_SCRAPER } from '@/constants/SCRAPERS';
 
 /**
  * 爬虫组件，用于爬取研究生课表、成绩
@@ -27,7 +27,7 @@ const Scraper = forwardRef<WebView | null, ScraperProps>(
     const student_id = useUserStore(state => state.student_id) || '2023122691';
     const password = useUserStore(state => state.password) || 'zhao1638678192%';
 
-    const runFirst = scrapeLogin(student_id, password);
+    const runFirst = LOGIN_SCRAPER(student_id, password);
     return (
       <View style={{ width: 0, height: 0 }}>
         <WebView
