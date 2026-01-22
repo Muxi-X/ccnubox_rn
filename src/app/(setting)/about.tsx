@@ -1,13 +1,22 @@
 import * as Application from 'expo-application';
 import * as Constants from 'expo-constants';
 import { Link } from 'expo-router';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import MXLogo from '@/assets/images/mx-logo.png';
 import handleCopy from '@/utils/handleCopy';
+import { handleOpenURL } from '@/utils/handleOpenURL';
 
 function About() {
   const number = '791185783';
@@ -19,13 +28,10 @@ function About() {
   return (
     <ThemeBasedView style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.headerText, textStyle]}>关于</Text>
+        <Text style={[styles.headerText, textStyle]}>关于应用</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Image
-          source={require('../../assets/images/mx-logo.png')}
-          style={styles.icon}
-        />
+        <Image source={MXLogo as ImageSourcePropType} style={styles.icon} />
         <Text style={[styles.appName, textStyle]}>华师匣子</Text>
         <Text style={[styles.version, textStyle]}>App 版本 {version}</Text>
         <Text style={[styles.version, textStyle]}>
@@ -44,13 +50,17 @@ function About() {
         <View style={styles.groupRow}>
           <Text style={[styles.groupText, textStyle]}>隐私条例：</Text>
           <Text style={[styles.groupNumber, textStyle]}>
-            <Link href="/(setting)/privacy">点击查看</Link>
+            <Link href="/(setting)/privacy" style={styles.copyText}>
+              点击查看
+            </Link>
           </Text>
         </View>
         <View style={styles.groupRow}>
           <Text style={[styles.groupText, textStyle]}>用户协议：</Text>
           <Text style={[styles.groupNumber, textStyle]}>
-            <Link href="/(setting)/agreement">点击查看</Link>
+            <Link href="/(setting)/agreement" style={styles.copyText}>
+              点击查看
+            </Link>
           </Text>
         </View>
         {/* <View style={styles.groupRow}>
@@ -65,7 +75,10 @@ function About() {
           </TouchableOpacity>
         </View> */}
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handleOpenURL('https://ccnubox.muxixyz.com/', '浏览器')}
+      >
         <Text style={styles.buttonText}>进入华师匣子官网</Text>
       </TouchableOpacity>
     </ThemeBasedView>
