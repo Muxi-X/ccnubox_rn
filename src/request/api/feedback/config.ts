@@ -4,7 +4,7 @@ import { FEEDBACK_BASE_URL, FEEDBACK_DEV_BASE_URL } from './constants';
 import getFeedbackToken from './getFeedbackToken';
 import getFeishuToken from './getFeishuToken';
 
-const ISDEV = false;
+const ISDEV = __DEV__;
 
 export const BASE_URL = ISDEV ? FEEDBACK_DEV_BASE_URL : FEEDBACK_BASE_URL;
 
