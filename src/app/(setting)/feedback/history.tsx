@@ -20,14 +20,13 @@ import Loading from '@/components/loading';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryUserFeedbackSheet } from '@/request/api/feedback';
-
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_BG_COLORS,
   STATUS_COLORS,
 } from '@/constants/FEEDBACK';
+import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
 interface FeedbackItem {
   record_id: string;
@@ -87,18 +86,8 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
             </View>
           </View>
 
-          {/* 最简单的UTC转UTC+8😋 */}
           <View style={{ paddingVertical: 8 }}>
-            <Text style={styles.itemheaderright}>
-              {item.fields.submitTime === '未知时间'
-                ? '未知时间'
-                : (() => {
-                    const d = new Date(
-                      (item.fields.submitTime as number) + 8 * 3600 * 1000
-                    );
-                    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                  })()}
-            </Text>
+            <Text style={styles.itemheaderright}>{item.fields.submitTime}</Text>
           </View>
         </View>
 
@@ -143,28 +132,62 @@ export default function FeedbackHistory() {
     currentStyle,
   }));
 
+  function formatSubmitTime(timestamp: any): string {
+    if (timestamp === null || timestamp === undefined) {
+      return '未知时间';
+    }
+
+    const tsNum =
+      typeof timestamp === 'string' && /^\d+$/.test(timestamp)
+        ? Number(timestamp)
+        : timestamp;
+
+    const date = new Date(tsNum);
+    if (isNaN(date.getTime())) {
+      return '未知时间';
+    }
+
+    const parts = new Intl.DateTimeFormat('zh-CN', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(date)
+      .reduce((acc: any, part: any) => {
+        acc[part.type] = part.value;
+        return acc;
+      }, {});
+
+    const year = parts.year;
+    const month = parts.month;
+    const day = parts.day;
+
+    return `${year}-${month}-${day}`;
+  }
+
   function transformRecordsToFeedbackItems(
     records: Array<{
-      RecordID: string;
-      Record: Record<string, any>;
+      record_id: string;
+      record: Record<string, any>;
     }>
   ): FeedbackItem[] {
     return records.map(item => ({
-      record_id: item.RecordID,
+      record_id: item.record_id,
       fields: {
-        content: item.Record['反馈内容'] || '暂无内容',
-        screenshots: Array.isArray(item.Record['截图'])
-          ? item.Record['截图'].map((token: string) => ({ file_token: token }))
+        content: item.record['反馈内容'] || '暂无内容',
+        screenshots: Array.isArray(item.record['截图'])
+          ? item.record['截图'].map((token: string) => ({ file_token: token }))
           : [],
-        submitTime: item.Record['提交时间'] || '未知时间',
-        userId: item.Record['用户ID'] || '',
-        contact: item.Record['联系方式（QQ/邮箱）'] || '',
-        source: item.Record['问题来源'] || '未知来源',
+        submitTime: formatSubmitTime(item.record['提交时间']),
+        userId: item.record['用户ID'] || '',
+        contact: item.record['联系方式（QQ/邮箱）'] || '',
+        source: item.record['问题来源'] || '未知来源',
         status:
-          item.Record['进度'] === '待通知'
+          item.record['进度'] === '待通知'
             ? '处理中'
-            : item.Record['进度'] || '未知状态',
-        type: item.Record['问题类型'] || '未知类型',
+            : item.record['进度'] || '未知状态',
+        type: item.record['问题类型'] || '未知类型',
       },
     }));
   }
@@ -189,10 +212,10 @@ export default function FeedbackHistory() {
       const res = (await queryUserFeedbackSheet(query)) as any;
 
       if (res.code === 0) {
-        const list = transformRecordsToFeedbackItems(res.data.Records);
+        const list = transformRecordsToFeedbackItems(res.data.records);
         setFeedbackHistory([...feedbackHistory, ...list]);
-        setHasMore(res.data.HasMore);
-        setPageToken(res.data.PageToken || null);
+        setHasMore(res.data.has_more);
+        setPageToken(res.data.page_token || null);
       }
     } catch (err) {
       console.error('获取用户反馈失败', err);
@@ -229,7 +252,7 @@ export default function FeedbackHistory() {
     if (!hasMore) {
       return (
         <Text style={{ textAlign: 'center', margin: 16, color: '#999' }}>
-          再往下也没有了
+          没有更多了
         </Text>
       );
     }

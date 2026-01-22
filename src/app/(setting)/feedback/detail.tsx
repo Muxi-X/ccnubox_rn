@@ -16,14 +16,13 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { getFeedbackImg } from '@/request/api/feedback';
-import { log } from '@/utils/logger';
-
 import {
   STATUS_BG_COLORS,
   STATUS_COLORS,
   STATUS_LABELS,
 } from '@/constants/FEEDBACK';
+import { getFeedbackImg } from '@/request/api/feedback';
+import { log } from '@/utils/logger';
 
 interface FeedbackDetailItem {
   record_id: string;
@@ -91,10 +90,10 @@ export default function FeedbackDetail() {
       try {
         const res = (await getFeedbackImg({ file_tokens: tokens })) as any;
 
-        if (res?.code === 0 && Array.isArray(res.data?.tmp_download_urls)) {
+        if (res?.code === 0 && Array.isArray(res.data?.files)) {
           const map: Record<string, string> = {};
 
-          res.data.tmp_download_urls.forEach((it: any) => {
+          res.data.files.forEach((it: any) => {
             if (it?.file_token && it?.tmp_download_url) {
               map[it.file_token] = it.tmp_download_url;
             }
@@ -225,12 +224,7 @@ export default function FeedbackDetail() {
               <Text style={styles.infoLabel}>时间</Text>
 
               <Text style={styles.timeText}>
-                {(() => {
-                  const d = new Date(
-                    (feedbackItem.fields.submitTime as number) + 8 * 3600 * 1000
-                  );
-                  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                })()}
+                {feedbackItem.fields.submitTime}
               </Text>
             </View>
           </View>
@@ -276,7 +270,9 @@ export default function FeedbackDetail() {
                             </TouchableOpacity>
                           ) : (
                             <View key={idx} style={styles.imagePlaceholder}>
-                              <Text style={styles.placeholderText}>无图片</Text>
+                              <Text style={styles.placeholderText}>
+                                获取失败
+                              </Text>
                             </View>
                           )
                         )

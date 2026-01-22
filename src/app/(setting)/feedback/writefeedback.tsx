@@ -19,15 +19,14 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { createFeedbackRecord } from '@/request/api/feedback';
-import { log } from '@/utils/logger';
-import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
-
 import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
   MODULE_MAP,
 } from '@/constants/FEEDBACK';
+import { createFeedbackRecord } from '@/request/api/feedback';
+import { log } from '@/utils/logger';
+import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
   uri: string;
