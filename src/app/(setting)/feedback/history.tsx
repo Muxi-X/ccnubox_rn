@@ -20,14 +20,33 @@ import Loading from '@/components/loading';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryUserFeedbackSheet } from '@/request/api/feedback';
-
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_COLORS,
-} from './constants';
-import { FeedbackItem } from './type';
+} from '@/constants/FEEDBACK';
+import { queryUserFeedbackSheet } from '@/request/api/feedback';
+
+interface FeedbackItem {
+  record_id: string;
+  fields: {
+    content: string;
+    screenshots: Array<{
+      file_token?: string;
+      name?: string;
+      size?: number;
+      tmp_url?: string;
+      type?: string;
+      url?: string;
+    }>;
+    submitTime: number | string;
+    userId: string;
+    contact: string;
+    source: string;
+    status: string;
+    type: string;
+  };
+}
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {

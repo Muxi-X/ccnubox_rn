@@ -32,7 +32,7 @@ import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 
 import NextIcon from '@/assets/images/next.png';
-import { preloginGuide } from '@/constants/prelogin';
+import { GUIDE_CONTENTS } from '@/constants/GUIDE';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
@@ -94,7 +94,7 @@ const GuidePage: FC = () => {
     // 渐变条每次移动多少
     const percent = Math.floor(
       (percent2px(80) - 4 * commonStyles.fontExtraLarge.fontSize - 48) /
-        (preloginGuide.length - 1)
+        (GUIDE_CONTENTS.length - 1)
     );
     titleShift.value = withTiming(Math.floor(percent * activeIndex), {
       easing: Easing.out(Easing.ease),
@@ -123,14 +123,14 @@ const GuidePage: FC = () => {
 
   // 跳转第几条内容
   const jump = (pageNum: number) => {
-    if (pageNum > preloginGuide.length - 1 || pageNum < 0) {
+    if (pageNum > GUIDE_CONTENTS.length - 1 || pageNum < 0) {
       Toast.show({
         icon: <Icon name="coffee" style={{ marginBottom: 6 }}></Icon>,
         content: '别划啦',
       });
       return;
     }
-    if (pageNum === preloginGuide.length - 1) setReachedLastPage(true);
+    if (pageNum === GUIDE_CONTENTS.length - 1) setReachedLastPage(true);
     setToVisible(false);
     setActiveIndex(pageNum);
     setTimeout(() => {
@@ -156,7 +156,7 @@ const GuidePage: FC = () => {
       <GestureDetector gesture={onSwipe}>
         <View style={styles.card_wrap}>
           <Animated.View>
-            {activeIndex !== preloginGuide.length - 1 ? (
+            {activeIndex !== GUIDE_CONTENTS.length - 1 ? (
               <TouchableOpacity
                 onPress={handleStart}
                 style={styles.skip_container}
@@ -178,7 +178,7 @@ const GuidePage: FC = () => {
               titleStyle,
             ]}
           >
-            {preloginGuide[activeIndex].title}
+            {GUIDE_CONTENTS[activeIndex].title}
           </Animated.Text>
           <View style={styles.gradient_box}>
             {/* 渐变条 */}
@@ -198,12 +198,12 @@ const GuidePage: FC = () => {
             style={{ flex: 1 }}
             duration={PAGE_SWIPE_ANIMATION_DURATION}
           >
-            {preloginGuide[activeContentIndex]?.content}
+            {GUIDE_CONTENTS[activeContentIndex]?.content}
           </AnimatedOpacity>
         </View>
       </GestureDetector>
       <Pagination
-        totalPages={preloginGuide.length}
+        totalPages={GUIDE_CONTENTS.length}
         currentPage={activeIndex}
         onChange={handleChange}
         styles={{

@@ -8,9 +8,9 @@ import useVisualScheme from '@/store/visualScheme';
 
 import {
   COURSE_ITEM_HEIGHT,
+  TIME_SLOTS,
   TIME_WIDTH,
-  timeSlots,
-} from '@/constants/courseTable';
+} from '@/constants/SCHEDULE';
 
 export const StickyLeft: React.FC = memo(function StickyLeft() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -28,7 +28,7 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
 
   return (
     <>
-      {timeSlots.map((time, index) => (
+      {TIME_SLOTS.map((time, index) => (
         <View
           key={index}
           style={[

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
-  colorOptions,
   COURSE_HEADER_HEIGHT,
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
-} from '@/constants/courseTable';
+  ITEM_COLORS,
+} from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
@@ -18,8 +18,8 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           COURSE_ITEM_HEIGHT * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2,
         borderRadius: 5,
         backgroundColor: isThisWeek
-          ? colorOptions.find(item => item.label === date)?.color
-          : colorOptions.find(item => item.label === '无')?.color,
+          ? ITEM_COLORS.find(item => item.label === date)?.color
+          : ITEM_COLORS.find(item => item.label === '无')?.color,
         opacity: isThisWeek ? 1 : 0.4,
       }}
     >

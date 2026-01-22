@@ -4,13 +4,13 @@ import { FEEDBACK_BASE_URL, FEEDBACK_DEV_BASE_URL } from './constants';
 import getFeedbackToken from './getFeedbackToken';
 import getFeishuToken from './getFeishuToken';
 
-const isDEV = false;
+const ISDEV = false;
 
-export const BASE_URL = isDEV ? FEEDBACK_DEV_BASE_URL : FEEDBACK_BASE_URL;
+export const BASE_URL = ISDEV ? FEEDBACK_DEV_BASE_URL : FEEDBACK_BASE_URL;
 
 export const FIXED_CONFIG = {
   parentType: 'bitable_image',
-  parentNode: isDEV
+  parentNode: ISDEV
     ? 'N4TcbHEPgaCvAIsrUspciX13nq8'
     : 'LC8aboXkCaAJaksSACOc9OS5nHf',
 };
