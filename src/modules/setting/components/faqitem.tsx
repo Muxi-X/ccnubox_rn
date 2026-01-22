@@ -122,13 +122,7 @@ const FAQItem: React.FC<FAQItemProps> = ({
     `;
 
   return (
-    <View
-      style={[
-        styles.container,
-        currentStyle?.FAQItem_background_style,
-        isExpanded && currentStyle?.expanded_FAQItem_background_style,
-      ]}
-    >
+    <View style={[styles.container, isExpanded && styles.expandedContainer]}>
       {/* 问题标题区域 */}
       <TouchableOpacity
         style={styles.titleContainer}
@@ -136,41 +130,28 @@ const FAQItem: React.FC<FAQItemProps> = ({
         activeOpacity={0.8}
       >
         <AnimatedSvgXml
-          xml={getSvgXml(
-            isExpanded ? '#847AF2' : (currentStyle?.text_style?.color as string)
-          )}
+          xml={getSvgXml(isExpanded ? '#847AF2' : '#484848')}
           style={[styles.icon, animatedIconStyle]}
         />
-        <Text style={[styles.title, currentStyle?.text_style]}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
 
       {/* 详细内容区域 - 带动画效果 */}
       <AnimatedView style={[styles.contentContainer, animatedContentStyle]}>
         {/* 实际显示的内容 */}
         <View style={styles.visibleContent}>
-          <Text style={currentStyle?.text_style}>{content}</Text>
+          {content}
 
           <View style={styles.solutionWrapper}>
-            <Text style={[styles.solutionTitle, currentStyle?.text_style]}>
-              解决方案
-            </Text>
-            <View
-              style={[
-                currentStyle?.feedbackItem_background_style,
-                styles.solutionContainer,
-              ]}
-            >
-              <Text style={currentStyle?.text_style}>{solution}</Text>
-            </View>
+            <Text style={styles.solutionTitle}>解决方案</Text>
+            <View style={styles.solutionContainer}>{solution}</View>
           </View>
 
           {/* 解决状态按钮 */}
           <View style={styles.statusContainer}>
             <View style={styles.lines}>
               <View style={styles.line} />
-              <Text style={[styles.statusText, currentStyle?.text_style]}>
-                您的问题是否已解决?
-              </Text>
+              <Text style={styles.statusText}>您的问题是否已解决?</Text>
               <View style={styles.line} />
             </View>
 
@@ -254,12 +235,18 @@ const FAQItem: React.FC<FAQItemProps> = ({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
+    borderColor: '#F6F5FF',
     borderRadius: 14,
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 12,
     paddingBottom: 12,
     marginBottom: 12,
+    backgroundColor: '#f5f5f5',
+  },
+  expandedContainer: {
+    borderColor: '#857BF2',
+    backgroundColor: '#F6F5FF',
   },
   titleContainer: {
     flexDirection: 'row',
@@ -311,6 +298,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: '#857BF2',
+    backgroundColor: 'rgb(255, 255, 255)',
     borderRadius: 12,
   },
   statusText: {

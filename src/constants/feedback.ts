@@ -4,6 +4,12 @@ export const STATUS_COLORS: Record<string, string> = {
   已完成: '#66D06A',
 };
 
+export const STATUS_BG_COLORS: Record<string, string> = {
+  待处理: '#F3F4F6',
+  处理中: '#FFF3CD',
+  已完成: '#EEF7EE',
+};
+
 export const STATUS_LABELS = ['待处理', '处理中', '已完成'];
 
 export const ISSUE_TYPE_MAP: Record<string, string> = {

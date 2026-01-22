@@ -16,7 +16,11 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { STATUS_COLORS, STATUS_LABELS } from '@/constants/FEEDBACK';
+import {
+  STATUS_BG_COLORS,
+  STATUS_COLORS,
+  STATUS_LABELS,
+} from '@/constants/FEEDBACK';
 import { getFeedbackImg } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 
@@ -176,14 +180,10 @@ export default function FeedbackDetail() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View
-          style={[styles.card, currentStyle?.feedbackItem_background_style]}
-        >
+        <View style={styles.card}>
           <View style={styles.infoBlock}>
             <View style={styles.infoRowItem}>
-              <Text style={[styles.infoLabel, currentStyle?.text_style]}>
-                问题类型
-              </Text>
+              <Text style={styles.infoLabel}>问题类型</Text>
               <View style={styles.infoContainer}>
                 <View style={styles.itemTypeleftitem}>
                   <Text style={styles.itemTypeleftitemtext}>
@@ -199,18 +199,14 @@ export default function FeedbackDetail() {
             </View>
 
             <View style={styles.infoRowItem}>
-              <Text style={[styles.infoLabel, currentStyle?.text_style]}>
-                进度
-              </Text>
+              <Text style={styles.infoLabel}>进度</Text>
               <View
                 style={[
+                  styles.itemStatuscontainer,
                   {
                     backgroundColor:
-                      (currentStyle!.feedbackStatus_background_style as any)[
-                        feedbackItem.fields.status
-                      ] || '',
+                      STATUS_BG_COLORS[feedbackItem.fields.status],
                   },
-                  styles.itemStatuscontainer,
                 ]}
               >
                 <Text
@@ -225,9 +221,7 @@ export default function FeedbackDetail() {
             </View>
 
             <View style={styles.infoRowItem}>
-              <Text style={[styles.infoLabel, currentStyle?.text_style]}>
-                时间
-              </Text>
+              <Text style={styles.infoLabel}>时间</Text>
 
               <Text style={styles.timeText}>
                 {feedbackItem.fields.submitTime}
@@ -236,9 +230,7 @@ export default function FeedbackDetail() {
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, currentStyle?.text_style]}>
-              问题描述
-            </Text>
+            <Text style={styles.sectionTitle}>问题描述</Text>
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
@@ -253,9 +245,7 @@ export default function FeedbackDetail() {
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, currentStyle?.text_style]}>
-              问题截图
-            </Text>
+            <Text style={styles.sectionTitle}>问题截图</Text>
 
             {imgTokenCount === 0 ? (
               <Text style={styles.sectionContent}>暂无图片</Text>
@@ -297,9 +287,7 @@ export default function FeedbackDetail() {
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, currentStyle?.text_style]}>
-              联系方式
-            </Text>
+            <Text style={styles.sectionTitle}>联系方式</Text>
             <Text style={styles.sectionContent}>
               {feedbackItem.fields.contact || '暂无联系方式'}
             </Text>
@@ -422,7 +410,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
-    color: '#9E9E9E',
+    color: '#4B5563',
   },
   itemTypeleftitem: {
     width: 72,
@@ -450,6 +438,7 @@ const styles = StyleSheet.create({
     height: 27,
     paddingHorizontal: 10,
     borderRadius: 999,
+    backgroundColor: '#F6F5FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -464,7 +453,7 @@ const styles = StyleSheet.create({
   },
   sectionContent: {
     fontSize: 15,
-    color: '#9E9E9E',
+    color: '#4B5563',
     lineHeight: 22,
   },
   expandText: {

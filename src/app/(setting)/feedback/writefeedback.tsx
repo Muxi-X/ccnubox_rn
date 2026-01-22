@@ -19,15 +19,14 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { createFeedbackRecord } from '@/request/api/feedback';
-import { log } from '@/utils/logger';
-import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
-
 import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
   MODULE_MAP,
 } from '@/constants/FEEDBACK';
+import { createFeedbackRecord } from '@/request/api/feedback';
+import { log } from '@/utils/logger';
+import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
   uri: string;
@@ -223,7 +222,6 @@ function WriteFeedback() {
               style={[
                 styles.issueTypeOption,
                 styles.defaultOption,
-                currentStyle?.feedbackItem_background_style,
                 selectedIssueType === 'function' && styles.selectedOption,
               ]}
               onPress={() => setSelectedIssueType('function')}
@@ -231,15 +229,12 @@ function WriteFeedback() {
               <Text
                 style={[
                   styles.defaultText,
-                  currentStyle?.text_style,
                   selectedIssueType === 'function' && styles.selectedText,
                 ]}
               >
                 功能异常
               </Text>
-              <Text
-                style={[styles.optionDescription, currentStyle?.text_style]}
-              >
+              <Text style={styles.optionDescription}>
                 页面加载缓慢、无法使用、闪退
               </Text>
             </TouchableOpacity>
@@ -247,7 +242,6 @@ function WriteFeedback() {
               style={[
                 styles.issueTypeOption,
                 styles.defaultOption,
-                currentStyle?.feedbackItem_background_style,
                 selectedIssueType === 'improvement' && styles.selectedOption,
               ]}
               onPress={() => setSelectedIssueType('improvement')}
@@ -255,15 +249,12 @@ function WriteFeedback() {
               <Text
                 style={[
                   styles.defaultText,
-                  currentStyle?.text_style,
                   selectedIssueType === 'improvement' && styles.selectedText,
                 ]}
               >
                 产品改进
               </Text>
-              <Text
-                style={[styles.optionDescription, currentStyle?.text_style]}
-              >
+              <Text style={styles.optionDescription}>
                 界面优化、功能建议、体验提升
               </Text>
             </TouchableOpacity>
@@ -276,7 +267,6 @@ function WriteFeedback() {
                 style={[
                   styles.moduleOption,
                   styles.defaultOption,
-                  currentStyle?.feedbackItem_background_style,
                   selectedModule === module && styles.selectedOption,
                 ]}
                 onPress={() => {
@@ -286,7 +276,6 @@ function WriteFeedback() {
                 <Text
                   style={[
                     styles.defaultText,
-                    currentStyle?.text_style,
                     selectedModule === module && styles.selectedText,
                   ]}
                 >
@@ -307,23 +296,17 @@ function WriteFeedback() {
             </Text>
 
             <TextInput
-              style={[
-                currentStyle?.feedbackItem_background_style as any,
-                styles.textInput,
-              ]}
+              style={styles.textInput}
               multiline={true}
               placeholder={
                 '请详细描述您遇到的问题...\n如: "首页查算学分绩功能，点击查询后无法显示学分绩"'
               }
-              placeholderTextColor="#9E9E9E"
               value={description}
               onChangeText={handleDescriptionChange}
               maxLength={200}
               textAlignVertical="top"
             />
-            <Text style={[styles.counter, currentStyle?.text_style]}>
-              {description.length}/200
-            </Text>
+            <Text style={styles.counter}>{description.length}/200</Text>
           </View>
         </View>
 
@@ -370,12 +353,8 @@ function WriteFeedback() {
               联系方式
             </Text>
             <TextInput
-              style={[
-                currentStyle?.feedbackItem_background_style as any,
-                styles.contactInput,
-              ]}
+              style={styles.contactInput}
               placeholder="QQ/邮箱"
-              placeholderTextColor="#9E9E9E"
               value={contact}
               onChangeText={setContact}
               keyboardType="default"
@@ -386,8 +365,7 @@ function WriteFeedback() {
         <TouchableOpacity
           style={[
             styles.submitButton,
-            (!isSubmitEnabled || isSubmitting) &&
-              currentStyle?.FAQItem_background_style,
+            (!isSubmitEnabled || isSubmitting) && styles.submitButtonDisabled,
           ]}
           onPress={handleSubmit}
           disabled={!isSubmitEnabled || isSubmitting}
@@ -427,15 +405,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
+    backgroundColor: '#fff',
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
+    borderColor: '#ddd',
     minHeight: 100,
   },
   contactInput: {
+    backgroundColor: '#fff',
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
+    borderColor: '#ddd',
     height: 50,
   },
   counter: {
@@ -474,6 +456,7 @@ const styles = StyleSheet.create({
   selectedOption: {
     borderWidth: 1,
     borderColor: '#7B70F1',
+    backgroundColor: '#F6F5FF',
     padding: 12,
   },
   defaultText: {
@@ -555,6 +538,9 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 30,
     alignItems: 'center',
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#E5E5E5',
   },
   submitButtonText: {
     color: '#fff',

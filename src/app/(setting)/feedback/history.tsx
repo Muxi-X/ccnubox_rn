@@ -23,6 +23,7 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
+  STATUS_BG_COLORS,
   STATUS_COLORS,
 } from '@/constants/FEEDBACK';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
@@ -50,9 +51,6 @@ interface FeedbackItem {
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
-    const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-      currentStyle,
-    }));
     const router = useRouter();
 
     const handlePress = () => {
@@ -70,10 +68,7 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
 
     return (
       <TouchableOpacity
-        style={[
-          styles.itemcontainer,
-          currentStyle?.feedbackItem_background_style,
-        ]}
+        style={styles.itemcontainer}
         onPress={handlePress}
         activeOpacity={0.7}
       >
@@ -97,10 +92,8 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
         </View>
 
         <View style={styles.itemcontent}>
-          <Text style={[styles.itemcontenttitle, currentStyle?.text_style]}>
-            反馈内容
-          </Text>
-          <Text style={[styles.itemcontenttext, currentStyle?.text_style]}>
+          <Text style={styles.itemcontenttitle}>反馈内容</Text>
+          <Text style={styles.itemcontenttext}>
             {spliceText(item.fields.content)}
           </Text>
         </View>
@@ -108,13 +101,8 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
         <View style={styles.itemfooter}>
           <View
             style={[
-              {
-                backgroundColor:
-                  (currentStyle!.feedbackStatus_background_style as any)[
-                    item.fields.status
-                  ] || '',
-              },
               styles.itemfootercontainer,
+              { backgroundColor: STATUS_BG_COLORS[item.fields.status] },
             ]}
           >
             <Text
@@ -226,8 +214,8 @@ export default function FeedbackHistory() {
       if (res.code === 0) {
         const list = transformRecordsToFeedbackItems(res.data.records);
         setFeedbackHistory([...feedbackHistory, ...list]);
-        setHasMore(res.data.HasMore);
-        setPageToken(res.data.PageToken || null);
+        setHasMore(res.data.has_more);
+        setPageToken(res.data.page_token || null);
       }
     } catch (err) {
       console.error('获取用户反馈失败', err);
@@ -376,6 +364,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 24,
     borderRadius: 16,
+    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
