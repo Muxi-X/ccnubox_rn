@@ -2,6 +2,8 @@
  * Common type definitions used across the application
  */
 
+import { GestureResponderEvent } from 'react-native';
+
 /**
  * Generic callback function type
  */
@@ -58,3 +60,27 @@ export interface PaginatedResponse<T = unknown> {
   data: T[];
   meta: PaginationMeta;
 }
+
+/**
+ * Common event handler types
+ */
+export type PressHandler = (event: GestureResponderEvent) => void;
+export type AsyncPressHandler = (event: GestureResponderEvent) => Promise<void>;
+
+/**
+ * Common picker/selector types
+ */
+export interface SelectOption<T = string> {
+  label: string;
+  value: T;
+}
+
+/**
+ * Generic error type
+ */
+export interface AppError {
+  code: string;
+  message: string;
+  details?: unknown;
+}
+

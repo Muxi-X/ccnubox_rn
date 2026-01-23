@@ -5,6 +5,9 @@
 // Common types
 export * from './common';
 
+// Type utilities
+export * from './utilities';
+
 // Page types
 export * from './tabBarTypes';
 export * from './mainPageGridTypes';
