@@ -2,8 +2,8 @@ import * as React from 'react';
 
 export type UseTimeoutFnReturn = [() => boolean | null, () => void, () => void];
 
-export default function useTimeoutFn(
-  fn: (...args: any[]) => void,
+export default function useTimeoutFn<T extends unknown[] = []>(
+  fn: (...args: T) => void,
   ms: number = 0
 ): UseTimeoutFnReturn {
   const ready = React.useRef<boolean | null>(false);
