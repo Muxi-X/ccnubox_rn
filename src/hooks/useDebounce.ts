@@ -12,7 +12,7 @@ export type UseDebounceReturn = [() => boolean | null, () => void];
  * @param deps 依赖数组，当依赖变化时重新创建防抖函数
  * @returns 防抖处理后的函数
  */
-export default function useDebounce<T extends (...args: never[]) => unknown>(
+export default function useDebounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   ms: number = 0,
   deps: React.DependencyList = []

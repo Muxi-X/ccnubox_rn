@@ -39,6 +39,8 @@ export class EventBusTest {
       eventFns.set(name, []);
     }
     const listeners = eventFns.get(name)!;
+    // Type assertion is safe here because we maintain type consistency at runtime
+    // All listeners for a given event name share the same signature
     listeners.push(fn as EventListener);
   }
 
@@ -48,6 +50,7 @@ export class EventBusTest {
       throw new Error(`${name} 中不存在该函数`);
     }
     const listeners = eventFns.get(name)!;
+    // Type assertion is safe here as we're looking up the same function we stored
     const index = listeners.indexOf(fn as EventListener);
     if (index > -1) {
       listeners.splice(index, 1);
@@ -78,6 +81,8 @@ export class EventBus {
     if (!this._eventPool[name]) {
       this._eventPool[name] = [];
     }
+    // Type assertion is safe here because we maintain type consistency at runtime
+    // All listeners for a given event name share the same signature
     this._eventPool[name].push(fn as EventListener);
   }
 
@@ -85,6 +90,7 @@ export class EventBus {
     if (!this._eventPool[name]) {
       throw new Error(`${name} 中不存在该函数`);
     }
+    // Type assertion is safe here as we're looking up the same function we stored
     const index = this._eventPool[name].indexOf(fn as EventListener);
     if (index > -1) {
       this._eventPool[name].splice(index, 1);

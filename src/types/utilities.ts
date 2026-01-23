@@ -65,8 +65,9 @@ export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 
 /**
  * Promisify - wraps return type in Promise
+ * Note: Uses `unknown` for maximum flexibility with function types
  */
-export type Promisify<T extends (...args: any[]) => any> = (
+export type Promisify<T extends (...args: unknown[]) => unknown> = (
   ...args: Parameters<T>
 ) => Promise<ReturnType<T>>;
 
