@@ -75,5 +75,12 @@
       </intent-filter>
       <meta-data android:name="android.appwidget.provider" android:resource="@xml/recent_classes_widget_info_4x2"/>
     </receiver>
+    <receiver android:name=".widgets.providers.TwoDayClassesProvider4x2" android:exported="true">
+      <intent-filter>
+        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider" android:resource="@xml/two_day_classes_widget_info_4x2"/>
+    </receiver>
   </application>
 </manifest>
