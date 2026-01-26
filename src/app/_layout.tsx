@@ -8,6 +8,7 @@ import { SystemBars } from 'react-native-edge-to-edge';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
+import useJPush from '@/hooks/useJPush';
 
 import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
@@ -34,13 +35,8 @@ export default function RootLayout() {
 
   const setPortalRef = usePortalStore(state => state.setPortalRef);
 
-  // 配置JPush,消息推送
-  // try {
-  //   useJPush();
-  // } catch (err) {
-  //   alert(JSON.stringify(err));
-  //   console.error('JPush init failed:', err);
-  // }
+  // 配置 JPush 消息推送
+  useJPush();
 
   const initApp = React.useCallback(async () => {
     // 引入所有样式以及基于 theme 的组件
@@ -59,7 +55,7 @@ export default function RootLayout() {
     setRef(scraperRef as React.RefObject<WebView>);
     // 在 store 中配置 portal ref
     setPortalRef(portalRef);
-  }, [initVisualScheme]);
+  }, [initVisualScheme, setPortalRef, setRef]);
 
   React.useEffect(() => {
     initApp();
@@ -70,7 +66,7 @@ export default function RootLayout() {
       }
     });
     return () => listener.remove();
-  }, [isAutoTheme]);
+  }, [isAutoTheme, changeTheme, initApp]);
 
   return (
     <Provider
