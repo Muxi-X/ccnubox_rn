@@ -4,6 +4,9 @@ import JPush from 'jpush-react-native';
  * @returns 推送注册ID字符串或null
  */
 export const getPushToken = async (): Promise<string | null> => {
+  if (!JPush.getRegistrationID) {
+    return null;
+  }
   return new Promise(resolve => {
     JPush.getRegistrationID(({ registerID }) => {
       if (!registerID) {

@@ -73,7 +73,6 @@ const useJPush = () => {
         console.error('JPush 初始化失败:', error);
       }
     };
-
     init();
   }, []);
 };

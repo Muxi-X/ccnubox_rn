@@ -17,7 +17,7 @@ keystore.properties
 *.jks
 
 # 华为 AGConnect 配置文件（包含隐私信息）
-app/agconnect-services.json
+# app/agconnect-services.json
 
 # Bundle artifacts
 *.jsbundle
