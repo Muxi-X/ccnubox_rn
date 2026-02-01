@@ -37,11 +37,13 @@ const IndexPage: FC = () => {
   const [registerId, setRegisterId] = useState('');
 
   useEffect(() => {
-    JPush.getRegistrationID((result: { registerID?: string }) => {
-      if (result.registerID) {
-        setRegisterId(result.registerID);
-      }
-    });
+    if (JPush.getRegistrationID) {
+      JPush.getRegistrationID((result: { registerID?: string }) => {
+        if (result.registerID) {
+          setRegisterId(result.registerID);
+        }
+      });
+    }
     queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(

@@ -29,7 +29,9 @@ const useBadgeSync = () => {
   // Sync badge count with unread events (使用极光推送)
   useEffect(() => {
     const unreadCount = feedEvents.filter(e => !e.read).length;
-    JPush.setBadge({ badge: unreadCount, appBadge: unreadCount });
+    if (JPush.setBadge) {
+      JPush.setBadge({ badge: unreadCount, appBadge: unreadCount });
+    }
   }, [feedEvents]);
 };
 

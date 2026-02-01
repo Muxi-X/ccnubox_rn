@@ -42,7 +42,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
             grade: data?.grade ?? true,
             holiday: data?.holiday ?? true,
             muxi: data?.muxi ?? true,
-            feedback: true,
+            feedback: data?.feed_back ?? true,
           });
         }
       });

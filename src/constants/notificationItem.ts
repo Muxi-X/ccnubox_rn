@@ -35,4 +35,12 @@ export const FeedIconList: FeedIconTypes[] = [
     }),
     text: '电费告急',
   },
+  {
+    name: 'feedback',
+    imageUrl: Platform.select({
+      android: require('@/assets/images/icons/android/feedback.png'),
+      ios: require('@/assets/images/icons/ios/feedback.png'),
+    }),
+    text: '反馈',
+  },
 ];
