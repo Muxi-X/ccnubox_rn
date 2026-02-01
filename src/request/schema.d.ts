@@ -2356,7 +2356,10 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header?: {
+          /** @example Bearer {{JWT}} */
+          Authorization?: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -3236,46 +3239,49 @@ export interface paths {
       };
     };
     put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/metrics': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     /**
-     * 导出 Prometheus 监控指标
-     * @description 暴露标准的 Prometheus 监控数据，供 Prometheus 定时拉取，使用BasicAuth进行验证
+     * 搜索学生ID
+     * @description 传入学生学号获取对应的学生ID
      */
-    get: {
+    post: {
       parameters: {
-        query?: never;
-        header?: never;
+        query: {
+          student_id: string;
+        };
+        header: {
+          /**
+           * @description Bearer Token
+           * @example
+           */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
       requestBody?: never;
       responses: {
-        /** @description Prometheus Exporter Text Data */
+        /** @description 成功返回学生的ID */
         200: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'text/plain': string;
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['library.SearchUserResponse'];
+            };
+          };
+        };
+        /** @description 系统异常，获取失败 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
     };
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -3393,45 +3399,6 @@ export interface paths {
           /** @example Bearer {{JWT}} */
           Authorization?: string;
         };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description OK */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/x-yaml': string;
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/swag': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取 OpenAPI3 接口文档 (YAML)
-     * @description 接口直接返回 docs/openapi3.yaml yaml格式的原始内容，使用BasicAuth进行验证
-     */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
         path?: never;
         cookie?: never;
       };
@@ -3857,174 +3824,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/auth/table-config/refresh': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 刷新表格 token 配置接口
-     * @description 刷新并返回目前支持索引的表格的公开配置
-     */
-    get: operations['refresh-table-config'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/table-config/token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 获取 table token 接口
-     * @description 获取 table token 接口
-     */
-    post: operations['get-table-token'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/tenant/token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 获取 tenant token 接口
-     * @description 获取 tenant token 接口，用于上传图片等
-     */
-    post: operations['get-tenant-token'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 健康检查，返回当前服务占用的资源等信息
-     * @description 健康检查，返回当前服务占用的资源等信息
-     */
-    get: operations['health-check'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/openapi': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取 OpenAPI3 接口文档 (YAML)
-     * @description 接口直接返回 docs/openapi3.yaml yaml格式的原始内容，使用BasicAuth进行验证
-     */
-    get: operations['get-openapi3'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sheet/photos/url': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取截图临时URL
-     * @description 根据文件Token获取截图的临时下载URL，URL有效期为24小时
-     */
-    get: operations['get-photo-url'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sheet/records': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取多维表格记录
-     * @description 根据指定条件查询多维表格中的记录数据
-     */
-    get: operations['get-table-record'];
-    put?: never;
-    /**
-     * 创建多维表格记录
-     * @description 向指定的多维表格应用中添加记录数据
-     */
-    post: operations['create-table-record'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sheet/records/faq': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取常见问题记录
-     * @description 根据指定条件查询多维表格中的记录数据
-     */
-    get: operations['get-faq-resolution-record'];
-    put?: never;
-    /**
-     * 更新FAQ解决方案的 已解决/未解决 状态
-     * @description 更新FAQ解决方案的 已解决/未解决 状态
-     */
-    post: operations['update-faq-resolution'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4166,6 +3965,8 @@ export interface components {
       id: string;
       /** @description 是否为官方课程 */
       is_official: boolean;
+      /** @description 课程性质 */
+      nature: string;
       /** @description 备注 */
       note: string;
       /** @description 学期 */
@@ -4401,9 +4202,9 @@ export interface components {
       feed_id: number;
     };
     'elecprice.Price': {
-      remain_money: string;
-      yesterday_use_money: string;
-      yesterday_use_value: string;
+      remain_money?: string;
+      yesterday_use_money?: string;
+      yesterday_use_value?: string;
     };
     'elecprice.CancelStandardRequest': {
       room_id: string;
@@ -4440,9 +4241,9 @@ export interface components {
       name?: string;
     };
     'elecprice.GetPriceResponse': {
-      ac_price: components['schemas']['elecprice.Price'];
-      light_price: components['schemas']['elecprice.Price'];
-      union_price: components['schemas']['elecprice.Price'];
+      ac_price?: components['schemas']['elecprice.Price'];
+      light_price?: components['schemas']['elecprice.Price'];
+      union_price?: components['schemas']['elecprice.Price'];
     };
     'content.SaveBannerRequest': {
       /** @description 可选,如果新增记录不用填写 */
@@ -4566,10 +4367,10 @@ export interface components {
       thisweek?: boolean;
     };
     'elecprice.Room': {
-      ac: string;
-      light: string;
+      ac?: string;
+      light?: string;
       room_name: string;
-      union: string;
+      union?: string;
     };
     'content.SaveWebsiteRequest': {
       description: string;
@@ -4730,22 +4531,11 @@ export interface components {
     'grade.GetGradeScoreResp': {
       type_of_grade_scores: components['schemas']['grade.TypeOfGradeScore'][];
     };
-    'grade.GetGradeTypeResp': {
-      /** @description 课程类别 */
-      kcxzmc?: string[];
-    };
-    'grade.GetRankByTermReq': {
-      refresh?: boolean;
-      /** @description 学年学期四个字段为空则获取总成绩 */
-      xnm_begin?: number;
-      xnm_end?: number;
-      xqm_begin?: number;
-      xqm_end?: number;
-    };
-    'grade.GetRankByTermResp': {
-      include?: string[];
-      rank?: string;
-      score?: string;
+    'feed.PublicFeedEventReq': {
+      content: string;
+      student_id: string;
+      title: string;
+      type: string;
     };
     'grade.Grade': {
       /** @description 课程类别名称 */
@@ -5039,105 +4829,6 @@ export interface components {
     'user.DeleteAccountReq': {
       password: string;
     };
-    'user.LoginByCCNUReq': {
-      /** @description 密码 */
-      password: string;
-      student_id: string;
-    };
-    'web.Response': {
-      code?: number;
-      data?: unknown;
-      msg?: string;
-    };
-    'website.DelWebsiteRequest': {
-      id: number;
-    };
-    'website.GetWebsitesResponse': {
-      websites: components['schemas']['website.Website'][];
-    };
-    'website.SaveWebsiteRequest': {
-      description: string;
-      /** @description 可选,如果新增记录不用填写 */
-      id?: number;
-      image: string;
-      link: string;
-      name: string;
-    };
-    'website.Website': {
-      description: string;
-      id: number;
-      image: string;
-      link: string;
-      name: string;
-    };
-    'request.CreateTableRecordReg': {
-      /** @description 联系方式，可选 */
-      contact_info?: string;
-      /** @description 反馈内容 */
-      content: string;
-      /** @description 额外记录列表，可选 */
-      extra_record?: {
-        [key: string]: unknown;
-      };
-      /** @description 图片附件 URL 列表，可选 */
-      images?: string[];
-      /** @description 学号，用于标记用户身份 */
-      student_id: string;
-      table_identify: string;
-    };
-    'request.FAQResolutionUpdateReq': {
-      is_resolved: boolean;
-      record_id: string;
-      resolved_field_name: string;
-      table_identify: string;
-      unresolved_field_name: string;
-      user_id: string;
-    };
-    'request.GenerateTableTokenReq': {
-      /** @description 反馈表格 Identity，反馈表的唯一标识 */
-      table_identify: string;
-    };
-    'response.HealthCheckResponse': {
-      /** @description Process 当前进程的运行状态 */
-      process?: components['schemas']['response.ProcessStats'];
-      /** @description ResponseMs 响应耗时，单位毫秒 */
-      response_ms?: string;
-      /** @description Status 服务状态，例如 "ok" */
-      status?: string;
-      /** @description System 系统资源使用情况 */
-      system?: components['schemas']['response.SystemStats'];
-    };
-    'response.ProcessStats': {
-      /** @description CPUPercent 进程 CPU 使用率（%） */
-      cpu_percent?: string;
-      /** @description GoHeapAllocMB Go 堆分配的内存（MB） */
-      go_heap_alloc_mb?: string;
-      /** @description Goroutines 当前运行的 goroutine 数 */
-      goroutines?: string;
-      /** @description MemoryRSSMB 进程常驻内存（MB） */
-      memory_rss_mb?: string;
-    };
-    'response.Response': {
-      code?: number;
-      data?: unknown;
-      msg?: string;
-    };
-    'response.SystemStats': {
-      /** @description CPUPercent CPU 使用率（%） */
-      cpu_percent?: string;
-      /** @description DiskPercent 磁盘使用率（%） */
-      disk_percent?: string;
-      /** @description DiskTotalGB 磁盘总量（GB） */
-      disk_total?: string;
-      /** @description DiskUsedGB 已使用磁盘（GB） */
-      disk_used?: string;
-      /** @description MemoryPercent 内存使用率（%） */
-      memory_percent?: string;
-      /** @description MemoryTotalMB 内存总量（MB） */
-      memory_total?: string;
-      /** @description MemoryUsedMB 已使用内存（MB） */
-      memory_used?: string;
-    };
   };
   responses: never;
   parameters: never;
@@ -5146,420 +4837,4 @@ export interface components {
   pathItems: never;
 }
 export type $defs = Record<string, never>;
-export interface operations {
-  'refresh-table-config': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回目前支持索引的表格的公开配置 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-table-token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 获取Token请求参数 */
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['request.GenerateTableTokenReq'];
-      };
-    };
-    responses: {
-      /** @description 成功返回 JWT 令牌 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-tenant-token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回 JWT 令牌 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'health-check': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回健康检查结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'] & {
-            data?: components['schemas']['response.HealthCheckResponse'];
-          };
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'] & {
-            data?: string;
-          };
-        };
-      };
-    };
-  };
-  'get-openapi3': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回 OpenAPI3 文档内容 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/x-yaml': string;
-        };
-      };
-      /** @description 未授权，BasicAuth 验证失败 */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/x-yaml': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/x-yaml': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-photo-url': {
-    parameters: {
-      query: {
-        /** @description 附件 token */
-        file_tokens: string[];
-      };
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回临时URL信息 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-table-record': {
-    parameters: {
-      query: {
-        /** @description 用于查询记录的关键值，一般使用学号的字段名 */
-        key_field: string;
-        /** @description 用于查询记录的关键值，一般使用学号的字段值 */
-        key_value: string;
-        /** @description 分页参数,第一次不需要 */
-        page_token?: string;
-        /** @description 需要查询的字段名 */
-        record_names: string[];
-        table_identify: string;
-      };
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回查询结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'create-table-record': {
-    parameters: {
-      query?: never;
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 新增记录请求参数 */
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['request.CreateTableRecordReg'];
-      };
-    };
-    responses: {
-      /** @description 成功返回创建记录结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-faq-resolution-record': {
-    parameters: {
-      query: {
-        /** @description 需要查询的字段名 */
-        record_names: string[];
-        /** @description 学号，用于标记用户身份 */
-        student_id: string;
-        table_identify: string;
-      };
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回查询结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'update-faq-resolution': {
-    parameters: {
-      query?: never;
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 更新FAQ解决状态请求参数 */
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['request.FAQResolutionUpdateReq'];
-      };
-    };
-    responses: {
-      /** @description 成功更新FAQ解决状态 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-}
+export type operations = Record<string, never>;
