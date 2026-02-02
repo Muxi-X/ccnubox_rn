@@ -11,7 +11,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/infoSum.DelInfoSumRequest'
+              $ref: '#/components/schemas/content.DelInfoSumRequest'
         description: 删除信息整合信息请求参数
         required: true
       responses:
@@ -20,7 +20,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/web.Response'
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/content.GetInfoSumsResponse'
+                    type: object
       summary: 删除信息整合信息
       tags:
         - InfoSum
@@ -37,7 +42,7 @@ paths:
                   - $ref: '#/components/schemas/web.Response'
                   - properties:
                       data:
-                        $ref: '#/components/schemas/infoSum.GetInfoSumsResponse'
+                        $ref: '#/components/schemas/content.GetInfoSumsResponse'
                     type: object
       summary: 获取信息整合列表
       tags:
@@ -49,7 +54,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/infoSum.SaveInfoSumRequest'
+              $ref: '#/components/schemas/content.SaveInfoSumRequest'
         description: 保存信息整合信息请求参数
         required: true
       responses:
@@ -58,7 +63,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/web.Response'
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/content.GetInfoSumsResponse'
+                    type: object
       summary: 保存信息整合信息
       tags:
         - InfoSum
@@ -69,7 +79,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/banner.DelBannerRequest'
+              $ref: '#/components/schemas/content.DelBannerRequest'
         description: 删除 banner 内容请求参数
         required: true
       responses:
@@ -95,7 +105,7 @@ paths:
                   - $ref: '#/components/schemas/web.Response'
                   - properties:
                       data:
-                        $ref: '#/components/schemas/banner.GetBannersResponse'
+                        $ref: '#/components/schemas/content.GetBannersResponse'
                     type: object
       summary: 获取 banner 列表
       tags:
@@ -107,7 +117,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/banner.SaveBannerRequest'
+              $ref: '#/components/schemas/content.SaveBannerRequest'
         description: 保存 banner 内容请求参数
         required: true
       responses:
@@ -127,7 +137,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/calendar.DelCalendarRequest'
+              $ref: '#/components/schemas/content.DelCalendarRequest'
         description: 删除日历内容请求参数
         required: true
       responses:
@@ -147,13 +157,13 @@ paths:
         '200':
           description: 成功
           content:
-            application/json:
+            '*/*':
               schema:
                 allOf:
                   - $ref: '#/components/schemas/web.Response'
                   - properties:
                       data:
-                        $ref: '#/components/schemas/calendar.GetCalendarsResponse'
+                        $ref: '#/components/schemas/content.GetCalendarsResponse'
                     type: object
       summary: 获取日历列表
       tags:
@@ -165,7 +175,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/calendar.SaveCalendarRequest'
+              $ref: '#/components/schemas/content.SaveCalendarRequest'
         description: 保存日历内容请求参数
         required: true
       responses:
@@ -178,91 +188,6 @@ paths:
       summary: 保存日历内容
       tags:
         - calendar
-  /card/getRecords:
-    post:
-      description:
-        【弃用】获取用户消费记录，student_id, start_time, type 必须存在，type
-        分为 "card"（实体卡）与 "virtual"（虚拟卡）
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/card.GetRecordOfConsumptionRequest'
-        description: 获取消费记录
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/card.GetRecordOfConsumptionResponse'
-                    type: object
-        '500':
-          description: 创建失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 获取消费记录
-      tags:
-        - card[Deprecation]
-  /card/noteUserKey:
-    post:
-      description: 【弃用】记录用户的key
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/card.NoteUserKeyRequest'
-        description: 记录用户的key
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-        '500':
-          description: 创建失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 记录用户的key
-      tags:
-        - card[Deprecation]
-  /card/updateUserKey:
-    post:
-      description: 【弃用】更新用户的key
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/card.UpdateUserKeyRequest'
-        description: 更新用户的key
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-        '500':
-          description: 创建失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 更新用户的key
-      tags:
-        - card[Deprecation]
   /class/add:
     post:
       description: 添加新的课表
@@ -722,18 +647,11 @@ paths:
   /department/delDepartment:
     post:
       description: 删除部门信息
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/department.DelDepartmentRequest'
+              $ref: '#/components/schemas/content.DelDepartmentRequest'
         description: 删除部门信息请求参数
         required: true
       responses:
@@ -749,13 +667,6 @@ paths:
   /department/getDepartments:
     get:
       description: 获取部门列表
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: 成功
@@ -766,7 +677,7 @@ paths:
                   - $ref: '#/components/schemas/web.Response'
                   - properties:
                       data:
-                        $ref: '#/components/schemas/department.GetDepartmentsResponse'
+                        $ref: '#/components/schemas/content.GetDepartmentsResponse'
                     type: object
       summary: 获取部门列表
       tags:
@@ -774,18 +685,11 @@ paths:
   /department/saveDepartment:
     post:
       description: 保存部门信息
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/department.SaveDepartmentRequest'
+              $ref: '#/components/schemas/content.SaveDepartmentRequest'
         description: 保存部门信息请求参数
         required: true
       responses:
@@ -893,7 +797,7 @@ paths:
           schema:
             type: string
         - in: query
-          name: room_id
+          name: room_name
           required: true
           schema:
             type: string
@@ -1213,6 +1117,40 @@ paths:
       summary: 获取待发布的官方消息
       tags:
         - feed
+  /feed/publicFeedEvent:
+    post:
+      description: 发布消息
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/feed.PublicFeedEventReq'
+        description: 消息
+        required: true
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '403':
+          description: 没有访问权限
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '500':
+          description: 系统异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      security:
+        - BasicAuth: []
+      summary: 发布消息
+      tags:
+        - feed
   /feed/publicMuxiOfficialMSG:
     post:
       description: 发布木犀官方消息，仅限管理员操作
@@ -1395,165 +1333,6 @@ paths:
       summary: 停止木犀官方消息
       tags:
         - feed
-  /feedback_help/changeQuestion:
-    post:
-      description: 修改一个常见问题的内容与答复
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/feedback_help.ChangeQuestionReq'
-        description: 修改常见问题
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-        '500':
-          description: 系统异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 修改一个问题与答复
-      tags:
-        - feedback_help[Deprecation]
-  /feedback_help/createQuestion:
-    post:
-      description: 创建一个常见问题的内容与答复
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/feedback_help.CreateQuestionReq'
-        description: 创建一个常见问题
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-        '500':
-          description: 系统异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 创建一个问题与答复
-      tags:
-        - feedback_help[Deprecation]
-  /feedback_help/deleteQuestion:
-    post:
-      description: 删除一个常见问题的内容与答复
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/feedback_help.DeleteQuestionReq'
-        description: 删除常见问题
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-        '500':
-          description: 系统异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 删除一个问题与答复
-      tags:
-        - feedback_help[Deprecation]
-  /feedback_help/findQuestionsByName:
-    get:
-      description: 对常见问题进行模糊搜索
-      parameters:
-        - description: 问题名称
-          in: query
-          name: question
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      date:
-                        $ref: '#/components/schemas/feedback_help.FindQuestionsByNameResp'
-                    type: object
-        '500':
-          description: 系统异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 搜取问题
-      tags:
-        - feedback_help[Deprecation]
-  /feedback_help/getQuestion:
-    get:
-      description: 获取点击数量最多的10个常见问题
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/feedback_help.GetQuestionsResp'
-                    type: object
-        '500':
-          description: 系统异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 获取常见问题
-      tags:
-        - feedback_help[Deprecation]
-  /feedback_help/noteQuestion:
-    post:
-      description: 标记问题解决状态
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/feedback_help.NoteQuestionReq'
-        description: 标记问题解决状态
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-        '500':
-          description: 系统异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 标记问题解决状态
-      tags:
-        - feedback_help[Deprecation]
   /grade/getGradeByTerm:
     post:
       description: 根据学年号和学期号获取用户的成绩,为了方便前端发送请求改成post了
@@ -2140,7 +1919,7 @@ paths:
         - metrics
   /metrics/:type/:name:
     post:
-      description: 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/banner/xxx)表示跳转banner的xxx页面,使用这一路由必须携带Auth请求头
+      description: 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/content/xxx)表示跳转banner的xxx页面,使用这一路由必须携带Auth请求头
       requestBody:
         content:
           application/json:
@@ -2158,75 +1937,6 @@ paths:
       summary: 用于打点的路由
       tags:
         - metrics
-  /statics:
-    get:
-      description: 【弃用】根据静态资源名称获取静态资源的内容。
-      parameters:
-        - description: 静态资源名称
-          in: query
-          name: static_name
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/static.StaticVo'
-                    type: object
-      summary: 获取静态资源[精确名称]
-      tags:
-        - statics[Deprecation]
-  /statics/match/labels:
-    get:
-      parameters:
-        - description: 标签：标明匹配哪一类的资源
-          in: query
-          name: labels[type]
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/static.GetStaticByLabelsResp'
-                    type: object
-      summary: 获取静态资源[标签匹配]
-      tags:
-        - statics[Deprecation]
-  /statics/save:
-    post:
-      description: 【弃用】保存静态内容
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/static.SaveStaticReq'
-        description: 保存静态内容请求参数
-        required: true
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 保存静态内容
-      tags:
-        - statics[Deprecation]
   /swag:
     get:
       description:
@@ -2349,15 +2059,33 @@ paths:
       summary: 刷新短token
       tags:
         - user
-  /website/delWebsite:
+  /version/getVersion:
+    get:
+      description: 获取热更新版本
+      responses:
+        '200':
+          description: 成功
+          content:
+            '*/*':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/content.GetUpdateVersionResponse'
+                    type: object
+      summary: 获取热更新版本
+      tags:
+        - version
+  /version/saveVersion:
     post:
-      description: 删除网站信息
+      description: 更新热更新版本
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/website.DelWebsiteRequest'
-        description: 删除网站信息请求参数
+              $ref: '#/components/schemas/content.SaveVersionRequest'
+        description: 保存版本号请求参数
         required: true
       responses:
         '200':
@@ -2366,6 +2094,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
+      summary: 更新热更新版本
+      tags:
+        - version
+  /website/delWebsite:
+    post:
+      description: 删除网站信息
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/content.DelWebsiteRequest'
+        description: 删除网站信息请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/content.GetWebsitesResponse'
+                    type: object
       summary: 删除网站信息
       tags:
         - website
@@ -2382,7 +2135,7 @@ paths:
                   - $ref: '#/components/schemas/web.Response'
                   - properties:
                       data:
-                        $ref: '#/components/schemas/website.GetWebsitesResponse'
+                        $ref: '#/components/schemas/content.GetWebsitesResponse'
                     type: object
       summary: 获取网站列表
       tags:
@@ -2394,7 +2147,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/website.SaveWebsiteRequest'
+              $ref: '#/components/schemas/content.SaveWebsiteRequest'
         description: 保存网站信息请求参数
         required: true
       responses:
@@ -2403,508 +2156,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/web.Response'
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/content.GetWebsitesResponse'
+                    type: object
       summary: 保存网站信息
       tags:
         - website
-  /api/v1/auth/table-config/refresh:
-    get:
-      description: 刷新并返回目前支持索引的表格的公开配置
-      operationId: refresh-table-config
-      responses:
-        '200':
-          description: 成功返回目前支持索引的表格的公开配置
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 刷新表格 token 配置接口
-      tags:
-        - Auth
-  /api/v1/auth/table-config/token:
-    post:
-      description: 获取 table token 接口
-      operationId: get-table-token
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/request.GenerateTableTokenReq'
-        description: 获取Token请求参数
-        required: true
-      responses:
-        '200':
-          description: 成功返回 JWT 令牌
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 获取 table token 接口
-      tags:
-        - Auth
-  /api/v1/auth/tenant/token:
-    post:
-      description: 获取 tenant token 接口，用于上传图片等
-      operationId: get-tenant-token
-      responses:
-        '200':
-          description: 成功返回 JWT 令牌
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 获取 tenant token 接口
-      tags:
-        - Auth
-  /api/v1/health:
-    get:
-      description: 健康检查，返回当前服务占用的资源等信息
-      operationId: health-check
-      responses:
-        '200':
-          description: 成功返回健康检查结果
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/response.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/response.HealthCheckResponse'
-                    type: object
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/response.Response'
-                  - properties:
-                      data:
-                        type: string
-                    type: object
-      summary: 健康检查，返回当前服务占用的资源等信息
-      tags:
-        - Health
-  /api/v1/openapi:
-    get:
-      description:
-        接口直接返回 docs/openapi3.yaml
-        yaml格式的原始内容，使用BasicAuth进行验证
-      operationId: get-openapi3
-      responses:
-        '200':
-          description: 成功返回 OpenAPI3 文档内容
-          content:
-            application/x-yaml:
-              schema:
-                type: string
-        '401':
-          description: 未授权，BasicAuth 验证失败
-          content:
-            application/x-yaml:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/x-yaml:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      security:
-        - BasicAuth: []
-      summary: 获取 OpenAPI3 接口文档 (YAML)
-      tags:
-        - Swag
-  /api/v1/sheet/photos/url:
-    get:
-      description: 根据文件Token获取截图的临时下载URL，URL有效期为24小时
-      operationId: get-photo-url
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: 附件 token
-          in: query
-          name: file_tokens
-          required: true
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: 成功返回临时URL信息
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误或飞书接口调用失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 获取截图临时URL
-      tags:
-        - Sheet
-  /api/v1/sheet/records:
-    get:
-      description: 根据指定条件查询多维表格中的记录数据
-      operationId: get-table-record
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: 用于查询记录的关键值，一般使用学号的字段名
-          in: query
-          name: key_field
-          required: true
-          schema:
-            type: string
-        - description: 用于查询记录的关键值，一般使用学号的字段值
-          in: query
-          name: key_value
-          required: true
-          schema:
-            type: string
-        - description: 分页参数,第一次不需要
-          in: query
-          name: page_token
-          schema:
-            type: string
-        - description: 需要查询的字段名
-          in: query
-          name: record_names
-          required: true
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: table_identify
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功返回查询结果
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误或飞书接口调用失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 获取多维表格记录
-      tags:
-        - Sheet
-    post:
-      description: 向指定的多维表格应用中添加记录数据
-      operationId: create-table-record
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/request.CreatTableRecordReg'
-        description: 新增记录请求参数
-        required: true
-      responses:
-        '200':
-          description: 成功返回创建记录结果
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误或飞书接口调用失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 创建多维表格记录
-      tags:
-        - Sheet
-  /api/v1/sheet/records/faq:
-    get:
-      description: 根据指定条件查询多维表格中的记录数据
-      operationId: get-faq-resolution-record
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: 需要查询的字段名
-          in: query
-          name: record_names
-          required: true
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-        - description: 学号，用于标记用户身份
-          in: query
-          name: student_id
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: table_identify
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功返回查询结果
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误或飞书接口调用失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 获取常见问题记录
-      tags:
-        - Sheet
-    post:
-      description: 更新FAQ解决方案的 已解决/未解决 状态
-      operationId: update-faq-resolution
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/request.FAQResolutionUpdateReq'
-        description: 更新FAQ解决状态请求参数
-        required: true
-      responses:
-        '200':
-          description: 成功更新FAQ解决状态
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '400':
-          description: 请求参数错误或飞书接口调用失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-        '500':
-          description: 服务器内部错误
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.Response'
-      summary: 更新FAQ解决方案的 已解决/未解决 状态
-      tags:
-        - Sheet
 components:
   schemas:
-    banner.Banner:
-      properties:
-        id:
-          type: integer
-        picture_link:
-          type: string
-        web_link:
-          type: string
-      required:
-        - id
-        - picture_link
-        - web_link
-      type: object
-    banner.DelBannerRequest:
-      properties:
-        id:
-          type: integer
-      required:
-        - id
-      type: object
-    banner.GetBannersResponse:
-      properties:
-        banners:
-          items:
-            $ref: '#/components/schemas/banner.Banner'
-          type: array
-      required:
-        - banners
-      type: object
-    banner.SaveBannerRequest:
-      properties:
-        id:
-          description: 可选,如果新增记录不用填写
-          type: integer
-        picture_link:
-          type: string
-        web_link:
-          type: string
-      required:
-        - picture_link
-        - web_link
-      type: object
-    calendar.Calendar:
-      properties:
-        link:
-          type: string
-        year:
-          type: integer
-      required:
-        - link
-        - year
-      type: object
-    calendar.DelCalendarRequest:
-      properties:
-        year:
-          type: integer
-      required:
-        - year
-      type: object
-    calendar.GetCalendarsResponse:
-      properties:
-        calendars:
-          items:
-            $ref: '#/components/schemas/calendar.Calendar'
-          type: array
-      type: object
-    calendar.SaveCalendarRequest:
-      properties:
-        link:
-          type: string
-        year:
-          type: integer
-      required:
-        - link
-        - year
-      type: object
-    card.GetRecordOfConsumptionRequest:
-      properties:
-        key:
-          type: string
-        start_time:
-          type: string
-        type:
-          type: string
-      type: object
-    card.GetRecordOfConsumptionResponse:
-      properties:
-        records:
-          items:
-            $ref: '#/components/schemas/card.Records'
-          type: array
-      type: object
-    card.NoteUserKeyRequest:
-      properties:
-        key:
-          type: string
-      type: object
-    card.Records:
-      properties:
-        SMT_DEALDATETIME:
-          type: string
-        SMT_DEALNAME:
-          type: string
-        SMT_ORG_NAME:
-          type: string
-        SMT_TIMES:
-          type: integer
-        after_money:
-          type: number
-        money:
-          type: number
-      type: object
-    card.UpdateUserKeyRequest:
-      properties:
-        key:
-          type: string
-      type: object
     class.AddClassRequest:
       properties:
         credit:
@@ -2966,6 +2228,9 @@ components:
         is_official:
           description: 是否为官方课程
           type: boolean
+        nature:
+          description: 课程性质
+          type: string
         note:
           description: 备注
           type: string
@@ -2996,6 +2261,7 @@ components:
         - day
         - id
         - is_official
+        - nature
         - note
         - semester
         - teacher
@@ -3233,14 +2499,58 @@ components:
             $ref: '#/components/schemas/classroom.ClassroomAvailableStat'
           type: array
       type: object
-    department.DelDepartmentRequest:
+    content.Banner:
+      properties:
+        id:
+          type: integer
+        picture_link:
+          type: string
+        web_link:
+          type: string
+      type: object
+    content.Calendar:
+      properties:
+        link:
+          type: string
+        year:
+          type: integer
+      type: object
+    content.DelBannerRequest:
       properties:
         id:
           type: integer
       required:
         - id
       type: object
-    department.Department:
+    content.DelCalendarRequest:
+      properties:
+        year:
+          type: integer
+      required:
+        - year
+      type: object
+    content.DelDepartmentRequest:
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+      type: object
+    content.DelInfoSumRequest:
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+      type: object
+    content.DelWebsiteRequest:
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+      type: object
+    content.Department:
       properties:
         id:
           type: integer
@@ -3252,23 +2562,84 @@ components:
           type: string
         time:
           type: string
-      required:
-        - id
-        - name
-        - phone
-        - place
-        - time
       type: object
-    department.GetDepartmentsResponse:
+    content.GetBannersResponse:
+      properties:
+        banners:
+          items:
+            $ref: '#/components/schemas/content.Banner'
+          type: array
+      type: object
+    content.GetCalendarsResponse:
+      properties:
+        calendars:
+          items:
+            $ref: '#/components/schemas/content.Calendar'
+          type: array
+      type: object
+    content.GetDepartmentsResponse:
       properties:
         departments:
           items:
-            $ref: '#/components/schemas/department.Department'
+            $ref: '#/components/schemas/content.Department'
           type: array
-      required:
-        - departments
       type: object
-    department.SaveDepartmentRequest:
+    content.GetInfoSumsResponse:
+      properties:
+        info_sums:
+          items:
+            $ref: '#/components/schemas/content.InfoSum'
+          type: array
+      type: object
+    content.GetUpdateVersionResponse:
+      properties:
+        version:
+          type: string
+      type: object
+    content.GetWebsitesResponse:
+      properties:
+        websites:
+          items:
+            $ref: '#/components/schemas/content.Website'
+          type: array
+      type: object
+    content.InfoSum:
+      properties:
+        description:
+          type: string
+        id:
+          type: integer
+        image:
+          type: string
+        link:
+          type: string
+        name:
+          type: string
+      type: object
+    content.SaveBannerRequest:
+      properties:
+        id:
+          description: 可选,如果新增记录不用填写
+          type: integer
+        picture_link:
+          type: string
+        web_link:
+          type: string
+      required:
+        - picture_link
+        - web_link
+      type: object
+    content.SaveCalendarRequest:
+      properties:
+        link:
+          type: string
+        year:
+          type: integer
+      required:
+        - link
+        - year
+      type: object
+    content.SaveDepartmentRequest:
       properties:
         id:
           description: 可选,如果新增记录不用填写
@@ -3281,11 +2652,64 @@ components:
           type: string
         time:
           type: string
+      type: object
+    content.SaveInfoSumRequest:
+      properties:
+        description:
+          type: string
+        id:
+          description: 可选,如果新增记录不用填写
+          type: integer
+        image:
+          type: string
+        link:
+          type: string
+        name:
+          type: string
       required:
+        - description
+        - image
+        - link
         - name
-        - phone
-        - place
-        - time
+      type: object
+    content.SaveVersionRequest:
+      properties:
+        version:
+          type: string
+      required:
+        - version
+      type: object
+    content.SaveWebsiteRequest:
+      properties:
+        description:
+          type: string
+        id:
+          description: 可选,如果新增记录不用填写
+          type: integer
+        image:
+          type: string
+        link:
+          type: string
+        name:
+          type: string
+      required:
+        - description
+        - image
+        - link
+        - name
+      type: object
+    content.Website:
+      properties:
+        description:
+          type: string
+        id:
+          type: integer
+        image:
+          type: string
+        link:
+          type: string
+        name:
+          type: string
       type: object
     elecprice.Architecture:
       properties:
@@ -3321,10 +2745,12 @@ components:
       type: object
     elecprice.GetPriceResponse:
       properties:
-        price:
+        ac_price:
           $ref: '#/components/schemas/elecprice.Price'
-      required:
-        - price
+        light_price:
+          $ref: '#/components/schemas/elecprice.Price'
+        union_price:
+          $ref: '#/components/schemas/elecprice.Price'
       type: object
     elecprice.GetRoomInfoResponse:
       properties:
@@ -3352,19 +2778,18 @@ components:
           type: string
         yesterday_use_value:
           type: string
-      required:
-        - remain_money
-        - yesterday_use_money
-        - yesterday_use_value
       type: object
     elecprice.Room:
       properties:
-        room_id:
+        ac:
+          type: string
+        light:
           type: string
         room_name:
           type: string
+        union:
+          type: string
       required:
-        - room_id
         - room_name
       type: object
     elecprice.SetStandardRequest:
@@ -3394,6 +2819,8 @@ components:
       properties:
         energy:
           type: boolean
+        feedback:
+          type: boolean
         grade:
           type: boolean
         holiday:
@@ -3402,6 +2829,7 @@ components:
           type: boolean
       required:
         - energy
+        - feedback
         - grade
         - holiday
         - muxi
@@ -3414,9 +2842,6 @@ components:
         status:
           description: 有三个可选字段all表示清除所有消息,read表示清除所有已读消息,unread表示清除所有未读消息
           type: string
-      required:
-        - feed_id
-        - status
       type: object
     feed.FeedEventVO:
       properties:
@@ -3437,18 +2862,12 @@ components:
           type: string
         type:
           type: string
-      required:
-        - content
-        - created_at
-        - extend_fields
-        - id
-        - read
-        - title
-        - type
       type: object
     feed.GetFeedAllowListResp:
       properties:
         energy:
+          type: boolean
+        feed_back:
           type: boolean
         grade:
           type: boolean
@@ -3456,11 +2875,6 @@ components:
           type: boolean
         muxi:
           type: boolean
-      required:
-        - energy
-        - grade
-        - holiday
-        - muxi
       type: object
     feed.GetFeedEventsResp:
       properties:
@@ -3475,8 +2889,6 @@ components:
           items:
             $ref: '#/components/schemas/feed.MuxiOfficialMSG'
           type: array
-      required:
-        - msg_list
       type: object
     feed.MuxiOfficialMSG:
       properties:
@@ -3494,12 +2906,22 @@ components:
           type: integer
         title:
           type: string
+      type: object
+    feed.PublicFeedEventReq:
+      properties:
+        content:
+          type: string
+        student_id:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
       required:
         - content
-        - extend_fields
-        - id
-        - public_time
+        - student_id
         - title
+        - type
       type: object
     feed.PublicMuxiOfficialMSGReq:
       properties:
@@ -3514,11 +2936,6 @@ components:
           type: integer
         title:
           type: string
-      required:
-        - content
-        - extend_fields
-        - later_time
-        - title
       type: object
     feed.PublicMuxiOfficialMSGResp:
       properties:
@@ -3534,12 +2951,6 @@ components:
           type: string
         title:
           type: string
-      required:
-        - content
-        - extend_fields
-        - id
-        - public_time
-        - title
       type: object
     feed.ReadFeedEventReq:
       properties:
@@ -3568,64 +2979,6 @@ components:
           type: string
       required:
         - id
-      type: object
-    feedback_help.ChangeQuestionReq:
-      properties:
-        answer:
-          type: string
-        question:
-          type: string
-        question_id:
-          type: integer
-      type: object
-    feedback_help.CreateQuestionReq:
-      properties:
-        answer:
-          type: string
-        question:
-          type: string
-      type: object
-    feedback_help.DeleteQuestionReq:
-      properties:
-        question_id:
-          type: integer
-      type: object
-    feedback_help.FindQuestionsByNameResp:
-      properties:
-        questions:
-          items:
-            $ref: '#/components/schemas/feedback_help.FrequentlyAskedQuestion'
-          type: array
-      type: object
-    feedback_help.FrequentlyAskedQuestion:
-      properties:
-        answer:
-          type: string
-        clickTimes:
-          description: |-
-            Utime      time.Time
-            Ctime      time.Time
-          format: int64
-          type: integer
-        id:
-          format: int64
-          type: integer
-        question:
-          type: string
-      type: object
-    feedback_help.GetQuestionsResp:
-      properties:
-        questions:
-          items:
-            $ref: '#/components/schemas/feedback_help.FrequentlyAskedQuestion'
-          type: array
-      type: object
-    feedback_help.NoteQuestionReq:
-      properties:
-        if_over:
-          type: boolean
-        question_id:
-          type: integer
       type: object
     grade.GetGradeByTermReq:
       properties:
@@ -3775,60 +3128,6 @@ components:
       required:
         - grade_score_list
         - kcxzmc
-      type: object
-    infoSum.DelInfoSumRequest:
-      properties:
-        id:
-          type: integer
-      required:
-        - id
-      type: object
-    infoSum.GetInfoSumsResponse:
-      properties:
-        info_sums:
-          items:
-            $ref: '#/components/schemas/infoSum.InfoSum'
-          type: array
-      required:
-        - info_sums
-      type: object
-    infoSum.InfoSum:
-      properties:
-        description:
-          type: string
-        id:
-          type: integer
-        image:
-          type: string
-        link:
-          type: string
-        name:
-          type: string
-      required:
-        - description
-        - id
-        - image
-        - link
-        - name
-      type: object
-    infoSum.SaveInfoSumRequest:
-      properties:
-        description:
-          type: string
-        id:
-          description: 可选,如果新增记录不用填写
-          type: integer
-        image:
-          type: string
-        link:
-          type: string
-        name:
-          type: string
-      required:
-        - description
-        - image
-        - link
-        - name
       type: object
     library.Comment:
       properties:
@@ -4116,35 +3415,6 @@ components:
           description: 错误信息
           type: string
       type: object
-    static.GetStaticByLabelsResp:
-      properties:
-        statics:
-          items:
-            $ref: '#/components/schemas/static.StaticVo'
-          type: array
-      type: object
-    static.SaveStaticReq:
-      properties:
-        content:
-          type: string
-        labels:
-          additionalProperties:
-            type: string
-          type: object
-        name:
-          type: string
-      type: object
-    static.StaticVo:
-      properties:
-        content:
-          type: string
-        labels:
-          additionalProperties:
-            type: string
-          type: object
-        name:
-          type: string
-      type: object
     tube.GetTubeTokenData:
       properties:
         access_token:
@@ -4176,180 +3446,5 @@ components:
           type: integer
         data: {}
         msg:
-          type: string
-      type: object
-    website.DelWebsiteRequest:
-      properties:
-        id:
-          type: integer
-      required:
-        - id
-      type: object
-    website.GetWebsitesResponse:
-      properties:
-        websites:
-          items:
-            $ref: '#/components/schemas/website.Website'
-          type: array
-      required:
-        - websites
-      type: object
-    website.SaveWebsiteRequest:
-      properties:
-        description:
-          type: string
-        id:
-          description: 可选,如果新增记录不用填写
-          type: integer
-        image:
-          type: string
-        link:
-          type: string
-        name:
-          type: string
-      required:
-        - description
-        - image
-        - link
-        - name
-      type: object
-    website.Website:
-      properties:
-        description:
-          type: string
-        id:
-          type: integer
-        image:
-          type: string
-        link:
-          type: string
-        name:
-          type: string
-      required:
-        - description
-        - id
-        - image
-        - link
-        - name
-      type: object
-    request.CreatTableRecordReg:
-      properties:
-        contact_info:
-          description: 联系方式，可选
-          type: string
-        content:
-          description: 反馈内容
-          type: string
-        extra_record:
-          additionalProperties: {}
-          description: 额外记录列表，可选
-          type: object
-        images:
-          description: 图片附件 URL 列表，可选
-          items:
-            type: string
-          type: array
-        student_id:
-          description: 学号，用于标记用户身份
-          type: string
-        table_identify:
-          type: string
-      required:
-        - content
-        - student_id
-        - table_identify
-      type: object
-    request.FAQResolutionUpdateReq:
-      properties:
-        is_resolved:
-          type: boolean
-        record_id:
-          type: string
-        resolved_field_name:
-          type: string
-        table_identify:
-          type: string
-        unresolved_field_name:
-          type: string
-        user_id:
-          type: string
-      required:
-        - is_resolved
-        - record_id
-        - resolved_field_name
-        - table_identify
-        - unresolved_field_name
-        - user_id
-      type: object
-    request.GenerateTableTokenReq:
-      properties:
-        table_identify:
-          description: 反馈表格 Identify，反馈表的唯一标识
-          type: string
-      required:
-        - table_identify
-      type: object
-    response.HealthCheckResponse:
-      properties:
-        process:
-          allOf:
-            - $ref: '#/components/schemas/response.ProcessStats'
-          description: Process 当前进程的运行状态
-        response_ms:
-          description: ResponseMs 响应耗时，单位毫秒
-          type: string
-        status:
-          description: Status 服务状态，例如 "ok"
-          type: string
-        system:
-          allOf:
-            - $ref: '#/components/schemas/response.SystemStats'
-          description: System 系统资源使用情况
-      type: object
-    response.ProcessStats:
-      properties:
-        cpu_percent:
-          description: CPUPercent 进程 CPU 使用率（%）
-          type: string
-        go_heap_alloc_mb:
-          description: GoHeapAllocMB Go 堆分配的内存（MB）
-          type: string
-        goroutines:
-          description: Goroutines 当前运行的 goroutine 数
-          type: string
-        memory_rss_mb:
-          description: MemoryRSSMB 进程常驻内存（MB）
-          type: string
-      type: object
-    response.Response:
-      properties:
-        code:
-          type: integer
-        data: {}
-        msg:
-          type: string
-      type: object
-    response.SystemStats:
-      properties:
-        cpu_percent:
-          description: CPUPercent CPU 使用率（%）
-          type: string
-        disk_percent:
-          description: DiskPercent 磁盘使用率（%）
-          type: string
-        disk_total:
-          description: DiskTotalGB 磁盘总量（GB）
-          type: string
-        disk_used:
-          description: DiskUsedGB 已使用磁盘（GB）
-          type: string
-        memory_percent:
-          description: MemoryPercent 内存使用率（%）
-          type: string
-        memory_total:
-          description: MemoryTotalMB 内存总量（MB）
-          type: string
-        memory_used:
-          description: MemoryUsedMB 已使用内存（MB）
           type: string
       type: object
