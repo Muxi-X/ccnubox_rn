@@ -27,7 +27,7 @@ export interface paths {
       /** @description 删除信息整合信息请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['infoSum.DelInfoSumRequest'];
+          'application/json': components['schemas']['content.DelInfoSumRequest'];
         };
       };
       responses: {
@@ -37,7 +37,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'];
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetInfoSumsResponse'];
+            };
           };
         };
       };
@@ -75,7 +77,7 @@ export interface paths {
           };
           content: {
             '*/*': components['schemas']['web.Response'] & {
-              data?: components['schemas']['infoSum.GetInfoSumsResponse'];
+              data?: components['schemas']['content.GetInfoSumsResponse'];
             };
           };
         };
@@ -112,7 +114,7 @@ export interface paths {
       /** @description 保存信息整合信息请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['infoSum.SaveInfoSumRequest'];
+          'application/json': components['schemas']['content.SaveInfoSumRequest'];
         };
       };
       responses: {
@@ -122,7 +124,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'];
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetInfoSumsResponse'];
+            };
           };
         };
       };
@@ -156,7 +160,7 @@ export interface paths {
       /** @description 删除 banner 内容请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['banner.DelBannerRequest'];
+          'application/json': components['schemas']['content.DelBannerRequest'];
         };
       };
       responses: {
@@ -204,7 +208,7 @@ export interface paths {
           };
           content: {
             '*/*': components['schemas']['web.Response'] & {
-              data?: components['schemas']['banner.GetBannersResponse'];
+              data?: components['schemas']['content.GetBannersResponse'];
             };
           };
         };
@@ -241,7 +245,7 @@ export interface paths {
       /** @description 保存 banner 内容请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['banner.SaveBannerRequest'];
+          'application/json': components['schemas']['content.SaveBannerRequest'];
         };
       };
       responses: {
@@ -285,7 +289,7 @@ export interface paths {
       /** @description 删除日历内容请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['calendar.DelCalendarRequest'];
+          'application/json': components['schemas']['content.DelCalendarRequest'];
         };
       };
       responses: {
@@ -332,8 +336,8 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['calendar.GetCalendarsResponse'];
+            '*/*': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetCalendarsResponse'];
             };
           };
         };
@@ -370,173 +374,12 @@ export interface paths {
       /** @description 保存日历内容请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['calendar.SaveCalendarRequest'];
+          'application/json': components['schemas']['content.SaveCalendarRequest'];
         };
       };
       responses: {
         /** @description 成功 */
         200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/card/getRecords': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 获取消费记录
-     * @description 【弃用】获取用户消费记录，student_id, start_time, type 必须存在，type 分为 "card"（实体卡）与 "virtual"（虚拟卡）
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 获取消费记录 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['card.GetRecordOfConsumptionRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['card.GetRecordOfConsumptionResponse'];
-            };
-          };
-        };
-        /** @description 创建失败 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/card/noteUserKey': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 记录用户的key
-     * @description 【弃用】记录用户的key
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 记录用户的key */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['card.NoteUserKeyRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 创建失败 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/card/updateUserKey': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 更新用户的key
-     * @description 【弃用】更新用户的key
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 更新用户的key */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['card.UpdateUserKeyRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 创建失败 */
-        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -1186,17 +1029,14 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
       /** @description 删除部门信息请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['department.DelDepartmentRequest'];
+          'application/json': components['schemas']['content.DelDepartmentRequest'];
         };
       };
       responses: {
@@ -1231,10 +1071,7 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
@@ -1247,7 +1084,7 @@ export interface paths {
           };
           content: {
             '*/*': components['schemas']['web.Response'] & {
-              data?: components['schemas']['department.GetDepartmentsResponse'];
+              data?: components['schemas']['content.GetDepartmentsResponse'];
             };
           };
         };
@@ -1277,17 +1114,14 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
       /** @description 保存部门信息请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['department.SaveDepartmentRequest'];
+          'application/json': components['schemas']['content.SaveDepartmentRequest'];
         };
       };
       responses: {
@@ -1439,7 +1273,7 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          room_id: string;
+          room_name: string;
         };
         header: {
           /** @description Bearer Token */
@@ -1935,6 +1769,68 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/feed/publicFeedEvent': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 发布消息
+     * @description 发布消息
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 消息 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['feed.PublicFeedEventReq'];
+        };
+      };
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 没有访问权限 */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/feed/publicMuxiOfficialMSG': {
     parameters: {
       query?: never;
@@ -2211,321 +2107,6 @@ export interface paths {
         };
         /** @description 没有访问权限 */
         403: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/changeQuestion': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 修改一个问题与答复
-     * @description 修改一个常见问题的内容与答复
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 修改常见问题 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.ChangeQuestionReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/createQuestion': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 创建一个问题与答复
-     * @description 创建一个常见问题的内容与答复
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 创建一个常见问题 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.CreateQuestionReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/deleteQuestion': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 删除一个问题与答复
-     * @description 删除一个常见问题的内容与答复
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 删除常见问题 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.DeleteQuestionReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/findQuestionsByName': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 搜取问题
-     * @description 对常见问题进行模糊搜索
-     */
-    get: {
-      parameters: {
-        query: {
-          /** @description 问题名称 */
-          question: string;
-        };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              date?: components['schemas']['feedback_help.FindQuestionsByNameResp'];
-            };
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/getQuestion': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取常见问题
-     * @description 获取点击数量最多的10个常见问题
-     */
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['feedback_help.GetQuestionsResp'];
-            };
-          };
-        };
-        /** @description 系统异常 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/feedback_help/noteQuestion': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 标记问题解决状态
-     * @description 标记问题解决状态
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 标记问题解决状态 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['feedback_help.NoteQuestionReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
           headers: {
             [name: string]: unknown;
           };
@@ -3568,7 +3149,7 @@ export interface paths {
     put?: never;
     /**
      * 用于打点的路由
-     * @description 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/banner/xxx)表示跳转banner的xxx页面,使用这一路由必须携带Auth请求头
+     * @description 用于打点的路由,如果是不经过后端的服务但是需要打点的话,可以使用这个路由自动记录(例如:/metrics/content/xxx)表示跳转banner的xxx页面,使用这一路由必须携带Auth请求头
      */
     post: {
       parameters: {
@@ -3591,135 +3172,6 @@ export interface paths {
           };
           content: {
             '*/*': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/statics': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取静态资源[精确名称]
-     * @description 【弃用】根据静态资源名称获取静态资源的内容。
-     */
-    get: {
-      parameters: {
-        query: {
-          /** @description 静态资源名称 */
-          static_name: string;
-        };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['static.StaticVo'];
-            };
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/statics/match/labels': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 获取静态资源[标签匹配] */
-    get: {
-      parameters: {
-        query: {
-          /** @description 标签：标明匹配哪一类的资源 */
-          'labels[type]': string;
-        };
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['static.GetStaticByLabelsResp'];
-            };
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/statics/save': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 保存静态内容
-     * @description 【弃用】保存静态内容
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 保存静态内容请求参数 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['static.SaveStaticReq'];
-        };
-      };
-      responses: {
-        /** @description 成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -4014,6 +3466,91 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/version/getVersion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取热更新版本
+     * @description 获取热更新版本
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            '*/*': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetUpdateVersionResponse'];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/version/saveVersion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 更新热更新版本
+     * @description 更新热更新版本
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 保存版本号请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['content.SaveVersionRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/website/delWebsite': {
     parameters: {
       query?: never;
@@ -4037,7 +3574,7 @@ export interface paths {
       /** @description 删除网站信息请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['website.DelWebsiteRequest'];
+          'application/json': components['schemas']['content.DelWebsiteRequest'];
         };
       };
       responses: {
@@ -4047,7 +3584,9 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'];
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetWebsitesResponse'];
+            };
           };
         };
       };
@@ -4085,7 +3624,7 @@ export interface paths {
           };
           content: {
             '*/*': components['schemas']['web.Response'] & {
-              data?: components['schemas']['website.GetWebsitesResponse'];
+              data?: components['schemas']['content.GetWebsitesResponse'];
             };
           };
         };
@@ -4122,7 +3661,7 @@ export interface paths {
       /** @description 保存网站信息请求参数 */
       requestBody: {
         content: {
-          'application/json': components['schemas']['website.SaveWebsiteRequest'];
+          'application/json': components['schemas']['content.SaveWebsiteRequest'];
         };
       };
       responses: {
@@ -4132,179 +3671,13 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'];
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetWebsitesResponse'];
+            };
           };
         };
       };
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/table-config/refresh': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 刷新表格 token 配置接口
-     * @description 刷新并返回目前支持索引的表格的公开配置
-     */
-    get: operations['refresh-table-config'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/table-config/token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 获取 table token 接口
-     * @description 获取 table token 接口
-     */
-    post: operations['get-table-token'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/tenant/token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 获取 tenant token 接口
-     * @description 获取 tenant token 接口，用于上传图片等
-     */
-    post: operations['get-tenant-token'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 健康检查，返回当前服务占用的资源等信息
-     * @description 健康检查，返回当前服务占用的资源等信息
-     */
-    get: operations['health-check'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/openapi': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取 OpenAPI3 接口文档 (YAML)
-     * @description 接口直接返回 docs/openapi3.yaml yaml格式的原始内容，使用BasicAuth进行验证
-     */
-    get: operations['get-openapi3'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sheet/photos/url': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取截图临时URL
-     * @description 根据文件Token获取截图的临时下载URL，URL有效期为24小时
-     */
-    get: operations['get-photo-url'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sheet/records': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取多维表格记录
-     * @description 根据指定条件查询多维表格中的记录数据
-     */
-    get: operations['get-table-record'];
-    put?: never;
-    /**
-     * 创建多维表格记录
-     * @description 向指定的多维表格应用中添加记录数据
-     */
-    post: operations['create-table-record'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sheet/records/faq': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取常见问题记录
-     * @description 根据指定条件查询多维表格中的记录数据
-     */
-    get: operations['get-faq-resolution-record'];
-    put?: never;
-    /**
-     * 更新FAQ解决方案的 已解决/未解决 状态
-     * @description 更新FAQ解决方案的 已解决/未解决 状态
-     */
-    post: operations['update-faq-resolution'];
     delete?: never;
     options?: never;
     head?: never;
@@ -4315,59 +3688,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    'banner.Banner': {
-      id: number;
-      picture_link: string;
-      web_link: string;
-    };
-    'banner.DelBannerRequest': {
-      id: number;
-    };
-    'banner.GetBannersResponse': {
-      banners: components['schemas']['banner.Banner'][];
-    };
-    'banner.SaveBannerRequest': {
-      /** @description 可选,如果新增记录不用填写 */
-      id?: number;
-      picture_link: string;
-      web_link: string;
-    };
-    'calendar.Calendar': {
-      link: string;
-      year: number;
-    };
-    'calendar.DelCalendarRequest': {
-      year: number;
-    };
-    'calendar.GetCalendarsResponse': {
-      calendars?: components['schemas']['calendar.Calendar'][];
-    };
-    'calendar.SaveCalendarRequest': {
-      link: string;
-      year: number;
-    };
-    'card.GetRecordOfConsumptionRequest': {
-      key?: string;
-      start_time?: string;
-      type?: string;
-    };
-    'card.GetRecordOfConsumptionResponse': {
-      records?: components['schemas']['card.Records'][];
-    };
-    'card.NoteUserKeyRequest': {
-      key?: string;
-    };
-    'card.Records': {
-      SMT_DEALDATETIME?: string;
-      SMT_DEALNAME?: string;
-      SMT_ORG_NAME?: string;
-      SMT_TIMES?: number;
-      after_money?: number;
-      money?: number;
-    };
-    'card.UpdateUserKeyRequest': {
-      key?: string;
-    };
     'class.AddClassRequest': {
       /** @description 学分 */
       credit?: number;
@@ -4401,6 +3721,8 @@ export interface components {
       id: string;
       /** @description 是否为官方课程 */
       is_official: boolean;
+      /** @description 课程性质 */
+      nature: string;
       /** @description 备注 */
       note: string;
       /** @description 学期 */
@@ -4523,26 +3845,105 @@ export interface components {
       /** @description 各教室的空闲情况 */
       stat?: components['schemas']['classroom.ClassroomAvailableStat'][];
     };
-    'department.DelDepartmentRequest': {
+    'content.Banner': {
+      id?: number;
+      picture_link?: string;
+      web_link?: string;
+    };
+    'content.Calendar': {
+      link?: string;
+      year?: number;
+    };
+    'content.DelBannerRequest': {
       id: number;
     };
-    'department.Department': {
+    'content.DelCalendarRequest': {
+      year: number;
+    };
+    'content.DelDepartmentRequest': {
       id: number;
-      name: string;
-      phone: string;
-      place: string;
-      time: string;
     };
-    'department.GetDepartmentsResponse': {
-      departments: components['schemas']['department.Department'][];
+    'content.DelInfoSumRequest': {
+      id: number;
     };
-    'department.SaveDepartmentRequest': {
+    'content.DelWebsiteRequest': {
+      id: number;
+    };
+    'content.Department': {
+      id?: number;
+      name?: string;
+      phone?: string;
+      place?: string;
+      time?: string;
+    };
+    'content.GetBannersResponse': {
+      banners?: components['schemas']['content.Banner'][];
+    };
+    'content.GetCalendarsResponse': {
+      calendars?: components['schemas']['content.Calendar'][];
+    };
+    'content.GetDepartmentsResponse': {
+      departments?: components['schemas']['content.Department'][];
+    };
+    'content.GetInfoSumsResponse': {
+      info_sums?: components['schemas']['content.InfoSum'][];
+    };
+    'content.GetUpdateVersionResponse': {
+      version?: string;
+    };
+    'content.GetWebsitesResponse': {
+      websites?: components['schemas']['content.Website'][];
+    };
+    'content.InfoSum': {
+      description?: string;
+      id?: number;
+      image?: string;
+      link?: string;
+      name?: string;
+    };
+    'content.SaveBannerRequest': {
       /** @description 可选,如果新增记录不用填写 */
       id?: number;
+      picture_link: string;
+      web_link: string;
+    };
+    'content.SaveCalendarRequest': {
+      link: string;
+      year: number;
+    };
+    'content.SaveDepartmentRequest': {
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
+      name?: string;
+      phone?: string;
+      place?: string;
+      time?: string;
+    };
+    'content.SaveInfoSumRequest': {
+      description: string;
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
+      image: string;
+      link: string;
       name: string;
-      phone: string;
-      place: string;
-      time: string;
+    };
+    'content.SaveVersionRequest': {
+      version: string;
+    };
+    'content.SaveWebsiteRequest': {
+      description: string;
+      /** @description 可选,如果新增记录不用填写 */
+      id?: number;
+      image: string;
+      link: string;
+      name: string;
+    };
+    'content.Website': {
+      description?: string;
+      id?: number;
+      image?: string;
+      link?: string;
+      name?: string;
     };
     'elecprice.Architecture': {
       architecture_id: string;
@@ -4557,7 +3958,9 @@ export interface components {
       architecture_list: components['schemas']['elecprice.Architecture'][];
     };
     'elecprice.GetPriceResponse': {
-      price: components['schemas']['elecprice.Price'];
+      ac_price?: components['schemas']['elecprice.Price'];
+      light_price?: components['schemas']['elecprice.Price'];
+      union_price?: components['schemas']['elecprice.Price'];
     };
     'elecprice.GetRoomInfoResponse': {
       room_list: components['schemas']['elecprice.Room'][];
@@ -4566,13 +3969,15 @@ export interface components {
       standard_list: components['schemas']['elecprice.StandardResp'][];
     };
     'elecprice.Price': {
-      remain_money: string;
-      yesterday_use_money: string;
-      yesterday_use_value: string;
+      remain_money?: string;
+      yesterday_use_money?: string;
+      yesterday_use_value?: string;
     };
     'elecprice.Room': {
-      room_id: string;
+      ac?: string;
+      light?: string;
       room_name: string;
+      union?: string;
     };
     'elecprice.SetStandardRequest': {
       limit: number;
@@ -4585,68 +3990,76 @@ export interface components {
     };
     'feed.ChangeFeedAllowListReq': {
       energy: boolean;
+      feedback: boolean;
       grade: boolean;
       holiday: boolean;
       muxi: boolean;
     };
     'feed.ClearFeedEventReq': {
       /** @description 如果feedid和status都被填写了,那么就会清除当前的feedid代表的feed消息且状态为设置的status的 */
-      feed_id: number;
+      feed_id?: number;
       /** @description 有三个可选字段all表示清除所有消息,read表示清除所有已读消息,unread表示清除所有未读消息 */
-      status: string;
+      status?: string;
     };
     'feed.FeedEventVO': {
-      content: string;
+      content?: string;
       /** @description Unix时间戳 */
-      created_at: number;
-      extend_fields: {
+      created_at?: number;
+      extend_fields?: {
         [key: string]: string;
       };
-      id: number;
-      read: boolean;
-      title: string;
-      type: string;
+      id?: number;
+      read?: boolean;
+      title?: string;
+      type?: string;
     };
     'feed.GetFeedAllowListResp': {
-      energy: boolean;
-      grade: boolean;
-      holiday: boolean;
-      muxi: boolean;
+      energy?: boolean;
+      feed_back?: boolean;
+      grade?: boolean;
+      holiday?: boolean;
+      muxi?: boolean;
     };
     'feed.GetFeedEventsResp': {
       feed_events?: components['schemas']['feed.FeedEventVO'][];
     };
     'feed.GetToBePublicMuxiOfficialMSGResp': {
-      msg_list: components['schemas']['feed.MuxiOfficialMSG'][];
+      msg_list?: components['schemas']['feed.MuxiOfficialMSG'][];
     };
     'feed.MuxiOfficialMSG': {
-      content: string;
+      content?: string;
       /** @description 自定义拓展字段 */
-      extend_fields: {
+      extend_fields?: {
         [key: string]: string;
       };
-      id: string;
+      id?: string;
       /** @description 发布的时间 */
-      public_time: number;
+      public_time?: number;
+      title?: string;
+    };
+    'feed.PublicFeedEventReq': {
+      content: string;
+      student_id: string;
       title: string;
+      type: string;
     };
     'feed.PublicMuxiOfficialMSGReq': {
-      content: string;
-      extend_fields: {
+      content?: string;
+      extend_fields?: {
         [key: string]: string;
       };
       /** @description 延迟多久发布(单位是秒) */
-      later_time: number;
-      title: string;
+      later_time?: number;
+      title?: string;
     };
     'feed.PublicMuxiOfficialMSGResp': {
-      content: string;
-      extend_fields: {
+      content?: string;
+      extend_fields?: {
         [key: string]: string;
       };
-      id: string;
-      public_time: string;
-      title: string;
+      id?: string;
+      public_time?: string;
+      title?: string;
     };
     'feed.ReadFeedEventReq': {
       feed_id: number;
@@ -4659,40 +4072,6 @@ export interface components {
     };
     'feed.StopMuxiOfficialMSGReq': {
       id: string;
-    };
-    'feedback_help.ChangeQuestionReq': {
-      answer?: string;
-      question?: string;
-      question_id?: number;
-    };
-    'feedback_help.CreateQuestionReq': {
-      answer?: string;
-      question?: string;
-    };
-    'feedback_help.DeleteQuestionReq': {
-      question_id?: number;
-    };
-    'feedback_help.FindQuestionsByNameResp': {
-      questions?: components['schemas']['feedback_help.FrequentlyAskedQuestion'][];
-    };
-    'feedback_help.FrequentlyAskedQuestion': {
-      answer?: string;
-      /**
-       * Format: int64
-       * @description Utime      time.Time
-       *     Ctime      time.Time
-       */
-      clickTimes?: number;
-      /** Format: int64 */
-      id?: number;
-      question?: string;
-    };
-    'feedback_help.GetQuestionsResp': {
-      questions?: components['schemas']['feedback_help.FrequentlyAskedQuestion'][];
-    };
-    'feedback_help.NoteQuestionReq': {
-      if_over?: boolean;
-      question_id?: number;
     };
     'grade.GetGradeByTermReq': {
       /** @description 课程种类筛选,有如下类型:专业主干课程,通识选修课,通识必修课,个性发展课程,通识核心课,教师教育选修,教师教育必修,大学英语分级教育等 */
@@ -4764,27 +4143,6 @@ export interface components {
       grade_score_list: components['schemas']['grade.GradeScore'][];
       /** @description 课程性质名称 */
       kcxzmc: string;
-    };
-    'infoSum.DelInfoSumRequest': {
-      id: number;
-    };
-    'infoSum.GetInfoSumsResponse': {
-      info_sums: components['schemas']['infoSum.InfoSum'][];
-    };
-    'infoSum.InfoSum': {
-      description: string;
-      id: number;
-      image: string;
-      link: string;
-      name: string;
-    };
-    'infoSum.SaveInfoSumRequest': {
-      description: string;
-      /** @description 可选,如果新增记录不用填写 */
-      id?: number;
-      image: string;
-      link: string;
-      name: string;
     };
     'library.Comment': {
       /** @description 评论内容 */
@@ -4938,23 +4296,6 @@ export interface components {
       /** @description 错误信息 */
       msg?: string;
     };
-    'static.GetStaticByLabelsResp': {
-      statics?: components['schemas']['static.StaticVo'][];
-    };
-    'static.SaveStaticReq': {
-      content?: string;
-      labels?: {
-        [key: string]: string;
-      };
-      name?: string;
-    };
-    'static.StaticVo': {
-      content?: string;
-      labels?: {
-        [key: string]: string;
-      };
-      name?: string;
-    };
     'tube.GetTubeTokenData': {
       access_token?: string;
       domain_name?: string;
@@ -4972,95 +4313,6 @@ export interface components {
       data?: unknown;
       msg?: string;
     };
-    'website.DelWebsiteRequest': {
-      id: number;
-    };
-    'website.GetWebsitesResponse': {
-      websites: components['schemas']['website.Website'][];
-    };
-    'website.SaveWebsiteRequest': {
-      description: string;
-      /** @description 可选,如果新增记录不用填写 */
-      id?: number;
-      image: string;
-      link: string;
-      name: string;
-    };
-    'website.Website': {
-      description: string;
-      id: number;
-      image: string;
-      link: string;
-      name: string;
-    };
-    'request.CreateTableRecordReg': {
-      /** @description 联系方式，可选 */
-      contact_info?: string;
-      /** @description 反馈内容 */
-      content: string;
-      /** @description 额外记录列表，可选 */
-      extra_record?: {
-        [key: string]: unknown;
-      };
-      /** @description 图片附件 URL 列表，可选 */
-      images?: string[];
-      /** @description 学号，用于标记用户身份 */
-      student_id: string;
-      table_identify: string;
-    };
-    'request.FAQResolutionUpdateReq': {
-      is_resolved: boolean;
-      record_id: string;
-      resolved_field_name: string;
-      table_identify: string;
-      unresolved_field_name: string;
-      user_id: string;
-    };
-    'request.GenerateTableTokenReq': {
-      /** @description 反馈表格 Identity，反馈表的唯一标识 */
-      table_identify: string;
-    };
-    'response.HealthCheckResponse': {
-      /** @description Process 当前进程的运行状态 */
-      process?: components['schemas']['response.ProcessStats'];
-      /** @description ResponseMs 响应耗时，单位毫秒 */
-      response_ms?: string;
-      /** @description Status 服务状态，例如 "ok" */
-      status?: string;
-      /** @description System 系统资源使用情况 */
-      system?: components['schemas']['response.SystemStats'];
-    };
-    'response.ProcessStats': {
-      /** @description CPUPercent 进程 CPU 使用率（%） */
-      cpu_percent?: string;
-      /** @description GoHeapAllocMB Go 堆分配的内存（MB） */
-      go_heap_alloc_mb?: string;
-      /** @description Goroutines 当前运行的 goroutine 数 */
-      goroutines?: string;
-      /** @description MemoryRSSMB 进程常驻内存（MB） */
-      memory_rss_mb?: string;
-    };
-    'response.Response': {
-      code?: number;
-      data?: unknown;
-      msg?: string;
-    };
-    'response.SystemStats': {
-      /** @description CPUPercent CPU 使用率（%） */
-      cpu_percent?: string;
-      /** @description DiskPercent 磁盘使用率（%） */
-      disk_percent?: string;
-      /** @description DiskTotalGB 磁盘总量（GB） */
-      disk_total?: string;
-      /** @description DiskUsedGB 已使用磁盘（GB） */
-      disk_used?: string;
-      /** @description MemoryPercent 内存使用率（%） */
-      memory_percent?: string;
-      /** @description MemoryTotalMB 内存总量（MB） */
-      memory_total?: string;
-      /** @description MemoryUsedMB 已使用内存（MB） */
-      memory_used?: string;
-    };
   };
   responses: never;
   parameters: never;
@@ -5069,420 +4321,4 @@ export interface components {
   pathItems: never;
 }
 export type $defs = Record<string, never>;
-export interface operations {
-  'refresh-table-config': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回目前支持索引的表格的公开配置 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-table-token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 获取Token请求参数 */
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['request.GenerateTableTokenReq'];
-      };
-    };
-    responses: {
-      /** @description 成功返回 JWT 令牌 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-tenant-token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回 JWT 令牌 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'health-check': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回健康检查结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'] & {
-            data?: components['schemas']['response.HealthCheckResponse'];
-          };
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'] & {
-            data?: string;
-          };
-        };
-      };
-    };
-  };
-  'get-openapi3': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回 OpenAPI3 文档内容 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/x-yaml': string;
-        };
-      };
-      /** @description 未授权，BasicAuth 验证失败 */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/x-yaml': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/x-yaml': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-photo-url': {
-    parameters: {
-      query: {
-        /** @description 附件 token */
-        file_tokens: string[];
-      };
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回临时URL信息 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-table-record': {
-    parameters: {
-      query: {
-        /** @description 用于查询记录的关键值，一般使用学号的字段名 */
-        key_field: string;
-        /** @description 用于查询记录的关键值，一般使用学号的字段值 */
-        key_value: string;
-        /** @description 分页参数,第一次不需要 */
-        page_token?: string;
-        /** @description 需要查询的字段名 */
-        record_names: string[];
-        table_identify: string;
-      };
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回查询结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'create-table-record': {
-    parameters: {
-      query?: never;
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 新增记录请求参数 */
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['request.CreateTableRecordReg'];
-      };
-    };
-    responses: {
-      /** @description 成功返回创建记录结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'get-faq-resolution-record': {
-    parameters: {
-      query: {
-        /** @description 需要查询的字段名 */
-        record_names: string[];
-        /** @description 学号，用于标记用户身份 */
-        student_id: string;
-        table_identify: string;
-      };
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 成功返回查询结果 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-  'update-faq-resolution': {
-    parameters: {
-      query?: never;
-      header: {
-        /** @description Bearer Token */
-        Authorization: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 更新FAQ解决状态请求参数 */
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['request.FAQResolutionUpdateReq'];
-      };
-    };
-    responses: {
-      /** @description 成功更新FAQ解决状态 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 请求参数错误或飞书接口调用失败 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-      /** @description 服务器内部错误 */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['response.Response'];
-        };
-      };
-    };
-  };
-}
+export type operations = Record<string, never>;

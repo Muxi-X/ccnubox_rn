@@ -1,18 +1,39 @@
 import * as Application from 'expo-application';
 import * as Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image, Linking, Platform, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import Button from '@/components/button';
+import Modal from '@/components/modal';
 import Toast from '@/components/toast';
 import { TypoText } from '@/components/typography/TypoText';
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import getUpdateVersion from '@/request/api/checkUpdate';
+
 import { UpdateInfo } from '@/types/updateInfo';
+
+/** 比较版本号，返回 true 表示 serverVersion > currentVersion */
+function isVersionGreater(
+  serverVersion: string,
+  currentVersion: string
+): boolean {
+  const parse = (v: string) => v.split('.').map(Number);
+  const a = parse(serverVersion);
+  const b = parse(currentVersion);
+  const len = Math.max(a.length, b.length);
+  for (let i = 0; i < len; i++) {
+    const x = a[i] ?? 0;
+    const y = b[i] ?? 0;
+    if (x > y) return true;
+    if (x < y) return false;
+  }
+  return false;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mxLogo = require('../../assets/images/mx-logo.png');
@@ -35,7 +56,72 @@ function CheckUpdate(): React.ReactNode {
   useEffect(() => {
     if (isUpdateAvailable) Updates.fetchUpdateAsync().then(_r => {});
   }, [isUpdateAvailable]);
+  const handleCheckUpdate = useCallback(() => {
+    setLoading(true);
+    const currentVersion = Application.nativeApplicationVersion ?? '0';
+    const storeUrl =
+      (Constants.default.expoConfig?.extra as { APP_STORE_URL?: string })
+        ?.APP_STORE_URL ?? '';
 
+    if (__DEV__) {
+      Toast.show({ text: '已是最新版', icon: 'success' });
+      setLoading(false);
+      return;
+    }
+
+    Updates.checkForUpdateAsync()
+      .then(async res => {
+        if (res.isAvailable) {
+          // Expo 有可用 OTA 更新，由现有 useEffect 拉取并应用
+          return;
+        }
+        // 无 OTA 更新，对比服务端 getVersion 与当前应用版本
+        try {
+          const apiRes = (await getUpdateVersion()) as
+            | {
+                data?: { version?: string };
+              }
+            | undefined;
+          const serverVersion = apiRes?.data?.version;
+          if (
+            serverVersion &&
+            isVersionGreater(serverVersion, currentVersion)
+          ) {
+            Modal.show({
+              mode: 'middle',
+              title: '应用市场有最新版本',
+              children: '请前往应用市场更新到最新版本。',
+              confirmText: '去更新',
+              cancelText: '取消',
+              showCancel: true,
+              onConfirm: () => {
+                Modal.clear();
+                if (storeUrl) {
+                  void Linking.openURL(storeUrl);
+                } else {
+                  Toast.show({
+                    text:
+                      Platform.OS === 'ios'
+                        ? '请前往 App Store 更新'
+                        : '请前往应用商店更新',
+                  });
+                }
+              },
+            });
+          } else {
+            Toast.show({ text: '已是最新版', icon: 'success' });
+          }
+        } catch {
+          Toast.show({ text: '已是最新版', icon: 'success' });
+        }
+      })
+      .catch(err => {
+        Toast.show({ text: err.toString() });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
   return (
     <ThemeBasedView style={styles.container}>
       <ScrollView>
@@ -75,26 +161,7 @@ function CheckUpdate(): React.ReactNode {
           <View style={styles.divider} />
           <Button
             style={[styles.updateButton, currentStyle?.button_style]}
-            onPress={() => {
-              setLoading(true);
-              if (__DEV__) {
-                Toast.show({ text: '已是最新版', icon: 'success' });
-                setLoading(false);
-              } else {
-                Updates.checkForUpdateAsync()
-                  .then(res => {
-                    if (!res.isAvailable) {
-                      Toast.show({ text: '已是最新版', icon: 'success' });
-                    }
-                  })
-                  .catch(err => {
-                    Toast.show({ text: err.toString() });
-                  })
-                  .finally(() => {
-                    setLoading(false);
-                  });
-              }
-            }}
+            onPress={handleCheckUpdate}
             isLoading={loading}
           >
             检 查 更 新
