@@ -32,6 +32,7 @@ interface FeedbackDetailItem {
     submitTime: number;
     contact: string;
     source: string;
+    reply: string;
     status: string;
     type: string;
   };
@@ -241,6 +242,17 @@ export default function FeedbackDetail() {
               {isLongContent && !expandContent && (
                 <Text style={styles.expandText}>点击查看全部</Text>
               )}
+              <Text
+                style={[
+                  styles.sectionContent,
+                  {
+                    marginTop: 6,
+                    color: '#7F838A',
+                  },
+                ]}
+              >
+                回复：{feedbackItem.fields.reply}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -453,7 +465,7 @@ const styles = StyleSheet.create({
   },
   sectionContent: {
     fontSize: 15,
-    color: '#4B5563',
+    color: '#9CA3AF',
     lineHeight: 22,
   },
   expandText: {

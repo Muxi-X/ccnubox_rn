@@ -43,6 +43,7 @@ interface FeedbackItem {
     submitTime: number | string;
     userId: string;
     contact: string;
+    reply: string;
     source: string;
     status: string;
     type: string;
@@ -99,6 +100,11 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
         </View>
 
         <View style={styles.itemfooter}>
+          <View style={[styles.replyContainer]}>
+            <Text style={[styles.replyText]}>
+              回复: {spliceText(item.fields.reply, 15)}
+            </Text>
+          </View>
           <View
             style={[
               styles.itemfootercontainer,
@@ -172,6 +178,7 @@ export default function FeedbackHistory() {
       record: Record<string, any>;
     }>
   ): FeedbackItem[] {
+    records.map(item => console.log(item));
     return records.map(item => ({
       record_id: item.record_id,
       fields: {
@@ -183,6 +190,7 @@ export default function FeedbackHistory() {
         userId: item.record['用户ID'] || '',
         contact: item.record['联系方式（QQ/邮箱）'] || '',
         source: item.record['问题来源'] || '未知来源',
+        reply: item.record['回复内容'] || '暂未回复',
         status:
           item.record['进度'] === '待通知'
             ? '处理中'
@@ -292,7 +300,7 @@ const styles = StyleSheet.create({
   itemcontainer: {
     backgroundColor: 'white',
     margin: 8,
-    padding: 12,
+    padding: 16,
     borderRadius: 12,
     marginBottom: 8,
     marginTop: 8,
@@ -314,7 +322,20 @@ const styles = StyleSheet.create({
   },
   itemfooter: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginTop: 16,
+    marginRight: 12,
+  },
+  replyContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  replyText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#828283',
   },
   itemheaderleft: {
     flexDirection: 'row',
@@ -360,7 +381,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   itemfootercontainer: {
-    marginVertical: 12,
     paddingHorizontal: 10,
     height: 24,
     borderRadius: 16,
