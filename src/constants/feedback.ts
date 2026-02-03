@@ -47,5 +47,6 @@ export const FEEDBACK_RECORD_NAMES = [
   '问题类型',
   '问题来源',
   '进度',
+  '回复内容',
   '提交时间',
 ];

@@ -380,6 +380,12 @@ function WriteFeedback() {
             {isSubmitting ? '提交中...' : '提交'}
           </Text>
         </TouchableOpacity>
+
+        <View style={styles.tipWrapper}>
+          <Text style={[currentStyle?.text_style]}>
+            上传图片与联系方式，帮助我们更好的解决问题~
+          </Text>
+        </View>
       </ScrollView>
     </ThemeBasedView>
   );
@@ -555,6 +561,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#7B70F1',
     textAlign: 'center',
+  },
+  tipWrapper: {
+    marginTop: 8,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
