@@ -248,7 +248,7 @@ export default function FeedbackHistory() {
         const list = transformRecordsToFeedbackItems(res.data.records);
         setFeedbackHistory([...feedbackHistory, ...list]);
         setHasMore(res.data.has_more);
-        setPageToken(res.data.page_token || null);
+        setPageToken(res.data.page_token || '');
       }
     } catch (err) {
       console.error('获取用户反馈失败', err);

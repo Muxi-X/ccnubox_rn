@@ -203,8 +203,8 @@ function FeedbackPage() {
               <FAQItem
                 key={item.record_id || index}
                 title={item.fields.title}
-                content={<Text>{item.fields.description || ''}</Text>}
-                solution={<Text>{item.fields.solution || ''}</Text>}
+                content={item.fields.description || ''}
+                solution={item.fields.solution || ''}
                 isExpanded={expandedIndex === index}
                 onToggle={() =>
                   setExpandedIndex(expandedIndex === index ? null : index)
