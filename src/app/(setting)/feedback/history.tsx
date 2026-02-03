@@ -23,8 +23,6 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
-  STATUS_BG_COLORS,
-  STATUS_COLORS,
 } from '@/constants/FEEDBACK';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
@@ -52,6 +50,10 @@ interface FeedbackItem {
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
+    const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+      currentStyle,
+    }));
+
     const router = useRouter();
 
     const handlePress = () => {
@@ -69,37 +71,59 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
 
     return (
       <TouchableOpacity
-        style={styles.itemcontainer}
+        style={[styles.itemContainer, currentStyle?.feedback_card_style]}
         onPress={handlePress}
         activeOpacity={0.7}
       >
-        <View style={styles.itemheader}>
-          <View style={styles.itemheaderleft}>
-            <View style={styles.itemheaderleftitem}>
-              <Text style={styles.itemheaderleftitemtext}>
+        <View style={styles.itemHeader}>
+          <View style={styles.itemHeaderleft}>
+            <View
+              style={[
+                styles.itemHeaderleftitem,
+                currentStyle?.feedback_history_metaData_style,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.itemHeaderleftitemText,
+                  currentStyle?.feedback_history_metaData_text_style,
+                ]}
+              >
                 {item.fields.source}
               </Text>
             </View>
-            <View style={styles.itemheaderleftitem}>
-              <Text style={styles.itemheaderleftitemtext}>
+            <View
+              style={[
+                styles.itemHeaderleftitem,
+                currentStyle?.feedback_history_metaData_style,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.itemHeaderleftitemText,
+                  currentStyle?.feedback_history_metaData_text_style,
+                ]}
+              >
                 {item.fields.type}
               </Text>
             </View>
           </View>
 
           <View style={{ paddingVertical: 8 }}>
-            <Text style={styles.itemheaderright}>{item.fields.submitTime}</Text>
+            <Text style={styles.itemHeaderright}>{item.fields.submitTime}</Text>
           </View>
         </View>
 
-        <View style={styles.itemcontent}>
-          <Text style={styles.itemcontenttitle}>反馈内容</Text>
-          <Text style={styles.itemcontenttext}>
+        <View style={styles.itemContent}>
+          <Text style={[styles.itemContenttitle, currentStyle?.text_style]}>
+            反馈内容
+          </Text>
+          <Text style={[styles.itemContenttext, currentStyle?.text_style]}>
             {spliceText(item.fields.content)}
           </Text>
         </View>
 
-        <View style={styles.itemfooter}>
+        <View style={styles.itemFooter}>
           <View style={[styles.replyContainer]}>
             <Text style={[styles.replyText]}>
               回复: {spliceText(item.fields.reply, 15)}
@@ -107,14 +131,16 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
           </View>
           <View
             style={[
-              styles.itemfootercontainer,
-              { backgroundColor: STATUS_BG_COLORS[item.fields.status] },
+              styles.itemFooterContainer,
+              currentStyle?.feedback_status_style?.getStyle(item.fields.status),
             ]}
           >
             <Text
               style={[
-                styles.itemfootertext,
-                { color: STATUS_COLORS[item.fields.status] },
+                styles.itemFootertext,
+                currentStyle?.feedback_statusText_style?.getStyle(
+                  item.fields.status
+                ),
               ]}
             >
               {item.fields.status}
@@ -178,7 +204,6 @@ export default function FeedbackHistory() {
       record: Record<string, any>;
     }>
   ): FeedbackItem[] {
-    records.map(item => console.log(item));
     return records.map(item => ({
       record_id: item.record_id,
       fields: {
@@ -297,8 +322,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
-  itemcontainer: {
-    backgroundColor: 'white',
+  itemContainer: {
     margin: 8,
     padding: 16,
     borderRadius: 12,
@@ -313,14 +337,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.02,
     shadowRadius: 1,
   },
-  itemheader: {
+  itemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  itemcontent: {
+  itemContent: {
     marginVertical: -4,
   },
-  itemfooter: {
+  itemFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
@@ -335,56 +359,51 @@ const styles = StyleSheet.create({
   replyText: {
     fontSize: 12,
     lineHeight: 16,
-    color: '#828283',
+    color: '#C8C8C8',
   },
-  itemheaderleft: {
+  itemHeaderleft: {
     flexDirection: 'row',
   },
-  itemheaderleftitem: {
+  itemHeaderleftitem: {
     width: 72,
     height: 27,
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: '#F6F5FF',
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  itemheaderleftitemtext: {
+  itemHeaderleftitemText: {
     fontSize: 12,
     lineHeight: 16,
     fontWeight: '400',
-    color: '#7B70F1',
     textAlign: 'center',
   },
-  itemheaderright: {
+  itemHeaderright: {
     fontSize: 14,
     fontWeight: '400',
     color: '#9CA3AF',
   },
-  itemcontenttitle: {
+  itemContenttitle: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#000000',
     marginBottom: 6,
     marginTop: 6,
   },
-  itemcontenttext: {
+  itemContenttext: {
     fontSize: 14,
     fontWeight: '400',
-    color: '#4B5563',
   },
-  itemfootertext: {
+  itemFootertext: {
     fontSize: 12,
     fontWeight: '400',
     lineHeight: 16,
   },
-  itemfootercontainer: {
+  itemFooterContainer: {
     paddingHorizontal: 10,
     height: 24,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
