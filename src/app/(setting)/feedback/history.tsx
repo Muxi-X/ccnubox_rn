@@ -23,7 +23,7 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
-} from '@/constants/FEEDBACK';
+} from '@/constants/FEEDBACKS';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
 interface FeedbackItem {

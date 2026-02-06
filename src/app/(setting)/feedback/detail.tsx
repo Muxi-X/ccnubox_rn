@@ -16,7 +16,7 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { STATUS_LABELS } from '@/constants/FEEDBACK';
+import { STATUS_LABELS } from '@/constants/FEEDBACKS';
 import { getFeedbackImg } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 
