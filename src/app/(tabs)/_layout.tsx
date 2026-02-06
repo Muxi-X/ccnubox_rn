@@ -5,7 +5,7 @@ import TabBar from '@/components/navi';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { TABS } from '@/constants/TABBAR';
+import { TABS } from '@/constants/tabBar';
 import { keyGenerator } from '@/utils';
 
 import { SinglePageType } from '@/types/tabBarTypes';

@@ -9,7 +9,7 @@ import {
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { TABBAR_COLOR } from '@/constants/TABBAR';
+import { TABBAR_COLOR } from '@/constants/tabBar';
 
 import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';
