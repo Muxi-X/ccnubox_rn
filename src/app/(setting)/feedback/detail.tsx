@@ -16,14 +16,9 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
+import { STATUS_LABELS } from '@/constants/FEEDBACKS';
 import { getFeedbackImg } from '@/request/api/feedback';
 import { log } from '@/utils/logger';
-
-import {
-  STATUS_BG_COLORS,
-  STATUS_COLORS,
-  STATUS_LABELS,
-} from '@/constants/FEEDBACK';
 
 interface FeedbackDetailItem {
   record_id: string;
@@ -33,6 +28,7 @@ interface FeedbackDetailItem {
     submitTime: number;
     contact: string;
     source: string;
+    reply: string;
     status: string;
     type: string;
   };
@@ -91,10 +87,10 @@ export default function FeedbackDetail() {
       try {
         const res = (await getFeedbackImg({ file_tokens: tokens })) as any;
 
-        if (res?.code === 0 && Array.isArray(res.data?.tmp_download_urls)) {
+        if (res?.code === 0 && Array.isArray(res.data?.files)) {
           const map: Record<string, string> = {};
 
-          res.data.tmp_download_urls.forEach((it: any) => {
+          res.data.files.forEach((it: any) => {
             if (it?.file_token && it?.tmp_download_url) {
               map[it.file_token] = it.tmp_download_url;
             }
@@ -150,19 +146,33 @@ export default function FeedbackDetail() {
               <View
                 style={[
                   styles.circle,
-                  statusStep === step && {
-                    backgroundColor: STATUS_COLORS[STATUS_LABELS[step - 1]],
-                  },
+                  statusStep === step
+                    ? currentStyle?.feedback_detail_statusCircle_style?.getStyle(
+                        STATUS_LABELS[step - 1]
+                      )
+                    : currentStyle?.feedback_detail_statusCircle_style?.getStyle(
+                        '默认'
+                      ),
                 ]}
               >
-                <Text style={styles.circleText}>{step}</Text>
+                <Text
+                  style={[
+                    styles.circleText,
+                    step === 1 &&
+                      statusStep === step &&
+                      currentStyle?.inverted_text_style,
+                  ]}
+                >
+                  {step}
+                </Text>
               </View>
               <Text
                 style={[
                   styles.stepLabel,
-                  statusStep === step && {
-                    color: STATUS_COLORS[STATUS_LABELS[step - 1]],
-                  },
+                  statusStep === step &&
+                    currentStyle?.feedback_statusText_style?.getStyle(
+                      STATUS_LABELS[step - 1]
+                    ),
                 ]}
               >
                 {STATUS_LABELS[index]}
@@ -172,7 +182,15 @@ export default function FeedbackDetail() {
             {index < 2 && (
               <View style={styles.connectorContainer}>
                 {[1, 2, 3, 4, 5].map(i => (
-                  <View key={i} style={styles.connectorBar} />
+                  <View
+                    key={i}
+                    style={[
+                      styles.connectorBar,
+                      currentStyle?.feedback_detail_statusCircle_style?.getStyle(
+                        '默认'
+                      ),
+                    ]}
+                  />
                 ))}
               </View>
             )}
@@ -181,18 +199,38 @@ export default function FeedbackDetail() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.card}>
+        <View style={[styles.card, currentStyle?.feedback_card_style]}>
           <View style={styles.infoBlock}>
             <View style={styles.infoRowItem}>
               <Text style={styles.infoLabel}>问题类型</Text>
               <View style={styles.infoContainer}>
-                <View style={styles.itemTypeleftitem}>
-                  <Text style={styles.itemTypeleftitemtext}>
+                <View
+                  style={[
+                    styles.itemTypeleftitem,
+                    currentStyle?.feedback_history_metaData_style,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.itemTypeleftitemtext,
+                      currentStyle?.feedback_history_metaData_text_style,
+                    ]}
+                  >
                     {feedbackItem.fields.source}
                   </Text>
                 </View>
-                <View style={styles.itemTypeleftitem}>
-                  <Text style={styles.itemTypeleftitemtext}>
+                <View
+                  style={[
+                    styles.itemTypeleftitem,
+                    currentStyle?.feedback_history_metaData_style,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.itemTypeleftitemtext,
+                      currentStyle?.feedback_history_metaData_text_style,
+                    ]}
+                  >
                     {feedbackItem.fields.type}
                   </Text>
                 </View>
@@ -204,16 +242,17 @@ export default function FeedbackDetail() {
               <View
                 style={[
                   styles.itemStatuscontainer,
-                  {
-                    backgroundColor:
-                      STATUS_BG_COLORS[feedbackItem.fields.status],
-                  },
+                  currentStyle?.feedback_status_style?.getStyle(
+                    feedbackItem.fields.status
+                  ),
                 ]}
               >
                 <Text
                   style={[
                     styles.itemStatustext,
-                    { color: STATUS_COLORS[feedbackItem.fields.status] },
+                    currentStyle?.feedback_statusText_style?.getStyle(
+                      feedbackItem.fields.status
+                    ),
                   ]}
                 >
                   {feedbackItem.fields.status}
@@ -225,33 +264,50 @@ export default function FeedbackDetail() {
               <Text style={styles.infoLabel}>时间</Text>
 
               <Text style={styles.timeText}>
-                {(() => {
-                  const d = new Date(
-                    (feedbackItem.fields.submitTime as number) + 8 * 3600 * 1000
-                  );
-                  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                })()}
+                {feedbackItem.fields.submitTime}
               </Text>
             </View>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>问题描述</Text>
+            <Text style={[styles.sectionTitle, currentStyle?.text_style]}>
+              问题描述
+            </Text>
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
                 if (isLongContent) setExpandContent(prev => !prev);
               }}
             >
-              <Text style={styles.sectionContent}>{displayText}</Text>
+              <Text
+                style={[
+                  styles.sectionContent,
+                  currentStyle?.feedback_detail_text_style,
+                ]}
+              >
+                {displayText}
+              </Text>
               {isLongContent && !expandContent && (
                 <Text style={styles.expandText}>点击查看全部</Text>
               )}
+              <Text
+                style={[
+                  styles.sectionContent,
+                  {
+                    marginTop: 6,
+                    color: '#7F838A',
+                  },
+                ]}
+              >
+                回复：{feedbackItem.fields.reply}
+              </Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>问题截图</Text>
+            <Text style={[styles.sectionTitle, currentStyle?.text_style]}>
+              问题截图
+            </Text>
 
             {imgTokenCount === 0 ? (
               <Text style={styles.sectionContent}>暂无图片</Text>
@@ -276,7 +332,9 @@ export default function FeedbackDetail() {
                             </TouchableOpacity>
                           ) : (
                             <View key={idx} style={styles.imagePlaceholder}>
-                              <Text style={styles.placeholderText}>无图片</Text>
+                              <Text style={styles.placeholderText}>
+                                获取失败
+                              </Text>
                             </View>
                           )
                         )
@@ -291,7 +349,9 @@ export default function FeedbackDetail() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>联系方式</Text>
+            <Text style={[styles.sectionTitle, currentStyle?.text_style]}>
+              联系方式
+            </Text>
             <Text style={styles.sectionContent}>
               {feedbackItem.fields.contact || '暂无联系方式'}
             </Text>
@@ -348,14 +408,13 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 22.5,
-    backgroundColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
   circleText: {
-    color: '#fff',
     fontSize: 18,
+    color: '#FFFFFF',
     fontWeight: '600',
   },
   stepLabel: {
@@ -369,27 +428,23 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   connectorBar: {
-    width: 8,
+    width: 9,
     height: 7,
     borderRadius: 4,
-    backgroundColor: '#E5E7EB',
     marginHorizontal: 3,
   },
   scrollContent: {
     padding: 16,
   },
   card: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.02,
     shadowRadius: 12,
-    elevation: 2,
   },
   infoBlock: {
     marginBottom: 24,
@@ -404,7 +459,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   infoLabel: {
-    color: '#9CA3AF',
+    color: '#9E9E9E',
     fontSize: 14,
   },
   infoContainer: {
@@ -414,7 +469,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
-    color: '#4B5563',
+    color: '#9CA3AF',
   },
   itemTypeleftitem: {
     width: 72,
@@ -422,7 +477,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 4,
     borderRadius: 999,
-    backgroundColor: '#F6F5FF',
     marginRight: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -431,7 +485,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
     fontWeight: '400',
-    color: '#7B70F1',
     textAlign: 'center',
   },
   itemStatustext: {
@@ -453,11 +506,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 8,
-    color: '#374151',
   },
   sectionContent: {
     fontSize: 15,
-    color: '#4B5563',
+    color: '#9CA3AF',
     lineHeight: 22,
   },
   expandText: {
