@@ -145,6 +145,18 @@ export const HOME_ITEMS = [
   //   key: 'grid-11',
   //   href: '/all' as Href,
   // },
+  // 旧版座位预约
+  // {
+  //   title: '座位预约',
+  //   name: 'site',
+  //   imageUrl: {
+  //     ios: IosSiteSvg,
+  //     android: AndroidSiteSvg,
+  //     default: AndroidSiteSvg,
+  //   },
+  //   key: 'grid-12',
+  //   href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=http://kjyy.ccnu.edu.cn/loginall.aspx?page=&pageId=1053906&wfwfid=1740&websiteId=548973')}` as Href,
+  // },
   {
     title: '座位预约',
     name: 'site',
@@ -154,7 +166,7 @@ export const HOME_ITEMS = [
       default: AndroidSiteSvg,
     },
     key: 'grid-12',
-    href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=http://kjyy.ccnu.edu.cn/loginall.aspx?page=&pageId=1053906&wfwfid=1740&websiteId=548973')}` as Href,
+    href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
   },
   {
     title: '更多',
