@@ -1,7 +1,6 @@
 import { request } from '@/request';
 
-import { FEEDBACK_BASE_URL } from './constants';
-
+import { BASE_URL } from './config';
 export interface GetFeedbackTokenRequest {
   table_identify: string;
 }
@@ -9,7 +8,7 @@ export interface GetFeedbackTokenRequest {
 const getFeedbackToken = async (tableId: GetFeedbackTokenRequest) => {
   return await request.post('/api/v1/auth/table-config/token', tableId, {
     isToken: false,
-    baseURL: FEEDBACK_BASE_URL,
+    baseURL: BASE_URL,
   });
 };
 
