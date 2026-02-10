@@ -119,7 +119,7 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
       router.push({
         pathname: '/feedback/detail',
         params: { item: itemData },
-        // params: { record_id: item.record_id},
+        // params: { record_id: item.record_id },
       });
     };
 

@@ -82,7 +82,7 @@ export default function FeedbackDetail() {
             table_identify: FEEDBACK_TABLE_IDENTIFY,
           };
 
-          const res = getSingleFeedbackRecord(requestData) as any;
+          const res = (await getSingleFeedbackRecord(requestData)) as any;
 
           if (res?.code === 0 && res.data) {
             const feedbackData = transformSingleRecord(
@@ -106,6 +106,7 @@ export default function FeedbackDetail() {
 
       if (currentSource === 'unknown') {
         setFeedbackItem(null);
+        Toast.fail('获取详情失败');
       }
     };
 
