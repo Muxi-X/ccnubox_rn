@@ -1,6 +1,6 @@
 import { Toast } from '@ant-design/react-native';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -12,27 +12,22 @@ import {
   View,
 } from 'react-native';
 
+import Loading from '@/components/loading';
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { STATUS_LABELS } from '@/constants/FEEDBACKS';
-import { getFeedbackImg } from '@/request/api/feedback';
+import { FEEDBACK_TABLE_IDENTIFY, STATUS_LABELS } from '@/constants/FEEDBACKS';
+import {
+  getFeedbackImg,
+  getSingleFeedbackRecord,
+} from '@/request/api/feedback';
 import { log } from '@/utils/logger';
 
-interface FeedbackDetailItem {
-  record_id: string;
-  fields: {
-    content: string;
-    screenshots: Array<{ file_token: string }>;
-    submitTime: number;
-    contact: string;
-    source: string;
-    reply: string;
-    status: string;
-    type: string;
-  };
-}
+import {
+  FeedbackItem as FeedbackDetailItem,
+  transformSingleRecord,
+} from './history';
 
 const getStatusStep = (status: string) => {
   if (status === '待处理') return 1;
@@ -42,31 +37,87 @@ const getStatusStep = (status: string) => {
 };
 
 export default function FeedbackDetail() {
-  const params = useLocalSearchParams<{ item?: string }>();
+  const params = useLocalSearchParams<{
+    item?: string;
+    record_id?: string;
+  }>();
+
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [expandContent, setExpandContent] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingImages, setIsLoadingImages] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[] | null>(null);
+  const [feedbackItem, setFeedbackItem] = useState<FeedbackDetailItem | null>(
+    null
+  );
 
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
 
-  const feedbackItem: FeedbackDetailItem | null = useMemo(() => {
-    if (!params.item) return null;
-    try {
-      return JSON.parse(decodeURIComponent(params.item));
-    } catch {
-      return null;
-    }
-  }, [params.item]);
+  const currentSource = params.item
+    ? 'history'
+    : params.record_id
+      ? 'message'
+      : 'unknown';
+
+  useEffect(() => {
+    const fetchFeedbackDetail = async () => {
+      if (currentSource === 'history' && params.item) {
+        try {
+          const parsedData = JSON.parse(decodeURIComponent(params.item));
+          setFeedbackItem(parsedData);
+        } catch {
+          Toast.fail('数据获取失败');
+        }
+        return;
+      }
+
+      if (currentSource === 'message' && params.record_id) {
+        setIsLoadingDetail(true);
+        try {
+          const requestData = {
+            record_id: params.record_id,
+            table_identify: FEEDBACK_TABLE_IDENTIFY,
+          };
+
+          const res = (await getSingleFeedbackRecord(requestData)) as any;
+
+          if (res?.code === 0 && res.data) {
+            const feedbackData = transformSingleRecord(
+              params.record_id,
+              res.data.record
+            );
+            setFeedbackItem(feedbackData);
+          } else {
+            Toast.fail(res?.message || '获取详情失败');
+            setFeedbackItem(null);
+          }
+        } catch (error) {
+          log.error('获取反馈详情异常:', error);
+          Toast.fail('网络请求失败');
+          setFeedbackItem(null);
+        } finally {
+          setIsLoadingDetail(false);
+        }
+        return;
+      }
+
+      if (currentSource === 'unknown') {
+        setFeedbackItem(null);
+        Toast.fail('获取详情失败');
+      }
+    };
+
+    fetchFeedbackDetail();
+  }, [currentSource, params.item, params.record_id]);
 
   useEffect(() => {
     const fetchImages = async () => {
       if (!feedbackItem) {
         setImageUrls(null);
-        setIsLoading(false);
+        setIsLoadingImages(false);
         return;
       }
 
@@ -77,12 +128,12 @@ export default function FeedbackDetail() {
 
       if (!tokens.length) {
         setImageUrls([]);
-        setIsLoading(false);
+        setIsLoadingImages(false);
         return;
       }
 
       setImageUrls(Array(tokens.length).fill(''));
-      setIsLoading(true);
+      setIsLoadingImages(true);
 
       try {
         const res = (await getFeedbackImg({ file_tokens: tokens })) as any;
@@ -105,17 +156,23 @@ export default function FeedbackDetail() {
         setImageUrls(tokens.map(() => ''));
         log.error('获取图片异常:', err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingImages(false);
       }
     };
 
     fetchImages();
   }, [feedbackItem]);
 
+  if (isLoadingDetail) {
+    return <Loading />;
+  }
+
   if (!feedbackItem) {
     return (
-      <ThemeBasedView style={styles.container}>
-        <Text style={styles.errorText}>数据加载失败</Text>
+      <ThemeBasedView style={[styles.container, styles.centered]}>
+        <Text style={currentStyle?.text_style}>
+          {currentSource === 'unknown' ? '跳转路径错误' : '数据加载失败'}
+        </Text>
       </ThemeBasedView>
     );
   }
@@ -262,7 +319,6 @@ export default function FeedbackDetail() {
 
             <View style={styles.infoRowItem}>
               <Text style={styles.infoLabel}>时间</Text>
-
               <Text style={styles.timeText}>
                 {feedbackItem.fields.submitTime}
               </Text>
@@ -314,7 +370,7 @@ export default function FeedbackDetail() {
             ) : (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.imageRow}>
-                  {isLoading && imageUrls?.length === imgTokenCount
+                  {isLoadingImages && imageUrls?.length === imgTokenCount
                     ? imageUrls.map((_, idx) => (
                         <View key={idx} style={styles.imagePlaceholder}>
                           <ActivityIndicator />
@@ -393,6 +449,10 @@ const styles = StyleSheet.create({
     position: 'relative',
     paddingHorizontal: 8,
     paddingVertical: 8,
+  },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   progressContainer: {
     flexDirection: 'row',
@@ -556,10 +616,5 @@ const styles = StyleSheet.create({
   previewImage: {
     width: '90%',
     height: '90%',
-  },
-  errorText: {
-    marginTop: 40,
-    textAlign: 'center',
-    color: '#EF4444',
   },
 });

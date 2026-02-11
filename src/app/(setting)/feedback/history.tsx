@@ -26,26 +26,84 @@ import {
 } from '@/constants/FEEDBACKS';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
-interface FeedbackItem {
+export interface FeedbackItem {
   record_id: string;
   fields: {
     content: string;
-    screenshots: Array<{
-      file_token?: string;
-      name?: string;
-      size?: number;
-      tmp_url?: string;
-      type?: string;
-      url?: string;
-    }>;
-    submitTime: number | string;
-    userId: string;
+    screenshots: Array<{ file_token: string }>;
+    submitTime: string;
     contact: string;
-    reply: string;
     source: string;
+    reply: string;
     status: string;
     type: string;
   };
+}
+
+function formatSubmitTime(timestamp: any): string {
+  if (timestamp === null || timestamp === undefined) {
+    return '未知时间';
+  }
+
+  const tsNum =
+    typeof timestamp === 'string' && /^\d+$/.test(timestamp)
+      ? Number(timestamp)
+      : timestamp;
+
+  const date = new Date(tsNum);
+  if (isNaN(date.getTime())) {
+    return '未知时间';
+  }
+
+  const parts = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .formatToParts(date)
+    .reduce((acc: any, part: any) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {});
+
+  const year = parts.year;
+  const month = parts.month;
+  const day = parts.day;
+
+  return `${year}-${month}-${day}`;
+}
+
+export function transformSingleRecord(
+  record_id: string,
+  rawRecord: Record<string, any>
+): FeedbackItem {
+  return {
+    record_id,
+    fields: {
+      content: rawRecord['反馈内容'] || '暂无内容',
+      screenshots: Array.isArray(rawRecord['截图'])
+        ? rawRecord['截图'].map((token: string) => ({ file_token: token }))
+        : [],
+      submitTime: formatSubmitTime(rawRecord['提交时间']),
+      contact: rawRecord['联系方式（QQ/邮箱）'] || '',
+      source: rawRecord['问题来源'] || '未知来源',
+      reply: rawRecord['回复内容'] || '暂未回复',
+      status:
+        rawRecord['进度'] === '待通知'
+          ? '处理中'
+          : rawRecord['进度'] || '未知状态',
+      type: rawRecord['问题类型'] || '未知类型',
+    },
+  };
+}
+
+function transformRecordsToFeedbackItems(
+  records: Array<{ record_id: string; record: Record<string, any> }>
+): FeedbackItem[] {
+  return records.map(item =>
+    transformSingleRecord(item.record_id, item.record)
+  );
 }
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
@@ -61,6 +119,7 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
       router.push({
         pathname: '/feedback/detail',
         params: { item: itemData },
+        // params: { record_id: item.record_id },
       });
     };
 
@@ -164,67 +223,6 @@ export default function FeedbackHistory() {
     currentStyle,
   }));
 
-  function formatSubmitTime(timestamp: any): string {
-    if (timestamp === null || timestamp === undefined) {
-      return '未知时间';
-    }
-
-    const tsNum =
-      typeof timestamp === 'string' && /^\d+$/.test(timestamp)
-        ? Number(timestamp)
-        : timestamp;
-
-    const date = new Date(tsNum);
-    if (isNaN(date.getTime())) {
-      return '未知时间';
-    }
-
-    const parts = new Intl.DateTimeFormat('zh-CN', {
-      timeZone: 'Asia/Shanghai',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    })
-      .formatToParts(date)
-      .reduce((acc: any, part: any) => {
-        acc[part.type] = part.value;
-        return acc;
-      }, {});
-
-    const year = parts.year;
-    const month = parts.month;
-    const day = parts.day;
-
-    return `${year}-${month}-${day}`;
-  }
-
-  function transformRecordsToFeedbackItems(
-    records: Array<{
-      record_id: string;
-      record: Record<string, any>;
-    }>
-  ): FeedbackItem[] {
-    return records.map(item => ({
-      record_id: item.record_id,
-      fields: {
-        content: item.record['反馈内容'] || '暂无内容',
-        screenshots: Array.isArray(item.record['截图'])
-          ? item.record['截图'].map((token: string) => ({ file_token: token }))
-          : [],
-        submitTime: formatSubmitTime(item.record['提交时间']),
-        userId: item.record['用户ID'] || '',
-        contact: item.record['联系方式（QQ/邮箱）'] || '',
-        source: item.record['问题来源'] || '未知来源',
-        reply: item.record['回复内容'] || '暂未回复',
-        status:
-          item.record['进度'] === '待通知'
-            ? '处理中'
-            : item.record['进度'] || '未知状态',
-        type: item.record['问题类型'] || '未知类型',
-      },
-    }));
-  }
-
   const getUserFeedbackSheet = async (isInit: boolean) => {
     if (!isInit && (loadingRef.current || !hasMore)) return;
 
@@ -246,7 +244,7 @@ export default function FeedbackHistory() {
 
       if (res.code === 0) {
         const list = transformRecordsToFeedbackItems(res.data.records);
-        setFeedbackHistory([...feedbackHistory, ...list]);
+        setFeedbackHistory(prev => [...prev, ...list]);
         setHasMore(res.data.has_more);
         setPageToken(res.data.page_token || '');
       }

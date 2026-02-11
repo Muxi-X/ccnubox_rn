@@ -2786,6 +2786,55 @@ paths:
       summary: 更新FAQ解决方案的 已解决/未解决 状态
       tags:
         - Sheet
+  /api/v1/sheet/record:
+    get:
+      summary: 按 RecordID 查询历史反馈记录
+      description:
+        根据 record_id
+        获取单条用户反馈记录的详细内容，返回记录字段的键值对。请求中需包含合法的
+        table_identify，用于校验权限。
+      tags:
+        - Sheet
+      parameters:
+        - name: record_id
+          in: query
+          description: 记录 ID
+          required: true
+          schema:
+            type: string
+        - name: table_identify
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: Bearer Token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回查询结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      record:
+                        type: object
+                        additionalProperties: true
+                  msg:
+                    type: string
+        '400':
+          description: 请求有误
+        '500':
+          description: 服务器内部错误
 components:
   schemas:
     banner.Banner:
