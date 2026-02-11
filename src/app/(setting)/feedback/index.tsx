@@ -20,7 +20,7 @@ import useFAQStore from '@/store/FAQs';
 import useVisualScheme from '@/store/visualScheme';
 
 import NormalIcon from '@/assets/images/normal-question.png.png';
-import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from '@/constants/FEEDBACK';
+import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from '@/constants/feedback';
 import FAQItem from '@/modules/setting/components/faqitem';
 import { feedbackFAQ, getFAQ } from '@/request/api/feedback';
 import handleCopy from '@/utils/handleCopy';

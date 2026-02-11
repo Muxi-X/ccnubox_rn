@@ -28,6 +28,8 @@ import useVisualScheme from '@/store/visualScheme';
 import MXLogo from '@/assets/images/mx-logo.png';
 import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
+import { getPushToken } from '@/utils/pushToken';
+import { saveFeedToken } from '@/request/api/feeds';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -78,6 +80,15 @@ const LoginPage: FC = () => {
         setItem('shortToken', response.headers['x-jwt-token']);
         setItem('longToken', response.headers['x-refresh-token']);
         router.navigate('/(tabs)');
+        const registerID = await getPushToken();
+        if (!registerID) {
+          log.warn('获取 push token 失败');
+          return;
+        }
+        log.info('注册 push token:', registerID);
+        saveFeedToken(registerID).catch(err => {
+          log.error('保存 feed token 失败:', err);
+        });
       }
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401) {

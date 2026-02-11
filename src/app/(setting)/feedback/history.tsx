@@ -27,7 +27,7 @@ import {
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_BG_COLORS,
   STATUS_COLORS,
-} from '@/constants/FEEDBACK';
+} from '@/constants/feedback';
 
 interface FeedbackItem {
   record_id: string;

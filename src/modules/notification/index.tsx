@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
+import { openPushUrl } from '@/hooks/useJPush';
+
 import Toast from '@/components/toast';
 
 import { type EventProps, useEvents } from '@/store/events';
@@ -86,10 +88,13 @@ const NotificationPage: FC = () => {
 
 export const ListItem: FC<EventProps> = ({
   type,
+  title,
   read,
   content,
   id,
   created_at,
+  url,
+  extend_fields,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const swipeableRef = useRef<Swipeable>(null);
@@ -97,10 +102,21 @@ export const ListItem: FC<EventProps> = ({
   const { markAsRead, getFeedEvents, deleteEvent } = useEvents();
 
   const readEvent = () => {
+    console.log('[Notification] 点击通知项:', { id, type, url, extend_fields });
     if (id) {
       markAsRead(id).then(() => {
         getFeedEvents();
       });
+    }
+
+    // 通知中心列表点击优先使用接口直出 url，避免与 JPush extras 解析逻辑混用
+    const fallbackUrl = extend_fields?.url;
+    const targetUrl = url || fallbackUrl;
+    if (targetUrl) {
+      console.log('[Notification] 发现跳转 URL:', targetUrl);
+      openPushUrl(targetUrl);
+    } else {
+      console.log('[Notification] 未发现跳转 URL');
     }
   };
 
@@ -132,6 +148,7 @@ export const ListItem: FC<EventProps> = ({
   };
 
   if (!feedIcon) return null;
+  const displayTitle = title?.trim() || feedIcon.text;
 
   return (
     <Swipeable
@@ -145,7 +162,7 @@ export const ListItem: FC<EventProps> = ({
         </View>
         <View style={styles.content}>
           <Text style={[styles.title, currentStyle?.schedule_text_style]}>
-            {feedIcon.text}提醒
+            {displayTitle}
           </Text>
           {content && (
             <Text
