@@ -20,38 +20,98 @@ import Loading from '@/components/loading';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryUserFeedbackSheet } from '@/request/api/feedback';
-
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
-  STATUS_BG_COLORS,
-  STATUS_COLORS,
-} from '@/constants/feedback';
+} from '@/constants/FEEDBACKS';
+import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
-interface FeedbackItem {
+export interface FeedbackItem {
   record_id: string;
   fields: {
     content: string;
-    screenshots: Array<{
-      file_token?: string;
-      name?: string;
-      size?: number;
-      tmp_url?: string;
-      type?: string;
-      url?: string;
-    }>;
-    submitTime: number | string;
-    userId: string;
+    screenshots: Array<{ file_token: string }>;
+    submitTime: string;
     contact: string;
     source: string;
+    reply: string;
     status: string;
     type: string;
   };
 }
 
+function formatSubmitTime(timestamp: any): string {
+  if (timestamp === null || timestamp === undefined) {
+    return '未知时间';
+  }
+
+  const tsNum =
+    typeof timestamp === 'string' && /^\d+$/.test(timestamp)
+      ? Number(timestamp)
+      : timestamp;
+
+  const date = new Date(tsNum);
+  if (isNaN(date.getTime())) {
+    return '未知时间';
+  }
+
+  const parts = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .formatToParts(date)
+    .reduce((acc: any, part: any) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {});
+
+  const year = parts.year;
+  const month = parts.month;
+  const day = parts.day;
+
+  return `${year}-${month}-${day}`;
+}
+
+export function transformSingleRecord(
+  record_id: string,
+  rawRecord: Record<string, any>
+): FeedbackItem {
+  return {
+    record_id,
+    fields: {
+      content: rawRecord['反馈内容'] || '暂无内容',
+      screenshots: Array.isArray(rawRecord['截图'])
+        ? rawRecord['截图'].map((token: string) => ({ file_token: token }))
+        : [],
+      submitTime: formatSubmitTime(rawRecord['提交时间']),
+      contact: rawRecord['联系方式（QQ/邮箱）'] || '',
+      source: rawRecord['问题来源'] || '未知来源',
+      reply: rawRecord['回复内容'] || '暂未回复',
+      status:
+        rawRecord['进度'] === '待通知'
+          ? '处理中'
+          : rawRecord['进度'] || '未知状态',
+      type: rawRecord['问题类型'] || '未知类型',
+    },
+  };
+}
+
+function transformRecordsToFeedbackItems(
+  records: Array<{ record_id: string; record: Record<string, any> }>
+): FeedbackItem[] {
+  return records.map(item =>
+    transformSingleRecord(item.record_id, item.record)
+  );
+}
+
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
+    const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
+      currentStyle,
+    }));
+
     const router = useRouter();
 
     const handlePress = () => {
@@ -59,6 +119,7 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
       router.push({
         pathname: '/feedback/detail',
         params: { item: itemData },
+        // params: { record_id: item.record_id },
       });
     };
 
@@ -69,57 +130,76 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
 
     return (
       <TouchableOpacity
-        style={styles.itemcontainer}
+        style={[styles.itemContainer, currentStyle?.feedback_card_style]}
         onPress={handlePress}
         activeOpacity={0.7}
       >
-        <View style={styles.itemheader}>
-          <View style={styles.itemheaderleft}>
-            <View style={styles.itemheaderleftitem}>
-              <Text style={styles.itemheaderleftitemtext}>
+        <View style={styles.itemHeader}>
+          <View style={styles.itemHeaderleft}>
+            <View
+              style={[
+                styles.itemHeaderleftitem,
+                currentStyle?.feedback_history_metaData_style,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.itemHeaderleftitemText,
+                  currentStyle?.feedback_history_metaData_text_style,
+                ]}
+              >
                 {item.fields.source}
               </Text>
             </View>
-            <View style={styles.itemheaderleftitem}>
-              <Text style={styles.itemheaderleftitemtext}>
+            <View
+              style={[
+                styles.itemHeaderleftitem,
+                currentStyle?.feedback_history_metaData_style,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.itemHeaderleftitemText,
+                  currentStyle?.feedback_history_metaData_text_style,
+                ]}
+              >
                 {item.fields.type}
               </Text>
             </View>
           </View>
 
-          {/* 最简单的UTC转UTC+8😋 */}
           <View style={{ paddingVertical: 8 }}>
-            <Text style={styles.itemheaderright}>
-              {item.fields.submitTime === '未知时间'
-                ? '未知时间'
-                : (() => {
-                    const d = new Date(
-                      (item.fields.submitTime as number) + 8 * 3600 * 1000
-                    );
-                    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                  })()}
-            </Text>
+            <Text style={styles.itemHeaderright}>{item.fields.submitTime}</Text>
           </View>
         </View>
 
-        <View style={styles.itemcontent}>
-          <Text style={styles.itemcontenttitle}>反馈内容</Text>
-          <Text style={styles.itemcontenttext}>
+        <View style={styles.itemContent}>
+          <Text style={[styles.itemContenttitle, currentStyle?.text_style]}>
+            反馈内容
+          </Text>
+          <Text style={[styles.itemContenttext, currentStyle?.text_style]}>
             {spliceText(item.fields.content)}
           </Text>
         </View>
 
-        <View style={styles.itemfooter}>
+        <View style={styles.itemFooter}>
+          <View style={[styles.replyContainer]}>
+            <Text style={[styles.replyText]}>
+              回复: {spliceText(item.fields.reply, 15)}
+            </Text>
+          </View>
           <View
             style={[
-              styles.itemfootercontainer,
-              { backgroundColor: STATUS_BG_COLORS[item.fields.status] },
+              styles.itemFooterContainer,
+              currentStyle?.feedback_status_style?.getStyle(item.fields.status),
             ]}
           >
             <Text
               style={[
-                styles.itemfootertext,
-                { color: STATUS_COLORS[item.fields.status] },
+                styles.itemFootertext,
+                currentStyle?.feedback_statusText_style?.getStyle(
+                  item.fields.status
+                ),
               ]}
             >
               {item.fields.status}
@@ -143,32 +223,6 @@ export default function FeedbackHistory() {
     currentStyle,
   }));
 
-  function transformRecordsToFeedbackItems(
-    records: Array<{
-      RecordID: string;
-      Record: Record<string, any>;
-    }>
-  ): FeedbackItem[] {
-    return records.map(item => ({
-      record_id: item.RecordID,
-      fields: {
-        content: item.Record['反馈内容'] || '暂无内容',
-        screenshots: Array.isArray(item.Record['截图'])
-          ? item.Record['截图'].map((token: string) => ({ file_token: token }))
-          : [],
-        submitTime: item.Record['提交时间'] || '未知时间',
-        userId: item.Record['用户ID'] || '',
-        contact: item.Record['联系方式（QQ/邮箱）'] || '',
-        source: item.Record['问题来源'] || '未知来源',
-        status:
-          item.Record['进度'] === '待通知'
-            ? '处理中'
-            : item.Record['进度'] || '未知状态',
-        type: item.Record['问题类型'] || '未知类型',
-      },
-    }));
-  }
-
   const getUserFeedbackSheet = async (isInit: boolean) => {
     if (!isInit && (loadingRef.current || !hasMore)) return;
 
@@ -189,10 +243,10 @@ export default function FeedbackHistory() {
       const res = (await queryUserFeedbackSheet(query)) as any;
 
       if (res.code === 0) {
-        const list = transformRecordsToFeedbackItems(res.data.Records);
-        setFeedbackHistory([...feedbackHistory, ...list]);
-        setHasMore(res.data.HasMore);
-        setPageToken(res.data.PageToken || null);
+        const list = transformRecordsToFeedbackItems(res.data.records);
+        setFeedbackHistory(prev => [...prev, ...list]);
+        setHasMore(res.data.has_more);
+        setPageToken(res.data.page_token || '');
       }
     } catch (err) {
       console.error('获取用户反馈失败', err);
@@ -229,7 +283,7 @@ export default function FeedbackHistory() {
     if (!hasMore) {
       return (
         <Text style={{ textAlign: 'center', margin: 16, color: '#999' }}>
-          再往下也没有了
+          没有更多了
         </Text>
       );
     }
@@ -266,10 +320,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
-  itemcontainer: {
-    backgroundColor: 'white',
+  itemContainer: {
     margin: 8,
-    padding: 12,
+    padding: 16,
     borderRadius: 12,
     marginBottom: 8,
     marginTop: 8,
@@ -282,66 +335,73 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.02,
     shadowRadius: 1,
   },
-  itemheader: {
+  itemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  itemcontent: {
+  itemContent: {
     marginVertical: -4,
   },
-  itemfooter: {
+  itemFooter: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginTop: 16,
+    marginRight: 12,
   },
-  itemheaderleft: {
+  replyContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  replyText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#C8C8C8',
+  },
+  itemHeaderleft: {
     flexDirection: 'row',
   },
-  itemheaderleftitem: {
+  itemHeaderleftitem: {
     width: 72,
     height: 27,
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: '#F6F5FF',
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  itemheaderleftitemtext: {
+  itemHeaderleftitemText: {
     fontSize: 12,
     lineHeight: 16,
     fontWeight: '400',
-    color: '#7B70F1',
     textAlign: 'center',
   },
-  itemheaderright: {
+  itemHeaderright: {
     fontSize: 14,
     fontWeight: '400',
     color: '#9CA3AF',
   },
-  itemcontenttitle: {
+  itemContenttitle: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#000000',
     marginBottom: 6,
     marginTop: 6,
   },
-  itemcontenttext: {
+  itemContenttext: {
     fontSize: 14,
     fontWeight: '400',
-    color: '#4B5563',
   },
-  itemfootertext: {
+  itemFootertext: {
     fontSize: 12,
     fontWeight: '400',
     lineHeight: 16,
   },
-  itemfootercontainer: {
-    marginVertical: 12,
+  itemFooterContainer: {
     paddingHorizontal: 10,
     height: 24,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
     alignItems: 'center',
   },

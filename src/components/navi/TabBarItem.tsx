@@ -9,6 +9,7 @@ import {
   View,
   type ViewProps,
 } from 'react-native';
+
 import { TABBAR_COLOR } from '@/constants/tabBar';
 
 import AnimatedScale from '../animatedView/AnimatedScale';

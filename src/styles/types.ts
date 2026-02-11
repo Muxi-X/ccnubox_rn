@@ -5,6 +5,7 @@ export type ThemeName = 'dark' | 'light';
 /** 可配置style名 */
 export type ConfigurableThemeNames =
   | 'text_style'
+  | 'inverted_text_style'
   | 'placeholder_text_style'
   | 'button_style'
   | 'button_text_style'
@@ -33,7 +34,20 @@ export type ConfigurableThemeNames =
   | 'elecprice_change_button_text_style'
   | 'elecprice_lighting_card_style'
   | 'elecprice_air_conditioner_card_style'
-  | 'elecprice_standard_card_style';
+  | 'elecprice_standard_card_style'
+  | 'FAQItem_background_style'
+  | 'FAQItem_expandedBackground_style'
+  | 'FAQItem_contentBackground_style'
+  | 'FAQItem_icon_style'
+  | 'feedback_defaultOption_style'
+  | 'feedback_disabledSubmitButton_style'
+  | 'feedback_card_style'
+  | 'feedback_history_metaData_style'
+  | 'feedback_history_metaData_text_style'
+  | 'feedback_status_style'
+  | 'feedback_statusText_style'
+  | 'feedback_detail_statusCircle_style'
+  | 'feedback_detail_text_style';
 
 /** 按命名约定分类配置名 */
 type TextStyleNames = Extract<

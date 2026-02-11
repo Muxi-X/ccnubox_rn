@@ -2,13 +2,15 @@ import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
 import { request } from '@/request';
-import { FeishuUploadTokenConfig } from '@/request/api/feedback/otherTokenConfig';
+import {
+  FeishuUploadTokenConfig,
+  FIXED_CONFIG,
+} from '@/request/api/feedback/config';
 
 function calculateAdler32(arrayBuffer: ArrayBuffer): string {
   const view = new Uint8Array(arrayBuffer);
   let a = 1;
   let b = 0;
-
   for (let i = 0; i < view.length; i++) {
     a = (a + view[i]) % 65521;
     b = (b + a) % 65521;
@@ -59,11 +61,6 @@ async function uploadFileToFeishuBitable(
   fileUri: string,
   fileName: string
 ): Promise<any> {
-  const FIXED_CONFIG = {
-    parentType: 'bitable_image',
-    parentNode: 'LC8aboXkCaAJaksSACOc9OS5nHf',
-  };
-
   try {
     // 获取文件信息和内容
     const fileInfo = await getFileInfo(fileUri);

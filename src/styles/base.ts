@@ -42,6 +42,9 @@ const baseStyle: ThemeType = {
     page_background_style: {
       backgroundColor: black,
     },
+    inverted_text_style: {
+      color: black,
+    },
   },
   light: {
     text_style: {
@@ -80,6 +83,9 @@ const baseStyle: ThemeType = {
     },
     page_background_style: {
       backgroundColor: 'rgba(250, 250, 250, 1)',
+    },
+    inverted_text_style: {
+      color: white,
     },
   },
 };

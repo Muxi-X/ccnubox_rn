@@ -19,15 +19,14 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { createFeedbackRecord } from '@/request/api/feedback';
-import { log } from '@/utils/logger';
-import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
-
 import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
   MODULE_MAP,
-} from '@/constants/feedback';
+} from '@/constants/FEEDBACKS';
+import { createFeedbackRecord } from '@/request/api/feedback';
+import { log } from '@/utils/logger';
+import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
   uri: string;
@@ -223,6 +222,7 @@ function WriteFeedback() {
               style={[
                 styles.issueTypeOption,
                 styles.defaultOption,
+                currentStyle?.feedback_defaultOption_style,
                 selectedIssueType === 'function' && styles.selectedOption,
               ]}
               onPress={() => setSelectedIssueType('function')}
@@ -230,12 +230,15 @@ function WriteFeedback() {
               <Text
                 style={[
                   styles.defaultText,
+                  currentStyle?.text_style,
                   selectedIssueType === 'function' && styles.selectedText,
                 ]}
               >
                 功能异常
               </Text>
-              <Text style={styles.optionDescription}>
+              <Text
+                style={[styles.optionDescription, currentStyle?.text_style]}
+              >
                 页面加载缓慢、无法使用、闪退
               </Text>
             </TouchableOpacity>
@@ -243,6 +246,7 @@ function WriteFeedback() {
               style={[
                 styles.issueTypeOption,
                 styles.defaultOption,
+                currentStyle?.feedback_defaultOption_style,
                 selectedIssueType === 'improvement' && styles.selectedOption,
               ]}
               onPress={() => setSelectedIssueType('improvement')}
@@ -250,12 +254,15 @@ function WriteFeedback() {
               <Text
                 style={[
                   styles.defaultText,
+                  currentStyle?.text_style,
                   selectedIssueType === 'improvement' && styles.selectedText,
                 ]}
               >
                 产品改进
               </Text>
-              <Text style={styles.optionDescription}>
+              <Text
+                style={[styles.optionDescription, currentStyle?.text_style]}
+              >
                 界面优化、功能建议、体验提升
               </Text>
             </TouchableOpacity>
@@ -268,6 +275,7 @@ function WriteFeedback() {
                 style={[
                   styles.moduleOption,
                   styles.defaultOption,
+                  currentStyle?.feedback_defaultOption_style,
                   selectedModule === module && styles.selectedOption,
                 ]}
                 onPress={() => {
@@ -277,6 +285,7 @@ function WriteFeedback() {
                 <Text
                   style={[
                     styles.defaultText,
+                    currentStyle?.text_style,
                     selectedModule === module && styles.selectedText,
                   ]}
                 >
@@ -297,8 +306,13 @@ function WriteFeedback() {
             </Text>
 
             <TextInput
-              style={styles.textInput}
+              style={[
+                styles.textInput,
+                currentStyle?.feedback_defaultOption_style as any,
+                currentStyle?.text_style,
+              ]}
               multiline={true}
+              placeholderTextColor={'#9E9E9E'}
               placeholder={
                 '请详细描述您遇到的问题...\n如: "首页查算学分绩功能，点击查询后无法显示学分绩"'
               }
@@ -328,7 +342,14 @@ function WriteFeedback() {
                     style={styles.removeButton}
                     onPress={() => handleRemoveImage(img.uri)}
                   >
-                    <Text style={styles.removeButtonText}>×</Text>
+                    <Text
+                      style={[
+                        styles.removeButtonText,
+                        currentStyle?.text_style,
+                      ]}
+                    >
+                      ×
+                    </Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -354,7 +375,12 @@ function WriteFeedback() {
               联系方式
             </Text>
             <TextInput
-              style={styles.contactInput}
+              style={[
+                styles.contactInput,
+                currentStyle?.feedback_defaultOption_style as any,
+                currentStyle?.text_style,
+              ]}
+              placeholderTextColor={'#9E9E9E'}
               placeholder="QQ/邮箱"
               value={contact}
               onChangeText={setContact}
@@ -366,7 +392,8 @@ function WriteFeedback() {
         <TouchableOpacity
           style={[
             styles.submitButton,
-            (!isSubmitEnabled || isSubmitting) && styles.submitButtonDisabled,
+            (!isSubmitEnabled || isSubmitting) &&
+              currentStyle?.feedback_disabledSubmitButton_style,
           ]}
           onPress={handleSubmit}
           disabled={!isSubmitEnabled || isSubmitting}
@@ -374,6 +401,7 @@ function WriteFeedback() {
           <Text
             style={[
               styles.submitButtonText,
+              currentStyle?.text_style,
               (!isSubmitEnabled || isSubmitting) &&
                 styles.submitButtonDisabledText,
             ]}
@@ -381,6 +409,12 @@ function WriteFeedback() {
             {isSubmitting ? '提交中...' : '提交'}
           </Text>
         </TouchableOpacity>
+
+        <View style={styles.tipWrapper}>
+          <Text style={[currentStyle?.text_style]}>
+            上传图片与联系方式，帮助我们更好的解决问题~
+          </Text>
+        </View>
       </ScrollView>
     </ThemeBasedView>
   );
@@ -406,19 +440,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
-    backgroundColor: '#fff',
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
     minHeight: 100,
   },
   contactInput: {
-    backgroundColor: '#fff',
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
     height: 50,
   },
   counter: {
@@ -457,7 +487,6 @@ const styles = StyleSheet.create({
   selectedOption: {
     borderWidth: 1,
     borderColor: '#7B70F1',
-    backgroundColor: '#F6F5FF',
     padding: 12,
   },
   defaultText: {
@@ -556,6 +585,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#7B70F1',
     textAlign: 'center',
+  },
+  tipWrapper: {
+    marginTop: 8,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
