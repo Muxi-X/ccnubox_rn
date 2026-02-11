@@ -20,6 +20,7 @@ tags:
   - name: tube
   - name: user
   - name: website
+  - name: version
 paths:
   /elecprice/cancelStandard:
     post:
@@ -53,6 +54,54 @@ paths:
                   - properties:
                       msg:
                         type: string
+                    type: object
+          headers: {}
+        '500':
+          description: 系统异常
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      msg:
+                        type: string
+                    type: object
+          headers: {}
+      security: []
+  /elecprice/electricityBillinBalance:
+    get:
+      summary: 获取房间电费余额
+      deprecated: false
+      description: 电费信息详情跳转
+      tags:
+        - elecprice
+      parameters:
+        - name: room_id
+          in: query
+          description: 房间设备id
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: Bearer Token
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功的返回信息
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      msg:
+                        $ref: >-
+                          #/components/schemas/elecprice.GetBillingBalanceResponse
                     type: object
           headers: {}
         '500':
@@ -1363,11 +1412,11 @@ paths:
                 $ref: '#/components/schemas/web.Response'
           headers: {}
       security: []
-  /feed/publicFeedEvent:
+  /feed/publicFeedbackEvent:
     post:
-      summary: 发布消息
+      summary: 发布反馈消息
       deprecated: false
-      description: 发布消息
+      description: 发布反馈消息
       tags:
         - feed
       parameters:
@@ -1382,7 +1431,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/feed.PublicFeedEventReq'
+              $ref: '#/components/schemas/feed.PublicFeedbackEventReq'
         required: true
       responses:
         '200':
@@ -2696,6 +2745,65 @@ paths:
                     type: object
           headers: {}
       security: []
+  /version/getVersion:
+    get:
+      summary: 获取热更新版本
+      deprecated: false
+      description: 获取热更新版本
+      tags:
+        - version
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          example: Bearer {{JWT}}
+          schema:
+            type: string
+            default: Bearer {{JWT}}
+      responses:
+        '200':
+          description: 成功
+          content:
+            '*/*':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/content.GetUpdateVersionResponse'
+                    type: object
+          headers: {}
+      security: []
+  /version/saveVersion:
+    post:
+      summary: 更新热更新版本
+      deprecated: false
+      description: 更新热更新版本
+      tags:
+        - version
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          example: Bearer {{JWT}}
+          schema:
+            type: string
+            default: Bearer {{JWT}}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/content.SaveVersionRequest'
+        required: true
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+          headers: {}
+      security: []
 components:
   schemas:
     banner.Banner:
@@ -2710,6 +2818,17 @@ components:
         - id
         - picture_link
         - web_link
+      type: object
+    elecprice.BillingBalanceResponse:
+      type: object
+      properties:
+        price:
+          type: object
+          properties: {}
+    elecprice.GetBillingBalanceResponse:
+      properties:
+        price:
+          $ref: '#/components/schemas/elecprice.Price'
       type: object
     banner.DelBannerRequest: &ref_1
       properties:
@@ -3456,6 +3575,11 @@ components:
             $ref: '#/components/schemas/content.Website'
           type: array
       type: object
+    content.GetUpdateVersionResponse:
+      properties:
+        version:
+          type: string
+      type: object
     static.GetStaticByLabelsResp:
       properties:
         statics:
@@ -3553,7 +3677,7 @@ components:
       properties:
         energy:
           type: boolean
-        feed_back:
+        feedback:
           type: boolean
         grade:
           type: boolean
@@ -3581,6 +3705,8 @@ components:
         title:
           type: string
         type:
+          type: string
+        url:
           type: string
       type: object
     elecprice.GetRoomInfoResponse:
@@ -3738,6 +3864,13 @@ components:
         - room_name
       type: object
     content.Website: *ref_9
+    content.SaveVersionRequest:
+      properties:
+        version:
+          type: string
+      required:
+        - version
+      type: object
     website.GetWebsitesResponse:
       properties:
         websites:
@@ -4078,6 +4211,22 @@ components:
         RegularGradePercent:
           description: 平时成绩占比
           type: string
+    feed.PublicFeedbackEventReq:
+      properties:
+        content:
+          type: string
+        recordID:
+          type: string
+        student_id:
+          type: string
+        title:
+          type: string
+      required:
+        - content
+        - recordID
+        - student_id
+        - title
+      type: object
     grade.GetGradeByTermReq:
       properties:
         kcxzmcs:

@@ -66,6 +66,67 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/elecprice/electricityBillinBalance': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取房间电费余额
+     * @description 电费信息详情跳转
+     */
+    get: {
+      parameters: {
+        query: {
+          /** @description 房间设备id */
+          room_id: string;
+        };
+        header: {
+          /**
+           * @description Bearer Token
+           * @example
+           */
+          Authorization: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 获取成功的返回信息 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: components['schemas']['elecprice.GetBillingBalanceResponse'];
+            };
+          };
+        };
+        /** @description 系统异常 */
+        500: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              msg?: string;
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/elecprice/getArchitecture': {
     parameters: {
       query?: never;
@@ -1858,7 +1919,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/feed/publicFeedEvent': {
+  '/feed/publicFeedbackEvent': {
     parameters: {
       query?: never;
       header?: never;
@@ -1868,8 +1929,8 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 发布消息
-     * @description 发布消息
+     * 发布反馈消息
+     * @description 发布反馈消息
      */
     post: {
       parameters: {
@@ -1883,7 +1944,7 @@ export interface paths {
       };
       requestBody: {
         content: {
-          'application/json': components['schemas']['feed.PublicFeedEventReq'];
+          'application/json': components['schemas']['feed.PublicFeedbackEventReq'];
         };
       };
       responses: {
@@ -3824,6 +3885,96 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/version/getVersion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取热更新版本
+     * @description 获取热更新版本
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: {
+          /** @example Bearer {{JWT}} */
+          Authorization?: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            '*/*': components['schemas']['web.Response'] & {
+              data?: components['schemas']['content.GetUpdateVersionResponse'];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/version/saveVersion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 更新热更新版本
+     * @description 更新热更新版本
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: {
+          /** @example Bearer {{JWT}} */
+          Authorization?: string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['content.SaveVersionRequest'];
+        };
+      };
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3832,6 +3983,12 @@ export interface components {
       id: number;
       picture_link: string;
       web_link: string;
+    };
+    'elecprice.BillingBalanceResponse': {
+      price?: Record<string, never>;
+    };
+    'elecprice.GetBillingBalanceResponse': {
+      price?: components['schemas']['elecprice.Price'];
     };
     'banner.DelBannerRequest': {
       id: number;
@@ -4218,6 +4375,9 @@ export interface components {
     'content.GetWebsitesResponse': {
       websites?: components['schemas']['content.Website'][];
     };
+    'content.GetUpdateVersionResponse': {
+      version?: string;
+    };
     'static.GetStaticByLabelsResp': {
       statics?: components['schemas']['static.StaticVo'][];
     };
@@ -4281,7 +4441,7 @@ export interface components {
     };
     'feed.GetFeedAllowListResp': {
       energy?: boolean;
-      feed_back?: boolean;
+      feedback?: boolean;
       grade?: boolean;
       holiday?: boolean;
       muxi?: boolean;
@@ -4297,6 +4457,7 @@ export interface components {
       read?: boolean;
       title?: string;
       type?: string;
+      url?: string;
     };
     'elecprice.GetRoomInfoResponse': {
       room_list: components['schemas']['elecprice.Room'][];
@@ -4396,6 +4557,9 @@ export interface components {
       image?: string;
       link?: string;
       name?: string;
+    };
+    'content.SaveVersionRequest': {
+      version: string;
     };
     'website.GetWebsitesResponse': {
       websites: components['schemas']['website.Website'][];
@@ -4606,6 +4770,12 @@ export interface components {
       RegularGrade?: string;
       /** @description 平时成绩占比 */
       RegularGradePercent?: string;
+    };
+    'feed.PublicFeedbackEventReq': {
+      content: string;
+      recordID: string;
+      student_id: string;
+      title: string;
     };
     'grade.GetGradeByTermReq': {
       /** @description 课程种类筛选,有如下类型:专业主干课程,通识选修课,通识必修课,个性发展课程,通识核心课,教师教育选修,教师教育必修,大学英语分级教育等 */
