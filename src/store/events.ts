@@ -9,6 +9,7 @@ import {
 
 interface ExtendFields {
   test?: string;
+  url?: string;
 }
 
 export interface EventProps {
@@ -16,6 +17,7 @@ export interface EventProps {
   created_at?: number; // Unix 时间戳
   extend_fields?: ExtendFields;
   id?: number;
+  url?: string;
   title?: string;
   type?: string;
   read?: boolean;

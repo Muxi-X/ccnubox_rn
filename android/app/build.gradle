@@ -96,15 +96,15 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
-// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-5f215e4fdf03cc2c55b14893c105f99067dd384e
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-e4db40184138a3ea14325b03462219ea007f6730
 manifestPlaceholders = [
                 JPUSH_PKGNAME: "com.muxixyz.ccnubox",
                 JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
                 JPUSH_CHANNEL: "coursetable",
                 XIAOMI_APPID: "2882303761520462016",
                 XIAOMI_APPKEY: "5942046278016",
-                OPPO_APPKEY: "OP-36447274",
-                OPPO_APPID: "OP-f3b392058cb1444988f03f8064dbcb53",
+                OPPO_APPKEY: "OP-f3b392058cb1444988f03f8064dbcb53",
+                OPPO_APPID: "OP-36447274",
                 OPPO_APPSECRET: "OP-45d5f56d33fa4633829df14e660d118c",
                 VIVO_APPKEY: "6fd7494bed347bcc3a7eae7973aa1042",
                 VIVO_APPID: "105980992",
@@ -116,12 +116,6 @@ manifestPlaceholders = [
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 16
         versionName "3.1.4"
-        manifestPlaceholders = [
-// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-da23916a7ea9b11e7b38a6e2c1578bf019418bba
-            JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
-            JPUSH_CHANNEL: "coursetable"
-        ]
-// @generated end jpush-manifest-placeholders
 
 // @generated begin jpush-ndk-config - expo prebuild (DO NOT MODIFY) sync-b1dec770741d2eaa7867c32a8a866f8899231079
 ndk {
