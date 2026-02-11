@@ -1,7 +1,19 @@
 import { setItem } from 'expo-secure-store';
 
+import { FEEDBACK_BASE_URL, FEEDBACK_DEV_BASE_URL } from './constants';
 import getFeedbackToken from './getFeedbackToken';
 import getFeishuToken from './getFeishuToken';
+
+const ISDEV = __DEV__;
+
+export const BASE_URL = ISDEV ? FEEDBACK_DEV_BASE_URL : FEEDBACK_BASE_URL;
+
+export const FIXED_CONFIG = {
+  parentType: 'bitable_image',
+  parentNode: ISDEV
+    ? 'N4TcbHEPgaCvAIsrUspciX13nq8'
+    : 'LC8aboXkCaAJaksSACOc9OS5nHf',
+};
 
 interface GetAndSetTokenProps<T> {
   tokenKey: string;
