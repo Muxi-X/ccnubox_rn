@@ -11,9 +11,14 @@ import com.muxixyz.ccnubox.widgets.utils.TimeTableUtils
 import com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider2x2
 import com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider4x2
 
-class ScheduleRemoteViewsFactory(private val context: Context, val widgetType: String) : RemoteViewsService.RemoteViewsFactory {
+class ScheduleRemoteViewsFactory(
+    private val context: Context,
+    private val widgetType: String,
+    private val dayOffset: Int,
+    private val onlyUpcoming: Boolean
+) : RemoteViewsService.RemoteViewsFactory {
 
-    private val todayCourses = mutableListOf<CourseInfo>()
+    private val courses = mutableListOf<CourseInfo>()
 
     override fun onCreate() {
         loadData()
@@ -24,27 +29,33 @@ class ScheduleRemoteViewsFactory(private val context: Context, val widgetType: S
     }
 
     override fun onDestroy() {
-        todayCourses.clear()
+        courses.clear()
     }
 
     private fun loadData() {
-        val temp=TimeTableUtils.getTodayCourses(context)
-        Log.d("temp", temp.toString())
-        if(temp == todayCourses) return
-        todayCourses.clear()
-        todayCourses.addAll(temp)
-        Log.d("course", todayCourses.toString())
+        val temp = if (dayOffset == 0 && onlyUpcoming) {
+            // 兼容原有行为：仅今天 & 未结束课程
+            TimeTableUtils.getTodayCourses(context)
+        } else {
+            TimeTableUtils.getCoursesForDay(context, dayOffset, onlyUpcoming)
+        }
+        Log.d("ScheduleFactoryTemp", "widgetType=$widgetType, dayOffset=$dayOffset, onlyUpcoming=$onlyUpcoming, courses=$temp")
+        if (temp == courses) return
+        courses.clear()
+        courses.addAll(temp)
+        Log.d("ScheduleFactoryCourses", courses.toString())
     }
 
-    override fun getCount(): Int = todayCourses.size
+    override fun getCount(): Int = courses.size
 
     override fun getViewAt(position: Int): RemoteViews? {
-        if (todayCourses.isEmpty()||position !in todayCourses.indices)return null
-        val course = todayCourses[position]
-        Log.d("course",course.toString())
+        if (courses.isEmpty() || position !in courses.indices) return null
+        val course = courses[position]
+        Log.d("ScheduleFactoryItem", course.toString())
         val clickIntent = Intent(context, when (widgetType) {
             "2x2" -> RecentClassesProvider2x2::class.java
             "4x2" -> RecentClassesProvider4x2::class.java
+            "two_day" -> RecentClassesProvider4x2::class.java
             else -> RecentClassesProvider2x2::class.java // 默认值
         }).apply {
             action = "com.muxixyz.ccnubox.ACTION_WIDGET_CLICK"
@@ -55,7 +66,13 @@ class ScheduleRemoteViewsFactory(private val context: Context, val widgetType: S
             clickIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        return RemoteViews(context.packageName, R.layout.item_course).apply {
+        val itemLayout = when {
+            widgetType == "two_day" && dayOffset == 0 -> R.layout.item_course_today
+            widgetType == "two_day" && dayOffset != 0 -> R.layout.item_course_tomorrow
+            else -> R.layout.item_course
+        }
+
+        return RemoteViews(context.packageName, itemLayout).apply {
             setTextViewText(R.id.course_name, course.name)
             setTextViewText(R.id.course_location,course.location)
             setTextViewText(R.id.course_time, TimeTableUtils.getSectionTimeRange(course.startPeriod,course.endPeriod))
