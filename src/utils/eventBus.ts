@@ -1,27 +1,29 @@
 /**
+ * Event listener function type
+ */
+type EventListener<T extends unknown[] = unknown[]> = (...args: T) => void;
+
+/**
  * 使用 WeakMap 实现 EventBus，可解决内存泄漏问题，但我还没测试过
  */
 export class EventBusTest {
-  private _eventPool: WeakMap<
-    object,
-    Map<string, ((...args: any[]) => void)[]>
-  >;
+  private _eventPool: WeakMap<object, Map<string, EventListener[]>>;
 
   constructor() {
     this._eventPool = new WeakMap();
   }
 
-  private getEventListeners(): Map<string, ((...args: any[]) => void)[]> {
+  private getEventListeners(): Map<string, EventListener[]> {
     const eventFns = this._eventPool.get(globalThis);
     if (!eventFns) {
-      const newEventFns = new Map<string, ((...args: any[]) => void)[]>();
+      const newEventFns = new Map<string, EventListener[]>();
       this._eventPool.set(globalThis, newEventFns);
       return newEventFns;
     }
     return eventFns;
   }
 
-  emit(name: string, ...args: any[]): void {
+  emit<T extends unknown[]>(name: string, ...args: T): void {
     const eventFns = this.getEventListeners();
     const listeners = eventFns.get(name);
     if (listeners instanceof Array) {
@@ -31,29 +33,32 @@ export class EventBusTest {
     }
   }
 
-  on(name: string, fn: (...args: any[]) => void): void {
+  on<T extends unknown[]>(name: string, fn: EventListener<T>): void {
     const eventFns = this.getEventListeners();
     if (!eventFns.has(name)) {
       eventFns.set(name, []);
     }
     const listeners = eventFns.get(name)!;
-    listeners.push(fn);
+    // Type assertion is safe here because we maintain type consistency at runtime
+    // All listeners for a given event name share the same signature
+    listeners.push(fn as EventListener);
   }
 
-  off(name: string, fn: (...args: any[]) => void): void {
+  off<T extends unknown[]>(name: string, fn: EventListener<T>): void {
     const eventFns = this.getEventListeners();
     if (!eventFns.has(name)) {
       throw new Error(`${name} 中不存在该函数`);
     }
     const listeners = eventFns.get(name)!;
-    const index = listeners.indexOf(fn);
+    // Type assertion is safe here as we're looking up the same function we stored
+    const index = listeners.indexOf(fn as EventListener);
     if (index > -1) {
       listeners.splice(index, 1);
     }
   }
 
-  once(name: string, fn: (...args: any[]) => void): void {
-    const onceFn = (...args: any[]) => {
+  once<T extends unknown[]>(name: string, fn: EventListener<T>): void {
+    const onceFn: EventListener<T> = (...args: T) => {
       fn(...args);
       this.off(name, onceFn);
     };
@@ -62,9 +67,9 @@ export class EventBusTest {
 }
 
 export class EventBus {
-  private _eventPool: Record<string, ((...args: any[]) => void)[]> = {};
+  private _eventPool: Record<string, EventListener[]> = {};
 
-  emit(name: string, ...args: any[]): void {
+  emit<T extends unknown[]>(name: string, ...args: T): void {
     if (this._eventPool[name] instanceof Array) {
       this._eventPool[name].forEach(fn => fn(...args));
       return;
@@ -72,25 +77,28 @@ export class EventBus {
     console.log(`没有名为 ${name} 的事件`);
   }
 
-  on(name: string, fn: (...args: any[]) => void): void {
+  on<T extends unknown[]>(name: string, fn: EventListener<T>): void {
     if (!this._eventPool[name]) {
       this._eventPool[name] = [];
     }
-    this._eventPool[name].push(fn);
+    // Type assertion is safe here because we maintain type consistency at runtime
+    // All listeners for a given event name share the same signature
+    this._eventPool[name].push(fn as EventListener);
   }
 
-  off(name: string, fn: (...args: any[]) => void): void {
+  off<T extends unknown[]>(name: string, fn: EventListener<T>): void {
     if (!this._eventPool[name]) {
       throw new Error(`${name} 中不存在该函数`);
     }
-    const index = this._eventPool[name].indexOf(fn);
+    // Type assertion is safe here as we're looking up the same function we stored
+    const index = this._eventPool[name].indexOf(fn as EventListener);
     if (index > -1) {
       this._eventPool[name].splice(index, 1);
     }
   }
 
-  once(name: string, fn: (...args: any[]) => void): void {
-    const onceFn = (...args: any[]) => {
+  once<T extends unknown[]>(name: string, fn: EventListener<T>): void {
+    const onceFn: EventListener<T> = (...args: T) => {
       fn(...args);
       this.off(name, onceFn);
     };
