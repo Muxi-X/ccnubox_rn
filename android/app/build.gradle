@@ -92,8 +92,8 @@ android {
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "3.1.4"
+        versionCode 17
+        versionName "3.1.5"
     }
     signingConfigs {
         debug {
