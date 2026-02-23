@@ -46,10 +46,26 @@ export interface CourseTransferType {
   is_official: boolean; // 是否为教务系统课程
 }
 
+export interface SemesterOption {
+  label: string;
+  year: string;
+  semester: string;
+}
+
 export interface WeekSelectorProps {
   currentWeek: number;
   showWeekPicker: boolean;
   onWeekSelect: (_week: number) => void;
+  /** 当前学年，如 "2025" */
+  year: string;
+  /** 当前学期，"1" | "2" | "3" */
+  semester: string;
+  /** 可选学期列表 */
+  semesterOptions: SemesterOption[];
+  /** 关闭 WeekSelector 回调 */
+  onClose: () => void;
+  /** 切换学期回调，传入新的 year 和 semester */
+  onSemesterChange: (_year: string, _semester: string) => void;
 }
 
 /**
