@@ -65,7 +65,7 @@ const NotificationPage: FC = () => {
     setRefreshing(false);
   }, [getFeedEvents]);
 
-  const sortedEvents = feedEvents ? [...feedEvents].reverse() : [];
+  const sortedEvents = feedEvents ? [...feedEvents] : [];
 
   return (
     <View style={[{ flex: 1 }, currentStyles?.background_style]}>
