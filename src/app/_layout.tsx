@@ -1,7 +1,7 @@
 import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
 import * as Haptics from 'expo-haptics';
-import { Stack } from 'expo-router';
+import { Stack, useRootNavigationState } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 
 import { useBadgeSync, useJPush } from '@/hooks';
+import { setPushNavigationReady } from '@/hooks/useJPush';
 
 import PortalRoot from '@/components/portal';
 import Scraper from '@/components/scraper';
@@ -22,6 +23,7 @@ import { commonColors } from '@/styles/common';
 import { fetchUpdate } from '@/utils';
 
 export default function RootLayout() {
+  const rootNavigationState = useRootNavigationState();
   const initVisualScheme = useVisualScheme(state => state.init);
   const changeTheme = useVisualScheme(state => state.changeTheme);
   const isAutoTheme = useVisualScheme(state => state.isAutoTheme);
@@ -69,6 +71,16 @@ export default function RootLayout() {
     });
     return () => listener.remove();
   }, [isAutoTheme, changeTheme, initApp]);
+
+  React.useEffect(() => {
+    const activeRootRouteName =
+      rootNavigationState?.routes?.[rootNavigationState.index ?? 0]?.name;
+    const isReady =
+      Boolean(rootNavigationState?.key) &&
+      Boolean(activeRootRouteName) &&
+      activeRootRouteName !== 'index';
+    setPushNavigationReady(isReady);
+  }, [rootNavigationState]);
 
   return (
     <Provider
