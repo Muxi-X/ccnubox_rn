@@ -114,7 +114,6 @@ manifestPlaceholders = [
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-
 // @generated begin jpush-ndk-config - expo prebuild (DO NOT MODIFY) sync-b1dec770741d2eaa7867c32a8a866f8899231079
 ndk {
                 //选择要添加的对应 cpu 类型的 .so 库。
