@@ -13,6 +13,7 @@
 		7C1807363AB0BDD00AF836AF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E099A1E6C9E5CD0C37F89493 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+		F1A9C0F42E4F10010044C1D9 /* JPushColdStartBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A9C0F32E4F10010044C1D9 /* JPushColdStartBridge.m */; };
 		F4D1A54A43537DDC66367F5D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AD0B4FA8A1FD3C5B773653D7 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ccnubox/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* ccnubox-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ccnubox-Bridging-Header.h"; path = "ccnubox/ccnubox-Bridging-Header.h"; sourceTree = "<group>"; };
+		F1A9C0F32E4F10010044C1D9 /* JPushColdStartBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JPushColdStartBridge.m; path = ccnubox/JPushColdStartBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +50,7 @@
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
+				F1A9C0F32E4F10010044C1D9 /* JPushColdStartBridge.m */,
 				F11748442D0722820044C1D9 /* ccnubox-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -342,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				F1A9C0F42E4F10010044C1D9 /* JPushColdStartBridge.m in Sources */,
 				7C1807363AB0BDD00AF836AF /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
