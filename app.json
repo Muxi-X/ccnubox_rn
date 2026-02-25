@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "华师匣子",
+    "name": "ccnubox",
     "slug": "ccnubox",
     "owner": "muxi_fe",
     "version": "3.1.6",
@@ -29,6 +29,7 @@
       "expoConfig": {}
     },
     "ios": {
+      "appleTeamId": "7K67YDYQD8",
       "icon": {
         "light": "./src/assets/images/icon-ios-light.png",
         "dark": "./src/assets/images/icon-ios-dark.png",
@@ -51,8 +52,15 @@
         ]
       },
       "entitlements": {
-        "aps-environment": "production"
+        "aps-environment": "production",
+        "com.apple.security.application-groups": [
+          "group.release-20240916"
+        ]
       }
+    },
+    "locales": {
+      "zh-CN": "./languages/zh-CN.json",
+      "en-US": "./languages/en-US.json"
     },
     "android": {
       "adaptiveIcon": {
@@ -125,7 +133,8 @@
             "sms"
           ]
         }
-      ]
+      ],
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true

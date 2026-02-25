@@ -34,6 +34,7 @@ module.exports = {
         'hooks',
         'utils',
         'styles',
+        'widgets',
         'configs',
         'modules',
       ], // 提交信息的 scope 必须在指定的范围内
