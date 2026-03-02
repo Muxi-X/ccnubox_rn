@@ -2,6 +2,51 @@ import { NativeModules, Platform } from 'react-native';
 
 const { CourseLiveActivityModule } = NativeModules;
 
+const SECTION_START_TIMES: Record<number, [number, number]> = {
+  1: [8, 0],
+  2: [8, 55],
+  3: [10, 10],
+  4: [11, 5],
+  5: [14, 0],
+  6: [14, 55],
+  7: [16, 10],
+  8: [17, 5],
+  9: [18, 30],
+  10: [19, 20],
+  11: [20, 15],
+  12: [21, 5],
+};
+
+const SECTION_START_TIME_TEXT: Record<number, string> = {
+  1: '08:00',
+  2: '08:55',
+  3: '10:10',
+  4: '11:05',
+  5: '14:00',
+  6: '14:55',
+  7: '16:10',
+  8: '17:05',
+  9: '18:30',
+  10: '19:20',
+  11: '20:15',
+  12: '21:05',
+};
+
+const SECTION_END_TIMES: Record<number, string> = {
+  1: '08:45',
+  2: '09:40',
+  3: '10:55',
+  4: '11:50',
+  5: '14:45',
+  6: '15:40',
+  7: '16:55',
+  8: '17:50',
+  9: '19:15',
+  10: '20:05',
+  11: '21:00',
+  12: '21:50',
+};
+
 export interface CourseInfo {
   courseName: string;
   location: string;
@@ -12,6 +57,7 @@ export interface CourseInfo {
 class CourseLiveActivityManager {
   private activeActivityId: string | null = null;
   private endTimer: ReturnType<typeof setTimeout> | null = null;
+  private manualModeUntil: number | null = null;
 
   /**
    * 启动课程提醒 Live Activity
@@ -63,6 +109,7 @@ class CourseLiveActivityManager {
     if (delay > 0) {
       this.endTimer = setTimeout(() => {
         console.log('⏰ Auto ending Live Activity');
+        this.disableManualMode();
         this.endActivity();
       }, delay);
     }
@@ -97,10 +144,31 @@ class CourseLiveActivityManager {
   }
 
   /**
+   * 与 Native 同步当前活动状态，防止内存里的 activityId 过期后“假活跃”
+   */
+  async hasValidActiveActivity(): Promise<boolean> {
+    if (!this.activeActivityId) return false;
+
+    try {
+      const exists = await CourseLiveActivityModule.hasActivity(
+        this.activeActivityId
+      );
+      if (!exists) {
+        this.activeActivityId = null;
+      }
+      return Boolean(exists);
+    } catch (error) {
+      console.warn('⚠️ Failed to validate Live Activity state:', error);
+      return this.activeActivityId !== null;
+    }
+  }
+
+  /**
    * 结束 Live Activity
    */
   async endActivity() {
     this.clearEndTimer();
+    this.disableManualMode();
 
     if (!this.activeActivityId) return;
 
@@ -110,6 +178,8 @@ class CourseLiveActivityManager {
       this.activeActivityId = null;
     } catch (error) {
       console.error('❌ Failed to end Live Activity:', error);
+      // Native 侧找不到该活动时，避免 JS 保留脏 id 导致后续无法重新拉起
+      this.activeActivityId = null;
     }
   }
 
@@ -118,6 +188,7 @@ class CourseLiveActivityManager {
    */
   async endAllActivities() {
     this.clearEndTimer();
+    this.disableManualMode();
 
     try {
       await CourseLiveActivityModule.endAllActivities();
@@ -134,6 +205,32 @@ class CourseLiveActivityManager {
   hasActiveActivity(): boolean {
     return this.activeActivityId !== null;
   }
+
+  /**
+   * 启用独立测试模式（期间自动课表检查不会干预 Live Activity）
+   */
+  enableManualMode(durationMs: number = 20 * 60 * 1000) {
+    this.manualModeUntil = Date.now() + durationMs;
+  }
+
+  /**
+   * 关闭独立测试模式
+   */
+  disableManualMode() {
+    this.manualModeUntil = null;
+  }
+
+  /**
+   * 是否处于独立测试模式
+   */
+  isManualModeActive(): boolean {
+    if (!this.manualModeUntil) return false;
+    if (Date.now() > this.manualModeUntil) {
+      this.manualModeUntil = null;
+      return false;
+    }
+    return true;
+  }
 }
 
 export const courseLiveActivity = new CourseLiveActivityManager();
@@ -145,22 +242,7 @@ export const courseLiveActivity = new CourseLiveActivityManager();
  */
 export function getClassStartTime(classWhen: string): Date {
   const startSection = parseInt(classWhen.split('-')[0], 10);
-
-  // 节次对应的开始时间 [小时, 分钟]
-  const sectionTimes: { [key: number]: [number, number] } = {
-    1: [8, 0],
-    2: [8, 50],
-    3: [10, 10],
-    4: [11, 0],
-    5: [14, 0],
-    6: [14, 50],
-    7: [16, 10],
-    8: [17, 0],
-    9: [19, 0],
-    10: [19, 50],
-  };
-
-  const [hour, minute] = sectionTimes[startSection] || [8, 0];
+  const [hour, minute] = SECTION_START_TIMES[startSection] || [8, 0];
 
   const now = new Date();
   const classTime = new Date(
@@ -184,24 +266,9 @@ export function formatClassTime(classWhen: string): {
 } {
   const [startSection, endSection] = classWhen.split('-').map(Number);
 
-  const sectionTimes: { [key: number]: string } = {
-    1: '08:00',
-    2: '09:40',
-    3: '10:10',
-    4: '11:50',
-    5: '14:00',
-    6: '15:40',
-    7: '16:10',
-    8: '17:50',
-    9: '19:00',
-    10: '20:40',
-    11: '20:50',
-    12: '22:30',
-  };
-
   return {
-    start: sectionTimes[startSection] || '00:00',
-    end: sectionTimes[endSection + 1] || '00:00',
+    start: SECTION_START_TIME_TEXT[startSection] || '00:00',
+    end: SECTION_END_TIMES[endSection] || '00:00',
   };
 }
 
@@ -214,6 +281,6 @@ export function calculateMinutesUntilClass(classWhen: string): number {
   const classStartTime = getClassStartTime(classWhen);
   const now = new Date();
   const diffMs = classStartTime.getTime() - now.getTime();
-  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffMinutes = Math.ceil(diffMs / (1000 * 60));
   return diffMinutes;
 }
