@@ -160,20 +160,17 @@ const CourseTablePage: FC = () => {
   useCourseLiveActivity(courses);
 
   // 测试 Live Activity
-  const handleTestLiveActivity = useCallback(() => {
+  const handleTestLiveActivity = useCallback(async () => {
     if (Platform.OS !== 'ios') {
       alert('Live Activity 仅支持 iOS');
       return;
     }
 
-    if (!courses || courses.length === 0) {
-      alert('没有课程数据');
-      return;
-    }
-
     // 启动 Live Activity，模拟 10 分钟倒计时
     const classStartTime = new Date(Date.now() + 10 * 60 * 1000); // 10分钟后
-    courseLiveActivity.startCourseReminder(
+    // 仅在这次倒计时窗口内忽略自动课表检查，模拟“10分钟后有课”
+    courseLiveActivity.enableManualMode(10 * 60 * 1000 + 30 * 1000);
+    const activityId = await courseLiveActivity.startCourseReminder(
       {
         courseName: 'test',
         location: 'a108',
@@ -183,8 +180,16 @@ const CourseTablePage: FC = () => {
       classStartTime
     );
 
-    alert('Live Activity 已启动！\n查看动态岛或锁屏');
-  }, [courses]);
+    if (activityId) {
+      alert(
+        `Live Activity 已启动（测试模式）\n10分钟后自动结束\nID: ${activityId}`
+      );
+      return;
+    }
+
+    courseLiveActivity.disableManualMode();
+    alert('Live Activity 启动失败，请查看控制台日志');
+  }, []);
 
   return (
     <View
