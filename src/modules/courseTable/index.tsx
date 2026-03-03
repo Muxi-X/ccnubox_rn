@@ -1,4 +1,4 @@
-import { FC, memo, useCallback, useEffect, useMemo } from 'react';
+import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import View from '@/components/view';
 
@@ -8,54 +8,12 @@ import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
-import { courseType, SemesterOption } from './components/courseTable/type';
+import { courseType, SemesterWeekParams } from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
-
-/** 根据学号前四位生成从入学到当前的学期列表 */
-const buildSemesterOptions = (studentId: string): SemesterOption[] => {
-  const admissionYear = Number(studentId.slice(0, 4));
-  if (isNaN(admissionYear)) return [];
-
-  const today = new Date();
-  const currentCalendarYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
-
-  // 当前学年：9 月起算新学年
-  const currentAcademicYear =
-    currentMonth >= 9 ? currentCalendarYear : currentCalendarYear - 1;
-
-  // 当前学期
-  let currentSemester = 1;
-  if (currentMonth >= 2 && currentMonth <= 6) {
-    currentSemester = 2;
-  } else if (currentMonth >= 7 && currentMonth <= 8) {
-    currentSemester = 3;
-  }
-
-  const semesterLabels: Record<string, string> = {
-    '1': '第一学期',
-    '2': '第二学期',
-    '3': '第三学期',
-  };
-
-  const options: SemesterOption[] = [];
-  for (let y = admissionYear; y <= currentAcademicYear; y++) {
-    const isCurrentYear = y === currentAcademicYear;
-    const maxSem = isCurrentYear ? currentSemester : 3;
-    for (let s = 1; s <= maxSem; s++) {
-      options.push({
-        label: `${String(y).slice(2)}~${String(y + 1).slice(2)}学年-${semesterLabels[String(s)]}`,
-        year: String(y),
-        semester: String(s),
-      });
-    }
-  }
-  // 最新的在前面（index 0 = 最新学期）
-  return options.reverse();
-};
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -80,6 +38,8 @@ const CourseTablePage: FC = () => {
     setShowWeekPicker,
     computeAndSetSemester,
   } = useTimeStore();
+
+  const [isLoadingTimetable, setIsLoadingTimetable] = useState(false);
 
   // 根据学号生成学期列表
   const semesterOptions = useMemo(
@@ -133,31 +93,52 @@ const CourseTablePage: FC = () => {
     [schoolTime, updateCourses, setLastUpdate]
   );
 
-  // 切换学期：更新 year/semester 后重新拉取课表
-  const handleSemesterChange = useCallback(
-    async (newYear: string, newSemester: string) => {
-      setSemester(newSemester);
+  // 应用学期/周次变更：更新状态，有学期变更则拉取课表，最后关闭选择器
+  const handleApply = useCallback(
+    async ({
+      year: newYear,
+      semester: newSemester,
+      week,
+    }: SemesterWeekParams) => {
+      const semesterChanged = newYear !== year || newSemester !== semester;
       setYear(newYear);
-      try {
-        const res = await queryCourseTable({
-          semester: newSemester,
-          year: newYear,
-          refresh: true,
-        });
-        if (
-          res?.code === 0 &&
-          res.data?.classes &&
-          res.data.last_refresh_time
-        ) {
-          const courses = res.data.classes as courseType[];
-          updateCourses(courses);
-          setLastUpdate(res.data.last_refresh_time);
+      setSemester(newSemester);
+      if (week !== undefined) setSelectedWeek(week);
+
+      if (semesterChanged) {
+        setIsLoadingTimetable(true);
+        try {
+          const res = await queryCourseTable({
+            semester: newSemester,
+            year: newYear,
+            refresh: false,
+          });
+          if (
+            res?.code === 0 &&
+            res.data?.classes &&
+            res.data.last_refresh_time
+          ) {
+            updateCourses(res.data.classes as courseType[]);
+            setLastUpdate(res.data.last_refresh_time);
+          }
+        } catch (error) {
+          log.error('切换学期失败:', error);
+        } finally {
+          setIsLoadingTimetable(false);
         }
-      } catch (error) {
-        log.error('切换学期失败:', error);
       }
+      setShowWeekPicker(false);
     },
-    [setSemester, setYear, updateCourses, setLastUpdate]
+    [
+      year,
+      semester,
+      setYear,
+      setSemester,
+      setSelectedWeek,
+      updateCourses,
+      setLastUpdate,
+      setShowWeekPicker,
+    ]
   );
 
   // 获取当前周数
@@ -185,15 +166,11 @@ const CourseTablePage: FC = () => {
         <WeekSelector
           currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
-          onWeekSelect={week => {
-            setSelectedWeek(week);
-            setShowWeekPicker(false);
-          }}
           year={year}
           semester={semester}
           semesterOptions={semesterOptions}
-          onClose={() => setShowWeekPicker(false)}
-          onSemesterChange={handleSemesterChange}
+          onApply={handleApply}
+          isLoading={isLoadingTimetable}
         />
       )}
     </View>

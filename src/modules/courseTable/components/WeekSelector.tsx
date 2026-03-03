@@ -1,6 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { FC, memo, useCallback, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import Modal from '@/components/modal';
 
@@ -22,12 +28,11 @@ const SEMESTER_LABELS: Record<string, string> = {
 const WeekSelector: FC<WeekSelectorProps> = ({
   currentWeek,
   showWeekPicker,
-  onWeekSelect,
   year,
   semester,
   semesterOptions,
-  onClose,
-  onSemesterChange,
+  onApply,
+  isLoading = false,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
@@ -51,8 +56,9 @@ const WeekSelector: FC<WeekSelectorProps> = ({
     return `${pendingYear}-${Number(pendingYear) + 1} ${SEMESTER_LABELS[pendingSemester] || ''}`;
   }, [pendingIndex, semesterOptions, pendingYear, pendingSemester]);
 
-  // 是否可以向前/向后切换
-  const canGoPrev = pendingIndex < semesterOptions.length - 1;
+  // 是否可以向前/向后切换（pendingIndex === -1 时禁用，避免越界）
+  const canGoPrev =
+    pendingIndex >= 0 && pendingIndex < semesterOptions.length - 1;
   const canGoNext = pendingIndex > 0;
 
   // 预选学期是否与当前学期不同
@@ -61,7 +67,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 
   // 向前切换（更早的学期）—— 只改本地状态
   const handlePrev = useCallback(() => {
-    if (!canGoPrev) return;
+    if (!canGoPrev || pendingIndex < 0) return;
     const prevOpt = semesterOptions[pendingIndex + 1];
     setPendingYear(prevOpt.year);
     setPendingSemester(prevOpt.semester);
@@ -69,44 +75,80 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 
   // 向后切换（更近的学期）—— 只改本地状态
   const handleNext = useCallback(() => {
-    if (!canGoNext) return;
+    if (!canGoNext || pendingIndex < 0) return;
     const nextOpt = semesterOptions[pendingIndex - 1];
     setPendingYear(nextOpt.year);
     setPendingSemester(nextOpt.semester);
   }, [canGoNext, semesterOptions, pendingIndex]);
 
-  // 关闭 WeekSelector 时，检测学期是否变化，变化则弹 Modal 确认
-  const handleClose = useCallback(() => {
-    if (hasSemesterChanged) {
-      const targetLabel = pendingLabel;
+  // 学期变更确认弹窗
+  const showSemesterChangeModal = useCallback(
+    (params: { year: string; semester: string; week?: number }) => {
+      const { year: targetYear, semester: targetSemester, week } = params;
       Modal.show({
         title: '切换学期',
-        children: `确定要切换到「${targetLabel}」吗？切换后将重新加载课表数据。`,
+        children: `确定要切换到「${pendingLabel}」吗？切换后将重新加载课表数据。`,
         mode: 'middle',
         confirmText: '确定',
         cancelText: '取消',
         showCancel: true,
-        onConfirm: () => {
-          log.info('确认切换学期', `${pendingYear} 学期${pendingSemester}`);
-          onSemesterChange(pendingYear, pendingSemester);
+        onConfirm: async () => {
+          log.info('确认切换学期', `${targetYear} 学期${targetSemester}`);
+          await onApply({ year: targetYear, semester: targetSemester, week });
         },
         onCancel: () => {
-          // 取消则恢复预选状态
           setPendingYear(year);
           setPendingSemester(semester);
+          // 取消学期变更；若在选周流程中则仍应用周次，否则仅关闭
+          onApply(
+            week !== undefined ? { year, semester, week } : { year, semester }
+          );
         },
       });
+    },
+    [pendingLabel, pendingYear, pendingSemester, year, semester, onApply]
+  );
+
+  // 选择周次
+  const handleWeekSelect = useCallback(
+    (week: number) => {
+      log.info('选择周次', week);
+      if (hasSemesterChanged) {
+        showSemesterChangeModal({
+          year: pendingYear,
+          semester: pendingSemester,
+          week,
+        });
+      } else {
+        onApply({ year, semester, week });
+      }
+    },
+    [
+      hasSemesterChanged,
+      pendingYear,
+      pendingSemester,
+      year,
+      semester,
+      showSemesterChangeModal,
+      onApply,
+    ]
+  );
+
+  // 点击遮罩关闭：有学期变更则弹确认，否则直接应用（无变更时父组件仅关闭）
+  const handleClose = useCallback(() => {
+    if (hasSemesterChanged) {
+      showSemesterChangeModal({ year: pendingYear, semester: pendingSemester });
+    } else {
+      onApply({ year, semester });
     }
-    onClose();
   }, [
     hasSemesterChanged,
-    pendingLabel,
     pendingYear,
     pendingSemester,
     year,
     semester,
-    onSemesterChange,
-    onClose,
+    showSemesterChangeModal,
+    onApply,
   ]);
 
   return (
@@ -121,7 +163,17 @@ const WeekSelector: FC<WeekSelectorProps> = ({
           }}
         >
           {/* 点击遮罩区域关闭 */}
-          <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={handleClose}
+            disabled={isLoading}
+          />
+          {/* 拉取课表时显示 loading */}
+          {isLoading && (
+            <View style={styles.loadingOverlay} pointerEvents="none">
+              <ActivityIndicator size="large" color="#7878F8" />
+            </View>
+          )}
 
           <View
             style={[
@@ -194,10 +246,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
               {[...Array(20)].map((_, i) => (
                 <Pressable
                   key={i}
-                  onPress={() => {
-                    onWeekSelect(i + 1);
-                    log.info('选择周次', i + 1);
-                  }}
+                  onPress={() => handleWeekSelect(i + 1)}
                   style={[
                     styles.weekButton,
                     {
@@ -255,6 +304,11 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 };
 
 const styles = StyleSheet.create({
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   pickerContainer: {
     position: 'absolute',
     width: '100%',
