@@ -1,44 +1,23 @@
-import { FC, memo, useCallback, useEffect } from 'react';
+import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import View from '@/components/view';
 
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
-import { courseType } from './components/courseTable/type';
+import { courseType, SemesterWeekParams } from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
-
-// 根据开学时间计算学期和年份
-const computeSemesterAndYear = (startTimestamp: number) => {
-  const startDate = new Date(startTimestamp * 1000);
-  const month = startDate.getMonth() + 1; // 获取开学时间的月份
-  let semester = '1'; // 默认学期为 '1'
-  let year = startDate.getFullYear().toString(); // 默认年份为当前年
-
-  // 根据开学时间计算学期和年份
-  if (month >= 1 && month <= 5) {
-    // 1月到5月 => 第二学期
-    semester = '2';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 6 && month <= 7) {
-    // 6月到7月 => 第三学期
-    semester = '3';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 8 && month <= 12) {
-    // 8月到12月 => 第一学期
-    semester = '1';
-    year = new Date().getFullYear().toString(); // 当前年
-  }
-  return { semester, year };
-};
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const studentId = useUserStore(state => state.student_id);
 
   const {
     courses,
@@ -57,7 +36,16 @@ const CourseTablePage: FC = () => {
     setSelectedWeek,
     showWeekPicker,
     setShowWeekPicker,
+    computeAndSetSemester,
   } = useTimeStore();
+
+  const [isLoadingTimetable, setIsLoadingTimetable] = useState(false);
+
+  // 根据学号生成学期列表
+  const semesterOptions = useMemo(
+    () => buildSemesterOptions(studentId),
+    [studentId]
+  );
 
   const fetchCurrentWeek = async () => {
     try {
@@ -65,9 +53,7 @@ const CourseTablePage: FC = () => {
       if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
         setSchoolTime(res.data.school_time);
         setHolidayTime(res.data.holiday_time);
-        const { semester, year } = computeSemesterAndYear(res.data.school_time);
-        setSemester(semester);
-        setYear(year);
+        computeAndSetSemester(res.data.school_time);
         setTimeout(
           () => setSelectedWeek(useTimeStore.getState().getCurrentWeek()),
           0
@@ -107,6 +93,54 @@ const CourseTablePage: FC = () => {
     [schoolTime, updateCourses, setLastUpdate]
   );
 
+  // 应用学期/周次变更：更新状态，有学期变更则拉取课表，最后关闭选择器
+  const handleApply = useCallback(
+    async ({
+      year: newYear,
+      semester: newSemester,
+      week,
+    }: SemesterWeekParams) => {
+      const semesterChanged = newYear !== year || newSemester !== semester;
+      setYear(newYear);
+      setSemester(newSemester);
+      if (week !== undefined) setSelectedWeek(week);
+
+      if (semesterChanged) {
+        setIsLoadingTimetable(true);
+        try {
+          const res = await queryCourseTable({
+            semester: newSemester,
+            year: newYear,
+            refresh: false,
+          });
+          if (
+            res?.code === 0 &&
+            res.data?.classes &&
+            res.data.last_refresh_time
+          ) {
+            updateCourses(res.data.classes as courseType[]);
+            setLastUpdate(res.data.last_refresh_time);
+          }
+        } catch (error) {
+          log.error('切换学期失败:', error);
+        } finally {
+          setIsLoadingTimetable(false);
+        }
+      }
+      setShowWeekPicker(false);
+    },
+    [
+      year,
+      semester,
+      setYear,
+      setSemester,
+      setSelectedWeek,
+      updateCourses,
+      setLastUpdate,
+      setShowWeekPicker,
+    ]
+  );
+
   // 获取当前周数
   useEffect(() => {
     fetchCurrentWeek();
@@ -132,10 +166,11 @@ const CourseTablePage: FC = () => {
         <WeekSelector
           currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
-          onWeekSelect={week => {
-            setSelectedWeek(week);
-            setShowWeekPicker(false);
-          }}
+          year={year}
+          semester={semester}
+          semesterOptions={semesterOptions}
+          onApply={handleApply}
+          isLoading={isLoadingTimetable}
         />
       )}
     </View>
