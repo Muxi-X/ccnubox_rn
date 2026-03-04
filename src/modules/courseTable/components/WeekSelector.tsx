@@ -211,9 +211,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                     styles.semesterLabelText,
                     commonStyles.fontSemiBold,
                     {
-                      color: hasSemesterChanged
-                        ? '#7878F8'
-                        : currentStyle?.schedule_text_style?.color || '#000000',
+                      color: hasSemesterChanged ? '#ffffff' : '#7878F8',
                     },
                   ]}
                   numberOfLines={1}
