@@ -24,30 +24,37 @@ export interface PortalBaseProps {
   portalType?: string;
 }
 
-const PortalRoot = forwardRef<any, ModalPortalProps>(function PortalRoot(
-  { children },
-  ref
-) {
-  const [modalChildren, setModalChildren] = useState<React.ReactNode>(children);
+/**
+ * PortalRoot ref type
+ */
+export interface PortalRootRef {
+  setChildren: (newChildren: React.ReactNode) => void;
+}
 
-  useImperativeHandle(ref, () => ({
-    setChildren: (newChildren: React.ReactNode) => {
-      setModalChildren(newChildren);
-    },
-  }));
+const PortalRoot = forwardRef<PortalRootRef, ModalPortalProps>(
+  function PortalRoot({ children }, ref) {
+    const [modalChildren, setModalChildren] =
+      useState<React.ReactNode>(children);
 
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        flex: 1,
-      }}
-      ref={ref}
-    >
-      {modalChildren}
-    </View>
-  );
-});
+    useImperativeHandle(ref, () => ({
+      setChildren: (newChildren: React.ReactNode) => {
+        setModalChildren(newChildren);
+      },
+    }));
+
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          flex: 1,
+        }}
+        ref={ref}
+      >
+        {modalChildren}
+      </View>
+    );
+  }
+);
 
 export default PortalRoot;
 
