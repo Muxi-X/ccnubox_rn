@@ -3,7 +3,7 @@ import { Slot } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useKeyboardShow } from '@/hooks';
+import { useKeyboardStatus } from '@/hooks';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Divider from '@/components/divider';
@@ -12,7 +12,7 @@ import { commonStyles } from '@/styles/common';
 
 const Login: React.FC = () => {
   // 监听键盘弹起，避免元素遮挡
-  const isKeyboardShow = useKeyboardShow();
+  const { isKeyboardShow } = useKeyboardStatus();
 
   return (
     <LinearGradient colors={['#7B6EF1', '#7FB4FB']} style={styles.bg}>
