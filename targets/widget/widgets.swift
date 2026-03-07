@@ -205,48 +205,119 @@ struct CourseWidgetEntryView: View {
 struct SmallWidgetView: View {
     let courses: [Course]
     
+    private var dateHeader: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateFormat = "M月d日"
+        return formatter.string(from: Date())
+    }
+    
+    private var weekdayHeader: String {
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        let adjusted = weekday == 1 ? 7 : weekday - 1
+        let names = ["", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+        return names[adjusted]
+    }
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("今日课程")
-                .font(.headline)
-                .foregroundColor(.primary)
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(dateHeader)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.primary)
+                Text(weekdayHeader)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.blue)
+            }
+            .padding(2)
             
             if courses.isEmpty {
-                Text("今天没有课程")
-                    .font(.caption)
+                Spacer()
+                Text("今天居然没有课")
+                    .font(.system(size: 15))
                     .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                Spacer()
             } else {
                 let sortedCourses = getSortedCourses()
                 ForEach(sortedCourses.prefix(2)) { course in
                     let isFinished = course.isFinished(for: course.day)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(course.classname)
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .lineLimit(1)
-                            .foregroundColor(isFinished ? .secondary : .primary)
-                        Text("第\(course.startSection)-\(course.endSection)节")
-                            .font(.caption2)
-                            .foregroundColor(isFinished ? .secondary.opacity(0.7) : .secondary)
-                    }
+                    SmallCourseCardView(course: course, isFinished: isFinished)
                 }
+                Spacer(minLength: 0)
             }
         }
-        .padding()
+        .padding(2)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
     
-    // 获取排序后的课程列表（未上完的在前，已上完的在后）
     private func getSortedCourses() -> [Course] {
         let unfinished = courses.filter { !$0.isFinished(for: $0.day) }
         let finished = courses.filter { $0.isFinished(for: $0.day) }
-        
-        // 未上完的按开始节次排序，已上完的也按开始节次排序
         let sortedUnfinished = unfinished.sorted { $0.startSection < $1.startSection }
         let sortedFinished = finished.sorted { $0.startSection < $1.startSection }
-        
-        // 未上完的在前，已上完的在后
         return sortedUnfinished + sortedFinished
+    }
+}
+
+struct SmallCourseCardView: View {
+    let course: Course
+    let isFinished: Bool
+    
+    var body: some View {
+        HStack(spacing: 6) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(
+                    isFinished
+                        ? LinearGradient(colors: [.gray.opacity(0.4), .gray.opacity(0.3)], startPoint: .top, endPoint: .bottom)
+                        : LinearGradient(colors: [.purple, .blue.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                )
+                .padding(.vertical, 4)
+                .frame(width: 4)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(course.classname)
+                    .font(.system(size: 12, weight: .bold))
+                    .lineLimit(1)
+                    .foregroundColor(isFinished ? .secondary : .primary)
+                
+                Text(course.where)
+                    .font(.system(size: 10))
+                    .foregroundColor(isFinished ? .secondary.opacity(0.6) : .secondary)
+                    .lineLimit(1)
+                
+                Text(smallTimeString(from: course.classWhen))
+                    .font(.system(size: 10))
+                    .foregroundColor(isFinished ? .secondary.opacity(0.6) : .secondary)
+            }
+            .padding(.vertical, 4)
+            
+            Spacer(minLength: 0)
+        }
+        .padding(.leading, 4)
+    }
+    
+    private func smallTimeString(from classWhen: String) -> String {
+        let parts = classWhen.split(separator: "-")
+        guard let startSection = Int(parts.first ?? "1"),
+              let endSection = Int(parts.last ?? "1") else {
+            return classWhen
+        }
+        
+        let sectionStartTimes: [Int: String] = [
+            1: "08:00", 2: "08:55", 3: "10:10", 4: "11:05",
+            5: "14:00", 6: "14:55", 7: "16:10", 8: "17:05",
+            9: "18:30", 10: "19:20", 11: "20:15", 12: "21:05"
+        ]
+        let sectionEndTimes: [Int: String] = [
+            1: "08:45", 2: "09:40", 3: "10:55", 4: "11:50",
+            5: "14:45", 6: "15:40", 7: "16:55", 8: "17:50",
+            9: "19:15", 10: "20:05", 11: "21:00", 12: "21:50"
+        ]
+        
+        let startTime = sectionStartTimes[startSection] ?? "08:00"
+        let endTime = sectionEndTimes[endSection] ?? "09:40"
+        return "\(startTime)-\(endTime)"
     }
 }
 
@@ -692,7 +763,7 @@ func previewCourses() -> [Course] {
     
     return [
         Course(id: "1", classname: "高等数学", teacher: "张老师", where: "n201", day: today,
-               classWhen: "1-2", weeksString: "[1,2,3,4,5]", credit: 4, isOfficialInt: 1,
+               classWhen: "9-10", weeksString: "[1,2,3,4,5]", credit: 4, isOfficialInt: 1,
                note: "", semester: "1", weekDuration: "1-15周", year: "2025"),
         Course(id: "2", classname: "大学英语", teacher: "李老师", where: "n305", day: today,
                classWhen: "3-4", weeksString: "[1,2,3,4,5]", credit: 2, isOfficialInt: 1,
