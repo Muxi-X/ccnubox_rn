@@ -1,11 +1,11 @@
 import { Stack } from 'expo-router';
-import { StyleProp, StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
-import { SettingItems } from '@/constants/settingItem';
+import { SETTING_ITEMS } from '@/constants/SETTING';
 import { keyGenerator } from '@/utils';
 
 export default function Layout() {
@@ -18,7 +18,7 @@ export default function Layout() {
 
   return (
     <SafeAreaView
-      edges={['bottom']}
+      edges={[]}
       style={[styles.container, currentStyle?.background_style]}
     >
       <Stack
@@ -29,6 +29,7 @@ export default function Layout() {
           headerLeft: () => (
             <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
           ),
+          headerRight: () => <View style={{ height: 22, width: 22 }}></View>,
           headerStyle: currentStyle?.header_background_style as StyleProp<{
             backgroundColor: string | undefined;
             flexDirection: 'row';
@@ -37,11 +38,12 @@ export default function Layout() {
           }>,
         }}
       >
-        {SettingItems.map(config => (
+        {SETTING_ITEMS.map(config => (
           <Stack.Screen
             key={keyGenerator.next().value as unknown as number}
             name={config.name}
             options={{
+              headerShown: config.sub ? false : true,
               headerTitle: () => (
                 <>
                   {CurrentComponents && (
