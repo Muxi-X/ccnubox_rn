@@ -81,6 +81,13 @@ def enableProguardInReleaseBuilds = (findProperty('android.enableProguardInRelea
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+// 加载 keystore 配置
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -122,15 +129,23 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            // debug 也使用 release 签名（用于测试推送等需要正式签名的功能）
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
+            minifyEnabled false
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -168,12 +183,14 @@ android {
 }
 
 dependencies {
-// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-43f822c930a5c7a06c27ee9632196ce05ffab953
-// JPush React Native 桥接（已包含 JPush 核心 SDK）
+    // @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-43f822c930a5c7a06c27ee9632196ce05ffab953
+    // JPush React Native 桥接（已包含 JPush 核心 SDK）
     implementation project(':jpush-react-native')
     implementation project(':jcore-react-native')
     
     // 厂商通道 SDK（JPush 5.9.0）
+    // 华为厂商
+    implementation 'cn.jiguang.sdk.plugin:huawei:5.9.0'
     // VIVO 厂商
     implementation 'cn.jiguang.sdk.plugin:vivo:5.9.0'
     // 小米厂商
@@ -183,10 +200,15 @@ dependencies {
     // OPPO 3.1.0 aar 及其以上版本需要添加以下依赖
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation 'androidx.annotation:annotation:1.1.0'
-// @generated end jpush-dependencies
-// @generated begin jpush-libs-filetree - expo prebuild (DO NOT MODIFY) sync-b49c55821fcfaf640a644f68fa2264b8adfed2f2
-implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-// @generated end jpush-libs-filetree
+    // 荣耀厂商
+    implementation 'cn.jiguang.sdk.plugin:honor:5.9.0'
+    // OPPO 3.1.0 aar 及其以上版本需要添加以下依赖
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    // @generated end jpush-dependencies
+    // @generated begin jpush-libs-filetree - expo prebuild (DO NOT MODIFY) sync-b49c55821fcfaf640a644f68fa2264b8adfed2f2
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    // @generated end jpush-libs-filetree
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -214,3 +236,8 @@ implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
         implementation jscFlavor
     }
 }
+
+
+// @generated begin jpush-apply-plugins - expo prebuild (DO NOT MODIFY)
+apply plugin: 'com.huawei.agconnect'
+// @generated end jpush-apply-plugins

@@ -3,7 +3,7 @@
     "name": "ccnubox",
     "slug": "ccnubox",
     "owner": "muxi_fe",
-    "version": "3.1.5",
+    "version": "3.1.7",
     "runtimeVersion": "3.1.2",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
@@ -25,7 +25,8 @@
       },
       "eas": {
         "projectId": "65d670f0-9625-4631-9603-f4b11f44e621"
-      }
+      },
+      "expoConfig": {}
     },
     "ios": {
       "appleTeamId": "7K67YDYQD8",
@@ -36,14 +37,13 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "17",
+      "buildNumber": "21",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "CFBundleAllowMixedLocalizations": true,
         "LSApplicationQueriesSchemes": [
           "weixin",
           "alipays",
@@ -52,7 +52,7 @@
         ]
       },
       "entitlements": {
-        "aps-environment": "development",
+        "aps-environment": "production",
         "com.apple.security.application-groups": [
           "group.release-20240916"
         ]
@@ -78,7 +78,7 @@
       ],
       "edgeToEdgeEnabled": true,
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 17
+      "versionCode": 1
     },
     "plugins": [
       "expo-router",
@@ -94,9 +94,7 @@
       [
         "mx-jpush-expo",
         {
-          "appKey": "85271fccfbf4106a0e78556c",
           "channel": "coursetable",
-          "apsForProduction": false,
           "packageName": "com.muxixyz.ccnubox"
         }
       ],

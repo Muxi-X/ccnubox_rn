@@ -24,6 +24,8 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
+    JPushColdStartBridge.cacheLaunchNotification(launchOptions)
+
 #if os(iOS) || os(tvOS)
     window = UIWindow(frame: UIScreen.main.bounds)
     factory.startReactNative(
@@ -146,6 +148,7 @@ extension AppDelegate: JPUSHRegisterDelegate {
     if response.notification.request.trigger is UNPushNotificationTrigger {
       // 处理远程推送点击
       JPUSHService.handleRemoteNotification(userInfo)
+      JPushColdStartBridge.cacheOpenedNotification(userInfo)
       print("iOS10 用户点击了远程通知: (userInfo)")
       NotificationCenter.default.post(
         name: NSNotification.Name("J_APNS_NOTIFICATION_OPENED_EVENT"),
@@ -182,6 +185,58 @@ extension AppDelegate: JPUSHRegisterDelegate {
 }
 
 // @generated end jpush-swift-delegate-extension
+
+@objc(JPushColdStartBridge)
+class JPushColdStartBridge: NSObject {
+  private static var cachedOpenedNotification: [AnyHashable: Any]?
+
+  static func cacheLaunchNotification(
+    _ launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) {
+    guard let userInfo =
+      launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification]
+        as? [AnyHashable: Any]
+    else { return }
+    cachedOpenedNotification = userInfo
+  }
+
+  static func cacheOpenedNotification(_ userInfo: [AnyHashable: Any]) {
+    cachedOpenedNotification = userInfo
+  }
+
+  @objc static func requiresMainQueueSetup() -> Bool {
+    true
+  }
+
+  @objc
+  func consumeInitialNotificationOpened(
+    _ resolve: RCTPromiseResolveBlock,
+    rejecter reject: RCTPromiseRejectBlock
+  ) {
+    let payload = Self.cachedOpenedNotification
+    Self.cachedOpenedNotification = nil
+    resolve(Self.stringifyKeys(payload))
+  }
+
+  private static func stringifyKeys(_ value: Any?) -> Any? {
+    guard let value else { return nil }
+
+    if let dict = value as? [AnyHashable: Any] {
+      var result: [String: Any] = [:]
+      for (key, nestedValue) in dict {
+        result[String(describing: key)] = stringifyKeys(nestedValue)
+      }
+      return result
+    }
+
+    if let array = value as? [Any] {
+      return array.map { stringifyKeys($0) as Any }
+    }
+
+    return value
+  }
+}
+
 class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
   // Extension point for config-plugins
 
