@@ -48,3 +48,4 @@ secret/google-services.json
 *.apk
 *.ipa
 sentry.properties
+.eas
