@@ -12,13 +12,13 @@ maven { url 'https://developer.huawei.com/repo/' }
 // @generated end jpush-huawei-maven-buildscript
   }
   dependencies {
+// @generated begin jpush-vendor-classpaths - expo prebuild (DO NOT MODIFY) sync-bdd192184431eaa9b1de39d53f54ea527d345e69
+// Huawei AGConnect
+        classpath 'com.huawei.agconnect:agcp:1.9.3.302'
+// @generated end jpush-vendor-classpaths
     classpath('com.android.tools.build:gradle:8.13.2')
     classpath('com.facebook.react:react-native-gradle-plugin')
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
-    // @generated begin jpush-vendor-classpaths - expo prebuild (DO NOT MODIFY) sync-078b642a68c2525c32c29a0ec73198642e65adb5
-// Huawei AGConnect
-        classpath 'com.huawei.agconnect:agcp:1.9.1.301'
-// @generated end jpush-vendor-classpaths
   }
 }
 

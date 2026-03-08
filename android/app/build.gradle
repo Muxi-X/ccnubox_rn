@@ -96,20 +96,21 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
-        // @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-abe62695992c277aaaffd18471b301c8ac001d70
-        manifestPlaceholders = [
-                JPUSH_PKGNAME: "com.muxixyz.ccnubox",
-                JPUSH_APPKEY: "85271fccfbf4106a0e78556c",
-                JPUSH_CHANNEL: "coursetable",
-                XIAOMI_APPID: "undefined",
-                XIAOMI_APPKEY: "undefined",
-                OPPO_APPKEY: "undefined",
-                OPPO_APPID: "undefined",
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-40b9e7614b2f59610fb8d878b16dbcd8a175725d
+manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY: System.getenv("JPUSH_APP_KEY") ?: (project.findProperty("JPUSH_APP_KEY") ?: ""),
+                JPUSH_CHANNEL: System.getenv("JPUSH_CHANNEL") ?: (project.findProperty("JPUSH_CHANNEL") ?: ""),
+                XIAOMI_APPID: System.getenv("JPUSH_XIAOMI_APP_ID") ?: (project.findProperty("JPUSH_XIAOMI_APP_ID") ?: ""),
+                XIAOMI_APPKEY: System.getenv("JPUSH_XIAOMI_APP_KEY") ?: (project.findProperty("JPUSH_XIAOMI_APP_KEY") ?: ""),
+                OPPO_APPKEY: System.getenv("JPUSH_OPPO_APP_KEY") ?: (project.findProperty("JPUSH_OPPO_APP_KEY") ?: ""),
+                OPPO_APPID: System.getenv("JPUSH_OPPO_APP_ID") ?: (project.findProperty("JPUSH_OPPO_APP_ID") ?: ""),
                 OPPO_APPSECRET: System.getenv("JPUSH_OPPO_APP_SECRET") ?: (project.findProperty("JPUSH_OPPO_APP_SECRET") ?: ""),
-                VIVO_APPKEY: "undefined",
-                VIVO_APPID: "undefined"
+                VIVO_APPKEY: System.getenv("JPUSH_VIVO_APP_KEY") ?: (project.findProperty("JPUSH_VIVO_APP_KEY") ?: ""),
+                VIVO_APPID: System.getenv("JPUSH_VIVO_APP_ID") ?: (project.findProperty("JPUSH_VIVO_APP_ID") ?: ""),
+                HONOR_APPID: System.getenv("JPUSH_HONOR_APP_ID") ?: (project.findProperty("JPUSH_HONOR_APP_ID") ?: "")
             ]
-        // @generated end jpush-manifest-placeholders
+// @generated end jpush-manifest-placeholders
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -119,8 +120,8 @@ android {
                 abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
         }
         // @generated end jpush-ndk-config
-        versionCode 17
-        versionName "3.1.5"
+        versionCode 1
+        versionName "3.1.7"
     }
     signingConfigs {
         debug {
@@ -183,13 +184,15 @@ android {
 }
 
 dependencies {
-    // @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-43f822c930a5c7a06c27ee9632196ce05ffab953
-    // JPush React Native 桥接（已包含 JPush 核心 SDK）
+// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-7312a7429e92bcd6da5d79dc70cca2813354c5f9
+// JPush React Native 桥接（已包含 JPush 核心 SDK）
     implementation project(':jpush-react-native')
     implementation project(':jcore-react-native')
     
     // 厂商通道 SDK（JPush 5.9.0）
     // 华为厂商
+    implementation 'com.huawei.hms:push:6.13.0.300'
+    implementation 'com.huawei.agconnect:agconnect-core:1.9.3.302'
     implementation 'cn.jiguang.sdk.plugin:huawei:5.9.0'
     // VIVO 厂商
     implementation 'cn.jiguang.sdk.plugin:vivo:5.9.0'
@@ -202,10 +205,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     // 荣耀厂商
     implementation 'cn.jiguang.sdk.plugin:honor:5.9.0'
-    // OPPO 3.1.0 aar 及其以上版本需要添加以下依赖
-    implementation 'com.google.code.gson:gson:2.6.2'
-    implementation 'androidx.annotation:annotation:1.1.0'
-    // @generated end jpush-dependencies
+// @generated end jpush-dependencies
     // @generated begin jpush-libs-filetree - expo prebuild (DO NOT MODIFY) sync-b49c55821fcfaf640a644f68fa2264b8adfed2f2
     implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
     // @generated end jpush-libs-filetree

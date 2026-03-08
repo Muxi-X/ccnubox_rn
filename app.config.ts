@@ -26,6 +26,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             ...configurations,
             apsForProduction: isProduction,
             appKey: process.env.JPUSH_APP_KEY ?? '',
+            channel: process.env.JPUSH_CHANNEL ?? configurations?.channel ?? '',
+            packageName:
+              process.env.JPUSH_PKGNAME ??
+              configurations?.packageName ??
+              config.android?.package ??
+              '',
             vendorChannels: {
               vivo: {
                 appKey: process.env.JPUSH_VIVO_APP_KEY,
