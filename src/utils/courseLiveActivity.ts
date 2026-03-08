@@ -2,6 +2,9 @@ import { NativeModules, Platform } from 'react-native';
 
 const { CourseLiveActivityModule } = NativeModules;
 
+// 发布开关：本期暂不上线 Live Activity，保留代码以便后续恢复
+export const LIVE_ACTIVITY_ENABLED = false;
+
 const SECTION_START_TIMES: Record<number, [number, number]> = {
   1: [8, 0],
   2: [8, 55],
@@ -68,6 +71,10 @@ class CourseLiveActivityManager {
     courseInfo: CourseInfo,
     classStartTime: Date
   ): Promise<string | null> {
+    if (!LIVE_ACTIVITY_ENABLED) {
+      return null;
+    }
+
     if (Platform.OS !== 'ios') {
       console.log('Live Activity only available on iOS');
       return null;
@@ -129,6 +136,7 @@ class CourseLiveActivityManager {
    * 更新 Live Activity 状态
    */
   async updateActivity(classStartTime: Date, isInClass: boolean) {
+    if (!LIVE_ACTIVITY_ENABLED) return;
     if (!this.activeActivityId) return;
 
     try {
@@ -147,6 +155,7 @@ class CourseLiveActivityManager {
    * 与 Native 同步当前活动状态，防止内存里的 activityId 过期后“假活跃”
    */
   async hasValidActiveActivity(): Promise<boolean> {
+    if (!LIVE_ACTIVITY_ENABLED) return false;
     if (!this.activeActivityId) return false;
 
     try {
