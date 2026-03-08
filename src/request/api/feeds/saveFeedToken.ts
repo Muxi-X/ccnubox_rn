@@ -1,8 +1,8 @@
 import { request } from '@/request';
 
-//保存feedtoken
-export const saveFeedToken = async (data: any) => {
-  return await request.post('/feed/changeFeedAllowList', data);
+// 保存 feed token
+export const saveFeedToken = async (token: string) => {
+  return await request.post('/feed/saveFeedToken', { token });
 };
 
 export default saveFeedToken;

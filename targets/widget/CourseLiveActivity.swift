@@ -32,7 +32,7 @@ struct CourseLiveActivity: Widget {
                             .font(.title2)
                             .foregroundColor(.blue)
                         
-                        if context.state.isInClass {
+                        if context.state.isInClass || context.state.classStartTime <= Date() {
                             Text("上课中")
                                 .font(.caption2)
                                 .foregroundColor(.green)
@@ -99,7 +99,7 @@ struct CourseLiveActivity: Widget {
                         .truncationMode(.tail)
                         .frame(maxWidth: 60)
                     
-                    if context.state.isInClass {
+                    if context.state.isInClass || context.state.classStartTime <= Date() {
                         Text("上课中")
                             .font(.system(size: 12, weight: .semibold))
                             .foregroundColor(.green)
@@ -127,81 +127,78 @@ struct LockScreenView: View {
     let context: ActivityViewContext<CourseActivityAttributes>
     
     var body: some View {
-        VStack(spacing: 12) {
+        let isInClass = context.state.isInClass || context.state.classStartTime <= Date()
+
+        VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .center, spacing: 12) {
-                
-                // 1. 左侧：图标
                 ZStack {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color.purple.opacity(0.15))
-                        .frame(width: 40, height: 40)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(isInClass ? Color.green.opacity(0.16) : Color.purple.opacity(0.16))
+                        .frame(width: 44, height: 44)
                     
                     Image(systemName: "book.fill")
                         .font(.system(size: 18))
-                        .foregroundColor(.purple)
+                        .foregroundColor(isInClass ? .green : .purple)
                 }
                 
-                // 2. 中间：课程信息
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(context.attributes.courseName)
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.primary)
                         .lineLimit(1)
                     
-                    // 地点和时间分开显示，避免挤压
-                    HStack(spacing: 4) {
+                    HStack(spacing: 6) {
                         Image(systemName: "location.fill")
                             .font(.system(size: 10))
                         Text(context.attributes.location)
-                        
+                            .lineLimit(1)
                         Text("·")
-                        
                         Image(systemName: "clock.fill")
                             .font(.system(size: 10))
                         Text("\(context.attributes.startTime)-\(context.attributes.endTime)")
+                            .lineLimit(1)
                     }
                     .font(.system(size: 12))
                     .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
                 }
                 
                 Spacer(minLength: 8)
-                
-                // 3. 右侧：倒计时（贴右侧）
-                if context.state.isInClass {
-                    Text("上课中")
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 10)
-                        .background(Capsule().fill(Color.green))
-                        .fixedSize()
-                } else {
-                    Text(context.state.classStartTime, style: .timer)
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
-                        .foregroundColor(.purple)
-                        .monospacedDigit()
-                        .fixedSize()
-                }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 14)
             
-            // 4. 底部进度条 - 使用 ProgressView 自动更新
-            ProgressView(
-                timerInterval: Date()...context.state.classStartTime,
-                countsDown: true
-            ) {
-                EmptyView()
-            } currentValueLabel: {
-                EmptyView()
-            }
-            .progressViewStyle(.linear)
-            .tint(context.state.isInClass ? .green : .purple)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 14)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(isInClass ? Color.green.opacity(0.12) : Color.purple.opacity(0.12))
+                .frame(height: 44)
+                .overlay(
+                    HStack {
+                        Label(
+                            isInClass ? "课程进行中" : "距离上课",
+                            systemImage: isInClass ? "checkmark.circle.fill" : "timer"
+                        )
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(isInClass ? .green : .purple)
+                        
+                        Spacer()
+
+                        Group {
+                            if isInClass {
+                                Text("上课中")
+                                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                                    .foregroundColor(.green)
+                            } else {
+                                Text(context.state.classStartTime, style: .timer)
+                                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                                    .foregroundColor(.purple)
+                                    .monospacedDigit()
+                            }
+                        }
+                        .frame(minWidth: 116, alignment: .trailing)
+                        .multilineTextAlignment(.trailing)
+                    }
+                    .padding(.leading, 12)
+                    .padding(.trailing, 12)
+                )
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
         .activityBackgroundTint(Color(UIColor.systemBackground))
         .activitySystemActionForegroundColor(.purple)
     }

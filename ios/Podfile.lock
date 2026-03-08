@@ -6,6 +6,7 @@ PODS:
   - EXApplication (6.1.5):
     - ExpoModulesCore
   - EXConstants (17.1.8):
+  - EXConstants (17.1.8):
     - ExpoModulesCore
   - EXImageLoader (5.1.0):
     - ExpoModulesCore
@@ -2885,6 +2886,7 @@ SPEC CHECKSUMS:
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EASClient: fe396f88189ce51edd819abe12df16c99e98bcd2
   EXApplication: 1e06972201838375ca1ec1ba34d586a98a5dc718
+  EXConstants: d3d551cb154718f5161c4247304e96aa59f6cca7
   EXConstants: d3d551cb154718f5161c4247304e96aa59f6cca7
   EXImageLoader: 4d3d3284141f1a45006cc4d0844061c182daf7ee
   EXJSONUtils: 1d3e4590438c3ee593684186007028a14b3686cd

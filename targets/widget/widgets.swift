@@ -99,21 +99,33 @@ struct Course: Codable, Identifiable {
 
 struct CourseProvider: TimelineProvider {
     func placeholder(in context: Context) -> CourseEntry {
-        CourseEntry(date: Date(), courses: [])
+        CourseEntry(date: Date(), courses: [], todayWeek: 1, tomorrowWeek: 1)
     }
     
     func getSnapshot(in context: Context, completion: @escaping (CourseEntry) -> ()) {
-        let entry = CourseEntry(date: Date(), courses: loadCourses())
+        let entry = makeEntry(for: Date())
         completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<CourseEntry>) -> ()) {
         let currentDate = Date()
-        let courses = loadCourses()
-        let entry = CourseEntry(date: currentDate, courses: courses)
+        let entry = makeEntry(for: currentDate)
         let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
         completion(timeline)
+    }
+    
+    private func makeEntry(for date: Date) -> CourseEntry {
+        let courses = loadCourses()
+        let defaults = UserDefaults(suiteName: "group.release-20240916")
+        let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
+        
+        return CourseEntry(
+            date: date,
+            courses: courses,
+            todayWeek: getWeekNumber(for: date, from: defaults),
+            tomorrowWeek: getWeekNumber(for: tomorrowDate, from: defaults)
+        )
     }
     
     private func loadCourses() -> [Course] {
@@ -122,55 +134,38 @@ struct CourseProvider: TimelineProvider {
               let courses = try? JSONDecoder().decode([Course].self, from: courseData) else {
             return []
         }
-        
-        // 获取当前周并过滤课程
-        let currentWeek = getCurrentWeek(from: defaults)
-        return filterCoursesByCurrentWeek(courses, currentWeek: currentWeek)
+        return courses
     }
     
-    // 计算当前周
-    private func getCurrentWeek(from defaults: UserDefaults) -> Int {
-        // 从 UserDefaults 读取开学时间（秒级时间戳）
-        let schoolTime = defaults.double(forKey: "schoolTime")
+    // 计算给定日期所属的教学周（按自然日计算，避免开学日时分秒导致周次偏移）
+    private func getWeekNumber(for date: Date, from defaults: UserDefaults?) -> Int {
+        guard let defaults else {
+            return 1
+        }
         
-        // 如果没有开学时间，返回 1（默认第一周）
+        let schoolTime = defaults.double(forKey: "schoolTime")
         guard schoolTime > 0 else {
             return 1
         }
         
-        // 将秒级时间戳转换为 Date
+        let calendar = Calendar.current
         let startDate = Date(timeIntervalSince1970: schoolTime)
-        let now = Date()
+        let startDay = calendar.startOfDay(for: startDate)
+        let targetDay = calendar.startOfDay(for: date)
         
-        // 计算时间差（秒）
-        let diffTime = now.timeIntervalSince(startDate)
-        
-        // 如果还没开学，返回 1
-        guard diffTime >= 0 else {
+        guard let diffDays = calendar.dateComponents([.day], from: startDay, to: targetDay).day else {
             return 1
         }
-        
-        // 计算天数差
-        let diffDays = Int(diffTime / (24 * 60 * 60))
-        
-        // 计算周数（从第 1 周开始）
-        let week = (diffDays / 7) + 1
-        
-        return max(1, week) // 确保至少是第 1 周
-    }
-    
-    // 过滤课程，只返回当前周的课程
-    private func filterCoursesByCurrentWeek(_ courses: [Course], currentWeek: Int) -> [Course] {
-        return courses.filter { course in
-            // 检查当前周是否在课程的周数范围内
-            return course.weeks.contains(currentWeek)
-        }
+
+        return max(1, diffDays / 7 + 1)
     }
 }
 
 struct CourseEntry: TimelineEntry {
     let date: Date
     let courses: [Course]
+    let todayWeek: Int
+    let tomorrowWeek: Int
 }
 
 // MARK: - Widget Entry View
@@ -184,9 +179,15 @@ struct CourseWidgetEntryView: View {
         case .systemSmall:
             SmallWidgetView(courses: getTodayCourses())
         case .systemMedium:
-            MediumWidgetView(courses: entry.courses)
+            MediumWidgetView(
+                todayCourses: getTodayCourses(),
+                tomorrowCourses: getTomorrowCourses()
+            )
         case .systemLarge:
-            LargeWidgetView(courses: entry.courses)
+            LargeWidgetView(
+                todayCourses: getTodayCourses(),
+                tomorrowCourses: getTomorrowCourses()
+            )
         default:
             SmallWidgetView(courses: getTodayCourses())
         }
@@ -195,7 +196,17 @@ struct CourseWidgetEntryView: View {
     private func getTodayCourses() -> [Course] {
         let weekday = Calendar.current.component(.weekday, from: Date())
         let adjustedWeekday = weekday == 1 ? 7 : weekday - 1
-        return entry.courses.filter { $0.day == adjustedWeekday }
+        return entry.courses
+            .filter { $0.day == adjustedWeekday && $0.weeks.contains(entry.todayWeek) }
+            .sorted { $0.startSection < $1.startSection }
+    }
+    
+    private func getTomorrowCourses() -> [Course] {
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        let today = weekday == 1 ? 7 : weekday - 1
+        let tomorrow = today == 7 ? 1 : today + 1
+        return entry.courses
+            .filter { $0.day == tomorrow && $0.weeks.contains(entry.tomorrowWeek) }
             .sorted { $0.startSection < $1.startSection }
     }
 }
@@ -272,8 +283,8 @@ struct MediumWidgetView: View {
         let today = weekday == 1 ? 7 : weekday - 1
         let tomorrow = today == 7 ? 1 : today + 1
         
-        let todayCourses = getSortedCourses(courses.filter { $0.day == today })
-        let tomorrowCourses = courses.filter { $0.day == tomorrow }.sorted { $0.startSection < $1.startSection }
+        let sortedTodayCourses = getSortedCourses(todayCourses)
+        let sortedTomorrowCourses = tomorrowCourses.sorted { $0.startSection < $1.startSection }
         
         GeometryReader { geometry in
             let availableHeight = geometry.size.height
@@ -533,19 +544,19 @@ struct widget: Widget {
 #Preview("Small", as: .systemSmall) {
     widget()
 } timeline: {
-    CourseEntry(date: .now, courses: previewCourses())
+    CourseEntry(date: .now, courses: previewCourses(), todayWeek: 1, tomorrowWeek: 1)
 }
 
 #Preview("Medium", as: .systemMedium) {
     widget()
 } timeline: {
-    CourseEntry(date: .now, courses: previewCourses())
+    CourseEntry(date: .now, courses: previewCourses(), todayWeek: 1, tomorrowWeek: 1)
 }
 
 #Preview("Large", as: .systemLarge) {
     widget()
 } timeline: {
-    CourseEntry(date: .now, courses: previewCourses())
+    CourseEntry(date: .now, courses: previewCourses(), todayWeek: 1, tomorrowWeek: 1)
 }
 
 func previewCourses() -> [Course] {

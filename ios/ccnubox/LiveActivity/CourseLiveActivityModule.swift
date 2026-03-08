@@ -48,8 +48,7 @@ class CourseLiveActivityModule: NSObject {
                 classStartTime: classStartTime,
                 isInClass: false
             )
-            
-            // 设置 staleDate 为上课时间，到时间后系统会标记为过期
+            // 到上课时间标记过期，作为 JS 定时结束失败时的系统兜底
             let staleDate = classStartTime
             
             do {
@@ -93,6 +92,19 @@ class CourseLiveActivityModule: NSObject {
                 NSLog("✅ [LiveActivity] Updated: \(activityId)")
                 resolver("Updated")
             }
+        } else {
+            rejecter("UNSUPPORTED", "Live Activities require iOS 16.2+", nil)
+        }
+    }
+    
+    /// 检查指定活动是否仍然存在
+    @objc
+    func hasActivity(_ activityId: String,
+                     resolver: @escaping RCTPromiseResolveBlock,
+                     rejecter: @escaping RCTPromiseRejectBlock) {
+        if #available(iOS 16.2, *) {
+            let exists = Activity<CourseActivityAttributes>.activities.contains { $0.id == activityId }
+            resolver(exists)
         } else {
             rejecter("UNSUPPORTED", "Live Activities require iOS 16.2+", nil)
         }

@@ -1,26 +1,27 @@
 import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
 import * as Haptics from 'expo-haptics';
-import { Stack } from 'expo-router';
+import { Stack, useRootNavigationState } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
-import useJPush from '@/hooks/useJPush';
+import useBadgeSync from '../hooks/useBadgeSync';
+import PortalRoot from '../components/portal';
+import Scraper from '../components/scraper';
 
-import PortalRoot from '@/components/portal';
-import Scraper from '@/components/scraper';
+import useJPush, { setPushNavigationReady } from '../hooks/useJPush';
+import { usePortalStore } from '../store/portal';
+import useScraper from '../store/scraper';
+import useVisualScheme from '../store/visualScheme';
 
-import { usePortalStore } from '@/store/portal';
-import useScraper from '@/store/scraper';
-import useVisualScheme from '@/store/visualScheme';
-
-import { commonColors } from '@/styles/common';
-import { fetchUpdate } from '@/utils';
+import { commonColors } from '../styles/common';
+import { fetchUpdate } from '../utils';
 
 export default function RootLayout() {
+  const rootNavigationState = useRootNavigationState();
   const initVisualScheme = useVisualScheme(state => state.init);
   const changeTheme = useVisualScheme(state => state.changeTheme);
   const isAutoTheme = useVisualScheme(state => state.isAutoTheme);
@@ -37,6 +38,7 @@ export default function RootLayout() {
 
   // 配置 JPush 消息推送
   useJPush();
+  useBadgeSync();
 
   const initApp = React.useCallback(async () => {
     // 引入所有样式以及基于 theme 的组件
@@ -67,6 +69,16 @@ export default function RootLayout() {
     });
     return () => listener.remove();
   }, [isAutoTheme, changeTheme, initApp]);
+
+  React.useEffect(() => {
+    const activeRootRouteName =
+      rootNavigationState?.routes?.[rootNavigationState.index ?? 0]?.name;
+    const isReady =
+      Boolean(rootNavigationState?.key) &&
+      Boolean(activeRootRouteName) &&
+      activeRootRouteName !== 'index';
+    setPushNavigationReady(isReady);
+  }, [rootNavigationState]);
 
   return (
     <Provider

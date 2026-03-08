@@ -4,7 +4,7 @@ module.exports = config => ({
   icon: 'https://github.com/expo.png',
   entitlements: {
     /* Add entitlements */
-    "com.apple.security.application-groups":
-      config.ios.entitlements["com.apple.security.application-groups"],
+    'com.apple.security.application-groups':
+      config.ios.entitlements['com.apple.security.application-groups'],
   },
 });
