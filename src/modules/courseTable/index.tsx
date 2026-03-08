@@ -1,5 +1,12 @@
 import { ExtensionStorage } from '@bacons/apple-targets';
-import { type FC, memo, useCallback, useEffect, useMemo } from 'react';
+import {
+  type FC,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
@@ -8,6 +15,7 @@ import View from '@/components/view';
 
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
@@ -15,38 +23,16 @@ import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
 } from '@/utils/courseLiveActivity';
+import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
-import { courseType } from './components/courseTable/type';
+import { courseType, SemesterWeekParams } from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
-
-// 根据开学时间计算学期和年份
-const computeSemesterAndYear = (startTimestamp: number) => {
-  const startDate = new Date(startTimestamp * 1000);
-  const month = startDate.getMonth() + 1; // 获取开学时间的月份
-  let semester = '1'; // 默认学期为 '1'
-  let year = startDate.getFullYear().toString(); // 默认年份为当前年
-
-  // 根据开学时间计算学期和年份
-  if (month >= 1 && month <= 5) {
-    // 1月到5月 => 第二学期
-    semester = '2';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 6 && month <= 7) {
-    // 6月到7月 => 第三学期
-    semester = '3';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 8 && month <= 12) {
-    // 8月到12月 => 第一学期
-    semester = '1';
-    year = new Date().getFullYear().toString(); // 当前年
-  }
-  return { semester, year };
-};
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const studentId = useUserStore(state => state.student_id);
   const extensionStorage = useMemo(() => {
     return new ExtensionStorage('group.release-20240916');
   }, []);
@@ -68,19 +54,39 @@ const CourseTablePage: FC = () => {
     setSelectedWeek,
     showWeekPicker,
     setShowWeekPicker,
+    computeAndSetSemester,
   } = useTimeStore();
-  // setSchoolTime, setHolidayTime, setSelectedWeek
+
+  const [isLoadingTimetable, setIsLoadingTimetable] = useState(false);
+
+  const semesterOptions = useMemo(
+    () => buildSemesterOptions(studentId),
+    [studentId]
+  );
+
+  const syncCoursesToWidget = useCallback(
+    (nextCourses: courseType[]) => {
+      extensionStorage.set(
+        'courseTable',
+        nextCourses.map(course => ({
+          ...course,
+          is_official: course.is_official ? 1 : 0,
+          weeks: JSON.stringify(course.weeks),
+        }))
+      );
+      ExtensionStorage.reloadWidget();
+    },
+    [extensionStorage]
+  );
+
   const fetchCurrentWeek = useCallback(async () => {
     try {
       const res = await queryCurrentWeek();
       if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
         setSchoolTime(res.data.school_time);
         setHolidayTime(res.data.holiday_time);
-        const { semester, year } = computeSemesterAndYear(res.data.school_time);
-        setSemester(semester);
-        setYear(year);
+        computeAndSetSemester(res.data.school_time);
 
-        // 保存当前周数据到 UserDefaults 供 widget 使用
         extensionStorage.set('schoolTime', res.data.school_time);
         extensionStorage.set('holidayTime', res.data.holiday_time);
         ExtensionStorage.reloadWidget();
@@ -96,18 +102,15 @@ const CourseTablePage: FC = () => {
   }, [
     setSchoolTime,
     setHolidayTime,
-    setSelectedWeek,
-    setSemester,
-    setYear,
+    computeAndSetSemester,
     extensionStorage,
+    setSelectedWeek,
   ]);
 
-  // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
-      fetchCurrentWeek();
+      void fetchCurrentWeek();
       try {
-        // 使用计算得到的学期和年份
         const res = await queryCourseTable({
           semester,
           year,
@@ -119,18 +122,9 @@ const CourseTablePage: FC = () => {
           res.data?.classes &&
           res.data.last_refresh_time
         ) {
-          const courses = res.data.classes as courseType[];
-          // 缓存课表
-          updateCourses(courses);
-          extensionStorage.set(
-            'courseTable',
-            courses.map(course => ({
-              ...course,
-              is_official: course.is_official ? 1 : 0,
-              weeks: JSON.stringify(course.weeks),
-            }))
-          );
-          ExtensionStorage.reloadWidget();
+          const nextCourses = res.data.classes as courseType[];
+          updateCourses(nextCourses);
+          syncCoursesToWidget(nextCourses);
           setLastUpdate(res.data.last_refresh_time);
         }
       } catch (error) {
@@ -141,28 +135,74 @@ const CourseTablePage: FC = () => {
       semester,
       year,
       updateCourses,
+      syncCoursesToWidget,
       setLastUpdate,
-      extensionStorage.set,
       fetchCurrentWeek,
     ]
   );
 
-  // 获取当前周数
+  const handleApply = useCallback(
+    async ({
+      year: newYear,
+      semester: newSemester,
+      week,
+    }: SemesterWeekParams) => {
+      const semesterChanged = newYear !== year || newSemester !== semester;
+      setYear(newYear);
+      setSemester(newSemester);
+      if (week !== undefined) setSelectedWeek(week);
+
+      if (semesterChanged) {
+        setIsLoadingTimetable(true);
+        try {
+          const res = await queryCourseTable({
+            semester: newSemester,
+            year: newYear,
+            refresh: false,
+          });
+          if (
+            res?.code === 0 &&
+            res.data?.classes &&
+            res.data.last_refresh_time
+          ) {
+            const nextCourses = res.data.classes as courseType[];
+            updateCourses(nextCourses);
+            syncCoursesToWidget(nextCourses);
+            setLastUpdate(res.data.last_refresh_time);
+          }
+        } catch (error) {
+          log.error('切换学期失败:', error);
+        } finally {
+          setIsLoadingTimetable(false);
+        }
+      }
+      setShowWeekPicker(false);
+    },
+    [
+      year,
+      semester,
+      setYear,
+      setSemester,
+      setSelectedWeek,
+      updateCourses,
+      syncCoursesToWidget,
+      setLastUpdate,
+      setShowWeekPicker,
+    ]
+  );
+
   useEffect(() => {
-    fetchCurrentWeek();
+    void fetchCurrentWeek();
   }, [fetchCurrentWeek]);
 
-  // 刷新课表数据
   useEffect(() => {
     if (schoolTime) {
-      onTimetableRefresh();
+      void onTimetableRefresh();
     }
   }, [schoolTime, onTimetableRefresh]);
 
-  // 启用 Live Activity 自动提醒
   useCourseLiveActivity(courses);
 
-  // 测试 Live Activity
   const handleTestLiveActivity = useCallback(async () => {
     if (!LIVE_ACTIVITY_ENABLED) {
       alert('Live Activity 已在当前版本关闭');
@@ -174,9 +214,7 @@ const CourseTablePage: FC = () => {
       return;
     }
 
-    // 启动 Live Activity，模拟 10 分钟倒计时
-    const classStartTime = new Date(Date.now() + 10 * 60 * 1000); // 10分钟后
-    // 仅在这次倒计时窗口内忽略自动课表检查，模拟“10分钟后有课”
+    const classStartTime = new Date(Date.now() + 10 * 60 * 1000);
     courseLiveActivity.enableManualMode(10 * 60 * 1000 + 30 * 1000);
     const activityId = await courseLiveActivity.startCourseReminder(
       {
@@ -212,14 +250,14 @@ const CourseTablePage: FC = () => {
         <WeekSelector
           currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
-          onWeekSelect={week => {
-            setSelectedWeek(week);
-            setShowWeekPicker(false);
-          }}
+          year={year}
+          semester={semester}
+          semesterOptions={semesterOptions}
+          onApply={handleApply}
+          isLoading={isLoadingTimetable}
         />
       )}
 
-      {/* 测试 Live Activity 按钮 */}
       {Platform.OS === 'ios' && LIVE_ACTIVITY_ENABLED && (
         <TouchableOpacity
           style={styles.testButton}
