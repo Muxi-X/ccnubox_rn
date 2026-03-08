@@ -5,6 +5,7 @@ import AndroidDateSvg from '@/assets/images/icons/android/date.svg';
 import AndroidEnergySvg from '@/assets/images/icons/android/energy.svg';
 import AndroidGradesSvg from '@/assets/images/icons/android/grades.svg';
 import AndroidInformationSvg from '@/assets/images/icons/android/information.svg';
+import AndroidKestackSvg from '@/assets/images/icons/android/kestack.svg';
 import AndroidMapSvg from '@/assets/images/icons/android/map.svg';
 import AndroidMoreSvg from '@/assets/images/icons/android/more.svg';
 import AndroidSiteSvg from '@/assets/images/icons/android/site.svg';
@@ -14,6 +15,7 @@ import IosDateSvg from '@/assets/images/icons/ios/date.svg';
 import IosEnergySvg from '@/assets/images/icons/ios/energy.svg';
 import IosGradesSvg from '@/assets/images/icons/ios/grades.svg';
 import IosInformationSvg from '@/assets/images/icons/ios/information.svg';
+import IosKestackSvg from '@/assets/images/icons/ios/kestack.svg';
 import IosMapSvg from '@/assets/images/icons/ios/map.svg';
 import IosMoreSvg from '@/assets/images/icons/ios/more.svg';
 import IosSiteSvg from '@/assets/images/icons/ios/site.svg';
@@ -122,19 +124,21 @@ export const HOME_ITEMS = [
     key: 'grid-9',
     href: '/websites' as Href,
   },
-  // {
-  //   title: '木犀课栈',
-  //   name: 'kestack',
-  //   imageUrl: layoutSelect({
-  //     ios: require('../assets/images/icons/ios/kestack.png'),
-  //     android: require('../assets/images/icons/android/kestack.png'),
-  //   }),
-  //   key: 'grid-10',
-  //   action: () => {
-  //     // 暂时还不能用，等课栈提供生成加密 URL Scheme的接口
-  //     handleOpenURL('weixin://dl/business/?appid=wx6220588048f6e417', '微信');
-  //   },
-  // },
+  {
+    title: '木犀课栈',
+    name: 'kestack',
+    imageUrl: {
+      ios: IosKestackSvg,
+      android: AndroidKestackSvg,
+      default: AndroidKestackSvg,
+    },
+    key: 'grid-10',
+    // action: () => {
+    //   // 暂时还不能用，等课栈提供生成加密 URL Scheme的接口
+    //   handleOpenURL('weixin://dl/business/?appid=wx6220588048f6e417', '微信');
+    // },
+    href: '/kestack' as Href,
+  },
   // {
   //   title: '信息整合',
   //   name: 'all',
