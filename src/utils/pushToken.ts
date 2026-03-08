@@ -17,3 +17,21 @@ export const getPushToken = async (): Promise<string | null> => {
     });
   });
 };
+
+export const waitForPushToken = async (
+  attempts = 8,
+  intervalMs = 500
+): Promise<string | null> => {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const token = await getPushToken();
+    if (token) {
+      return token;
+    }
+
+    if (attempt < attempts - 1) {
+      await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+  }
+
+  return null;
+};

@@ -1,17 +1,21 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { deleteItemAsync } from 'expo-secure-store';
+
+import Modal from '@/components/modal';
+
+import usePushSubscriptionStore from '@/store/pushSubscription';
+
 import aboutPng from '@/assets/images/about.png';
 import checkUpdatePng from '@/assets/images/check-update.png';
 import exitPng from '@/assets/images/exit.png';
 import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
-import Modal from '@/components/modal';
 import { logout } from '@/request/api/auth';
 import { removeFeedToken } from '@/request/api/feeds';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { deleteItemAsync } from 'expo-secure-store';
+import { getPushToken } from '@/utils/pushToken';
 
 import type { SettingItem } from '@/types/settingItem';
-import { getPushToken } from '@/utils/pushToken';
 
 export const SETTING_ITEMS: SettingItem[] = [
   {
@@ -72,10 +76,13 @@ export const SETTING_ITEMS: SettingItem[] = [
         cancelText: '取消',
         onConfirm: async () => {
           // 退出前移除 feed token
-          const pushToken = await getPushToken();
+          const pushToken =
+            (await getPushToken()) ||
+            usePushSubscriptionStore.getState().registeredToken;
           if (pushToken) {
             removeFeedToken(pushToken).catch(() => {});
           }
+          usePushSubscriptionStore.getState().setRegisteredToken(null);
 
           logout()
             .then(() => {
