@@ -355,7 +355,7 @@ struct CourseColumnView: View {
             }
             
             if courses.isEmpty {
-                Text("无课程")
+                Text("居然没有课")
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.top, 4)
@@ -441,6 +441,8 @@ struct CourseCardView: View {
 struct LargeWidgetView: View {
     let courses: [Course]
     
+    private let courseCardHeight: CGFloat = 56
+    
     var body: some View {
         let weekday = Calendar.current.component(.weekday, from: Date())
         let today = weekday == 1 ? 7 : weekday - 1
@@ -448,70 +450,44 @@ struct LargeWidgetView: View {
         
         let todayCourses = getSortedCourses(courses.filter { $0.day == today })
         let tomorrowCourses = courses.filter { $0.day == tomorrow }.sorted { $0.startSection < $1.startSection }
-        
-        VStack(alignment: .leading, spacing: 12) {
-            Text("课程安排")
-                .font(.system(size: 18, weight: .bold))
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
+      
+        Text("课程安排")
+            .font(.system(size: 18, weight: .bold))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 6)
+            .padding(.top, 12)
+      
+        GeometryReader { geometry in
+            let availableHeight = geometry.size.height
+            let maxCourses = max(1, Int(floor(availableHeight / courseCardHeight)))
             
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 4) {
-                        Text("今天")
-                            .font(.system(size: 15, weight: .semibold))
-                        Text(dateString(for: 0))
-                            .font(.system(size: 12))
-                            .foregroundColor(.secondary)
-                        Text(weekdayName(today))
-                            .font(.system(size: 12))
-                            .foregroundColor(.blue)
-                    }
-                    
-                    if todayCourses.isEmpty {
-                        Text("无课程")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
-                            .padding(.top, 4)
-                    } else {
-                        ForEach(todayCourses) { course in
-                            CourseCardView(course: course, isFinished: course.isFinished(for: today))
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .fixedSize(horizontal: false, vertical: true)
+          
+            HStack(alignment: .top, spacing: 6) {
+                CourseColumnView(
+                    title: "今天",
+                    dateString: dateString(for: 0),
+                    weekdayName: weekdayName(today),
+                    courses: todayCourses,
+                    maxCount: maxCourses,
+                    gradientColors: [.purple, .blue.opacity(0.7)],
+                    isToday: true,
+                    todayWeekday: today
+                )
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 4) {
-                        Text("明天")
-                            .font(.system(size: 15, weight: .semibold))
-                        Text(dateString(for: 1))
-                            .font(.system(size: 12))
-                            .foregroundColor(.secondary)
-                        Text(weekdayName(tomorrow))
-                            .font(.system(size: 12))
-                            .foregroundColor(.blue)
-                    }
-                    
-                    if tomorrowCourses.isEmpty {
-                        Text("无课程")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
-                            .padding(.top, 4)
-                    } else {
-                        ForEach(tomorrowCourses) { course in
-                            CourseCardView(course: course, gradientColors: [.orange, .yellow.opacity(0.8)], isFinished: false)
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .fixedSize(horizontal: false, vertical: true)
+                CourseColumnView(
+                    title: "明天",
+                    dateString: dateString(for: 1),
+                    weekdayName: weekdayName(tomorrow),
+                    courses: tomorrowCourses,
+                    maxCount: maxCourses,
+                    gradientColors: [.orange, .yellow.opacity(0.8)],
+                    isToday: false,
+                    todayWeekday: today
+                )
             }
-            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .padding(.bottom, 4)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(6)
     }
     
     private func dateString(for daysFromNow: Int) -> String {
