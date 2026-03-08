@@ -103,6 +103,7 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   // 优先使用手动加载的图片，否则使用hook加载的
   const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
+  const normalizedForegroundOpacity = foregroundOpacity / 100;
 
   const renderBackgroundContent = (
     children: React.ReactNode,
@@ -129,7 +130,7 @@ const Schedule: React.FC<CourseTableProps> = ({
         </View>
       );
     }
-    const maskOpacity = foregroundOpacity * 0.5;
+    const maskOpacity = normalizedForegroundOpacity * 0.5;
     const maskColor =
       themeName === 'dark'
         ? `rgba(0, 0, 0, ${maskOpacity})`
@@ -158,9 +159,7 @@ const Schedule: React.FC<CourseTableProps> = ({
           />
           {/* 遮罩层 */}
           {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={width} height={height}>
-              <Paint color={maskColor} />
-            </Rect>
+            <Rect x={0} y={0} width={width} height={height} color={maskColor} />
           )}
         </Canvas>
         {children}
@@ -472,8 +471,8 @@ const Schedule: React.FC<CourseTableProps> = ({
               <Paint
                 color={
                   themeName === 'dark'
-                    ? `rgba(0, 0, 0, ${foregroundOpacity * 0.5})`
-                    : `rgba(255, 255, 255, ${foregroundOpacity * 0.5})`
+                    ? `rgba(0, 0, 0, ${normalizedForegroundOpacity * 0.5})`
+                    : `rgba(255, 255, 255, ${normalizedForegroundOpacity * 0.5})`
                 }
               />
             </Rect>
@@ -486,7 +485,7 @@ const Schedule: React.FC<CourseTableProps> = ({
             width={fullTableWidth}
             height={fullTableHeight}
             fit="fill"
-            opacity={foregroundOpacity}
+            opacity={normalizedForegroundOpacity}
           />
         </Canvas>
       )}
@@ -526,7 +525,7 @@ const Schedule: React.FC<CourseTableProps> = ({
   );
 
   const timetableForeground = (
-    <View style={[styles.container, { opacity: foregroundOpacity }]}>
+    <View style={[styles.container, { opacity: normalizedForegroundOpacity }]}>
       {/* 用于截图的完整课表内容 */}
       {snapshot && fullTableContent}
       <TimetableScrollView
