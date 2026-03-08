@@ -272,8 +272,8 @@ const useJPush = () => {
       try {
         // Android 设置通知渠道
         if (Platform.OS === 'android') {
-          await Notifications.setNotificationChannelAsync('coursebox', {
-            name: '华师匣子',
+          await Notifications.setNotificationChannelAsync('tips', {
+            name: '消息通知',
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
             lightColor: '#FF231F7C',

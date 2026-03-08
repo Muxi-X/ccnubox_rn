@@ -11,7 +11,10 @@ import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
-import { courseLiveActivity } from '@/utils/courseLiveActivity';
+import {
+  courseLiveActivity,
+  LIVE_ACTIVITY_ENABLED,
+} from '@/utils/courseLiveActivity';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
@@ -161,6 +164,11 @@ const CourseTablePage: FC = () => {
 
   // 测试 Live Activity
   const handleTestLiveActivity = useCallback(async () => {
+    if (!LIVE_ACTIVITY_ENABLED) {
+      alert('Live Activity 已在当前版本关闭');
+      return;
+    }
+
     if (Platform.OS !== 'ios') {
       alert('Live Activity 仅支持 iOS');
       return;
@@ -212,7 +220,7 @@ const CourseTablePage: FC = () => {
       )}
 
       {/* 测试 Live Activity 按钮 */}
-      {Platform.OS === 'ios' && (
+      {Platform.OS === 'ios' && LIVE_ACTIVITY_ENABLED && (
         <TouchableOpacity
           style={styles.testButton}
           onPress={handleTestLiveActivity}
