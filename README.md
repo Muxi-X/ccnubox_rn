@@ -67,8 +67,13 @@
 │   ├── themeBasedComponents/ # 主题组件
 │   │   ├── android/      # 安卓主题组件
 │   │   └── ios/          # iOS主题组件
-│   ├── types/            # 类型定义
+│   ├── types/            # TypeScript类型定义 (📚 详见类型系统文档)
 │   └── utils/            # 工具函数/垃圾桶
+├── docs/                 # 项目文档
+│   ├── TYPE_SYSTEM.md          # 类型系统规范
+│   ├── TYPE_SYSTEM_REFACTOR.md # 类型系统重构说明
+│   ├── TYPE_SYSTEM_MIGRATION.md # 类型迁移指南
+│   └── TYPE_SYSTEM_SUMMARY.md  # 类型改造总结
 ├── app.json              # Expo配置
 ├── babel.config.js       # Babel配置
 ├── eas.json             # EAS构建配置
@@ -78,6 +83,15 @@
 ├── plugin.js            # JPush插件配置
 └── tsconfig.json        # TypeScript配置
 ```
+
+## TypeScript 类型系统
+
+项目使用 TypeScript 进行类型管理，建立了完善的类型系统。详细文档请查看：
+
+- **[类型系统规范](./docs/TYPE_SYSTEM.md)** - 类型定义标准和组织结构
+- **[类型系统重构说明](./docs/TYPE_SYSTEM_REFACTOR.md)** - 改进内容和代码示例
+- **[类型迁移指南](./docs/TYPE_SYSTEM_MIGRATION.md)** - 代码迁移步骤和常见场景
+- **[类型改造总结](./docs/TYPE_SYSTEM_SUMMARY.md)** - 完整的改造报告
 
 ## 开发环境版本
 

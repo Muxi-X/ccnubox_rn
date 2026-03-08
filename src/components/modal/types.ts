@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { ViewProps } from 'react-native';
+import { StyleProp, ViewProps, ViewStyle } from 'react-native';
 
 import { PortalBaseProps } from '@/components/portal';
 
@@ -37,5 +37,5 @@ export interface ModalTriggerProps
 
 export interface ModalBackgroundProps {
   onPress: () => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
