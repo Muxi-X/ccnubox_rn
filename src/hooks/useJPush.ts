@@ -1,8 +1,10 @@
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import JPush from 'jpush-react-native';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { NativeModules, Platform } from 'react-native';
+
+import usePushSubscriptionStore from '@/store/pushSubscription';
 
 import { JPushSecrets } from '@/secret/JPush';
 import { openBrowser } from '@/utils/handleOpenURL';
@@ -103,6 +105,9 @@ const consumeNativeInitialJPushOpened = async (stage: string) => {
 
 let pendingPushPath: string | null = null;
 let pushNavigationReady = false;
+let listenersRegistered = false;
+let jpushInitialized = false;
+let initializationPromise: Promise<boolean> | null = null;
 
 export const setPushNavigationReady = (ready: boolean) => {
   pushNavigationReady = ready;
@@ -199,6 +204,150 @@ const convertRawApnsUserInfoToJPushOpenedResult = (
   };
 };
 
+const handleConnectEvent = (result: { connectEnable?: boolean }) => {
+  console.log(`[${Platform.OS}] JPush 连接状态变化:`, result);
+  const isConnected = result.connectEnable ?? false;
+
+  if (isConnected) {
+    console.log('✅ JPush 连接成功', result);
+  } else {
+    console.warn('⚠️ JPush 连接失败');
+  }
+};
+
+const handleNotificationEvent = (result: unknown) => {
+  const payload = result as JPushNotificationResult;
+  console.log(
+    '[JPush] 监听到通知事件:',
+    payload.notificationEventType,
+    payload
+  );
+
+  if (payload.notificationEventType !== 'notificationOpened') return;
+
+  console.log('[JPush] 用户点击了通知');
+  const url = extractUrlFromResult(payload);
+  if (url) {
+    openPushUrl(url);
+  } else {
+    console.log('[JPush] 通知被打开，但未找到跳转 URL');
+  }
+};
+
+const handleCustomMessage = (result: unknown) => {
+  console.log('收到自定义消息:', result);
+};
+
+const hasGrantedPushPermission = (
+  settings: Notifications.NotificationPermissionsStatus
+) => {
+  return (
+    settings.granted ||
+    settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+  );
+};
+
+export const ensurePushPermission = async (requestIfNeeded = false) => {
+  const currentSettings = await Notifications.getPermissionsAsync();
+  if (hasGrantedPushPermission(currentSettings)) {
+    return true;
+  }
+
+  if (!requestIfNeeded) {
+    return false;
+  }
+
+  const requestedSettings = await Notifications.requestPermissionsAsync();
+  return hasGrantedPushPermission(requestedSettings);
+};
+
+const registerJPushListeners = async () => {
+  if (listenersRegistered) return;
+
+  JPush.removeListener(handleConnectEvent);
+  JPush.removeListener(handleNotificationEvent);
+  JPush.removeListener(handleCustomMessage);
+  JPush.addConnectEventListener(handleConnectEvent);
+  JPush.addNotificationListener(handleNotificationEvent);
+  JPush.addCustomMessageListener(handleCustomMessage);
+
+  const bridgedBeforeInit =
+    await consumeNativeInitialJPushOpened('before-init');
+  if (bridgedBeforeInit) {
+    handleNotificationEvent(
+      convertRawApnsUserInfoToJPushOpenedResult(bridgedBeforeInit)
+    );
+  }
+
+  listenersRegistered = true;
+};
+
+export const initializeJPush = async ({
+  requestPermission = false,
+}: {
+  requestPermission?: boolean;
+} = {}) => {
+  if (initializationPromise) {
+    return initializationPromise;
+  }
+
+  initializationPromise = (async () => {
+    try {
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('tips', {
+          name: '消息通知',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+
+      const permissionGranted = await ensurePushPermission(requestPermission);
+      if (!permissionGranted) {
+        console.warn('[JPush] 未获得通知权限，跳过初始化');
+        return false;
+      }
+
+      await registerJPushListeners();
+
+      if (!jpushInitialized) {
+        JPush.setLoggerEnable(__DEV__);
+        JPush.init({
+          appKey: JPushSecrets.appKey,
+          channel: JPushSecrets.channel,
+          production: Boolean(__DEV__ ? 0 : 1),
+        });
+
+        const bridgedAfterInit =
+          await consumeNativeInitialJPushOpened('after-init');
+        if (bridgedAfterInit) {
+          handleNotificationEvent(
+            convertRawApnsUserInfoToJPushOpenedResult(bridgedAfterInit)
+          );
+        }
+
+        JPush.getRegistrationID((result: { registerID?: string }) => {
+          if (result.registerID) {
+            console.log('✅ JPush Registration ID:', result.registerID);
+          }
+        });
+
+        jpushInitialized = true;
+      }
+
+      console.log('✅ JPush 初始化完成');
+      return true;
+    } catch (error) {
+      console.error('JPush 初始化失败:', error);
+      return false;
+    } finally {
+      initializationPromise = null;
+    }
+  })();
+
+  return initializationPromise;
+};
+
 export const openPushUrl = (url: string) => {
   console.log('[JPush] 尝试打开跳转地址:', url);
   const trimmed = url.trim();
@@ -207,7 +356,6 @@ export const openPushUrl = (url: string) => {
 
   if (!scheme) {
     console.warn('[JPush] 无法识别的跳转协议 (no scheme):', url);
-    // 默认尝试作为 ccnubox 路径处理
     if (trimmed.startsWith('/')) {
       console.log('[JPush] 识别为路径，尝试使用 ccnubox 协议处理:', trimmed);
       ccnuboxResolver(trimmed);
@@ -227,121 +375,14 @@ export const openPushUrl = (url: string) => {
 };
 
 const useJPush = () => {
-  const isInitializedRef = useRef(false);
+  const enabled = usePushSubscriptionStore(state => state.enabled);
 
   useEffect(() => {
-    if (isInitializedRef.current) return;
-
-    let disposed = false;
-
-    const handleConnectEvent = (result: { connectEnable?: boolean }) => {
-      console.log(`[${Platform.OS}] JPush 连接状态变化:`, result);
-      const isConnected = result.connectEnable ?? false;
-
-      if (isConnected) {
-        console.log(`✅ JPush 连接成功`, result);
-      } else {
-        console.warn(`⚠️ JPush 连接失败`);
-      }
-    };
-
-    const handleNotificationEvent = (result: unknown) => {
-      const payload = result as JPushNotificationResult;
-      console.log(
-        '[JPush] 监听到通知事件:',
-        payload.notificationEventType,
-        payload
-      );
-
-      if (payload.notificationEventType !== 'notificationOpened') return;
-
-      console.log('[JPush] 用户点击了通知');
-      const url = extractUrlFromResult(payload);
-      if (url) {
-        openPushUrl(url);
-      } else {
-        console.log('[JPush] 通知被打开，但未找到跳转 URL');
-      }
-    };
-
-    const handleCustomMessage = (result: unknown) => {
-      console.log('收到自定义消息:', result);
-    };
-
-    const init = async () => {
-      try {
-        // Android 设置通知渠道
-        if (Platform.OS === 'android') {
-          await Notifications.setNotificationChannelAsync('tips', {
-            name: '消息通知',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-          });
-        }
-
-        // 请求通知权限
-        const { status } = await Notifications.requestPermissionsAsync();
-        if (status !== 'granted') {
-          console.warn('未获得通知权限');
-          return;
-        }
-        if (disposed) return;
-
-        // 初始化 JPush
-        JPush.setLoggerEnable(__DEV__);
-
-        // 先注册监听器，再 init（避免 iOS 点击事件在 init 时机过早下发）
-        JPush.removeListener(handleConnectEvent);
-        JPush.removeListener(handleNotificationEvent);
-        JPush.removeListener(handleCustomMessage);
-        JPush.addConnectEventListener(handleConnectEvent);
-        JPush.addNotificationListener(handleNotificationEvent);
-        JPush.addCustomMessageListener(handleCustomMessage);
-        const bridgedBeforeInit =
-          await consumeNativeInitialJPushOpened('before-init');
-        if (bridgedBeforeInit) {
-          handleNotificationEvent(
-            convertRawApnsUserInfoToJPushOpenedResult(bridgedBeforeInit)
-          );
-        }
-
-        JPush.init({
-          appKey: JPushSecrets.appKey,
-          channel: JPushSecrets.channel,
-          production: Boolean(__DEV__ ? 0 : 1),
-        });
-        const bridgedAfterInit =
-          await consumeNativeInitialJPushOpened('after-init');
-        if (bridgedAfterInit) {
-          handleNotificationEvent(
-            convertRawApnsUserInfoToJPushOpenedResult(bridgedAfterInit)
-          );
-        }
-
-        // 获取并保存 Registration ID
-        JPush.getRegistrationID((result: { registerID?: string }) => {
-          const id = result.registerID;
-          if (id) {
-            console.log('✅ JPush Registration ID:', id);
-          }
-        });
-
-        isInitializedRef.current = true;
-        console.log('✅ JPush 初始化完成');
-      } catch (error) {
-        console.error('JPush 初始化失败:', error);
-      }
-    };
-    init();
-
-    return () => {
-      disposed = true;
-      JPush.removeListener(handleConnectEvent);
-      JPush.removeListener(handleNotificationEvent);
-      JPush.removeListener(handleCustomMessage);
-    };
-  }, []);
+    if (!enabled) return;
+    initializeJPush().catch(error => {
+      console.error('JPush 自动初始化失败:', error);
+    });
+  }, [enabled]);
 };
 
 export default useJPush;
