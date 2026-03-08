@@ -527,7 +527,6 @@ const styles = StyleSheet.create({
     right: 0,
     paddingVertical: 2,
     paddingHorizontal: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
 
   noteActionsArea: {

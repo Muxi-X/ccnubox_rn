@@ -8,15 +8,17 @@ import View from '@/components/view';
 
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
 import { courseLiveActivity } from '@/utils/courseLiveActivity';
+import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
 import type { courseType } from './components/courseTable/type';
-import WeekSelector from './components/weekSelector';
+import WeekSelector from './components/WeekSelector';
 
 // 根据开学时间计算学期和年份
 const computeSemesterAndYear = (startTimestamp: number) => {
@@ -44,6 +46,7 @@ const computeSemesterAndYear = (startTimestamp: number) => {
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const studentId = useUserStore(state => state.student_id);
   const extensionStorage = useMemo(() => {
     return new ExtensionStorage('group.release-20240916');
   }, []);
@@ -66,6 +69,12 @@ const CourseTablePage: FC = () => {
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
+
+  // 根据学号生成学期列表
+  const semesterOptions = useMemo(
+    () => buildSemesterOptions(studentId),
+    [studentId]
+  );
   // setSchoolTime, setHolidayTime, setSelectedWeek
   const fetchCurrentWeek = useCallback(async () => {
     try {
@@ -199,8 +208,13 @@ const CourseTablePage: FC = () => {
         <WeekSelector
           currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
-          onWeekSelect={week => {
-            setSelectedWeek(week);
+          year={year}
+          semester={semester}
+          semesterOptions={semesterOptions}
+          onApply={({ year, semester, week }) => {
+            setYear(year);
+            setSemester(semester);
+            if (week !== undefined) setSelectedWeek(week);
             setShowWeekPicker(false);
           }}
         />

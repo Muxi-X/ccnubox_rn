@@ -1,71 +1,75 @@
 import { PickerDataType } from '@/components/picker/types';
 
-import useUserStore from '@/store/user';
+/** 学期选项基础结构 */
+export interface SemesterOptionBase {
+  label: string;
+  year: string;
+  semester: string;
+}
+
+const SEMESTER_LABELS: Record<string, string> = {
+  '1': '第一学期',
+  '2': '第二学期',
+  '3': '第三学期',
+};
 
 /**
- * Generates semester options from 2021 to current year
- * @returns Array of {label: string, value: string} objects
- * @example
- * // Returns:
- * // [[
- * //   {label: '2021学年-第一学期', value: '2021-1'},
- * //   {label: '2021学年-第二学期', value: '2021-2'},
- * //   ...
- * // ]]
+ * 根据学号前四位和当前日期计算学期列表（入学到当前）
+ *
+ * 逻辑：
+ * - 学年：9 月起算新学年
+ * - 学期：9-1 第一学期，2-6 第二学期，7-8 第三学期
  */
-export const generateSemesterOptions = (): PickerDataType => {
-  const admissionYear = Number(
-    useUserStore(state => state.student_id).slice(0, 4)
-  );
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // 1-12
-  const options = [];
+export const computeSemesterOptions = (
+  studentId: string
+): SemesterOptionBase[] => {
+  if (!studentId || studentId.length < 4) return [];
+  const admissionYear = Number(studentId.slice(0, 4));
+  if (isNaN(admissionYear) || admissionYear <= 0) return [];
 
-  // Determine if current time is first or second semester
-  // Assuming first semester is March-August (month 3-8), second is September-February
-  // const currentSemester = currentMonth >= 3 && currentMonth <= 8 ? 1 : 2;
-  // 9-2 第一学期 3-6 第二学期 7-8 第三学期
-  const currentSemester = currentMonth >= 3 ? 1 : currentMonth >= 6 ? 2 : 3;
+  const today = new Date();
+  const currentCalendarYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
 
-  for (let year = admissionYear; year <= currentYear; year++) {
-    // For current year, only add semesters that have passed
-    if (year === currentYear) {
-      options.push({
-        label: `${year}学年-第一学期`,
-        value: `${year}-1`,
-      });
+  const currentAcademicYear =
+    currentMonth >= 9 ? currentCalendarYear : currentCalendarYear - 1;
 
-      if (currentSemester > 1) {
-        options.push({
-          label: `${year}学年-第二学期`,
-          value: `${year}-2`,
-        });
-      }
-
-      if (currentSemester > 2) {
-        options.push({
-          label: `${year}学年-第三学期`,
-          value: `${year}-3`,
-        });
-      }
-    } else {
-      // For past years, add both semesters
-      options.push(
-        {
-          label: `${year}学年-第一学期`,
-          value: `${year}-1`,
-        },
-        {
-          label: `${year}学年-第二学期`,
-          value: `${year}-2`,
-        },
-        {
-          label: `${year}学年-第三学期`,
-          value: `${year}-3`,
-        }
-      );
-    }
+  let currentSemester = 1;
+  if (currentMonth >= 2 && currentMonth <= 6) {
+    currentSemester = 2;
+  } else if (currentMonth >= 7 && currentMonth <= 8) {
+    currentSemester = 3;
   }
 
-  return [options.reverse()];
+  const options: SemesterOptionBase[] = [];
+  for (let y = admissionYear; y <= currentAcademicYear; y++) {
+    const maxSem = y === currentAcademicYear ? currentSemester : 3;
+    for (let s = 1; s <= maxSem; s++) {
+      options.push({
+        label: `${String(y).slice(2)}~${String(y + 1).slice(2)}学年-${SEMESTER_LABELS[String(s)]}`,
+        year: String(y),
+        semester: String(s),
+      });
+    }
+  }
+  return options.reverse();
+};
+
+/**
+ * 生成 Picker 组件所需的学期选项（多选成绩等场景）
+ */
+export const generateSemesterOptions = (studentId: string): PickerDataType => {
+  const opts = computeSemesterOptions(studentId);
+  return [
+    opts.map(o => ({ label: o.label, value: `${o.year}-${o.semester}` })),
+  ];
+};
+
+/**
+ * 生成课表周选择器所需的学期选项
+ */
+export const buildSemesterOptions = (
+  studentId: string
+): SemesterOptionBase[] => {
+  return computeSemesterOptions(studentId);
 };
