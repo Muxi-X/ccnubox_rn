@@ -27,8 +27,32 @@ import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
-import { courseType, SemesterWeekParams } from './components/courseTable/type';
+import type { courseType, SemesterWeekParams } from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
+
+// 根据开学时间计算学期和年份
+const computeSemesterAndYear = (startTimestamp: number) => {
+  const startDate = new Date(startTimestamp * 1000);
+  const month = startDate.getMonth() + 1; // 获取开学时间的月份
+  let semester = '1'; // 默认学期为 '1'
+  let year = startDate.getFullYear().toString(); // 默认年份为当前年
+
+  // 根据开学时间计算学期和年份
+  if (month >= 1 && month <= 5) {
+    // 1月到5月 => 第二学期
+    semester = '2';
+    year = (new Date().getFullYear() - 1).toString(); // 前一年
+  } else if (month >= 6 && month <= 7) {
+    // 6月到7月 => 第三学期
+    semester = '3';
+    year = (new Date().getFullYear() - 1).toString(); // 前一年
+  } else if (month >= 8 && month <= 12) {
+    // 8月到12月 => 第一学期
+    semester = '1';
+    year = new Date().getFullYear().toString(); // 当前年
+  }
+  return { semester, year };
+};
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -54,11 +78,11 @@ const CourseTablePage: FC = () => {
     setSelectedWeek,
     showWeekPicker,
     setShowWeekPicker,
-    computeAndSetSemester,
   } = useTimeStore();
 
   const [isLoadingTimetable, setIsLoadingTimetable] = useState(false);
 
+  // 根据学号生成学期列表
   const semesterOptions = useMemo(
     () => buildSemesterOptions(studentId),
     [studentId]
@@ -85,8 +109,11 @@ const CourseTablePage: FC = () => {
       if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
         setSchoolTime(res.data.school_time);
         setHolidayTime(res.data.holiday_time);
-        computeAndSetSemester(res.data.school_time);
+        const { semester, year } = computeSemesterAndYear(res.data.school_time);
+        setSemester(semester);
+        setYear(year);
 
+        // 保存当前周数据到 UserDefaults 供 widget 使用
         extensionStorage.set('schoolTime', res.data.school_time);
         extensionStorage.set('holidayTime', res.data.holiday_time);
         ExtensionStorage.reloadWidget();
@@ -102,11 +129,13 @@ const CourseTablePage: FC = () => {
   }, [
     setSchoolTime,
     setHolidayTime,
-    computeAndSetSemester,
+    setSemester,
+    setYear,
     extensionStorage,
     setSelectedWeek,
   ]);
 
+  // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
       void fetchCurrentWeek();
@@ -191,18 +220,22 @@ const CourseTablePage: FC = () => {
     ]
   );
 
+  // 获取当前周数
   useEffect(() => {
     void fetchCurrentWeek();
   }, [fetchCurrentWeek]);
 
+  // 刷新课表数据
   useEffect(() => {
     if (schoolTime) {
       void onTimetableRefresh();
     }
   }, [schoolTime, onTimetableRefresh]);
 
+  // 启用 Live Activity 自动提醒
   useCourseLiveActivity(courses);
 
+  // 测试 Live Activity
   const handleTestLiveActivity = useCallback(async () => {
     if (!LIVE_ACTIVITY_ENABLED) {
       alert('Live Activity 已在当前版本关闭');
@@ -258,6 +291,7 @@ const CourseTablePage: FC = () => {
         />
       )}
 
+      {/* 测试 Live Activity 按钮 */}
       {Platform.OS === 'ios' && LIVE_ACTIVITY_ENABLED && (
         <TouchableOpacity
           style={styles.testButton}
