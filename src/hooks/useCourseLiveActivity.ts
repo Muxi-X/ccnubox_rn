@@ -7,6 +7,7 @@ import {
   courseLiveActivity,
   formatClassTime,
   getClassStartTime,
+  LIVE_ACTIVITY_ENABLED,
 } from '@/utils/courseLiveActivity';
 import useTimeStore from '@/store/time';
 
@@ -19,6 +20,12 @@ export function useCourseLiveActivity(courses: courseType[]) {
   const appState = useRef(AppState.currentState);
 
   useEffect(() => {
+    if (!LIVE_ACTIVITY_ENABLED) {
+      // 下线期间确保关闭已存在活动
+      void courseLiveActivity.endAllActivities();
+      return;
+    }
+
     // 监听 App 状态变化
     const subscription = AppState.addEventListener(
       'change',
@@ -68,6 +75,8 @@ export function useCourseLiveActivity(courses: courseType[]) {
   };
 
   const checkUpcomingCourse = async () => {
+    if (!LIVE_ACTIVITY_ENABLED) return;
+
     // 独立测试模式下，不让自动检查干预手动启动的 Live Activity
     if (courseLiveActivity.isManualModeActive()) {
       return;
