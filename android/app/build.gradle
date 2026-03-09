@@ -96,9 +96,9 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
-// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-40b9e7614b2f59610fb8d878b16dbcd8a175725d
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-d2795b3ac06d5ba30ede48c66f1eb1d057315706
 manifestPlaceholders = [
-                JPUSH_PKGNAME: applicationId,
+                JPUSH_PKGNAME: System.getenv("JPUSH_PKGNAME") ?: (project.findProperty("JPUSH_PKGNAME") ?: "com.muxixyz.ccnubox"),
                 JPUSH_APPKEY: System.getenv("JPUSH_APP_KEY") ?: (project.findProperty("JPUSH_APP_KEY") ?: ""),
                 JPUSH_CHANNEL: System.getenv("JPUSH_CHANNEL") ?: (project.findProperty("JPUSH_CHANNEL") ?: ""),
                 XIAOMI_APPID: System.getenv("JPUSH_XIAOMI_APP_ID") ?: (project.findProperty("JPUSH_XIAOMI_APP_ID") ?: ""),
@@ -120,8 +120,8 @@ manifestPlaceholders = [
                 abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
         }
         // @generated end jpush-ndk-config
-        versionCode 1
-        versionName "3.1.7"
+        versionCode 18
+        versionName "3.1.6"
     }
     signingConfigs {
         debug {

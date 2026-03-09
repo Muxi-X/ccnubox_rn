@@ -16,7 +16,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "XX919852F6EEA878C70780XX"
+               BlueprintIdentifier = "XX720CE36A83DFB41BFE60XX"
                BuildableName = "widget.appex"
                BlueprintName = "widget"
                ReferencedContainer = "container:ccnubox.xcodeproj">
@@ -31,7 +31,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "ccnubox.app"
+               BuildableName = "app.app"
                BlueprintName = "ccnubox"
                ReferencedContainer = "container:ccnubox.xcodeproj">
             </BuildableReference>
@@ -62,7 +62,7 @@
          BundleIdentifier = "com.apple.springboard">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "XX919852F6EEA878C70780XX"
+            BlueprintIdentifier = "XX720CE36A83DFB41BFE60XX"
             BuildableName = "widget.appex"
             BlueprintName = "widget"
             ReferencedContainer = "container:ccnubox.xcodeproj">
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ccnubox.app"
+            BuildableName = "app.app"
             BlueprintName = "ccnubox"
             ReferencedContainer = "container:ccnubox.xcodeproj">
          </BuildableReference>
@@ -108,7 +108,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ccnubox.app"
+            BuildableName = "app.app"
             BlueprintName = "ccnubox"
             ReferencedContainer = "container:ccnubox.xcodeproj">
          </BuildableReference>
