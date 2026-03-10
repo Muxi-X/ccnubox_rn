@@ -29,7 +29,7 @@ const WebsiteItem = ({ title, _url, link }: ItemProps) => {
   const openInApp = useInternalBroswer();
 
   return (
-    <Pressable style={styles.item} onPress={() => openInApp(link)}>
+    <Pressable style={styles.item} onPress={() => openInApp(link, title)}>
       <Image source={{ uri: _url }} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
     </Pressable>

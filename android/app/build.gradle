@@ -81,6 +81,13 @@ def enableProguardInReleaseBuilds = (findProperty('android.enableProguardInRelea
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+// 加载 keystore 配置
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -89,11 +96,32 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-d2795b3ac06d5ba30ede48c66f1eb1d057315706
+manifestPlaceholders = [
+                JPUSH_PKGNAME: System.getenv("JPUSH_PKGNAME") ?: (project.findProperty("JPUSH_PKGNAME") ?: "com.muxixyz.ccnubox"),
+                JPUSH_APPKEY: System.getenv("JPUSH_APP_KEY") ?: (project.findProperty("JPUSH_APP_KEY") ?: ""),
+                JPUSH_CHANNEL: System.getenv("JPUSH_CHANNEL") ?: (project.findProperty("JPUSH_CHANNEL") ?: ""),
+                XIAOMI_APPID: System.getenv("JPUSH_XIAOMI_APP_ID") ?: (project.findProperty("JPUSH_XIAOMI_APP_ID") ?: ""),
+                XIAOMI_APPKEY: System.getenv("JPUSH_XIAOMI_APP_KEY") ?: (project.findProperty("JPUSH_XIAOMI_APP_KEY") ?: ""),
+                OPPO_APPKEY: System.getenv("JPUSH_OPPO_APP_KEY") ?: (project.findProperty("JPUSH_OPPO_APP_KEY") ?: ""),
+                OPPO_APPID: System.getenv("JPUSH_OPPO_APP_ID") ?: (project.findProperty("JPUSH_OPPO_APP_ID") ?: ""),
+                OPPO_APPSECRET: System.getenv("JPUSH_OPPO_APP_SECRET") ?: (project.findProperty("JPUSH_OPPO_APP_SECRET") ?: ""),
+                VIVO_APPKEY: System.getenv("JPUSH_VIVO_APP_KEY") ?: (project.findProperty("JPUSH_VIVO_APP_KEY") ?: ""),
+                VIVO_APPID: System.getenv("JPUSH_VIVO_APP_ID") ?: (project.findProperty("JPUSH_VIVO_APP_ID") ?: ""),
+                HONOR_APPID: System.getenv("JPUSH_HONOR_APP_ID") ?: (project.findProperty("JPUSH_HONOR_APP_ID") ?: "")
+            ]
+// @generated end jpush-manifest-placeholders
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 17
-        versionName "3.1.5"
+        // @generated begin jpush-ndk-config - expo prebuild (DO NOT MODIFY) sync-b1dec770741d2eaa7867c32a8a866f8899231079
+        ndk {
+                //选择要添加的对应 cpu 类型的 .so 库。
+                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+        }
+        // @generated end jpush-ndk-config
+        versionCode 18
+        versionName "3.1.6"
     }
     signingConfigs {
         debug {
@@ -102,15 +130,23 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            // debug 也使用 release 签名（用于测试推送等需要正式签名的功能）
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
+            minifyEnabled false
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -148,6 +184,31 @@ android {
 }
 
 dependencies {
+// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-7312a7429e92bcd6da5d79dc70cca2813354c5f9
+// JPush React Native 桥接（已包含 JPush 核心 SDK）
+    implementation project(':jpush-react-native')
+    implementation project(':jcore-react-native')
+    
+    // 厂商通道 SDK（JPush 5.9.0）
+    // 华为厂商
+    implementation 'com.huawei.hms:push:6.13.0.300'
+    implementation 'com.huawei.agconnect:agconnect-core:1.9.3.302'
+    implementation 'cn.jiguang.sdk.plugin:huawei:5.9.0'
+    // VIVO 厂商
+    implementation 'cn.jiguang.sdk.plugin:vivo:5.9.0'
+    // 小米厂商
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:5.9.0'
+    // OPPO 厂商
+    implementation 'cn.jiguang.sdk.plugin:oppo:5.9.0'
+    // OPPO 3.1.0 aar 及其以上版本需要添加以下依赖
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    // 荣耀厂商
+    implementation 'cn.jiguang.sdk.plugin:honor:5.9.0'
+// @generated end jpush-dependencies
+    // @generated begin jpush-libs-filetree - expo prebuild (DO NOT MODIFY) sync-b49c55821fcfaf640a644f68fa2264b8adfed2f2
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    // @generated end jpush-libs-filetree
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -175,3 +236,8 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+
+// @generated begin jpush-apply-plugins - expo prebuild (DO NOT MODIFY)
+apply plugin: 'com.huawei.agconnect'
+// @generated end jpush-apply-plugins

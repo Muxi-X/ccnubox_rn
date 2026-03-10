@@ -4,6 +4,8 @@
   <dict>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
+    <key>CFBundleAllowMixedLocalizations</key>
+    <true/>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -19,7 +21,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>3.1.5</string>
+    <string>3.1.6</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -39,7 +41,13 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>17</string>
+    <string>18</string>
+    <key>JPUSH_APPKEY</key>
+    <string>85271fccfbf4106a0e78556c</string>
+    <key>JPUSH_APS_FOR_PRODUCTION</key>
+    <false/>
+    <key>JPUSH_CHANNEL</key>
+    <string>coursetable</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>weixin</string>
@@ -66,9 +74,18 @@
     <string>我们需要将图片保存到您的照片库。</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>我们需要访问您的照片库用于保存截图。</string>
+    <key>NSSupportsLiveActivities</key>
+    <true/>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+    </array>
+    <key>RCTNewArchEnabled</key>
+    <true/>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>fetch</string>
+      <string>remote-notification</string>
     </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>

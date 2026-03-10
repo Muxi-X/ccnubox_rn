@@ -1,10 +1,9 @@
 import { request } from '@/request';
 
-//清除feed订阅事件
+// 清除所有 feed 订阅事件
 export const clearFeedEvents = async () => {
   return await request.post('/feed/clearFeedEvent', {
     status: 'all',
-    feed_id: 0,
   });
 };
 

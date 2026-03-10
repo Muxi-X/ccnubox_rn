@@ -1,0 +1,295 @@
+import { NativeModules, Platform } from 'react-native';
+
+const { CourseLiveActivityModule } = NativeModules;
+
+// 发布开关：本期暂不上线 Live Activity，保留代码以便后续恢复
+export const LIVE_ACTIVITY_ENABLED = false;
+
+const SECTION_START_TIMES: Record<number, [number, number]> = {
+  1: [8, 0],
+  2: [8, 55],
+  3: [10, 10],
+  4: [11, 5],
+  5: [14, 0],
+  6: [14, 55],
+  7: [16, 10],
+  8: [17, 5],
+  9: [18, 30],
+  10: [19, 20],
+  11: [20, 15],
+  12: [21, 5],
+};
+
+const SECTION_START_TIME_TEXT: Record<number, string> = {
+  1: '08:00',
+  2: '08:55',
+  3: '10:10',
+  4: '11:05',
+  5: '14:00',
+  6: '14:55',
+  7: '16:10',
+  8: '17:05',
+  9: '18:30',
+  10: '19:20',
+  11: '20:15',
+  12: '21:05',
+};
+
+const SECTION_END_TIMES: Record<number, string> = {
+  1: '08:45',
+  2: '09:40',
+  3: '10:55',
+  4: '11:50',
+  5: '14:45',
+  6: '15:40',
+  7: '16:55',
+  8: '17:50',
+  9: '19:15',
+  10: '20:05',
+  11: '21:00',
+  12: '21:50',
+};
+
+export interface CourseInfo {
+  courseName: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+}
+
+class CourseLiveActivityManager {
+  private activeActivityId: string | null = null;
+  private endTimer: ReturnType<typeof setTimeout> | null = null;
+  private manualModeUntil: number | null = null;
+
+  /**
+   * 启动课程提醒 Live Activity
+   * @param courseInfo 课程信息
+   * @param classStartTime 上课开始时间 (Date 对象)
+   */
+  async startCourseReminder(
+    courseInfo: CourseInfo,
+    classStartTime: Date
+  ): Promise<string | null> {
+    if (!LIVE_ACTIVITY_ENABLED) {
+      return null;
+    }
+
+    if (Platform.OS !== 'ios') {
+      console.log('Live Activity only available on iOS');
+      return null;
+    }
+
+    try {
+      // 传递时间戳给 Native
+      const activityId = await CourseLiveActivityModule.startActivity(
+        courseInfo.courseName,
+        courseInfo.location,
+        courseInfo.startTime,
+        courseInfo.endTime,
+        classStartTime.getTime() // 毫秒时间戳
+      );
+
+      this.activeActivityId = activityId;
+      console.log('✅ Live Activity started:', activityId);
+
+      // 设置定时器，到时间自动关闭
+      this.scheduleAutoEnd(classStartTime);
+
+      return activityId;
+    } catch (error) {
+      console.error('❌ Failed to start Live Activity:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 设置自动关闭定时器
+   */
+  private scheduleAutoEnd(classStartTime: Date) {
+    this.clearEndTimer();
+
+    const now = Date.now();
+    const endTime = classStartTime.getTime();
+    const delay = endTime - now;
+
+    if (delay > 0) {
+      this.endTimer = setTimeout(() => {
+        console.log('⏰ Auto ending Live Activity');
+        this.disableManualMode();
+        this.endActivity();
+      }, delay);
+    }
+  }
+
+  /**
+   * 清除定时器
+   */
+  private clearEndTimer() {
+    if (this.endTimer) {
+      clearTimeout(this.endTimer);
+      this.endTimer = null;
+    }
+  }
+
+  /**
+   * 更新 Live Activity 状态
+   */
+  async updateActivity(classStartTime: Date, isInClass: boolean) {
+    if (!LIVE_ACTIVITY_ENABLED) return;
+    if (!this.activeActivityId) return;
+
+    try {
+      await CourseLiveActivityModule.updateActivity(
+        this.activeActivityId,
+        classStartTime.getTime(),
+        isInClass
+      );
+      console.log('✅ Live Activity updated');
+    } catch (error) {
+      console.error('❌ Failed to update Live Activity:', error);
+    }
+  }
+
+  /**
+   * 与 Native 同步当前活动状态，防止内存里的 activityId 过期后“假活跃”
+   */
+  async hasValidActiveActivity(): Promise<boolean> {
+    if (!LIVE_ACTIVITY_ENABLED) return false;
+    if (!this.activeActivityId) return false;
+
+    try {
+      const exists = await CourseLiveActivityModule.hasActivity(
+        this.activeActivityId
+      );
+      if (!exists) {
+        this.activeActivityId = null;
+      }
+      return Boolean(exists);
+    } catch (error) {
+      console.warn('⚠️ Failed to validate Live Activity state:', error);
+      return this.activeActivityId !== null;
+    }
+  }
+
+  /**
+   * 结束 Live Activity
+   */
+  async endActivity() {
+    this.clearEndTimer();
+    this.disableManualMode();
+
+    if (!this.activeActivityId) return;
+
+    try {
+      await CourseLiveActivityModule.endActivity(this.activeActivityId);
+      console.log('✅ Live Activity ended');
+      this.activeActivityId = null;
+    } catch (error) {
+      console.error('❌ Failed to end Live Activity:', error);
+      // Native 侧找不到该活动时，避免 JS 保留脏 id 导致后续无法重新拉起
+      this.activeActivityId = null;
+    }
+  }
+
+  /**
+   * 结束所有 Live Activity
+   */
+  async endAllActivities() {
+    this.clearEndTimer();
+    this.disableManualMode();
+
+    try {
+      await CourseLiveActivityModule.endAllActivities();
+      console.log('✅ All Live Activities ended');
+      this.activeActivityId = null;
+    } catch (error) {
+      console.error('❌ Failed to end all Live Activities:', error);
+    }
+  }
+
+  /**
+   * 检查是否有活动的 Live Activity
+   */
+  hasActiveActivity(): boolean {
+    return this.activeActivityId !== null;
+  }
+
+  /**
+   * 启用独立测试模式（期间自动课表检查不会干预 Live Activity）
+   */
+  enableManualMode(durationMs: number = 20 * 60 * 1000) {
+    this.manualModeUntil = Date.now() + durationMs;
+  }
+
+  /**
+   * 关闭独立测试模式
+   */
+  disableManualMode() {
+    this.manualModeUntil = null;
+  }
+
+  /**
+   * 是否处于独立测试模式
+   */
+  isManualModeActive(): boolean {
+    if (!this.manualModeUntil) return false;
+    if (Date.now() > this.manualModeUntil) {
+      this.manualModeUntil = null;
+      return false;
+    }
+    return true;
+  }
+}
+
+export const courseLiveActivity = new CourseLiveActivityManager();
+
+/**
+ * 根据节次计算上课时间
+ * @param classWhen 节次字符串，如 "1-2"
+ * @returns 今天该节次的开始时间
+ */
+export function getClassStartTime(classWhen: string): Date {
+  const startSection = parseInt(classWhen.split('-')[0], 10);
+  const [hour, minute] = SECTION_START_TIMES[startSection] || [8, 0];
+
+  const now = new Date();
+  const classTime = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    hour,
+    minute,
+    0
+  );
+
+  return classTime;
+}
+
+/**
+ * 格式化时间（如 "08:00"）
+ */
+export function formatClassTime(classWhen: string): {
+  start: string;
+  end: string;
+} {
+  const [startSection, endSection] = classWhen.split('-').map(Number);
+
+  return {
+    start: SECTION_START_TIME_TEXT[startSection] || '00:00',
+    end: SECTION_END_TIMES[endSection] || '00:00',
+  };
+}
+
+/**
+ * 计算距离上课还有多少分钟
+ * @param classWhen 节次字符串，如 "1-2"
+ * @returns 距离上课的分钟数，如果已经过了上课时间则返回负数或0
+ */
+export function calculateMinutesUntilClass(classWhen: string): number {
+  const classStartTime = getClassStartTime(classWhen);
+  const now = new Date();
+  const diffMs = classStartTime.getTime() - now.getTime();
+  const diffMinutes = Math.ceil(diffMs / (1000 * 60));
+  return diffMinutes;
+}
