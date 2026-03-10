@@ -283,7 +283,7 @@ export default function FeedbackHistory() {
     if (!hasMore) {
       return (
         <Text style={{ textAlign: 'center', margin: 16, color: '#999' }}>
-          没有更多了
+          {feedbackHistory.length === 0 ? '似乎还没有反馈呢' : '再往下也没有啦'}
         </Text>
       );
     }
