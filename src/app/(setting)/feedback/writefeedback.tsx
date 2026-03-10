@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -406,7 +407,14 @@ function WriteFeedback() {
         style={[
           styles.footerContainer,
           currentStyle?.background_style,
-          { bottom: isKeyboardShow ? keyboardHeight : 0 },
+          {
+            bottom: isKeyboardShow
+              ? Platform.select({
+                  ios: keyboardHeight - 32,
+                  android: keyboardHeight,
+                })
+              : 0,
+          },
         ]}
       >
         <TouchableOpacity
@@ -593,8 +601,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    padding: 16,
     zIndex: 100,
   },
   submitButton: {
