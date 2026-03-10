@@ -33,7 +33,7 @@ public class AppDelegate: ExpoAppDelegate {
       in: window,
       launchOptions: launchOptions)
 #endif
-// @generated begin jpush-swift-initialization - expo prebuild (DO NOT MODIFY) sync-b92d0ea2fb5c0655240a598324108e26e1af4229
+// @generated begin jpush-swift-initialization - expo prebuild (DO NOT MODIFY) sync-be636fbaef0caa94830f8b05ca2979ca5cfab2f8
 
     // JPush 注册配置
     let entity = JPUSHRegisterEntity()
@@ -52,11 +52,16 @@ public class AppDelegate: ExpoAppDelegate {
     // 开启调试模式
     JPUSHService.setDebugMode()
 
+    let appKey = Bundle.main.object(forInfoDictionaryKey: "JPUSH_APPKEY") as? String ?? ""
+    let channel = Bundle.main.object(forInfoDictionaryKey: "JPUSH_CHANNEL") as? String ?? ""
+    let apsForProduction =
+      (Bundle.main.object(forInfoDictionaryKey: "JPUSH_APS_FOR_PRODUCTION") as? NSNumber)?.boolValue ?? false
+
     // 初始化 JPush
     JPUSHService.setup(withOption: launchOptions,
-                       appKey: "85271fccfbf4106a0e78556c",
-                       channel: "coursetable",
-                       apsForProduction: false)
+                       appKey: appKey,
+                       channel: channel,
+                       apsForProduction: apsForProduction)
 
     // 监听自定义消息
     NotificationCenter.default.addObserver(
