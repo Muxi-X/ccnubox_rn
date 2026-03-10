@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -26,6 +26,7 @@ interface FAQItemProps {
   initialStatus: status;
   onToggle: () => void;
   onPress: (status: status) => Promise<boolean>;
+  onAnimationEnd?: (...args: any[]) => void;
 }
 
 interface ConfirmModalProps {
@@ -46,13 +47,40 @@ const FAQItem: React.FC<FAQItemProps> = ({
   initialStatus,
   onToggle,
   onPress,
+  onAnimationEnd,
 }) => {
+  const viewRef = useRef<View>(null);
+  const itemBoundsRef = useRef<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>(null);
   const [selectedStatus, setSelectedStatus] = useState<status>(
     initialStatus || 'notSelected'
   );
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
+
+  const getItemBounds = () => {
+    viewRef.current?.measure((x, y, width, height) => {
+      const bounds = { x, y, width, height };
+      itemBoundsRef.current = bounds;
+    });
+  };
+
+  useEffect(() => {
+    if (isExpanded) {
+      const timer = setTimeout(() => {
+        if (!itemBoundsRef.current) getItemBounds();
+
+        onAnimationEnd?.(itemBoundsRef.current);
+      }, 250);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isExpanded]);
 
   // 图标旋转和颜色动画状态按钮SVG图标定义
 
@@ -95,8 +123,8 @@ const FAQItem: React.FC<FAQItemProps> = ({
 
   // 内容展开动画
   const animatedContentStyle = useAnimatedStyle(() => ({
-    maxHeight: withTiming(isExpanded ? 2000 : 0, { duration: 300 }),
-    opacity: withTiming(isExpanded ? 1 : 0, { duration: 300 }),
+    maxHeight: withTiming(isExpanded ? 2000 : 0, { duration: 250 }),
+    opacity: withTiming(isExpanded ? 1 : 0, { duration: 250 }),
     overflow: 'hidden',
   }));
 
@@ -123,6 +151,7 @@ const FAQItem: React.FC<FAQItemProps> = ({
 
   return (
     <View
+      ref={viewRef}
       style={[
         styles.container,
         currentStyle?.FAQItem_background_style,
@@ -263,16 +292,19 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   icon: {
-    width: 17,
-    height: 17,
+    width: 16,
+    height: 16,
     marginRight: 8,
   },
   title: {
+    flex: 1,
+    lineHeight: 18,
     fontSize: 16,
     fontWeight: 400,
+    textAlignVertical: 'top',
   },
   contentContainer: {
     overflow: 'hidden',

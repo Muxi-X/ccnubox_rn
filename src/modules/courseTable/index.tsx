@@ -27,7 +27,10 @@ import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
-import type { courseType, SemesterWeekParams } from './components/courseTable/type';
+import type {
+  courseType,
+  SemesterWeekParams,
+} from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
 
 // 根据开学时间计算学期和年份
