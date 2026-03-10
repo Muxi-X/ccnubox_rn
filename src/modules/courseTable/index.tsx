@@ -23,11 +23,15 @@ import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
 } from '@/utils/courseLiveActivity';
+import { serializeCoursesForAppleWidget } from '@/utils/courseRuntime';
 import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
 import CourseTable from './components/courseTable';
-import type { courseType, SemesterWeekParams } from './components/courseTable/type';
+import type {
+  courseType,
+  SemesterWeekParams,
+} from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
 
 // 根据开学时间计算学期和年份
@@ -92,11 +96,7 @@ const CourseTablePage: FC = () => {
     (nextCourses: courseType[]) => {
       extensionStorage.set(
         'courseTable',
-        nextCourses.map(course => ({
-          ...course,
-          is_official: course.is_official ? 1 : 0,
-          weeks: JSON.stringify(course.weeks),
-        }))
+        serializeCoursesForAppleWidget(nextCourses)
       );
       ExtensionStorage.reloadWidget();
     },

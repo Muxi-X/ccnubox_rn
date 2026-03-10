@@ -11,7 +11,6 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { TABS } from '@/constants/tabBar';
 import PushSubscriptionPromptContent from '@/modules/setting/components/PushSubscriptionPromptContent';
-import { keyGenerator } from '@/utils';
 import {
   enablePushSubscription,
   syncPushSubscription,
@@ -74,7 +73,7 @@ export default function TabLayout() {
       return (
         <Tabs.Screen
           name={name}
-          key={keyGenerator.next().value as unknown as number}
+          key={name}
           options={{
             title: title,
             lazy: false,

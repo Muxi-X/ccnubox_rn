@@ -1,54 +1,15 @@
 import { NativeModules, Platform } from 'react-native';
 
+export {
+  calculateMinutesUntilClass,
+  getClassTimeRange as formatClassTime,
+  getClassStartTime,
+} from '@/utils/courseRuntime';
+
 const { CourseLiveActivityModule } = NativeModules;
 
 // 发布开关：本期暂不上线 Live Activity，保留代码以便后续恢复
 export const LIVE_ACTIVITY_ENABLED = false;
-
-const SECTION_START_TIMES: Record<number, [number, number]> = {
-  1: [8, 0],
-  2: [8, 55],
-  3: [10, 10],
-  4: [11, 5],
-  5: [14, 0],
-  6: [14, 55],
-  7: [16, 10],
-  8: [17, 5],
-  9: [18, 30],
-  10: [19, 20],
-  11: [20, 15],
-  12: [21, 5],
-};
-
-const SECTION_START_TIME_TEXT: Record<number, string> = {
-  1: '08:00',
-  2: '08:55',
-  3: '10:10',
-  4: '11:05',
-  5: '14:00',
-  6: '14:55',
-  7: '16:10',
-  8: '17:05',
-  9: '18:30',
-  10: '19:20',
-  11: '20:15',
-  12: '21:05',
-};
-
-const SECTION_END_TIMES: Record<number, string> = {
-  1: '08:45',
-  2: '09:40',
-  3: '10:55',
-  4: '11:50',
-  5: '14:45',
-  6: '15:40',
-  7: '16:55',
-  8: '17:50',
-  9: '19:15',
-  10: '20:05',
-  11: '21:00',
-  12: '21:50',
-};
 
 export interface CourseInfo {
   courseName: string;
@@ -243,53 +204,3 @@ class CourseLiveActivityManager {
 }
 
 export const courseLiveActivity = new CourseLiveActivityManager();
-
-/**
- * 根据节次计算上课时间
- * @param classWhen 节次字符串，如 "1-2"
- * @returns 今天该节次的开始时间
- */
-export function getClassStartTime(classWhen: string): Date {
-  const startSection = parseInt(classWhen.split('-')[0], 10);
-  const [hour, minute] = SECTION_START_TIMES[startSection] || [8, 0];
-
-  const now = new Date();
-  const classTime = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    hour,
-    minute,
-    0
-  );
-
-  return classTime;
-}
-
-/**
- * 格式化时间（如 "08:00"）
- */
-export function formatClassTime(classWhen: string): {
-  start: string;
-  end: string;
-} {
-  const [startSection, endSection] = classWhen.split('-').map(Number);
-
-  return {
-    start: SECTION_START_TIME_TEXT[startSection] || '00:00',
-    end: SECTION_END_TIMES[endSection] || '00:00',
-  };
-}
-
-/**
- * 计算距离上课还有多少分钟
- * @param classWhen 节次字符串，如 "1-2"
- * @returns 距离上课的分钟数，如果已经过了上课时间则返回负数或0
- */
-export function calculateMinutesUntilClass(classWhen: string): number {
-  const classStartTime = getClassStartTime(classWhen);
-  const now = new Date();
-  const diffMs = classStartTime.getTime() - now.getTime();
-  const diffMinutes = Math.ceil(diffMs / (1000 * 60));
-  return diffMinutes;
-}

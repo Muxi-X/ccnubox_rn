@@ -3,6 +3,8 @@ import { NativeModules } from 'react-native';
 import useCourseStore from '@/store/course';
 import useTimeStore from '@/store/time';
 
+import { buildAndroidWidgetCourseData } from '@/utils/courseRuntime';
+
 export const updateCourseData = async () => {
   const { WidgetManager } = NativeModules;
 
@@ -15,13 +17,7 @@ export const updateCourseData = async () => {
     return;
   }
 
-  const courseData = {
-    date: `第${currentWeek}周`,
-
-    courses: courses.map(course => ({
-      id: course.id,
-    })),
-  };
+  const courseData = buildAndroidWidgetCourseData(courses, currentWeek);
 
   console.log(courseData);
 

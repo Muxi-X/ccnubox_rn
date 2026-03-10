@@ -22,4 +22,4 @@ keystore.properties
 # Bundle artifacts
 *.jsbundle
 keystore.properties
-app/agconnect-services.json
+# app/agconnect-services.json
