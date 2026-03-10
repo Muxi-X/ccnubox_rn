@@ -100,7 +100,7 @@ importers:
         version: 0.31.4(expo@53.0.25(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       expo-router:
         specifier: ~5.1.10
-        version: 5.1.10(zmy67ud3h475nju6jhythsfkwm)
+        version: 5.1.10(7c8c3c731bfe03163ea118cc8e80d988)
       expo-secure-store:
         specifier: ~14.2.4
         version: 14.2.4(expo@53.0.25(@babel/core@7.27.3)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
@@ -10128,7 +10128,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-router@5.1.10(zmy67ud3h475nju6jhythsfkwm):
+  expo-router@5.1.10(7c8c3c731bfe03163ea118cc8e80d988):
     dependencies:
       '@expo/metro-runtime': 5.0.5(react-native@0.79.6(@babel/core@7.27.3)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@types/react@19.0.14)(react@19.0.0))
       '@expo/schema-utils': 0.1.7

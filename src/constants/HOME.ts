@@ -170,7 +170,7 @@ export const HOME_ITEMS = [
       default: AndroidSiteSvg,
     },
     key: 'grid-12',
-    href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
+    href: `/(mainPage)/webview?title=座位预约&link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
   },
   {
     title: '更多',

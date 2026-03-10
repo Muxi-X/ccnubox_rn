@@ -44,14 +44,13 @@ expo-env.d.ts
 .metro-health-check*
 
 # debug
-npm-debug.*npm-debug.*
+npm-debug.*
 yarn-debug.*
 yarn-error.*
 
 *.pem
 
 # local env files
-.env
 .env
 .env*.local
 
