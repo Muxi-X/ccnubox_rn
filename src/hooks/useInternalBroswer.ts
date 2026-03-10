@@ -8,6 +8,8 @@ import { useRouter } from 'expo-router';
  */
 export function useInternalBroswer() {
   const router = useRouter();
-  return (url: string) =>
-    router.navigate(`/(mainPage)/webview?link=${btoa(url)}`);
+  return (url: string, title?: string) =>
+    router.navigate(
+      `/(mainPage)/webview?link=${btoa(url)}${title ? `&title=${title}` : ''}`
+    );
 }

@@ -1,5 +1,3 @@
-import { Toast } from '@ant-design/react-native';
-import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import JPush from 'jpush-react-native';
@@ -79,26 +77,28 @@ const IndexPage: FC = () => {
 
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
-      <Pressable
-        onPress={async () => {
-          if (registerId) {
-            await Clipboard.setStringAsync(registerId);
-            Toast.show({ content: '已复制 Register ID', duration: 1 });
-          }
-        }}
-      >
-        <Text
-          style={{
-            textAlign: 'center',
-            color: '#969696',
-            marginTop: 60,
-            marginBottom: 10,
-            fontSize: 12,
+      {/* 
+        <Pressable
+          onPress={async () => {
+            if (registerId) {
+              await Clipboard.setStringAsync(registerId);
+              Toast.show({ content: '已复制 Register ID', duration: 1 });
+            }
           }}
         >
-          Register ID: {registerId || '获取中...'}
-        </Text>
-      </Pressable>
+          <Text
+            style={{
+              textAlign: 'center',
+              color: '#969696',
+              marginTop: 60,
+              marginBottom: 10,
+              fontSize: 12,
+            }}
+          >
+            Register ID: {registerId || '获取中...'}
+          </Text>
+        </Pressable>
+      */}
       {/* carousel */}
       <Skeleton>
         <View style={styles.banner}>
