@@ -1,5 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
+import JPush from 'jpush-react-native';
 import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
@@ -31,8 +32,16 @@ const IndexPage: FC = () => {
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
+  const [registerId, setRegisterId] = useState('');
 
   useEffect(() => {
+    if (JPush.getRegistrationID) {
+      JPush.getRegistrationID((result: { registerID?: string }) => {
+        if (result.registerID) {
+          setRegisterId(result.registerID);
+        }
+      });
+    }
     queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(
@@ -68,6 +77,28 @@ const IndexPage: FC = () => {
 
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
+      {/* 
+        <Pressable
+          onPress={async () => {
+            if (registerId) {
+              await Clipboard.setStringAsync(registerId);
+              Toast.show({ content: '已复制 Register ID', duration: 1 });
+            }
+          }}
+        >
+          <Text
+            style={{
+              textAlign: 'center',
+              color: '#969696',
+              marginTop: 60,
+              marginBottom: 10,
+              fontSize: 12,
+            }}
+          >
+            Register ID: {registerId || '获取中...'}
+          </Text>
+        </Pressable>
+      */}
       {/* carousel */}
       <Skeleton>
         <View style={styles.banner}>

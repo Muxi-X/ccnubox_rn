@@ -1,0 +1,16 @@
+{
+  "agcgw": {
+    "backurl": "请从华为开发者联盟获取",
+    "url": "请从华为开发者联盟获取"
+  },
+  "client": {
+    "cp_id": "请填写你的 cp_id",
+    "product_id": "请填写你的 product_id",
+    "client_id": "请填写你的 client_id",
+    "client_secret": "请填写你的 client_secret",
+    "app_id": "请填写你的 app_id",
+    "api_key": "请填写你的 api_key",
+    "package_name": "com.muxixyz.ccnubox"
+  },
+  "service": {}
+}

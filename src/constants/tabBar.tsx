@@ -8,9 +8,10 @@ import {
   ScheduleHeaderTitle,
 } from '@/modules/courseTable/components/ScheduleHeaders';
 //import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
+import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import { commonColors, commonStyles } from '@/styles/common';
 
-import { SinglePageType } from '@/types/tabBarTypes';
+import type { SinglePageType } from '@/types/tabBarTypes';
 
 /**
  * @enum tabBar颜色
@@ -57,6 +58,29 @@ export const TABS: SinglePageType[] = [
     headerRight: () => <ScheduleHeaderRight />,
   },
   {
+    name: 'notification',
+    title: '通知',
+    iconName: 'notification',
+    headerTitle: () => <></>,
+    headerLeft: () => (
+      <Text
+        style={[
+          commonStyles.fontLarge,
+          commonStyles.fontBold,
+          commonStyles.TabBarPadding,
+          {
+            lineHeight: 30,
+            height: 30,
+          },
+          useVisualScheme.getState().currentStyle?.header_text_style,
+        ]}
+      >
+        消息通知
+      </Text>
+    ),
+    headerRight: () => <NotificationHeaderRight />,
+  },
+  {
     name: 'setting',
     title: '其他',
     iconName: 'setting',
@@ -71,27 +95,4 @@ export const TABS: SinglePageType[] = [
       </Text>
     ),
   },
-  // {
-  //   name: 'notification',
-  //   title: '通知',
-  //   iconName: 'notification',
-  //   headerTitle: () => <></>,
-  //   headerLeft: () => (
-  //     <Text
-  //       style={[
-  //         commonStyles.fontLarge,
-  //         commonStyles.fontBold,
-  //         commonStyles.TabBarPadding,
-  //         {
-  //           lineHeight: 30,
-  //           height: 30,
-  //         },
-  //         useVisualScheme.getState().currentStyle?.header_text_style,
-  //       ]}
-  //     >
-  //       消息通知
-  //     </Text>
-  //   ),
-  //   headerRight: () => <NotificationHeaderRight />,
-  // },
 ];

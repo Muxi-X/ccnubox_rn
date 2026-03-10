@@ -9,7 +9,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import { commonColors } from '@/styles/common';
 
-export default function ClassRoom() {
+export default function Webview() {
   const currentTheme = useVisualScheme().themeName;
   const [loading, setLoading] = useState(true);
   const { link } = useLocalSearchParams();

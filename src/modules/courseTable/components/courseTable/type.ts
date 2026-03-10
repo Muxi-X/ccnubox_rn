@@ -46,10 +46,33 @@ export interface CourseTransferType {
   is_official: boolean; // 是否为教务系统课程
 }
 
+export interface SemesterOption {
+  label: string;
+  year: string;
+  semester: string;
+}
+
+/** 学期 + 周次 应用参数 */
+export interface SemesterWeekParams {
+  year: string;
+  semester: string;
+  /** 选中的周次，不传则保持当前周 */
+  week?: number;
+}
+
 export interface WeekSelectorProps {
   currentWeek: number;
   showWeekPicker: boolean;
-  onWeekSelect: (_week: number) => void;
+  /** 当前学年，如 "2025" */
+  year: string;
+  /** 当前学期，"1" | "2" | "3" */
+  semester: string;
+  /** 可选学期列表 */
+  semesterOptions: SemesterOption[];
+  /** 应用学期/周次变更并关闭，由父组件负责更新状态、拉取课表、关闭弹窗 */
+  onApply: (params: SemesterWeekParams) => void | Promise<void>;
+  /** 拉取课表数据中，遮罩层显示 loading */
+  isLoading?: boolean;
 }
 
 /**

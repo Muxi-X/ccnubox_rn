@@ -3,7 +3,7 @@
     "name": "华师匣子",
     "slug": "ccnubox",
     "owner": "muxi_fe",
-    "version": "3.1.5",
+    "version": "3.1.6",
     "runtimeVersion": "3.1.2",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
@@ -25,9 +25,11 @@
       },
       "eas": {
         "projectId": "65d670f0-9625-4631-9603-f4b11f44e621"
-      }
+      },
+      "expoConfig": {}
     },
     "ios": {
+      "appleTeamId": "7K67YDYQD8",
       "icon": {
         "light": "./src/assets/images/icon-ios-light.png",
         "dark": "./src/assets/images/icon-ios-dark.png",
@@ -35,7 +37,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "17",
+      "buildNumber": "18",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -43,7 +45,15 @@
           "NSAllowsArbitraryLoads": true
         },
         "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
+      },
+      "entitlements": {
+        "aps-environment": "production",
+        "com.apple.security.application-groups": ["group.release-20240916"]
       }
+    },
+    "locales": {
+      "zh-CN": "./languages/zh-CN.json",
+      "en-US": "./languages/en-US.json"
     },
     "android": {
       "adaptiveIcon": {
@@ -61,7 +71,7 @@
       ],
       "edgeToEdgeEnabled": true,
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 17
+      "versionCode": 18
     },
     "plugins": [
       "expo-router",
@@ -72,6 +82,13 @@
             "parentTheme": "Default",
             "enforceNavigationBarContrast": false
           }
+        }
+      ],
+      [
+        "mx-jpush-expo",
+        {
+          "channel": "coursetable",
+          "packageName": "com.muxixyz.ccnubox"
         }
       ],
       [
@@ -101,7 +118,8 @@
           "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
           "schemes": ["weixin", "alipays", "tel", "sms"]
         }
-      ]
+      ],
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true
