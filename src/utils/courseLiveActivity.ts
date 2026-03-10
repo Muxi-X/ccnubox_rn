@@ -6,7 +6,33 @@ export {
   getClassStartTime,
 } from '@/utils/courseRuntime';
 
-const { CourseLiveActivityModule } = NativeModules;
+type CourseLiveActivityModuleType = {
+  startActivity: (
+    courseName: string,
+    location: string,
+    startTime: string,
+    endTime: string,
+    classStartTimestamp: number
+  ) => Promise<string>;
+  updateActivity: (
+    activityId: string,
+    classStartTimestamp: number,
+    isInClass: boolean
+  ) => Promise<string>;
+  hasActivity: (activityId: string) => Promise<boolean>;
+  endActivity: (activityId: string) => Promise<string>;
+  endAllActivities: () => Promise<string>;
+};
+
+const getCourseLiveActivityModule = (): CourseLiveActivityModuleType | null => {
+  return (
+    (
+      NativeModules as {
+        CourseLiveActivityModule?: CourseLiveActivityModuleType;
+      }
+    ).CourseLiveActivityModule ?? null
+  );
+};
 
 // 发布开关：本期暂不上线 Live Activity，保留代码以便后续恢复
 export const LIVE_ACTIVITY_ENABLED = false;
@@ -22,6 +48,18 @@ class CourseLiveActivityManager {
   private activeActivityId: string | null = null;
   private endTimer: ReturnType<typeof setTimeout> | null = null;
   private manualModeUntil: number | null = null;
+  private hasWarnedMissingModule = false;
+
+  private getModule() {
+    const module = getCourseLiveActivityModule();
+    if (!module && !this.hasWarnedMissingModule) {
+      this.hasWarnedMissingModule = true;
+      console.warn(
+        '[LiveActivity] CourseLiveActivityModule 不存在，跳过相关调用'
+      );
+    }
+    return module;
+  }
 
   /**
    * 启动课程提醒 Live Activity
@@ -41,9 +79,14 @@ class CourseLiveActivityManager {
       return null;
     }
 
+    const liveActivityModule = this.getModule();
+    if (!liveActivityModule) {
+      return null;
+    }
+
     try {
       // 传递时间戳给 Native
-      const activityId = await CourseLiveActivityModule.startActivity(
+      const activityId = await liveActivityModule.startActivity(
         courseInfo.courseName,
         courseInfo.location,
         courseInfo.startTime,
@@ -100,8 +143,11 @@ class CourseLiveActivityManager {
     if (!LIVE_ACTIVITY_ENABLED) return;
     if (!this.activeActivityId) return;
 
+    const liveActivityModule = this.getModule();
+    if (!liveActivityModule) return;
+
     try {
-      await CourseLiveActivityModule.updateActivity(
+      await liveActivityModule.updateActivity(
         this.activeActivityId,
         classStartTime.getTime(),
         isInClass
@@ -119,8 +165,14 @@ class CourseLiveActivityManager {
     if (!LIVE_ACTIVITY_ENABLED) return false;
     if (!this.activeActivityId) return false;
 
+    const liveActivityModule = this.getModule();
+    if (!liveActivityModule) {
+      this.activeActivityId = null;
+      return false;
+    }
+
     try {
-      const exists = await CourseLiveActivityModule.hasActivity(
+      const exists = await liveActivityModule.hasActivity(
         this.activeActivityId
       );
       if (!exists) {
@@ -142,8 +194,14 @@ class CourseLiveActivityManager {
 
     if (!this.activeActivityId) return;
 
+    const liveActivityModule = this.getModule();
+    if (!liveActivityModule) {
+      this.activeActivityId = null;
+      return;
+    }
+
     try {
-      await CourseLiveActivityModule.endActivity(this.activeActivityId);
+      await liveActivityModule.endActivity(this.activeActivityId);
       console.log('✅ Live Activity ended');
       this.activeActivityId = null;
     } catch (error) {
@@ -160,8 +218,14 @@ class CourseLiveActivityManager {
     this.clearEndTimer();
     this.disableManualMode();
 
+    const liveActivityModule = this.getModule();
+    if (!liveActivityModule) {
+      this.activeActivityId = null;
+      return;
+    }
+
     try {
-      await CourseLiveActivityModule.endAllActivities();
+      await liveActivityModule.endAllActivities();
       console.log('✅ All Live Activities ended');
       this.activeActivityId = null;
     } catch (error) {

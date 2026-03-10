@@ -123,7 +123,6 @@ export function useCourseLiveActivity(courses: courseType[]) {
 
   useEffect(() => {
     if (!LIVE_ACTIVITY_ENABLED) {
-      void courseLiveActivity.endAllActivities();
       return;
     }
 

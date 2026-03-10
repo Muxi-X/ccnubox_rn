@@ -1,6 +1,5 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import JPush from 'jpush-react-native';
 import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
@@ -17,6 +16,7 @@ import useVisualScheme from '@/store/visualScheme';
 import { queryBanners } from '@/request/api';
 import { keyGenerator, percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
+import { jpushClient } from '@/utils/jpush';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
@@ -32,16 +32,14 @@ const IndexPage: FC = () => {
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
-  const [registerId, setRegisterId] = useState('');
+  const [, setRegisterId] = useState('');
 
   useEffect(() => {
-    if (JPush.getRegistrationID) {
-      JPush.getRegistrationID((result: { registerID?: string }) => {
-        if (result.registerID) {
-          setRegisterId(result.registerID);
-        }
-      });
-    }
+    jpushClient.getRegistrationID((result: { registerID?: string }) => {
+      if (result.registerID) {
+        setRegisterId(result.registerID);
+      }
+    });
     queryBanners().then((res: any) => {
       setBanners(
         res.data.banners.map(
