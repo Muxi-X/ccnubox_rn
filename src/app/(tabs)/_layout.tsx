@@ -9,7 +9,7 @@ import Toast from '@/components/toast';
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import useVisualScheme from '@/store/visualScheme';
 
-import { TABS } from '@/constants/tabBar';
+import { TABS } from '@/constants/TABBAR';
 import PushSubscriptionPromptContent from '@/modules/setting/components/PushSubscriptionPromptContent';
 import {
   enablePushSubscription,
