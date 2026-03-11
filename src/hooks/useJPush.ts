@@ -1,6 +1,5 @@
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
-import JPush from 'jpush-react-native';
 import { useEffect } from 'react';
 import { NativeModules, Platform } from 'react-native';
 
@@ -8,6 +7,7 @@ import usePushSubscriptionStore from '@/store/pushSubscription';
 
 import { JPushSecrets } from '@/secret/JPush';
 import { openBrowser } from '@/utils/handleOpenURL';
+import { jpushClient } from '@/utils/jpush';
 
 type JPushNotificationResult = {
   content?: string;
@@ -106,7 +106,6 @@ const consumeNativeInitialJPushOpened = async (stage: string) => {
 let pendingPushPath: string | null = null;
 let pushNavigationReady = false;
 let listenersRegistered = false;
-let jpushInitialized = false;
 let initializationPromise: Promise<boolean> | null = null;
 
 export const setPushNavigationReady = (ready: boolean) => {
@@ -264,12 +263,12 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
 const registerJPushListeners = async () => {
   if (listenersRegistered) return;
 
-  JPush.removeListener(handleConnectEvent);
-  JPush.removeListener(handleNotificationEvent);
-  JPush.removeListener(handleCustomMessage);
-  JPush.addConnectEventListener(handleConnectEvent);
-  JPush.addNotificationListener(handleNotificationEvent);
-  JPush.addCustomMessageListener(handleCustomMessage);
+  jpushClient.removeListener(handleConnectEvent);
+  jpushClient.removeListener(handleNotificationEvent);
+  jpushClient.removeListener(handleCustomMessage);
+  jpushClient.addConnectEventListener(handleConnectEvent);
+  jpushClient.addNotificationListener(handleNotificationEvent);
+  jpushClient.addCustomMessageListener(handleCustomMessage);
 
   const bridgedBeforeInit =
     await consumeNativeInitialJPushOpened('before-init');
@@ -293,6 +292,11 @@ export const initializeJPush = async ({
 
   initializationPromise = (async () => {
     try {
+      if (!jpushClient.isAvailable()) {
+        console.warn('[JPush] 原生模块不存在，跳过初始化');
+        return false;
+      }
+
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('tips', {
           name: '消息通知',
@@ -310,13 +314,17 @@ export const initializeJPush = async ({
 
       await registerJPushListeners();
 
-      if (!jpushInitialized) {
-        JPush.setLoggerEnable(__DEV__);
-        JPush.init({
+      if (!jpushClient.isInitialized()) {
+        jpushClient.setLoggerEnable(__DEV__);
+        const initSucceeded = jpushClient.init({
           appKey: JPushSecrets.appKey,
           channel: JPushSecrets.channel,
           production: Boolean(__DEV__ ? 0 : 1),
         });
+        if (!initSucceeded) {
+          return false;
+        }
+        jpushClient.markInitialized(true);
 
         const bridgedAfterInit =
           await consumeNativeInitialJPushOpened('after-init');
@@ -326,13 +334,11 @@ export const initializeJPush = async ({
           );
         }
 
-        JPush.getRegistrationID((result: { registerID?: string }) => {
+        jpushClient.getRegistrationID((result: { registerID?: string }) => {
           if (result.registerID) {
             console.log('✅ JPush Registration ID:', result.registerID);
           }
         });
-
-        jpushInitialized = true;
       }
 
       console.log('✅ JPush 初始化完成');

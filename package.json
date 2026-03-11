@@ -13,7 +13,6 @@
     "format": "prettier --write .",
     "prepare": "husky",
     "genapi": "node ./scripts/genapi.js",
-    "eas-build-pre-install": "./eas-hooks/eas-build-pre-install.sh",
     "eas-build-post-install": "cd android && ./gradlew generateCodegenArtifactsFromSchema --no-daemon || true"
   },
   "dependencies": {

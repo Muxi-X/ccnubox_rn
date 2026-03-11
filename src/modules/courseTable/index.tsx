@@ -23,6 +23,7 @@ import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
 } from '@/utils/courseLiveActivity';
+import { serializeCoursesForAppleWidget } from '@/utils/courseRuntime';
 import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
 
@@ -95,11 +96,7 @@ const CourseTablePage: FC = () => {
     (nextCourses: courseType[]) => {
       extensionStorage.set(
         'courseTable',
-        nextCourses.map(course => ({
-          ...course,
-          is_official: course.is_official ? 1 : 0,
-          weeks: JSON.stringify(course.weeks),
-        }))
+        serializeCoursesForAppleWidget(nextCourses)
       );
       ExtensionStorage.reloadWidget();
     },

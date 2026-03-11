@@ -36,13 +36,20 @@ export const useEvents = create<{
   setFeedEvents: newEvents => set({ feedEvents: newEvents }), // 设置事件列表
   markAsRead: async id => {
     await readFeedEvent(id);
+    set(state => ({
+      feedEvents: state.feedEvents.map(event =>
+        event.id === id ? { ...event, read: true } : event
+      ),
+    }));
   },
   deleteEvent: async id => {
     await deleteFeedEvent(id);
+    set(state => ({
+      feedEvents: state.feedEvents.filter(event => event.id !== id),
+    }));
   },
   clearAllEvents: async () => {
-    const res = await clearFeedEvents();
-    console.log('clear', res);
+    await clearFeedEvents();
     set({ feedEvents: [] });
   },
   getFeedEvents: async () => {

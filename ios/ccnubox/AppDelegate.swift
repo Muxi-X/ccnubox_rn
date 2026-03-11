@@ -49,8 +49,10 @@ public class AppDelegate: ExpoAppDelegate {
     }
     JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
 
-    // 开启调试模式
+    // 仅在 Debug 构建中开启调试模式
+#if DEBUG
     JPUSHService.setDebugMode()
+#endif
 
     let appKey = Bundle.main.object(forInfoDictionaryKey: "JPUSH_APPKEY") as? String ?? ""
     let channel = Bundle.main.object(forInfoDictionaryKey: "JPUSH_CHANNEL") as? String ?? ""

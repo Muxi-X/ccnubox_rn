@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { type FC, memo, useCallback, useRef, useState } from 'react';
+import { type FC, memo, useCallback, useState } from 'react';
 import {
   Animated,
   Image,
@@ -54,15 +54,23 @@ const NotificationPage: FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getFeedEvents();
+      void getFeedEvents();
     }, [getFeedEvents])
   );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await getFeedEvents();
-    Toast.show({ icon: 'success', text: '刷新成功', duration: 1000 });
-    setRefreshing(false);
+    try {
+      await getFeedEvents();
+      Toast.show({ icon: 'success', text: '刷新成功', duration: 1000 });
+    } catch (error) {
+      Toast.show({
+        icon: 'fail',
+        text: error instanceof Error ? error.message : '刷新失败',
+      });
+    } finally {
+      setRefreshing(false);
+    }
   }, [getFeedEvents]);
 
   const sortedEvents = feedEvents ? [...feedEvents] : [];
@@ -97,15 +105,17 @@ export const ListItem: FC<EventProps> = ({
   extend_fields,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const swipeableRef = useRef<Swipeable>(null);
   const feedIcon = FeedIconList.find(item => item.name === type);
-  const { markAsRead, getFeedEvents, deleteEvent } = useEvents();
+  const { markAsRead, deleteEvent } = useEvents();
 
   const readEvent = () => {
     console.log('[Notification] 点击通知项:', { id, type, url, extend_fields });
-    if (id) {
-      markAsRead(id).then(() => {
-        getFeedEvents();
+    if (id && !read) {
+      void markAsRead(id).catch(error => {
+        Toast.show({
+          icon: 'fail',
+          text: error instanceof Error ? error.message : '标记消息已读失败',
+        });
       });
     }
 
@@ -122,8 +132,11 @@ export const ListItem: FC<EventProps> = ({
 
   const handleDelete = () => {
     if (id) {
-      deleteEvent(id).then(() => {
-        getFeedEvents();
+      void deleteEvent(id).catch(error => {
+        Toast.show({
+          icon: 'fail',
+          text: error instanceof Error ? error.message : '删除消息失败',
+        });
       });
     }
   };
@@ -151,11 +164,7 @@ export const ListItem: FC<EventProps> = ({
   const displayTitle = title?.trim() || feedIcon.text;
 
   return (
-    <Swipeable
-      ref={swipeableRef}
-      renderRightActions={renderRightActions}
-      rightThreshold={40}
-    >
+    <Swipeable renderRightActions={renderRightActions} rightThreshold={40}>
       <TouchableOpacity onPress={readEvent} style={styles.listItem}>
         <View>
           <Image source={feedIcon.imageUrl} style={styles.icon} />

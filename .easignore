@@ -70,3 +70,5 @@ sentry.properties
 *.apk
 *.ipa
 sentry.properties
+
+!android/app/agconnect-services.json
