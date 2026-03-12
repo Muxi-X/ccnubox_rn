@@ -71,7 +71,7 @@
       ],
       "edgeToEdgeEnabled": true,
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 18
+      "versionCode": 22
     },
     "plugins": [
       "expo-router",
