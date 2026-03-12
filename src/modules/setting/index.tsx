@@ -10,9 +10,9 @@ import SettingItem from './components/settingItem';
 export default function SettingPage() {
   return (
     <ThemeBasedView style={{ flex: 1 }}>
-      <PushSubscriptionItem />
       <FlatList
         data={SETTING_ITEMS}
+        ListHeaderComponent={PushSubscriptionItem}
         renderItem={({ item }) => <SettingItem {...item} />}
         keyExtractor={item => item.id.toString()}
       />

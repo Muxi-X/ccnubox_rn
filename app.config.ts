@@ -4,6 +4,12 @@ import updateInfo from './src/assets/data/updateInfo.json';
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';
+  console.log(
+    '当前环境:',
+    process.env.EXPO_PUBLIC_ENV,
+    'isProduction:',
+    isProduction
+  );
   const apsEnvironment = isProduction ? 'production' : 'development';
 
   return {
