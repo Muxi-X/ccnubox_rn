@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native';
 
-import { useKeyboardShow } from '@/hooks';
+import { useKeyboardStatus } from '@/hooks';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
@@ -32,7 +32,7 @@ import { log } from '@/utils/logger';
 const LoginPage: FC = () => {
   const router = useRouter();
   // 监听键盘弹起，避免元素遮挡
-  const isKeyboardShow = useKeyboardShow();
+  const { isKeyboardShow } = useKeyboardStatus();
   const [isPasswordShow, setPasswordVisibility] = useState<boolean>(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [loginTriggered, setLoginTriggered] = useState<boolean>(false);

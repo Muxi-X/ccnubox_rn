@@ -9,7 +9,7 @@ import ColorTransitionView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { TABS } from '@/constants/tabBar';
+import { TABS } from '@/constants/TABBAR';
 
 import TabBarItem from './TabBarItem';
 

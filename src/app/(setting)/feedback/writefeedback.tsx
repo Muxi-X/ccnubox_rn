@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,7 +15,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+import { useKeyboardStatus } from '@/hooks';
+
+import AnimatedSlideIn from '@/components/animatedView/AnimatedSlide';
 import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -40,6 +45,7 @@ function WriteFeedback() {
   const [selectedModule, setSelectedModule] = useState<string>(
     MODULE_MAP.function[0]
   );
+  const { isKeyboardShow, keyboardHeight } = useKeyboardStatus();
   const [description, setDescription] = useState('');
   const [contact, setContact] = useState('');
   const [images, setImages] = useState<ImageItem[]>([]);
@@ -194,7 +200,11 @@ function WriteFeedback() {
 
   return (
     <ThemeBasedView style={styles.container}>
-      <ScrollView>
+      <KeyboardAwareScrollView
+        enableOnAndroid={true}
+        extraScrollHeight={200}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+      >
         <View>
           <View
             style={{
@@ -388,7 +398,25 @@ function WriteFeedback() {
             />
           </View>
         </View>
-
+      </KeyboardAwareScrollView>
+      <AnimatedSlideIn
+        duration={200}
+        distance={0}
+        direction="vertical"
+        trigger={isKeyboardShow}
+        style={[
+          styles.footerContainer,
+          currentStyle?.background_style,
+          {
+            bottom: isKeyboardShow
+              ? Platform.select({
+                  ios: keyboardHeight - 32,
+                  android: keyboardHeight,
+                })
+              : 0,
+          },
+        ]}
+      >
         <TouchableOpacity
           style={[
             styles.submitButton,
@@ -410,12 +438,17 @@ function WriteFeedback() {
           </Text>
         </TouchableOpacity>
 
-        <View style={styles.tipWrapper}>
+        <View
+          style={[
+            styles.tipWrapper,
+            { display: isKeyboardShow ? 'none' : 'flex' },
+          ]}
+        >
           <Text style={[currentStyle?.text_style]}>
             上传图片与联系方式，帮助我们更好的解决问题~
           </Text>
         </View>
-      </ScrollView>
+      </AnimatedSlideIn>
     </ThemeBasedView>
   );
 }
@@ -562,6 +595,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 6,
     color: '#666',
+  },
+  footerContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 16,
+    zIndex: 100,
   },
   submitButton: {
     backgroundColor: '#7B70F1',

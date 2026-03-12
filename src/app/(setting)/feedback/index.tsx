@@ -1,10 +1,13 @@
 import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
 import { getItem } from 'expo-secure-store';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Image,
   ImageSourcePropType,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -39,10 +42,18 @@ function FeedbackPage() {
   const [sheetData, setSheetData] = useState<SheetItem[]>([]);
   const [fullSheetData, setFullSheetData] = useState<SheetItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const [scrollViewLayout, setScrollViewLayout] = useState<{
+    height: number;
+    width: number;
+    pageX: number;
+    pageY: number;
+  } | null>(null);
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
   const { FAQs, updateFAQs } = useFAQStore();
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const getFeedbackFAQs = async () => {
     try {
@@ -78,6 +89,68 @@ function FeedbackPage() {
   useEffect(() => {
     getFeedbackFAQs();
   }, []);
+
+  const handleToggle = (index: number) => {
+    const isExpanding = expandedIndex !== index;
+
+    setExpandedIndex(isExpanding ? index : null);
+  };
+
+  const scrollToItem = (index: number, y: number, height: number) => {
+    const scroll = scrollViewRef.current;
+    const item = sheetData[index];
+
+    if (!scroll || !scrollViewLayout || !item) return;
+
+    const scrollViewHeight = scrollViewLayout.height;
+    const currentScrollY = scrollOffset; // 记录scroll的偏移情况，因为measure测量的y是相对于内容的偏移而非可视区域
+    const itemY = y;
+    const itemHeight = height;
+
+    // 减去scroll的偏移就可以得到相对于可视区域的上下间距
+    const itemTopRelative = itemY - currentScrollY;
+    const itemBottomRelative = itemY + itemHeight - currentScrollY;
+
+    const isFullyVisible =
+      itemTopRelative >= 0 && itemBottomRelative <= scrollViewHeight;
+
+    // 如果item已完全可见则跳过
+    if (isFullyVisible) return;
+
+    // 如果item高度大于可视区域高度，则采取顶部对齐，因为容纳不下
+    if (itemHeight > scrollViewHeight) {
+      const targetScrollY = itemY;
+      scroll.scrollTo({
+        y: Math.max(0, targetScrollY),
+        animated: true,
+      });
+      return;
+    }
+
+    // item的顶部被遮挡的情况
+    if (itemTopRelative < 0) {
+      const targetScrollY = currentScrollY + itemTopRelative;
+
+      scroll.scrollTo({
+        y: Math.max(0, targetScrollY),
+        animated: true,
+      });
+
+      return;
+    }
+
+    // item的底部被遮挡的情况
+    if (itemBottomRelative > scrollViewHeight) {
+      const targetScrollY =
+        currentScrollY + (itemBottomRelative - scrollViewHeight);
+
+      scroll.scrollTo({
+        y: Math.max(0, targetScrollY),
+        animated: true,
+      });
+      return;
+    }
+  };
 
   const handleFeedback = async (
     recordId: string,
@@ -175,76 +248,94 @@ function FeedbackPage() {
 
   return (
     <ThemeBasedView style={[styles.container, currentStyle?.background_style]}>
-      <SearchBar
-        placeholder="请输入问题关键词"
-        value={value}
-        onChange={newValue => {
-          setValue(newValue);
-          debouncedSearch(newValue);
-        }}
-      />
-
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Image
-            style={styles.icon}
-            source={NormalIcon as unknown as ImageSourcePropType}
-          />
-          <Text style={[{ fontWeight: 600 }, currentStyle?.text_style]}>
-            常见问题
-          </Text>
-        </View>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {isLoading ? (
-            <Loading text="搜索中..." color="#847AF2" />
-          ) : sheetData.length > 0 ? (
-            sheetData.map((item, index) => (
-              <FAQItem
-                key={item.record_id || index}
-                title={item.fields.title}
-                content={item.fields.description || ''}
-                solution={item.fields.solution || ''}
-                isExpanded={expandedIndex === index}
-                onToggle={() =>
-                  setExpandedIndex(expandedIndex === index ? null : index)
-                }
-                initialStatus={item.fields.resolvedStatus}
-                onPress={(status: string) =>
-                  handleFeedback(item.record_id, status)
-                }
-              />
-            ))
-          ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, currentStyle?.text_style]}>
-                暂无相关问题
-              </Text>
-            </View>
-          )}
-        </ScrollView>
-      </View>
-
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => router.push('/feedback/writefeedback')}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>我要反馈</Text>
-        </TouchableOpacity>
-
-        <View style={currentStyle?.background_style}>
-          <View style={styles.groupRow}>
-            <Text style={currentStyle?.text_style}>匣子交流群：</Text>
-            <Text style={[styles.groupNumber, currentStyle?.text_style]}>
-              {number}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      >
+        <SearchBar
+          placeholder="请输入问题关键词"
+          value={value}
+          onChange={newValue => {
+            setValue(newValue);
+            debouncedSearch(newValue);
+          }}
+        />
+        <SafeAreaView style={styles.content}>
+          <View style={styles.header}>
+            <Image
+              style={styles.icon}
+              source={NormalIcon as unknown as ImageSourcePropType}
+            />
+            <Text style={[{ fontWeight: 600 }, currentStyle?.text_style]}>
+              常见问题
             </Text>
-            <TouchableOpacity onPress={() => handleCopy(number)}>
-              <Text style={styles.copyText}>点击复制</Text>
-            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            onScroll={e => setScrollOffset(e.nativeEvent.contentOffset.y)}
+            onLayout={e => {
+              const { height, width, x, y } = e.nativeEvent.layout;
+              setScrollViewLayout({
+                height,
+                width,
+                pageX: x,
+                pageY: y,
+              });
+            }}
+          >
+            {isLoading ? (
+              <Loading text="搜索中..." color="#847AF2" />
+            ) : sheetData.length > 0 ? (
+              sheetData.map((item, index) => (
+                <FAQItem
+                  key={item.record_id || index}
+                  title={item.fields.title}
+                  content={item.fields.description || ''}
+                  solution={item.fields.solution || ''}
+                  isExpanded={expandedIndex === index}
+                  onToggle={() => handleToggle(index)}
+                  initialStatus={item.fields.resolvedStatus}
+                  onAnimationEnd={({ y, height }) =>
+                    scrollToItem(index, y, height)
+                  }
+                  onPress={(status: string) =>
+                    handleFeedback(item.record_id, status)
+                  }
+                />
+              ))
+            ) : (
+              <View style={styles.emptyContainer}>
+                <Text style={[styles.emptyText, currentStyle?.text_style]}>
+                  暂无相关问题
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+        <View style={styles.bottom}>
+          <TouchableOpacity
+            onPress={() => router.push('/feedback/writefeedback')}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>我要反馈</Text>
+          </TouchableOpacity>
+
+          <View style={currentStyle?.background_style}>
+            <View style={styles.groupRow}>
+              <Text style={currentStyle?.text_style}>匣子交流群：</Text>
+              <Text style={[styles.groupNumber, currentStyle?.text_style]}>
+                {number}
+              </Text>
+              <TouchableOpacity onPress={() => handleCopy(number)}>
+                <Text style={styles.copyText}>点击复制</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ThemeBasedView>
   );
 }

@@ -91,7 +91,7 @@ export default function FeedbackDetail() {
             );
             setFeedbackItem(feedbackData);
           } else {
-            Toast.fail(res?.message || '获取详情失败');
+            Toast.fail(res?.msg || '获取详情失败');
             setFeedbackItem(null);
           }
         } catch (error) {
@@ -488,8 +488,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   connectorBar: {
-    width: 9,
-    height: 7,
+    width: 8,
+    height: 6,
     borderRadius: 4,
     marginHorizontal: 3,
   },
