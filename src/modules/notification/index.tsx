@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { type FC, memo, useCallback, useState } from 'react';
+import { type FC, memo, useCallback, useRef, useState } from 'react';
 import {
   Animated,
   Image,
@@ -46,6 +46,8 @@ const formatRelativeTime = (timestamp: number): string => {
     return `${years} 年前`;
   }
 };
+
+const SWIPE_PRESS_SUPPRESSION_MS = 250;
 
 const NotificationPage: FC = () => {
   const currentStyles = useVisualScheme(state => state.currentStyle);
@@ -107,6 +109,8 @@ export const ListItem: FC<EventProps> = ({
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const feedIcon = FeedIconList.find(item => item.name === type);
   const { markAsRead, deleteEvent } = useEvents();
+  const isSwipingRef = useRef(false);
+  const suppressPressUntilRef = useRef(0);
 
   const readEvent = () => {
     console.log('[Notification] 点击通知项:', { id, type, url, extend_fields });
@@ -141,6 +145,28 @@ export const ListItem: FC<EventProps> = ({
     }
   };
 
+  const suppressPressTemporarily = () => {
+    suppressPressUntilRef.current = Date.now() + SWIPE_PRESS_SUPPRESSION_MS;
+  };
+
+  const handleSwipeStart = () => {
+    isSwipingRef.current = true;
+    suppressPressTemporarily();
+  };
+
+  const handleSwipeEnd = () => {
+    isSwipingRef.current = false;
+    suppressPressTemporarily();
+  };
+
+  const handlePress = () => {
+    if (isSwipingRef.current || Date.now() < suppressPressUntilRef.current) {
+      return;
+    }
+
+    readEvent();
+  };
+
   const renderRightActions = (
     progress: Animated.AnimatedInterpolation<number>
   ) => {
@@ -164,8 +190,15 @@ export const ListItem: FC<EventProps> = ({
   const displayTitle = title?.trim() || feedIcon.text;
 
   return (
-    <Swipeable renderRightActions={renderRightActions} rightThreshold={40}>
-      <TouchableOpacity onPress={readEvent} style={styles.listItem}>
+    <Swipeable
+      renderRightActions={renderRightActions}
+      rightThreshold={40}
+      onSwipeableOpenStartDrag={handleSwipeStart}
+      onSwipeableCloseStartDrag={handleSwipeStart}
+      onSwipeableWillOpen={handleSwipeEnd}
+      onSwipeableWillClose={handleSwipeEnd}
+    >
+      <TouchableOpacity onPress={handlePress} style={styles.listItem}>
         <View>
           <Image source={feedIcon.imageUrl} style={styles.icon} />
         </View>
