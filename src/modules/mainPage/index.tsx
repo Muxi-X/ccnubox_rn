@@ -1,8 +1,10 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
+import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 
 import Image from '@/components/image';
@@ -29,6 +31,8 @@ const IndexPage: FC = () => {
     }[]
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
+
+  const tabbarHeight = useBottomTabBarHeight();
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
@@ -131,21 +135,23 @@ const IndexPage: FC = () => {
         </View>
       </Skeleton>
       {/* 功能列表 */}
-      <DraggableGrid
-        onItemPress={data => {
-          if (data.href) {
-            router.push(data.href);
-          }
-          if (data.action) {
-            data.action();
-          }
-        }}
-        numColumns={3}
-        onDragItemActive={() => Haptics.selectionAsync()}
-        renderItem={render}
-        data={gridData}
-        onDragRelease={onDragRelease}
-      ></DraggableGrid>
+      <ScrollView contentContainerStyle={{ paddingBottom: tabbarHeight + 10 }}>
+        <DraggableGrid
+          onItemPress={data => {
+            if (data.href) {
+              router.push(data.href);
+            }
+            if (data.action) {
+              data.action();
+            }
+          }}
+          numColumns={3}
+          onDragItemActive={() => Haptics.selectionAsync()}
+          renderItem={render}
+          data={gridData}
+          onDragRelease={onDragRelease}
+        />
+      </ScrollView>
     </ThemeChangeView>
   );
 };
