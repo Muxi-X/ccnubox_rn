@@ -10,7 +10,8 @@ import {
 
 import Modal from '@/components/modal';
 
-import useTimeStore from '@/store/time';
+import useCourse from '@/store/course';
+import useTimeStore, { computeSemesterAndYear } from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonStyles } from '@/styles/common';
@@ -36,6 +37,13 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
+  const schoolTime = useCourse(state => state.schoolTime);
+
+  // 根据 schoolTime 推算真实当前学期
+  const actualSemester = useMemo(
+    () => (schoolTime ? computeSemesterAndYear(schoolTime) : null),
+    [schoolTime]
+  );
 
   // 本地预选学期状态（箭头切换只改这里，不立即请求）
   const [pendingYear, setPendingYear] = useState(year);
@@ -64,6 +72,12 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   // 预选学期是否与当前学期不同
   const hasSemesterChanged =
     pendingYear !== year || pendingSemester !== semester;
+
+  // 预选学期是否为真实当前学期（用于决定是否渲染「当前周」标识）
+  const isCurrentSemester =
+    actualSemester !== null &&
+    pendingYear === actualSemester.year &&
+    pendingSemester === actualSemester.semester;
 
   // 向前切换（更早的学期）—— 只改本地状态
   const handlePrev = useCallback(() => {
@@ -251,7 +265,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                     styles.weekButton,
                     {
                       backgroundColor:
-                        currentWeek === i + 1
+                        !hasSemesterChanged && currentWeek === i + 1
                           ? '#7878F8'
                           : currentStyle?.schedule_background_style
                               ?.backgroundColor,
@@ -264,9 +278,9 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                       commonStyles.fontSemiBold,
                       {
                         color:
-                          currentWeek === i + 1
+                          !hasSemesterChanged && currentWeek === i + 1
                             ? '#FFFFFF'
-                            : getCurrentWeek() === i + 1
+                            : isCurrentSemester && getCurrentWeek() === i + 1
                               ? '#7878F8'
                               : currentStyle?.schedule_text_style?.color ||
                                 '#000000',
@@ -275,7 +289,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   >
                     {i + 1}
                   </Text>
-                  {getCurrentWeek() === i + 1 && (
+                  {isCurrentSemester && getCurrentWeek() === i + 1 && (
                     <Text
                       style={[
                         commonStyles.fontSmall,

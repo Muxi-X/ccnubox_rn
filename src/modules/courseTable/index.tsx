@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
@@ -135,10 +136,8 @@ const CourseTablePage: FC = () => {
     setSelectedWeek,
   ]);
 
-  // 刷新课程表数据，先从缓存中获取开学时间，若无则重新请求
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
-      void fetchCurrentWeek();
       try {
         const res = await queryCourseTable({
           semester,
@@ -160,15 +159,11 @@ const CourseTablePage: FC = () => {
         log.error('Failed to refresh timetable:', error);
       }
     },
-    [
-      semester,
-      year,
-      updateCourses,
-      syncCoursesToWidget,
-      setLastUpdate,
-      fetchCurrentWeek,
-    ]
+    [semester, year, updateCourses, syncCoursesToWidget, setLastUpdate]
   );
+
+  const onTimetableRefreshRef = useRef(onTimetableRefresh);
+  onTimetableRefreshRef.current = onTimetableRefresh;
 
   const handleApply = useCallback(
     async ({
@@ -225,12 +220,12 @@ const CourseTablePage: FC = () => {
     void fetchCurrentWeek();
   }, [fetchCurrentWeek]);
 
-  // 刷新课表数据
+  // schoolTime 就绪后加载一次课表（切换学期由 handleApply 负责）
   useEffect(() => {
     if (schoolTime) {
-      void onTimetableRefresh();
+      void onTimetableRefreshRef.current();
     }
-  }, [schoolTime, onTimetableRefresh]);
+  }, [schoolTime]);
 
   // 启用 Live Activity 自动提醒
   useCourseLiveActivity(courses);
