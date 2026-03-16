@@ -126,7 +126,7 @@ export default function Privacy() {
           3. 通过本系统所设cookies所取得的有关信息，将适用本政策
         </TypoText>
 
-        <TypoText level={2}>四、我司如何共享、转让、公开披露您的信息</TypoText>
+        <TypoText level={2}>四、信息披露</TypoText>
 
         <TypoText>
           在如下情况下，本系统将依据您的个人意愿或法律的规定全部或部分的披露您的个人信息：
@@ -156,7 +156,7 @@ export default function Privacy() {
           7. 其它本系统根据法律、法规或者网站政策认为合适的披露
         </TypoText>
 
-        <TypoText level={2}>五、我司如何保护、存储您的信息</TypoText>
+        <TypoText level={2}>五、信息存储和交换</TypoText>
 
         <TypoText>
           本系统收集的有关您的信息和资料将保存在本系统及（或）其关联公司的服务器上，这些信息和资料可能传送至您所在国家、地区或本系统收集信息和资料所在地的境外并在境外被访问、存储和展示。
@@ -177,6 +177,38 @@ export default function Privacy() {
         <TypoText>
           我们还会收集您的IMSI、IMEI、设备MAC地址、软件列表、设备序列号、Android
           ID用于判断您上次登录的方式，目的是方便您使用登录功能。
+        </TypoText>
+
+        <TypoText>
+          为保证向您提供本隐私政策目的所述的服务，我们可能会向第三方服务提供商与业务合作伙伴等第三方共享必要的个人信息。
+        </TypoText>
+
+        <TypoText>
+          为了使您能够接收信息、在第三方平台分享信息、使用地图服务、播放视频等必要的功能用途，我们的应用中会嵌入授权合作伙伴的
+          SDK
+          或其他类似的应用程序。如您使用三星/vivo/oppo/华为/小米手机时，相关厂商
+          SDK
+          需要读取您的设备识别号、联网相关信息，用于下发通知栏消息。同时，为了确保您能及时接收到重要的校内资讯与课程提醒，本应用集成了
+          expo-notifications SDK，该 SDK
+          在应用退出或切换至后台后，为维持推送通道的稳定性，可能会存在必要的自启动行为。
+        </TypoText>
+
+        <TypoText>
+          我们会对授权合作伙伴获取有关信息的应用程序接口（API）、软件工具开发包（SDK）进行严格的安全检测，并与授权合作伙伴约定严格的数据保护措施，令其按照我们的委托目的、服务说明、本隐私权政策以及其他任何相关的保密和安全措施来处理个人信息。
+        </TypoText>
+
+        <TypoText>
+          我们还会收集您的 IMSI、IMEI、设备 MAC
+          地址、软件列表、设备序列号、Android ID
+          用于判断您上次登录的方式，目的是方便您使用登录功能。
+        </TypoText>
+
+        <TypoText level={3}>关于自启动及关联启动行为的特别说明：</TypoText>
+        <TypoText>
+          当您使用"华师匣子"的消息通知服务时，为了保证在应用关闭或后台运行状态下仍能准确送达课程提醒等实时信息，本应用须通过
+          expo.modules.notifications
+          模块执行必要的自启动行为。此类行为具有明确的服务场景（消息推送），且为实现该功能所必需。我们承诺仅在您明示授权开启通知权限后按需触发，且自启动频率保持在合理范围内。您可以通过系统设置随时关闭通知权限，关闭后该
+          SDK 的自启动行为将停止。
         </TypoText>
 
         <TypoText level={3}>本政策涉及的**个人信息或权限**包括：</TypoText>
@@ -223,6 +255,20 @@ export default function Privacy() {
         <TypoText>
           隐私链接：https://www.qiniu.com/agreements/privacy-right
         </TypoText>
+
+        <TypoText level={4}>
+          4. SDK名称：expo-notifications (expo.modules.notifications)
+        </TypoText>
+        <TypoText>
+          及个人信息：设备标识符（如推送Token）、系统运行列表、网络状态
+        </TypoText>
+        <TypoText>
+          用途：为您提供即时消息通知推送（如课程变更、校内资讯提醒）
+        </TypoText>
+        <TypoText>
+          使用场景：在应用运行、切换至后台或应用退出后，为了维持推送通道的有效性，该SDK可能会触发自启动行为
+        </TypoText>
+        <TypoText>隐私链接：https://expo.dev/privacy</TypoText>
 
         <TypoText level={2}>六、如何访问和管理自己的信息、信息安全</TypoText>
 
