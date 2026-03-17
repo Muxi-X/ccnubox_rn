@@ -48,17 +48,12 @@
           "weixin",
           "alipays",
           "tel",
-          "sms",
-          "weixin",
-          "alipays",
-          "tel",
           "sms"
         ]
       },
       "entitlements": {
         "aps-environment": "development",
         "com.apple.security.application-groups": [
-          "group.release-20240916",
           "group.release-20240916"
         ]
       }
@@ -73,13 +68,6 @@
         "backgroundColor": "#6666FF"
       },
       "permissions": [
-        "android.permission.SCHEDULE_EXACT_ALARM",
-        "android.permission.POST_NOTIFICATIONS",
-        "android.permission.ACCESS_NOTIFICATION_POLICY",
-        "android.permission.RECEIVE_BOOT_COMPLETED",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.FOREGROUND_SERVICE",
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.ACCESS_NOTIFICATION_POLICY",
