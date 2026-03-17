@@ -1,8 +1,8 @@
 {
   "ios": {
-    "CFBundleDisplayName": "ccnubox"
+    "CFBundleDisplayName": "CCNUBox"
   },
   "android": {
-    "app_name": "ccnubox"
+    "app_name": "CCNUBox"
   }
 }

@@ -11,7 +11,7 @@
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "updates": {
-      "url": "https://u.expo.dev/65d670f0-9625-4631-9603-f4b11f44e621"
+      "url": "https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621"
     },
     "assetBundlePatterns": [
       "src/assets/images/",
@@ -44,11 +44,23 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
+        "LSApplicationQueriesSchemes": [
+          "weixin",
+          "alipays",
+          "tel",
+          "sms",
+          "weixin",
+          "alipays",
+          "tel",
+          "sms"
+        ]
       },
       "entitlements": {
-        "aps-environment": "production",
-        "com.apple.security.application-groups": ["group.release-20240916"]
+        "aps-environment": "development",
+        "com.apple.security.application-groups": [
+          "group.release-20240916",
+          "group.release-20240916"
+        ]
       }
     },
     "locales": {
@@ -61,6 +73,13 @@
         "backgroundColor": "#6666FF"
       },
       "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.ACCESS_NOTIFICATION_POLICY",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.ACCESS_NOTIFICATION_POLICY",
@@ -115,8 +134,16 @@
       [
         "./plugins/config-android-url-scheme.js",
         {
-          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
-          "schemes": ["weixin", "alipays", "tel", "sms"]
+          "packages": [
+            "com.tencent.mm",
+            "com.eg.android.AlipayGphone"
+          ],
+          "schemes": [
+            "weixin",
+            "alipays",
+            "tel",
+            "sms"
+          ]
         }
       ],
       "@bacons/apple-targets"
