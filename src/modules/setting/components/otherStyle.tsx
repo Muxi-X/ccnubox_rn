@@ -39,7 +39,15 @@ const PREVIEW_COURSE_DATA: CourseTransferType = {
   is_official: true,
 };
 
-export default function OtherStyle() {
+interface OtherStyleProps {
+  onSliderTouchStart?: () => void;
+  onSliderTouchEnd?: () => void;
+}
+
+export default function OtherStyle({
+  onSliderTouchStart,
+  onSliderTouchEnd,
+}: OtherStyleProps) {
   const { currentStyle, themeName } = useVisualScheme();
   const {
     backgroundUri,
@@ -255,7 +263,12 @@ export default function OtherStyle() {
         )}
 
       {/* 前景透明度设置 */}
-      <View style={styles.sliderSection}>
+      <View
+        style={styles.sliderSection}
+        onTouchStart={onSliderTouchStart}
+        onTouchEnd={onSliderTouchEnd}
+        onTouchCancel={onSliderTouchEnd}
+      >
         <Text style={[currentStyle?.text_style, styles.sliderTitle]}>
           前景透明度：{localOpacity}%
         </Text>
@@ -265,6 +278,7 @@ export default function OtherStyle() {
           maximumValue={100}
           step={1}
           onValueChange={handleOpacityChange}
+          onSlidingComplete={onSliderTouchEnd}
           thumbStyle={styles.sliderThumb}
           style={{ paddingVertical: 0 }}
           minimumTrackTintColor={commonColors.purple}

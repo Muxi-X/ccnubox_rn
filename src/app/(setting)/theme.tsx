@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 // import TabBar from '@/components/tabbar';
@@ -9,9 +10,14 @@ import SelectStyle from '@/modules/setting/components/selectStyle';
 import SelectTheme from '@/modules/setting/components/selectTheme';
 
 export default function Theme() {
+  const [swipeable, setSwipeable] = useState(true);
+  const disableSwipe = useCallback(() => setSwipeable(false), []);
+  const enableSwipe = useCallback(() => setSwipeable(true), []);
+
   return (
     <View style={styles.container}>
       <TabBar
+        swipeable={swipeable}
         tabs={[
           {
             title: '布局',
@@ -26,7 +32,10 @@ export default function Theme() {
       >
         <SelectTheme />
         <SelectStyle />
-        <OtherStyle />
+        <OtherStyle
+          onSliderTouchStart={disableSwipe}
+          onSliderTouchEnd={enableSwipe}
+        />
       </TabBar>
     </View>
   );
