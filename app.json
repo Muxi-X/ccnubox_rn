@@ -44,18 +44,11 @@
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
-        "LSApplicationQueriesSchemes": [
-          "weixin",
-          "alipays",
-          "tel",
-          "sms"
-        ]
+        "LSApplicationQueriesSchemes": ["weixin", "alipays", "tel", "sms"]
       },
       "entitlements": {
         "aps-environment": "development",
-        "com.apple.security.application-groups": [
-          "group.release-20240916"
-        ]
+        "com.apple.security.application-groups": ["group.release-20240916"]
       }
     },
     "locales": {
@@ -122,16 +115,8 @@
       [
         "./plugins/config-android-url-scheme.js",
         {
-          "packages": [
-            "com.tencent.mm",
-            "com.eg.android.AlipayGphone"
-          ],
-          "schemes": [
-            "weixin",
-            "alipays",
-            "tel",
-            "sms"
-          ]
+          "packages": ["com.tencent.mm", "com.eg.android.AlipayGphone"],
+          "schemes": ["weixin", "alipays", "tel", "sms"]
         }
       ],
       "@bacons/apple-targets"
