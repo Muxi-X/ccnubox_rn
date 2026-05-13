@@ -8,7 +8,6 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "ccnubox",
-    "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "updates": {
       "url": "https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621"
@@ -69,12 +68,12 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "edgeToEdgeEnabled": true,
       "package": "com.muxixyz.ccnubox",
       "versionCode": 18
     },
     "plugins": [
       "expo-router",
+			"expo-web-browser",
       [
         "react-native-edge-to-edge",
         {

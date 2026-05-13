@@ -1,5 +1,6 @@
-import type { ConfigContext, ExpoConfig } from 'expo/config';
 import 'dotenv/config';
+import type { ConfigContext, ExpoConfig } from 'expo/config';
+
 import updateInfo from './src/assets/data/updateInfo.json';
 
 export default ({ config }: ConfigContext): ExpoConfig => {

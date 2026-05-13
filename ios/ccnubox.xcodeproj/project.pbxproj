@@ -93,7 +93,8 @@
 			exceptions = (
 				XX53667B411AB4C79BF324XX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
-			explicitFileTypes = {};
+			explicitFileTypes = {
+			};
 			explicitFolders = (
 			);
 			path = widget;
@@ -265,6 +266,7 @@
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
 				AF13EC1AA51299BEB4C3FA39 /* [CP] Embed Pods Frameworks */,
 				XX72A8CFBF0FBA13A79902XX /* Embed Foundation Extensions */,
+				CE6A01DA19AE436BA9A9BE3E /* [Expo Dev Launcher] Strip Local Network Keys for Release */,
 			);
 			buildRules = (
 			);
@@ -501,6 +503,54 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ccnubox/expo-configure-project.sh\"\n";
 		};
+		CE6A01DA19AE436BA9A9BE3E /* [Expo Dev Launcher] Strip Local Network Keys for Release */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "[Expo Dev Launcher] Strip Local Network Keys for Release";
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "# Strip dev-launcher-specific local network permission keys from non-Debug builds
+# This only removes _expo._tcp Bonjour services and the dev-launcher usage description.
+# Other Bonjour services and custom descriptions are preserved for production use.
+
+if [ \"$CONFIGURATION\" != \"Debug\" ]; then
+  PLIST_PATH=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"
+  if [ -f \"$PLIST_PATH\" ]; then
+    # Check if NSBonjourServices exists
+    if /usr/libexec/PlistBuddy -c \"Print :NSBonjourServices\" \"$PLIST_PATH\" >/dev/null 2>&1; then
+      # Get the count of services
+      COUNT=$(/usr/libexec/PlistBuddy -c \"Print :NSBonjourServices\" \"$PLIST_PATH\" 2>/dev/null | grep \"^    \" | wc -l | tr -d ' ')
+
+      # Remove _expo._tcp
+      for ((i=COUNT-1; i>=0; i--)); do
+        SERVICE=$(/usr/libexec/PlistBuddy -c \"Print :NSBonjourServices:$i\" \"$PLIST_PATH\" 2>/dev/null || echo \"\")
+        if echo \"$SERVICE\" | grep -q \"_expo._tcp\"; then
+          /usr/libexec/PlistBuddy -c \"Delete :NSBonjourServices:$i\" \"$PLIST_PATH\" 2>/dev/null || true
+        fi
+      done
+
+      # If the array is now empty, remove it entirely
+      REMAINING=$(/usr/libexec/PlistBuddy -c \"Print :NSBonjourServices\" \"$PLIST_PATH\" 2>/dev/null | grep \"^    \" | wc -l | tr -d ' ')
+      if [ \"$REMAINING\" -eq \"0\" ]; then
+        /usr/libexec/PlistBuddy -c \"Delete :NSBonjourServices\" \"$PLIST_PATH\" 2>/dev/null || true
+      fi
+    fi
+
+    # Only delete the description if it matches the dev-launcher default text
+    DESC=$(/usr/libexec/PlistBuddy -c \"Print :NSLocalNetworkUsageDescription\" \"$PLIST_PATH\" 2>/dev/null || echo \"\")
+    if echo \"$DESC\" | grep -q \"Expo Dev Launcher\"; then
+      /usr/libexec/PlistBuddy -c \"Delete :NSLocalNetworkUsageDescription\" \"$PLIST_PATH\" 2>/dev/null || true
+    fi
+  fi
+fi
+";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -562,8 +612,8 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
-				PRODUCT_NAME = app;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(TARGET_NAME)/$(TARGET_NAME)-Bridging-Header.h";
+				PRODUCT_NAME = "app";
+				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -594,8 +644,8 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "release-20240916";
-				PRODUCT_NAME = app;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(TARGET_NAME)/$(TARGET_NAME)-Bridging-Header.h";
+				PRODUCT_NAME = "app";
+				SWIFT_OBJC_BRIDGING_HEADER = "ccnubox/ccnubox-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
