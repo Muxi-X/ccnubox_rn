@@ -37,6 +37,7 @@ module.exports = {
         'widgets',
         'configs',
         'modules',
+        'deps',
       ], // 提交信息的 scope 必须在指定的范围内
     ],
     'scope-case': [2, 'always', 'lower-case'], // 提交信息的 scope 必须小写
