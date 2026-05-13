@@ -52,7 +52,7 @@
     "expo-splash-screen": "~0.30.10",
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~55.0.17",
-    "expo-updates": "~0.28.17",
+    "expo-updates": "~55.0.21",
     "expo-web-browser": "~14.2.0",
     "jcore-react-native": "^2.3.2",
     "jpush-react-native": "3.2.1",
