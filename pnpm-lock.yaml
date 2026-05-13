@@ -24,8 +24,8 @@ importers:
         specifier: ^0.13.5
         version: 0.13.5(react@19.0.0)
       '@react-native-async-storage/async-storage':
-        specifier: 2.1.2
-        version: 2.1.2(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))
+        specifier: 3.0.2
+        version: 3.0.2(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       '@react-navigation/bottom-tabs':
         specifier: ^7.3.10
         version: 7.16.0(@react-navigation/native@7.2.4(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-safe-area-context@5.7.0(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-screens@4.24.0(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -1613,10 +1613,11 @@ packages:
     resolution: {integrity: sha512-jS4E7T9Li2GuYwI6PyiVXmxTiM6b07rlD9Ge8uGZSCz3WlzcG5ZK7g5bbuKNeZ9pgUuPK/5guV781ujdVpm4HQ==}
     engines: {node: '>=8.x'}
 
-  '@react-native-async-storage/async-storage@2.1.2':
-    resolution: {integrity: sha512-dvlNq4AlGWC+ehtH12p65+17V0Dx7IecOWl6WanF2ja38O1Dcjjvn7jVzkUHJ5oWkQBlyASurTPlTHgKXyYiow==}
+  '@react-native-async-storage/async-storage@3.0.2':
+    resolution: {integrity: sha512-XP0zDIl+1XoeuQ7f878qXKdl77zLwzLALPpxvNRc7ZtDh9ew36WSvOdQOhFkexMySapFAWxEbZxS8K8J2DU4eg==}
     peerDependencies:
-      react-native: ^0.0.0-0 || >=0.65 <1.0
+      react: '*'
+      react-native: '*'
 
   '@react-native/assets-registry@0.79.6':
     resolution: {integrity: sha512-UVSP1224PWg0X+mRlZNftV5xQwZGfawhivuW8fGgxNK9MS/U84xZ+16lkqcPh1ank6MOt239lIWHQ1S33CHgqA==}
@@ -3830,6 +3831,9 @@ packages:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
 
+  idb@8.0.3:
+    resolution: {integrity: sha512-LtwtVyVYO5BqRvcsKuB2iUMnHwPVByPCXFXOpuU96IZPPoPN6xjOGxZQ74pgSVVLQWtUOYgyeL4GE98BY5D3wg==}
+
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -4027,10 +4031,6 @@ packages:
 
   is-obj@2.0.0:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
-    engines: {node: '>=8'}
-
-  is-plain-obj@2.1.0:
-    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
     engines: {node: '>=8'}
 
   is-plain-object@2.0.4:
@@ -4479,10 +4479,6 @@ packages:
   meow@12.1.1:
     resolution: {integrity: sha512-BhXM0Au22RwUneMPwSCnyhTOizdWoIEPU9sp0Aqa1PnDMR5Wv2FGXYDjuzJEIX+Eo2Rb8xuYe5jrnm5QowQFkw==}
     engines: {node: '>=16.10'}
-
-  merge-options@3.0.4:
-    resolution: {integrity: sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==}
-    engines: {node: '>=10'}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -8046,9 +8042,10 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.27.1
 
-  '@react-native-async-storage/async-storage@2.1.2(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))':
+  '@react-native-async-storage/async-storage@3.0.2(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
     dependencies:
-      merge-options: 3.0.4
+      idb: 8.0.3
+      react: 19.0.0
       react-native: 0.79.6(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0)
 
   '@react-native/assets-registry@0.79.6': {}
@@ -10670,6 +10667,8 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  idb@8.0.3: {}
+
   ieee754@1.2.1: {}
 
   ignore@5.3.2: {}
@@ -10858,8 +10857,6 @@ snapshots:
   is-number@7.0.0: {}
 
   is-obj@2.0.0: {}
-
-  is-plain-obj@2.1.0: {}
 
   is-plain-object@2.0.4:
     dependencies:
@@ -11310,10 +11307,6 @@ snapshots:
   memoize-one@6.0.0: {}
 
   meow@12.1.1: {}
-
-  merge-options@3.0.4:
-    dependencies:
-      is-plain-obj: 2.1.0
 
   merge-stream@2.0.0: {}
 
