@@ -27,7 +27,7 @@
     "@react-navigation/native": "^7.1.6",
     "@rneui/base": "4.0.0-rc.8",
     "@rneui/themed": "4.0.0-rc.8",
-    "@shopify/react-native-skia": "v2.0.0-next.4",
+    "@shopify/react-native-skia": "v2.2.4",
     "axios": "^1.9.0",
     "expo": "~53.0.25",
     "expo-application": "~6.1.5",
