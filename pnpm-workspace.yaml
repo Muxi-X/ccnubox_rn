@@ -1,4 +1,6 @@
 allowBuilds:
+  '@react-native-oh-tpl/react-native-reanimated': true
+  '@react-native-oh-tpl/react-native-svg': true
   '@shopify/react-native-skia': true
   core-js: true
   unrs-resolver: true
