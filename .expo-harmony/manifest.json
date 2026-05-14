@@ -1,0 +1,189 @@
+{
+  "generatedAt": "2026-05-14T14:48:22.532Z",
+  "toolkitVersion": "1.8.3",
+  "templateVersion": "rnoh-0.82.29",
+  "matrixId": "expo55-rnoh082-ui-stack",
+  "projectRoot": "/Users/blackishgreen03/workspace/ccnubox_rn-feat-harmony-add-adapter-support",
+  "files": [
+    {
+      "relativePath": "harmony/README.md",
+      "sha1": "53e38b7edd40dcd87d05b9ec41becc315d5a7fcb"
+    },
+    {
+      "relativePath": "harmony/build-profile.json5",
+      "sha1": "53605575a0db84ef5606d22ea9f4aa524ba36887"
+    },
+    {
+      "relativePath": "harmony/codelinter.json",
+      "sha1": "595e81715159f7f43427351387b281b4826b834c"
+    },
+    {
+      "relativePath": "harmony/hvigor/hvigor-config.json5",
+      "sha1": "8ac67e7eece4818088804a108179ba823341f8e8"
+    },
+    {
+      "relativePath": "harmony/hvigorfile.ts",
+      "sha1": "4bb1c7dcfcafab685275b05cac781181e32dedc6"
+    },
+    {
+      "relativePath": "harmony/AppScope/app.json5",
+      "sha1": "81bd0e9d368c97238acc40ff1b79388a98b13462"
+    },
+    {
+      "relativePath": "harmony/AppScope/resources/base/element/string.json",
+      "sha1": "44374412a913191b3a44ee460d1eb368cf4ae219"
+    },
+    {
+      "relativePath": "harmony/AppScope/resources/base/media/app_icon.png",
+      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+    },
+    {
+      "relativePath": "harmony/entry/build-profile.json5",
+      "sha1": "26a22a1c93aad1e1260b9fcbca8f9190e152efa7"
+    },
+    {
+      "relativePath": "harmony/entry/hvigorfile.ts",
+      "sha1": "ed282fe65ede892474df299bd8919309fd3d48f7"
+    },
+    {
+      "relativePath": "harmony/entry/oh-package.json5",
+      "sha1": "59a24b2cbcaf96c5941495b32277da4245a9aef6"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/cpp/CMakeLists.txt",
+      "sha1": "8348a626cee81fa260a9253f965b884dceebfead"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/cpp/PackageProvider.cpp",
+      "sha1": "c45925be9c3c12f8359f75c1067aaf44bc9c9ad6"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/PackageProvider.ets",
+      "sha1": "1ab16452fa5f65dbed547ff1d0c82b41aa54209e"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/entryability/EntryAbility.ets",
+      "sha1": "43ee40b9118585d5018a308ee1d78b11b3a4f378"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/pages/Index.ets",
+      "sha1": "12f15f6c354a8d59dce8e4fe437ae696d89b7a22"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/workers/RNOHWorker.ets",
+      "sha1": "dd8b3374088a5028e2af2d75e8808f7e690881eb"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/base/element/color.json",
+      "sha1": "688081210888a63ebfa5a820bcc99c2bb9487eff"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/base/media/background.png",
+      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/base/media/foreground.png",
+      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/base/media/layered_image.json",
+      "sha1": "c8a12baa3bc22d30f4a124396036240bcd71f9e2"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/base/media/startIcon.png",
+      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/base/profile/main_pages.json",
+      "sha1": "b978fe9c7ca06084b3ad75604e55d937ce8cea3d"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/resources/rawfile/.gitkeep",
+      "sha1": "adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+    },
+    {
+      "relativePath": "harmony/oh-package.json5",
+      "sha1": "0032b34e5609bddbd3d3345d0347e6341c52ad05"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/RNOHPackagesFactory.ets",
+      "sha1": "4ed1c88819712e6c1a5795cc191f04dd01043ef9"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/cpp/RNOHPackagesFactory.h",
+      "sha1": "e60dc9bfe8764d25304f1c448ad0ea69bfb94abe"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/cpp/autolinking.cmake",
+      "sha1": "cb249c76fe4def9914e883b493c9ec52129daf96"
+    },
+    {
+      "relativePath": "harmony/oh_modules/@rnoh/react-native-openharmony/ts.ts",
+      "sha1": "f4351896f718717bcd4b0e5c6c3a5b0e35f6eba5"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/react-native-safe-area-context/index.js",
+      "sha1": "fdd943926f5279e76395255cf6abe77965c2d82e"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-modules-core/index.js",
+      "sha1": "7da8b75078467620f69042c1cfa391837cd6ba78"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-file-system/index.js",
+      "sha1": "79fcd87608f1df4c4e5a9c852b7d1686602adba3"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-image-picker/index.js",
+      "sha1": "7654c06ac55ca3223362375346081b47508ff242"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-location/index.js",
+      "sha1": "49bce8f21a522f823680ad511adb0eef3d524ef9"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-camera/index.js",
+      "sha1": "6c34ade10fc2b4a9e8f64d2f78eaad735d9d8966"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-notifications/index.js",
+      "sha1": "c01703f75b5eed911dd08e6afbeb11ea93e5e2b0"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/runtime-prelude.js",
+      "sha1": "81876d8ccbc163ed09dcfc34a4e95f6f786a9e0e"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/cpp/expoHarmony/ExpoHarmonyPackage.h",
+      "sha1": "893617b3bbfe40b992c4e37f07bf7ff81ea28fd4"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyPackage.ets",
+      "sha1": "9849a5f7a8f8b1ce7cf1773dd7d9e2b466827c4b"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyFileSystemTurboModule.ts",
+      "sha1": "3942b071111d3f9253a83d347ab0eabc36550c03"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyImagePickerTurboModule.ts",
+      "sha1": "71cfa7c46293ae06b7a1b1f65a244962ce7d3bf8"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyLocationTurboModule.ts",
+      "sha1": "2455c63c78d65be46aa3056c224c7473877e0574"
+    },
+    {
+      "relativePath": "harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyCameraTurboModule.ts",
+      "sha1": "05297946e37a1f3cfcd35a8dc2266bbcc73481d8"
+    },
+    {
+      "relativePath": ".expo-harmony/toolkit-config.json",
+      "sha1": "e69b096704bc76dff296b3bdf2c7469ee57e8a00"
+    },
+    {
+      "relativePath": ".expo-harmony/signing.local.example.json",
+      "sha1": "3cd9e4adf479de6d63c20ef7e9d805f12f38eccf"
+    }
+  ]
+}
