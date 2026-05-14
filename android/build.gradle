@@ -2,20 +2,18 @@
 
 buildscript {
   repositories {
+// @generated begin jpush-buildscript-repositories - expo prebuild (DO NOT MODIFY) sync-50c5bf8180eb90743a7140c61483cf0fc6477d06
+maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://developer.hihonor.com/repo' }
+// @generated end jpush-buildscript-repositories
     google()
     mavenCentral()
-    // @generated begin jpush-honor-maven-buildscript - expo prebuild (DO NOT MODIFY) sync-0e8491aca27d8519bc8ba0e0de742f9ae8393b4b
-maven { url 'https://developer.hihonor.com/repo' }
-// @generated end jpush-honor-maven-buildscript
-// @generated begin jpush-huawei-maven-buildscript - expo prebuild (DO NOT MODIFY) sync-6c5a142c29c85ed1be7bd5f4607f4daff13f6092
-maven { url 'https://developer.huawei.com/repo/' }
-// @generated end jpush-huawei-maven-buildscript
   }
   dependencies {
-// @generated begin jpush-vendor-classpaths - expo prebuild (DO NOT MODIFY) sync-bdd192184431eaa9b1de39d53f54ea527d345e69
+// @generated begin jpush-buildscript-classpaths - expo prebuild (DO NOT MODIFY) sync-bdd192184431eaa9b1de39d53f54ea527d345e69
 // Huawei AGConnect
         classpath 'com.huawei.agconnect:agcp:1.9.3.302'
-// @generated end jpush-vendor-classpaths
+// @generated end jpush-buildscript-classpaths
     classpath('com.android.tools.build:gradle:8.13.2')
     classpath('com.facebook.react:react-native-gradle-plugin')
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
@@ -32,6 +30,10 @@ def reactNativeAndroidDir = new File(
 
 allprojects {
   repositories {
+// @generated begin jpush-allprojects-repositories - expo prebuild (DO NOT MODIFY) sync-50c5bf8180eb90743a7140c61483cf0fc6477d06
+maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://developer.hihonor.com/repo' }
+// @generated end jpush-allprojects-repositories
     maven {
       // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
       url(reactNativeAndroidDir)
@@ -40,12 +42,6 @@ allprojects {
     google()
     mavenCentral()
     maven { url 'https://www.jitpack.io' }
-    // @generated begin jpush-honor-maven-allprojects - expo prebuild (DO NOT MODIFY) sync-0e8491aca27d8519bc8ba0e0de742f9ae8393b4b
-maven { url 'https://developer.hihonor.com/repo' }
-// @generated end jpush-honor-maven-allprojects
-// @generated begin jpush-huawei-maven-allprojects - expo prebuild (DO NOT MODIFY) sync-6c5a142c29c85ed1be7bd5f4607f4daff13f6092
-maven { url 'https://developer.huawei.com/repo/' }
-// @generated end jpush-huawei-maven-allprojects
   }
 }
 

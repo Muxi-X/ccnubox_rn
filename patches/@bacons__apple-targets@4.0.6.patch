@@ -1,0 +1,21 @@
+diff --git a/build/with-xcode-changes.js b/build/with-xcode-changes.js
+index 15a7aa237f41a7fb01fcf74b3e0ec4d933f95597..3bd6fdbe8dc9eaa353762113a66de86b63f77fe3 100644
+--- a/build/with-xcode-changes.js
++++ b/build/with-xcode-changes.js
+@@ -192,12 +192,13 @@ async function applyXcodeChanges(config, project, props) {
+             config.removeFromProject();
+         });
+         // Remove existing build configuration list
+-        targetToUpdate.props.buildConfigurationList
++        const configList = targetToUpdate.props.buildConfigurationList;
++        configList
+             .getReferrers()
+             .forEach((ref) => {
+-            ref.removeReference(targetToUpdate.props.buildConfigurationList.uuid);
++            ref.removeReference(configList.uuid);
+         });
+-        targetToUpdate.props.buildConfigurationList.removeFromProject();
++        configList.removeFromProject();
+         // Create new build phases
+         targetToUpdate.props.buildConfigurationList =
+             (0, configuration_list_1.createConfigurationListForType)(project, props);

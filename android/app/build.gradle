@@ -96,32 +96,32 @@ android {
 
     namespace 'com.muxixyz.ccnubox'
     defaultConfig {
-// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-d2795b3ac06d5ba30ede48c66f1eb1d057315706
-manifestPlaceholders = [
-                JPUSH_PKGNAME: System.getenv("JPUSH_PKGNAME") ?: (project.findProperty("JPUSH_PKGNAME") ?: "com.muxixyz.ccnubox"),
-                JPUSH_APPKEY: System.getenv("JPUSH_APP_KEY") ?: (project.findProperty("JPUSH_APP_KEY") ?: ""),
-                JPUSH_CHANNEL: System.getenv("JPUSH_CHANNEL") ?: (project.findProperty("JPUSH_CHANNEL") ?: ""),
-                XIAOMI_APPID: System.getenv("JPUSH_XIAOMI_APP_ID") ?: (project.findProperty("JPUSH_XIAOMI_APP_ID") ?: ""),
-                XIAOMI_APPKEY: System.getenv("JPUSH_XIAOMI_APP_KEY") ?: (project.findProperty("JPUSH_XIAOMI_APP_KEY") ?: ""),
-                OPPO_APPKEY: System.getenv("JPUSH_OPPO_APP_KEY") ?: (project.findProperty("JPUSH_OPPO_APP_KEY") ?: ""),
-                OPPO_APPID: System.getenv("JPUSH_OPPO_APP_ID") ?: (project.findProperty("JPUSH_OPPO_APP_ID") ?: ""),
-                OPPO_APPSECRET: System.getenv("JPUSH_OPPO_APP_SECRET") ?: (project.findProperty("JPUSH_OPPO_APP_SECRET") ?: ""),
-                VIVO_APPKEY: System.getenv("JPUSH_VIVO_APP_KEY") ?: (project.findProperty("JPUSH_VIVO_APP_KEY") ?: ""),
-                VIVO_APPID: System.getenv("JPUSH_VIVO_APP_ID") ?: (project.findProperty("JPUSH_VIVO_APP_ID") ?: ""),
-                HONOR_APPID: System.getenv("JPUSH_HONOR_APP_ID") ?: (project.findProperty("JPUSH_HONOR_APP_ID") ?: "")
-            ]
-// @generated end jpush-manifest-placeholders
+        ndk {
+// @generated begin jpush-ndk-abi-filters - expo prebuild (DO NOT MODIFY) sync-31a752f49c3ef5558c6980db8a3f9c162a511eb7
+            // 选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+// @generated end jpush-ndk-abi-filters
+        }
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // @generated begin jpush-ndk-config - expo prebuild (DO NOT MODIFY) sync-b1dec770741d2eaa7867c32a8a866f8899231079
-        ndk {
-                //选择要添加的对应 cpu 类型的 .so 库。
-                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
-        }
-        // @generated end jpush-ndk-config
         versionCode 18
         versionName "3.1.6"
+// @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-87077b7ca314ad6dbdcb587907322ed1e71f09e5
+        manifestPlaceholders += [
+            JPUSH_PKGNAME: System.getenv("JPUSH_PKGNAME") ?: (project.findProperty("JPUSH_PKGNAME") ?: "com.muxixyz.ccnubox"),
+            JPUSH_APPKEY: System.getenv("JPUSH_APP_KEY") ?: (project.findProperty("JPUSH_APP_KEY") ?: "85271fccfbf4106a0e78556c"),
+            JPUSH_CHANNEL: System.getenv("JPUSH_CHANNEL") ?: (project.findProperty("JPUSH_CHANNEL") ?: "coursetable"),
+            XIAOMI_APPID: System.getenv("JPUSH_XIAOMI_APP_ID") ?: (project.findProperty("JPUSH_XIAOMI_APP_ID") ?: ""),
+            XIAOMI_APPKEY: System.getenv("JPUSH_XIAOMI_APP_KEY") ?: (project.findProperty("JPUSH_XIAOMI_APP_KEY") ?: ""),
+            OPPO_APPKEY: System.getenv("JPUSH_OPPO_APP_KEY") ?: (project.findProperty("JPUSH_OPPO_APP_KEY") ?: ""),
+            OPPO_APPID: System.getenv("JPUSH_OPPO_APP_ID") ?: (project.findProperty("JPUSH_OPPO_APP_ID") ?: ""),
+            OPPO_APPSECRET: System.getenv("JPUSH_OPPO_APP_SECRET") ?: (project.findProperty("JPUSH_OPPO_APP_SECRET") ?: ""),
+            VIVO_APPKEY: System.getenv("JPUSH_VIVO_APP_KEY") ?: (project.findProperty("JPUSH_VIVO_APP_KEY") ?: ""),
+            VIVO_APPID: System.getenv("JPUSH_VIVO_APP_ID") ?: (project.findProperty("JPUSH_VIVO_APP_ID") ?: ""),
+            HONOR_APPID: System.getenv("JPUSH_HONOR_APP_ID") ?: (project.findProperty("JPUSH_HONOR_APP_ID") ?: "")
+        ]
+// @generated end jpush-manifest-placeholders
     }
     signingConfigs {
         debug {
@@ -184,11 +184,13 @@ manifestPlaceholders = [
 }
 
 dependencies {
-// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-7312a7429e92bcd6da5d79dc70cca2813354c5f9
-// JPush React Native 桥接（已包含 JPush 核心 SDK）
+// @generated begin jpush-dependencies - expo prebuild (DO NOT MODIFY) sync-742dfe5effd99fa062e77ec85e47bcb518dbb4f9
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+
+    // JPush React Native 桥接（已包含 JPush 核心 SDK）
     implementation project(':jpush-react-native')
     implementation project(':jcore-react-native')
-    
+
     // 厂商通道 SDK（JPush 5.9.0）
     // 华为厂商
     implementation 'com.huawei.hms:push:6.13.0.300'
@@ -206,9 +208,6 @@ dependencies {
     // 荣耀厂商
     implementation 'cn.jiguang.sdk.plugin:honor:5.9.0'
 // @generated end jpush-dependencies
-    // @generated begin jpush-libs-filetree - expo prebuild (DO NOT MODIFY) sync-b49c55821fcfaf640a644f68fa2264b8adfed2f2
-    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-    // @generated end jpush-libs-filetree
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -238,6 +237,6 @@ dependencies {
 }
 
 
-// @generated begin jpush-apply-plugins - expo prebuild (DO NOT MODIFY)
+// @generated begin jpush-apply-plugins - expo prebuild (DO NOT MODIFY) sync-ad1a49550b82686cfacedc27990625ceb701b2a5
 apply plugin: 'com.huawei.agconnect'
 // @generated end jpush-apply-plugins
