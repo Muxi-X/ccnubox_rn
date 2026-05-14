@@ -1,4 +1,4 @@
-import { SystemBars } from 'react-native-edge-to-edge';
+import { setPlatformSystemBarStyle } from '@/platform/systemBars';
 
 /**
  * 设置系统UI主题
@@ -8,5 +8,5 @@ export const setSystemUITheme = (themeName: 'dark' | 'light') => {
   const isDark = themeName === 'dark';
 
   // 使用 SystemBars 设置状态栏和导航栏样式
-  SystemBars.setStyle(isDark ? 'light' : 'dark');
+  setPlatformSystemBarStyle(isDark ? 'light' : 'dark');
 };

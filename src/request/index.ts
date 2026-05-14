@@ -1,11 +1,18 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { getItem, setItem } from 'expo-secure-store';
 
 import Toast from '@/components/toast';
 
 import requestBus from '@/store/currentRequests';
+
+import { authStorageKeys } from '@/platform/authStorageKeys';
+import {
+  HARMONY_DEBUG_SHORT_VALUE,
+  isHarmonyDebugCredential,
+  isHarmonyDebugSessionEnabled,
+} from '@/platform/harmonyDebugSession';
+import { getItem, setItem } from '@/platform/storage';
 
 import { paths } from './schema';
 
@@ -48,8 +55,16 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
 
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
-    const longToken = getItem('longToken');
+    const longToken = await getItem('longToken');
     if (!longToken) throw new Error('长 token 不存在');
+
+    if (
+      isHarmonyDebugCredential(longToken) ||
+      (await isHarmonyDebugSessionEnabled())
+    ) {
+      await setItem(authStorageKeys.short, HARMONY_DEBUG_SHORT_VALUE);
+      return HARMONY_DEBUG_SHORT_VALUE;
+    }
 
     // 刷新短 token
     const response = await axios.get(
@@ -61,10 +76,10 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
     );
 
     if (response.status === 200 || response.status === 201) {
-      const newShortToken = response.headers['x-jwt-token'];
-      //   console.log(newShortToken);
-      setItem('shortToken', newShortToken);
-      return newShortToken;
+      const refreshedCredential = response.headers['x-jwt-token'];
+      //   console.log(refreshedCredential);
+      await setItem(authStorageKeys.short, refreshedCredential);
+      return refreshedCredential;
     }
 
     throw new Error('刷新短 token 失败');

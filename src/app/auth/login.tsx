@@ -3,7 +3,6 @@ import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import axios, { AxiosError } from 'axios';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
 import {
   Image,
@@ -26,6 +25,12 @@ import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import MXLogo from '@/assets/images/mx-logo.png';
+import { authStorageKeys } from '@/platform/authStorageKeys';
+import {
+  canUseHarmonyDebugSession,
+  startHarmonyDebugSession,
+} from '@/platform/harmonyDebugSession';
+import { setItem } from '@/platform/storage';
 import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 
@@ -75,8 +80,11 @@ const LoginPage: FC = () => {
           student_id: studentId,
           password: password,
         });
-        setItem('shortToken', response.headers['x-jwt-token']);
-        setItem('longToken', response.headers['x-refresh-token']);
+        await setItem(authStorageKeys.short, response.headers['x-jwt-token']);
+        await setItem(
+          authStorageKeys.long,
+          response.headers['x-refresh-token']
+        );
         router.navigate('/(tabs)');
       }
     } catch (error) {
@@ -87,6 +95,29 @@ const LoginPage: FC = () => {
     }
     setLoginTriggered(false);
   };
+
+  const handleHarmonyDebugLogin = async () => {
+    setLoginTriggered(true);
+
+    if (!privacyChecked) {
+      Toast.fail('请先阅读隐私条例', 2);
+      setLoginTriggered(false);
+      return;
+    }
+
+    try {
+      useUserStore.setState({
+        student_id: studentId.trim() || 'harmony-debug',
+        password: password || 'hdbg-login',
+      });
+      await startHarmonyDebugSession();
+      Toast.info('已进入 Harmony 调试模式', 1);
+      router.navigate('/(tabs)');
+    } finally {
+      setLoginTriggered(false);
+    }
+  };
+
   const onCheckPrivacy = (e: OnChangeParams) => {
     setPrivacyChecked(e.target.checked);
   };
@@ -181,6 +212,15 @@ const LoginPage: FC = () => {
         >
           登录
         </Button>
+        {canUseHarmonyDebugSession ? (
+          <Button
+            onPress={handleHarmonyDebugLogin}
+            isLoading={loginTriggered}
+            style={[styles.debug_button, currentStyle?.button_style]}
+          >
+            Harmony 调试登录
+          </Button>
+        ) : null}
       </AnimatedFade>
     </KeyboardAvoidingView>
   );
@@ -219,6 +259,12 @@ export const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 12,
     marginTop: 20,
+  },
+  debug_button: {
+    width: '50%',
+    borderRadius: 12,
+    marginTop: 12,
+    backgroundColor: 'rgba(255,255,255,0.18)',
   },
   rules: {
     width: '80%',

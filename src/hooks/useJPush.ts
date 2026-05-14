@@ -1,10 +1,10 @@
-import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { NativeModules, Platform } from 'react-native';
 
 import usePushSubscriptionStore from '@/store/pushSubscription';
 
+import { isHarmony, platformCapabilities } from '@/platform/capabilities';
 import { JPushSecrets } from '@/secret/JPush';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
@@ -78,8 +78,18 @@ type NativeJPushColdStartBridgeModule = {
   > | null>;
 };
 
+type NotificationsModule = typeof import('expo-notifications');
+
+const getNotificationsModule = (): NotificationsModule | null => {
+  if (isHarmony) {
+    return null;
+  }
+
+  return require('expo-notifications') as NotificationsModule;
+};
+
 const consumeNativeInitialJPushOpened = async (stage: string) => {
-  if (Platform.OS !== 'ios') return null;
+  if (Platform.OS !== 'ios' && !isHarmony) return null;
 
   const nativeBridge = (
     NativeModules as { JPushColdStartBridge?: NativeJPushColdStartBridgeModule }
@@ -237,16 +247,34 @@ const handleCustomMessage = (result: unknown) => {
   console.log('收到自定义消息:', result);
 };
 
-const hasGrantedPushPermission = (
-  settings: Notifications.NotificationPermissionsStatus
-) => {
+const hasGrantedPushPermission = (settings: {
+  granted?: boolean;
+  ios?: {
+    status?: unknown;
+  };
+}) => {
+  const Notifications = getNotificationsModule();
+
   return (
     settings.granted ||
-    settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+    (Notifications
+      ? settings.ios?.status ===
+        Notifications.IosAuthorizationStatus.PROVISIONAL
+      : false)
   );
 };
 
 export const ensurePushPermission = async (requestIfNeeded = false) => {
+  if (!platformCapabilities.push) {
+    return false;
+  }
+
+  const Notifications = getNotificationsModule();
+
+  if (!Notifications) {
+    return true;
+  }
+
   const currentSettings = await Notifications.getPermissionsAsync();
   if (hasGrantedPushPermission(currentSettings)) {
     return true;
@@ -286,6 +314,10 @@ export const initializeJPush = async ({
 }: {
   requestPermission?: boolean;
 } = {}) => {
+  if (!platformCapabilities.push) {
+    return false;
+  }
+
   if (initializationPromise) {
     return initializationPromise;
   }
@@ -297,7 +329,9 @@ export const initializeJPush = async ({
         return false;
       }
 
-      if (Platform.OS === 'android') {
+      const Notifications = getNotificationsModule();
+
+      if (Platform.OS === 'android' && Notifications) {
         await Notifications.setNotificationChannelAsync('tips', {
           name: '消息通知',
           importance: Notifications.AndroidImportance.MAX,
@@ -384,6 +418,7 @@ const useJPush = () => {
   const enabled = usePushSubscriptionStore(state => state.enabled);
 
   useEffect(() => {
+    if (!platformCapabilities.push) return;
     if (!enabled) return;
     initializeJPush().catch(error => {
       console.error('JPush 自动初始化失败:', error);

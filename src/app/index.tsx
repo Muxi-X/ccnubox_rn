@@ -1,10 +1,10 @@
 import { Href, Redirect, SplashScreen } from 'expo-router';
-import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
 import { Platform } from 'react-native';
 
 import useCourse from '@/store/course';
 
+import { getItem, setItem } from '@/platform/storage';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 import { updateCourseData } from '@/utils/updateWidget';
 
@@ -33,7 +33,7 @@ const Index = () => {
       if (!token) {
         if (firstLaunch === null) {
           // 是首次启动，设置标记并跳转到guide
-          setItem('firstLaunch', 'false');
+          await setItem('firstLaunch', 'false');
           setInitialRoute('/auth/guide');
         } else {
           if (Platform.OS === 'android') {

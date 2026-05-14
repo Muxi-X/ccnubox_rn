@@ -1,5 +1,4 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -15,6 +14,7 @@ import ThemeChangeView from '@/components/view';
 import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
 
+import * as Haptics from '@/platform/haptics';
 import { queryBanners } from '@/request/api';
 import { keyGenerator, percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
@@ -44,16 +44,20 @@ const IndexPage: FC = () => {
         setRegisterId(result.registerID);
       }
     });
-    queryBanners().then((res: any) => {
-      setBanners(
-        res.data.banners.map(
-          (banner: { picture_link: string; web_link: string }) => ({
-            bannerUrl: banner.picture_link,
-            navUrl: banner.web_link,
-          })
-        )
-      );
-    });
+    queryBanners()
+      .then((res: any) => {
+        setBanners(
+          res.data.banners.map(
+            (banner: { picture_link: string; web_link: string }) => ({
+              bannerUrl: banner.picture_link,
+              navUrl: banner.web_link,
+            })
+          )
+        );
+      })
+      .catch(() => {
+        setBanners([]);
+      });
   }, []);
   const onDragRelease = async (data: MainPageGridDataType[]) => {
     // 直接更新 store，自动同步到 AsyncStorage

@@ -1,8 +1,10 @@
 import { forwardRef } from 'react';
 import { View } from 'react-native';
-import WebView from 'react-native-webview';
 
 import { ScraperProps } from '@/components/scraper/types';
+import SafeWebView, {
+  SafeWebViewHandle,
+} from '@/components/webview/SafeWebView';
 
 import useUserStore from '@/store/user';
 
@@ -22,15 +24,15 @@ import { LOGIN_SCRAPER } from '@/constants/SCRAPERS';
  *    课表测试
  * </Button>
  */
-const Scraper = forwardRef<WebView | null, ScraperProps>(
+const Scraper = forwardRef<SafeWebViewHandle | null, ScraperProps>(
   ({ onMessage }, ref) => {
     const student_id = useUserStore(state => state.student_id) || '2023122691';
-    const password = useUserStore(state => state.password) || 'zhao1638678192%';
+    const storedCredential = useUserStore(state => state.password) || '';
 
-    const runFirst = LOGIN_SCRAPER(student_id, password);
+    const runFirst = LOGIN_SCRAPER(student_id, storedCredential);
     return (
       <View style={{ width: 0, height: 0 }}>
-        <WebView
+        <SafeWebView
           ref={ref}
           style={{
             opacity: 0.99,
@@ -48,6 +50,7 @@ const Scraper = forwardRef<WebView | null, ScraperProps>(
             onMessage?.(event.nativeEvent.data);
             // console.log(event.nativeEvent.data);
           }}
+          showOpenExternally={false}
         />
       </View>
     );
