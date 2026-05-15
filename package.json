@@ -127,6 +127,7 @@
     "lint-staged": "^16.2.6",
     "metro": "^0.83.7",
     "miragejs": "^0.1.48",
+    "patch-package": "^8.0.1",
     "prettier": "^3.5.3",
     "react-native-svg-transformer": "^1.5.1",
     "typescript": "~5.9.3"
