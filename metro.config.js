@@ -21,10 +21,7 @@ config.resolver = {
   ...config.resolver,
   assetExts: config.resolver.assetExts.filter(ext => ext !== 'svg'),
   sourceExts: [...config.resolver.sourceExts, 'svg', 'd.ts'],
-  blockList: [
-    /\/\.expo\/.*/,
-    /\/node_modules\/.*\/node_modules\/react-native\/.*/,
-  ],
+  blockList: [/\/\.expo\/.*/],
 };
 
 module.exports = config;

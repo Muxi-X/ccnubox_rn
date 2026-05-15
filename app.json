@@ -73,7 +73,7 @@
     },
     "plugins": [
       "expo-router",
-			"expo-web-browser",
+      "expo-web-browser",
       [
         "react-native-edge-to-edge",
         {

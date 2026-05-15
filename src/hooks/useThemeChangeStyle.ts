@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/core';
+import { useIsFocused } from '@react-navigation/native';
 import { useEffect } from 'react';
 import {
   interpolateColor,

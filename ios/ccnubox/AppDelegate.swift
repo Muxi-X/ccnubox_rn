@@ -1,4 +1,4 @@
-import Expo
+public import Expo
 import React
 import ReactAppDependencyProvider
 // @generated begin jpush-swift-import-usernotifications - expo prebuild (DO NOT MODIFY) sync-768cde893f7334c1cbf88f4f0a878cfb3548fdbe
@@ -22,7 +22,6 @@ public class AppDelegate: ExpoAppDelegate {
 
     reactNativeDelegate = delegate
     reactNativeFactory = factory
-    bindReactNativeFactory(factory)
 
     JPushColdStartBridge.cacheLaunchNotification(launchOptions)
 
@@ -214,10 +213,13 @@ extension AppDelegate: JPUSHRegisterDelegate {
     }
 
     // 在前台显示通知
-    let presentationOptions = UNNotificationPresentationOptions.badge.rawValue |
-                             UNNotificationPresentationOptions.sound.rawValue |
-                             UNNotificationPresentationOptions.alert.rawValue
-    completionHandler(Int(presentationOptions))
+    var presentationOptions: UNNotificationPresentationOptions = [.badge, .sound]
+    if #available(iOS 14.0, *) {
+      presentationOptions.formUnion([.banner, .list])
+    } else {
+      presentationOptions.insert(.alert)
+    }
+    completionHandler(Int(presentationOptions.rawValue))
   }
 
   @objc public func jpushNotificationCenter(_ center: UNUserNotificationCenter,
@@ -256,7 +258,7 @@ extension AppDelegate: JPUSHRegisterDelegate {
 
   // 通知设置
   @objc public func jpushNotificationCenter(_ center: UNUserNotificationCenter,
-                                           openSettingsFor notification: UNNotification?) {
+                                           openSettingsFor notification: UNNotification) {
     #if DEBUG
     print("打开通知设置")
     #endif
