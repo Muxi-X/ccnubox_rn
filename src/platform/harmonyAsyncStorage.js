@@ -45,7 +45,11 @@ async function persistStore(nextStore) {
           encoding: FileSystem.EncodingType.UTF8,
         }
       )
-    );
+    )
+    .catch(error => {
+      console.error('Harmony AsyncStorage persist failed', error);
+      throw error;
+    });
   return writeQueue;
 }
 

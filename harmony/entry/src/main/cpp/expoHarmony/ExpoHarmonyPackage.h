@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ReactCommon/TurboModule.h>
 #include <react/renderer/components/view/ConcreteViewShadowNode.h>
 #include <react/renderer/core/ConcreteComponentDescriptor.h>
 #include "RNOH/ArkTSTurboModule.h"

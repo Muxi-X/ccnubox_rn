@@ -26,6 +26,6 @@ Locked baseline:
 Suggested manual flow:
 1. Run `expo-harmony doctor`
 2. Run `expo-harmony init`
-3. Run `bundle:harmony`
+3. Run `pnpm harmony:bundle`
 4. Open `harmony/` in DevEco Studio
 5. Configure signing and run/build the `entry` target

@@ -8,8 +8,12 @@ const getExpoHapticsModule = () => {
   }
 
   if (expoHapticsModule === undefined) {
-    expoHapticsModule =
-      require('expo-haptics') as typeof import('expo-haptics');
+    try {
+      expoHapticsModule =
+        require('expo-haptics') as typeof import('expo-haptics');
+    } catch {
+      expoHapticsModule = null;
+    }
   }
 
   return expoHapticsModule;
@@ -19,13 +23,18 @@ export const ImpactFeedbackStyle = {
   Light: 'light',
 } as const;
 
-export const impactAsync = async (_style: string) => {
+export const impactAsync = async (style: string) => {
   const haptics = getExpoHapticsModule();
   if (!haptics) {
     return;
   }
 
-  return haptics.impactAsync(haptics.ImpactFeedbackStyle.Light);
+  const nativeStyle =
+    style === ImpactFeedbackStyle.Light
+      ? haptics.ImpactFeedbackStyle.Light
+      : haptics.ImpactFeedbackStyle.Light;
+
+  return haptics.impactAsync(nativeStyle);
 };
 
 export const selectionAsync = async () => {

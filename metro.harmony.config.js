@@ -35,7 +35,11 @@ const projectRootModuleAliases = {
 const uiStackRootModuleAliases = {
   '@react-native-async-storage/async-storage': path.resolve(
     __dirname,
-    'node_modules/@react-native-async-storage/async-storage'
+    'src/platform/harmonyAsyncStorage.js'
+  ),
+  '@react-navigation/native': path.resolve(
+    __dirname,
+    'src/platform/harmonyReactNavigation/native.tsx'
   ),
   'react-native-gesture-handler/src/handlers/handlersRegistry': path.resolve(
     __dirname,
@@ -73,7 +77,7 @@ const uiStackRootModuleAliases = {
   ),
   'react-native-screens': path.resolve(
     __dirname,
-    'node_modules/react-native-screens'
+    'src/platform/harmonyScreens/index.tsx'
   ),
   'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
   'react-native-webview': path.resolve(
@@ -110,7 +114,7 @@ const isDirectoryAlias = aliasedModulePath => {
   try {
     return fs.statSync(aliasedModulePath).isDirectory();
   } catch {
-    return path.extname(aliasedModulePath) === '';
+    return false;
   }
 };
 const filterDirectoryAliases = aliases =>

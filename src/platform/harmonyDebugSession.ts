@@ -6,9 +6,7 @@ export const HARMONY_DEBUG_SESSION_KEY = 'harmonyDebugSession';
 export const HARMONY_DEBUG_SHORT_VALUE = 'hdbg-short';
 export const HARMONY_DEBUG_LONG_VALUE = 'hdbg-long';
 
-// v1.8.x currently validates Harmony with debug HAPs only.
-// Keep the fallback reachable on Harmony until release hardening is done.
-export const canUseHarmonyDebugSession = isHarmony;
+export const canUseHarmonyDebugSession = isHarmony && __DEV__;
 
 export const isHarmonyDebugCredential = (value?: string | null) => {
   return typeof value === 'string' && value.startsWith('hdbg-');

@@ -32,8 +32,12 @@ endif()
 
 set(RNOH_GENERATED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/generated")
 set(OH_MODULES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../oh_modules")
-set(CMAKE_ASM_FLAGS "-Wno-error=unused-command-line-argument -Qunused-arguments")
-set(CMAKE_CXX_FLAGS "-fstack-protector-strong -Wl,-z,relro,-z,now,-z,noexecstack -s -fPIE -pie")
+add_compile_options(
+  "-Wno-error=unused-command-line-argument"
+  "-Qunused-arguments"
+  "-fstack-protector-strong"
+  "-fPIC"
+)
 
 add_subdirectory("${RNOH_CPP_DIR}" ./rn)
 include("${CMAKE_CURRENT_SOURCE_DIR}/autolinking.cmake")
@@ -64,4 +68,8 @@ if(DEFINED CMAKE_SYSROOT)
 endif()
 
 target_link_libraries(rnoh_app PUBLIC rnoh)
+target_link_options(rnoh_app PRIVATE
+  "-Wl,-z,relro,-z,now,-z,noexecstack"
+  "$<$<CONFIG:Release>:-s>"
+)
 autolink_libraries(rnoh_app)

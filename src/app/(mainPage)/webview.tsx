@@ -25,6 +25,9 @@ export default function Webview() {
 
   const autoLogin = useCallback(
     (event: WebViewNavigation) => {
+      const studentIdLiteral = JSON.stringify(student_id ?? '');
+      const storedCredentialLiteral = JSON.stringify(storedCredential ?? '');
+
       if (event.url.includes('kickout')) {
         webview.current?.injectJavaScript(`
               window.location.href = 'https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fsso%2Fpziotlogin';
@@ -40,8 +43,8 @@ export default function Webview() {
                   return;
                 }
                 const loginButton = document.getElementsByClassName('btn-submit')[0];
-                usernameInput.value = '${student_id}';
-                passwordInput.value = '${storedCredential}';
+                usernameInput.value = ${studentIdLiteral};
+                passwordInput.value = ${storedCredentialLiteral};
                 window.ReactNativeWebView.postMessage('_triedLogin');
                 loginButton.click();
               })();

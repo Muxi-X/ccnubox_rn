@@ -1,8 +1,7 @@
-import type { Permissions } from '@ohos.abilityAccessCtrl';
-import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
 import geoLocationManager from '@ohos.geoLocationManager';
 import { sensor } from '@kit.SensorServiceKit';
-import { AnyThreadTurboModuleContext, AnyThreadTurboModule } from '@rnoh/react-native-openharmony/ts';
+import { AnyThreadTurboModule } from '@rnoh/react-native-openharmony/ts';
 
 type PermissionResponse = {
   status: 'granted' | 'denied' | 'undetermined';
@@ -319,6 +318,22 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
 
   private async readHeadingSnapshot(): Promise<HeadingObject> {
     return new Promise((resolve) => {
+      let settled = false;
+      const fallbackHeading = {
+        magHeading: 0,
+        trueHeading: null,
+        accuracy: 0,
+      };
+      const resolveOnce = (heading: HeadingObject) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        clearTimeout(timeout);
+        resolve(heading);
+      };
+      const timeout = setTimeout(() => resolveOnce(fallbackHeading), 1000);
+
       try {
         const sensorApi = sensor as unknown as {
           once?: (sensorId: number, callback: (data: Record<string, number>) => void) => void;
@@ -330,11 +345,7 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
         const rotationVectorId = sensorApi.SensorId?.ROTATION_VECTOR;
 
         if (typeof onceFn !== 'function' || typeof rotationVectorId !== 'number') {
-          resolve({
-            magHeading: 0,
-            trueHeading: null,
-            accuracy: 0,
-          });
+          resolveOnce(fallbackHeading);
           return;
         }
 
@@ -346,18 +357,14 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
           const sinyCosp = 2 * (w * z + x * y);
           const cosyCosp = 1 - 2 * (y * y + z * z);
           const magHeading = (Math.atan2(sinyCosp, cosyCosp) * 180 / Math.PI + 360) % 360;
-          resolve({
+          resolveOnce({
             magHeading,
             trueHeading: magHeading,
             accuracy: 3,
           });
         });
       } catch (_error) {
-        resolve({
-          magHeading: 0,
-          trueHeading: null,
-          accuracy: 0,
-        });
+        resolveOnce(fallbackHeading);
       }
     });
   }

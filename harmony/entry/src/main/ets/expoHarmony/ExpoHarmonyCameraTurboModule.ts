@@ -1,9 +1,8 @@
-import type { Permissions } from '@ohos.abilityAccessCtrl';
-import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
 import camera from '@ohos.multimedia.camera';
 import cameraPicker from '@ohos.multimedia.cameraPicker';
 import image from '@ohos.multimedia.image';
-import { UITurboModuleContext, UITurboModule } from '@rnoh/react-native-openharmony/ts';
+import { UITurboModule } from '@rnoh/react-native-openharmony/ts';
 
 type PermissionResponse = {
   status: 'granted' | 'denied' | 'undetermined';
@@ -118,7 +117,10 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
   }
 
   async startRecording(options?: { viewId?: string; cameraType?: string }): Promise<CameraRecordingResult> {
-    await this.requestPermissionResponse('ohos.permission.MICROPHONE');
+    const microphonePermission = await this.requestPermissionResponse('ohos.permission.MICROPHONE');
+    if (!microphonePermission.granted) {
+      throw new Error('Microphone permission is required for camera recording.');
+    }
     const profile = new cameraPicker.PickerProfile();
     profile.cameraPosition =
       options?.cameraType === 'front'

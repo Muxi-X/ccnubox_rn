@@ -30,21 +30,27 @@ const wrapJsxFactory = factoryName => {
     return;
   }
 
-  jsxRuntime[factoryName] = function patchedJsx(type, props, key) {
+  jsxRuntime[factoryName] = function patchedJsx(
+    type,
+    config,
+    maybeKey,
+    source,
+    self
+  ) {
     if (type == null) {
       console.error('[Harmony JSX] Invalid element type', {
         factoryName,
-        key,
+        key: maybeKey,
         type,
-        propKeys: props ? Object.keys(props) : [],
-        childrenType: props?.children
-          ? describeElementType(props.children?.type)
-          : typeof props?.children,
+        propKeys: config ? Object.keys(config) : [],
+        childrenType: config?.children
+          ? describeElementType(config.children?.type)
+          : typeof config?.children,
         stack: new Error().stack,
       });
     }
 
-    return originalFactory.call(this, type, props, key);
+    return originalFactory.call(this, type, config, maybeKey, source, self);
   };
 };
 

@@ -4,6 +4,43 @@ import { platformCapabilities } from './capabilities';
 
 const useAsyncStorageFallback =
   platformCapabilities.secureStorageBackend === 'async-storage';
+const fallbackAuthKeys = new Set(['shortToken', 'longToken']);
+const fallbackUserKey = 'user';
+const isHarmonyDebugCredential = (value: string) => value.startsWith('hdbg-');
+
+const parseStoredUserPassword = (value: string) => {
+  try {
+    const parsed = JSON.parse(value) as { state?: { password?: unknown } };
+    return parsed.state?.password;
+  } catch {
+    return undefined;
+  }
+};
+
+const assertCanUseFallbackStorage = (key: string, value: string) => {
+  if (!useAsyncStorageFallback) {
+    return;
+  }
+
+  if (fallbackAuthKeys.has(key) && !isHarmonyDebugCredential(value)) {
+    throw new Error(
+      'Harmony secure storage fallback only accepts debug tokens'
+    );
+  }
+
+  if (key === fallbackUserKey) {
+    const password = parseStoredUserPassword(value);
+    if (
+      typeof password === 'string' &&
+      password &&
+      !isHarmonyDebugCredential(password)
+    ) {
+      throw new Error(
+        'Harmony secure storage fallback will not persist real passwords'
+      );
+    }
+  }
+};
 
 let secureStoreModule: typeof import('expo-secure-store') | null | undefined;
 
@@ -37,6 +74,7 @@ export const getItemAsync = async (key: string) => {
 };
 
 export const setItemAsync = async (key: string, value: string) => {
+  assertCanUseFallbackStorage(key, value);
   await getBackend().setItemAsync(key, value);
 };
 

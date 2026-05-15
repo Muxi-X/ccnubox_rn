@@ -30,13 +30,13 @@
       "evidence": {
         "bundle": true,
         "debugBuild": true,
-        "device": true,
+        "device": false,
         "release": false
       },
       "evidenceSource": {
         "bundle": "automated",
         "debugBuild": "automated",
-        "device": "manual-doc",
+        "device": "none",
         "release": "none"
       }
     },
@@ -48,13 +48,13 @@
       "evidence": {
         "bundle": true,
         "debugBuild": true,
-        "device": true,
+        "device": false,
         "release": false
       },
       "evidenceSource": {
         "bundle": "automated",
         "debugBuild": "automated",
-        "device": "manual-doc",
+        "device": "none",
         "release": "none"
       }
     },

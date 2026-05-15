@@ -77,7 +77,9 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
 
     if (response.status === 200 || response.status === 201) {
       const refreshedCredential = response.headers['x-jwt-token'];
-      //   console.log(refreshedCredential);
+      if (typeof refreshedCredential !== 'string' || !refreshedCredential) {
+        throw new Error('响应头中缺少 x-jwt-token');
+      }
       await setItem(authStorageKeys.short, refreshedCredential);
       return refreshedCredential;
     }

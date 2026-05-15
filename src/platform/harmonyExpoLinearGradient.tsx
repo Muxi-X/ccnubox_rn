@@ -17,10 +17,7 @@ export function LinearGradient({
   return (
     <View
       {...props}
-      style={[
-        style,
-        { backgroundColor: colors[0] ?? 'transparent', zIndex: 0 },
-      ]}
+      style={[style, { backgroundColor: colors[0] ?? 'transparent' }]}
     >
       {children}
     </View>

@@ -29,7 +29,9 @@ const Scraper = forwardRef<SafeWebViewHandle | null, ScraperProps>(
     const student_id = useUserStore(state => state.student_id) || '2023122691';
     const storedCredential = useUserStore(state => state.password) || '';
 
-    const runFirst = LOGIN_SCRAPER(student_id, storedCredential);
+    const runFirst = storedCredential
+      ? LOGIN_SCRAPER(student_id, storedCredential)
+      : undefined;
     return (
       <View style={{ width: 0, height: 0 }}>
         <SafeWebView

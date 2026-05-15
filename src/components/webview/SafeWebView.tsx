@@ -1,4 +1,9 @@
-import React, { forwardRef, type ReactElement } from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  type ReactElement,
+} from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
 const NativeWebView = (
@@ -63,9 +68,22 @@ const SafeWebView = forwardRef<SafeWebViewHandle, SafeWebViewProps>(
     },
     ref
   ) => {
+    const nativeWebViewRef = useRef<SafeWebViewHandle | null>(null);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        goBack: () => nativeWebViewRef.current?.goBack(),
+        injectJavaScript: script =>
+          nativeWebViewRef.current?.injectJavaScript(script),
+        reload: () => nativeWebViewRef.current?.reload(),
+      }),
+      []
+    );
+
     return (
       <NativeWebView
-        ref={ref as React.Ref<any>}
+        ref={nativeWebViewRef}
         allowsBackForwardNavigationGestures={
           allowsBackForwardNavigationGestures ??
           props.allowBackForwardNavigationGestures

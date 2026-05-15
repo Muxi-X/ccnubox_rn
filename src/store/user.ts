@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { secureStorage } from '@/platform/storage';
+import {
+  isUsingSecureStorageFallback,
+  secureStorage,
+} from '@/platform/storage';
 
 interface UserState {
   student_id: string;
@@ -22,6 +25,10 @@ const useUserStore = create<UserState>()(
     },
     {
       name: 'user',
+      partialize: state => ({
+        student_id: state.student_id,
+        password: isUsingSecureStorageFallback ? '' : state.password,
+      }),
       storage: createJSONStorage(() => secureStorage),
     }
   )

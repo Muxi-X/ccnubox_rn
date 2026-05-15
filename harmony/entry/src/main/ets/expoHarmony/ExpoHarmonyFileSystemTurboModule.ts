@@ -90,10 +90,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       isDirectory: stat.isDirectory(),
       size: Number(stat.size),
       modificationTime: Number(stat.mtime),
-      md5:
-        options?.md5 === true && !stat.isDirectory()
-          ? this.computePreviewDigest(await this.readFileBytes(normalizedPath))
-          : undefined,
+      md5: undefined,
     };
   }
 
@@ -216,7 +213,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       uri: normalizedDestinationPath,
       status: Number(response.status ?? 200),
       headers: {},
-      md5: options?.md5 === true ? this.computePreviewDigest(responseBuffer) : undefined,
+      md5: undefined,
     };
   }
 
@@ -418,17 +415,6 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     }
 
     return new Uint8Array(bytes);
-  }
-
-  private computePreviewDigest(bytes: Uint8Array): string {
-    let hash = 2166136261;
-
-    for (const byte of bytes) {
-      hash ^= byte;
-      hash = Math.imul(hash, 16777619);
-    }
-
-    return String(hash >>> 0).padStart(32, '0').slice(-32);
   }
 
   private normalizeSandboxPath(inputPath: string): string {

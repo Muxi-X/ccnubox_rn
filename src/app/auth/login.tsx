@@ -75,16 +75,24 @@ const LoginPage: FC = () => {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        //  console.log(response.headers);
+        const shortToken = response.headers['x-jwt-token'];
+        const longToken = response.headers['x-refresh-token'];
+
+        if (typeof shortToken !== 'string' || !shortToken) {
+          throw new Error('响应头中缺少 x-jwt-token');
+        }
+
+        if (typeof longToken !== 'string' || !longToken) {
+          throw new Error('响应头中缺少 x-refresh-token');
+        }
+
+        await setItem(authStorageKeys.short, shortToken);
+        await setItem(authStorageKeys.long, longToken);
+
         useUserStore.setState({
           student_id: studentId,
           password: password,
         });
-        await setItem(authStorageKeys.short, response.headers['x-jwt-token']);
-        await setItem(
-          authStorageKeys.long,
-          response.headers['x-refresh-token']
-        );
         router.navigate('/(tabs)');
       }
     } catch (error) {

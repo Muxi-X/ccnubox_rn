@@ -1,10 +1,9 @@
-import type { Permissions } from '@ohos.abilityAccessCtrl';
-import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import fs from '@ohos.file.fs';
-import { UITurboModuleContext, UITurboModule } from '@rnoh/react-native-openharmony/ts';
+import { UITurboModule } from '@rnoh/react-native-openharmony/ts';
 
 type PermissionResponse = {
   status: 'granted' | 'denied' | 'undetermined';

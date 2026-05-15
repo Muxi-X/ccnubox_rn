@@ -15,8 +15,12 @@ const getEdgeToEdgeModule = () => {
   }
 
   if (edgeToEdgeModule === undefined) {
-    edgeToEdgeModule =
-      require('react-native-edge-to-edge') as typeof import('react-native-edge-to-edge');
+    try {
+      edgeToEdgeModule =
+        require('react-native-edge-to-edge') as typeof import('react-native-edge-to-edge');
+    } catch {
+      edgeToEdgeModule = null;
+    }
   }
 
   return edgeToEdgeModule;

@@ -261,9 +261,15 @@ export default function FeedbackHistory() {
 
   useEffect(() => {
     if (!userId) {
+      setFeedbackHistory([]);
+      setHasMore(false);
+      setPageToken('');
       return;
     }
 
+    setFeedbackHistory([]);
+    setHasMore(false);
+    setPageToken('');
     void getUserFeedbackSheet(true);
   }, [userId]);
 

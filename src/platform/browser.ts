@@ -10,15 +10,19 @@ const getWebBrowserModule = () => {
   }
 
   if (webBrowserModule === undefined) {
-    webBrowserModule =
-      require('expo-web-browser') as typeof import('expo-web-browser');
+    try {
+      webBrowserModule =
+        require('expo-web-browser') as typeof import('expo-web-browser');
+    } catch {
+      webBrowserModule = null;
+    }
   }
 
   return webBrowserModule;
 };
 
 type BrowserResult = {
-  type: string;
+  type: 'cancel' | 'dismiss' | 'locked' | 'opened';
 };
 
 export const openBrowserAsync = async (url: string): Promise<BrowserResult> => {
