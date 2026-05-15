@@ -56,16 +56,18 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
 
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
+    if (await isHarmonyDebugSessionEnabled()) {
+      await setItem(authStorageKeys.short, HARMONY_DEBUG_SHORT_VALUE);
+      return HARMONY_DEBUG_SHORT_VALUE;
+    }
+
     const longToken = await getItem('longToken');
     if (!longToken) {
       logger.log.debug('长 token 不存在');
       throw new Error('长 token 不存在');
     }
 
-    if (
-      isHarmonyDebugCredential(longToken) ||
-      (await isHarmonyDebugSessionEnabled())
-    ) {
+    if (isHarmonyDebugCredential(longToken)) {
       await setItem(authStorageKeys.short, HARMONY_DEBUG_SHORT_VALUE);
       return HARMONY_DEBUG_SHORT_VALUE;
     }

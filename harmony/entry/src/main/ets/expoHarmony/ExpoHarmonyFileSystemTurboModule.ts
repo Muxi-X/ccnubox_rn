@@ -77,7 +77,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
   async getInfo(path: string, options?: FileInfoOptions): Promise<FileInfoResult> {
     this.assertMd5Unsupported(options);
 
-    const normalizedPath = this.normalizeSandboxPath(path);
+    const normalizedPath = this.normalizeSandboxPath(path, true);
     const stat = await this.getStatOrNull(normalizedPath);
 
     if (!stat) {
@@ -99,7 +99,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
   }
 
   async readAsString(path: string, options?: ReadOptions): Promise<string> {
-    const normalizedPath = this.normalizeSandboxPath(path);
+    const normalizedPath = this.normalizeSandboxPath(path, true);
     const encoding = options?.encoding ?? 'utf8';
     const bytes = await this.readFileBytes(normalizedPath);
     const position = typeof options?.position === 'number' && options.position > 0
@@ -132,6 +132,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
 
     try {
       if (encoding === 'base64') {
+        this.assertValidBase64(contents);
         await fs.write(file.fd, this.decodeBase64(contents).buffer);
       } else {
         await fs.write(file.fd, contents);
@@ -152,7 +153,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
   }
 
   async readDirectory(path: string): Promise<string[]> {
-    const normalizedPath = this.normalizeSandboxPath(path);
+    const normalizedPath = this.normalizeSandboxPath(path, true);
     const stat = await fs.stat(normalizedPath);
 
     if (!stat.isDirectory()) {
@@ -484,7 +485,18 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     return new Uint8Array(bytes);
   }
 
-  private normalizeSandboxPath(inputPath: string): string {
+  private assertValidBase64(contents: string): void {
+    const sanitizedContents = contents.replace(/\s+/g, '');
+    const isValid =
+      sanitizedContents.length % 4 === 0 &&
+      /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(sanitizedContents);
+
+    if (!isValid) {
+      throw new Error('ExpoHarmonyFileSystem expected a valid base64 string.');
+    }
+  }
+
+  private normalizeSandboxPath(inputPath: string, allowBundleDirectory = false): string {
     if (typeof inputPath !== 'string' || inputPath.length === 0) {
       throw new Error('ExpoHarmonyFileSystem expected a non-empty sandbox path.');
     }
@@ -500,6 +512,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     const allowedRoots = [
       this.ctx.uiAbilityContext.filesDir,
       this.ctx.uiAbilityContext.cacheDir,
+      ...(allowBundleDirectory ? [this.getConstants().bundleDirectoryPath] : []),
     ].filter((value): value is string => typeof value === 'string' && value.length > 0);
 
     const isAllowed = allowedRoots.some(
