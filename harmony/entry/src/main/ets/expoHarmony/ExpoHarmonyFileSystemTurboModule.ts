@@ -405,8 +405,12 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     const buffer = new ArrayBuffer(Number(stat.size ?? 0));
 
     try {
-      await fs.read(file.fd, buffer);
-      return new Uint8Array(buffer);
+      const readResult = await fs.read(file.fd, buffer);
+      const bytesRead =
+        typeof readResult === 'number'
+          ? readResult
+          : Number((readResult as { bytesRead?: number })?.bytesRead ?? buffer.byteLength);
+      return new Uint8Array(buffer, 0, Math.max(0, Math.min(buffer.byteLength, bytesRead)));
     } finally {
       await fs.close(file);
     }

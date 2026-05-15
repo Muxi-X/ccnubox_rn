@@ -13,6 +13,7 @@ import {
   isHarmonyDebugSessionEnabled,
 } from '@/platform/harmonyDebugSession';
 import { getItem, setItem } from '@/platform/storage';
+import { logger } from '@/utils';
 
 import { paths } from './schema';
 
@@ -56,7 +57,10 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
     const longToken = await getItem('longToken');
-    if (!longToken) throw new Error('长 token 不存在');
+    if (!longToken) {
+      logger.log.debug('长 token 不存在');
+      throw new Error('长 token 不存在');
+    }
 
     if (
       isHarmonyDebugCredential(longToken) ||
