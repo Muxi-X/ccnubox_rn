@@ -158,7 +158,7 @@ function WriteFeedback() {
   const handleSubmit = async () => {
     if (!isSubmitEnabled || isSubmitting) return;
 
-    const normalizedUserId = userId.trim();
+    const normalizedUserId = (userId ?? '').trim();
     if (!normalizedUserId) {
       Toast.fail('请先登录后再提交反馈');
       return;

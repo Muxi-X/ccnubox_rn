@@ -1,4 +1,5 @@
 import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
+import fs from '@ohos.file.fs';
 import camera from '@ohos.multimedia.camera';
 import cameraPicker from '@ohos.multimedia.cameraPicker';
 import image from '@ohos.multimedia.image';
@@ -21,7 +22,7 @@ type CameraCaptureResult = {
 
 type CameraRecordingResult = {
   uri: string;
-  duration: number;
+  duration: number | null;
   fileSize: number | null;
   mimeType: string;
 };
@@ -31,7 +32,6 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
 
   private readonly atManager = abilityAccessCtrl.createAtManager();
   private readonly previewStates = new Map<string, 'running' | 'paused'>();
-  private readonly activeRecordings = new Map<string, CameraRecordingResult>();
 
   getConstants(): Record<string, never> {
     return {};
@@ -67,7 +67,6 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
   async disposePreview(options?: { viewId?: string }): Promise<void> {
     if (typeof options?.viewId === 'string') {
       this.previewStates.delete(options.viewId);
-      this.activeRecordings.delete(options.viewId);
     }
   }
 
@@ -139,51 +138,43 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
 
     const recording = {
       uri: result.resultUri,
-      duration: 0,
-      fileSize: null,
+      duration: null,
+      fileSize: await this.getFileSize(result.resultUri),
       mimeType: 'video/mp4',
     };
-
-    if (typeof options?.viewId === 'string') {
-      this.activeRecordings.set(options.viewId, recording);
-    }
 
     return recording;
   }
 
-  async stopRecording(options?: { viewId?: string }): Promise<CameraRecordingResult | null> {
-    if (typeof options?.viewId === 'string') {
-      const recording = this.activeRecordings.get(options.viewId) ?? null;
-      this.activeRecordings.delete(options.viewId);
-      return recording;
-    }
-
-    return null;
+  async stopRecording(_options?: { viewId?: string }): Promise<CameraRecordingResult | null> {
+    throw new Error('stopRecording is not supported by the Harmony camera picker adapter.');
   }
 
-  async toggleRecording(options?: { viewId?: string; cameraType?: string }): Promise<CameraRecordingResult | null> {
-    if (typeof options?.viewId === 'string' && this.activeRecordings.has(options.viewId)) {
-      return this.stopRecording(options);
-    }
-
-    return this.startRecording(options);
+  async toggleRecording(_options?: { viewId?: string; cameraType?: string }): Promise<CameraRecordingResult | null> {
+    throw new Error('toggleRecording is not supported by the Harmony camera picker adapter.');
   }
 
   private async getPermissionResponse(permissionName: Permissions): Promise<PermissionResponse> {
+    return this.createPermissionResponse(this.resolvePermissionStatus(permissionName));
+  }
+
+  private resolvePermissionStatus(permissionName: Permissions): abilityAccessCtrl.PermissionStatus {
     const atManagerWithSelfStatus = this.atManager as abilityAccessCtrl.AtManager & {
       getSelfPermissionStatus?: (permission: Permissions) => abilityAccessCtrl.PermissionStatus;
     };
-    const permissionStatus =
-      typeof atManagerWithSelfStatus.getSelfPermissionStatus === 'function'
-        ? atManagerWithSelfStatus.getSelfPermissionStatus(permissionName)
-        : this.atManager.checkAccessTokenSync(
-            this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId,
-            permissionName,
-          ) === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
-          ? abilityAccessCtrl.PermissionStatus.GRANTED
-          : abilityAccessCtrl.PermissionStatus.NOT_DETERMINED;
 
-    return this.createPermissionResponse(permissionStatus);
+    if (typeof atManagerWithSelfStatus.getSelfPermissionStatus === 'function') {
+      return atManagerWithSelfStatus.getSelfPermissionStatus(permissionName);
+    }
+
+    const grantStatus = this.atManager.checkAccessTokenSync(
+      this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId,
+      permissionName,
+    );
+
+    return grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
+      ? abilityAccessCtrl.PermissionStatus.GRANTED
+      : abilityAccessCtrl.PermissionStatus.DENIED;
   }
 
   private async requestPermissionResponse(permissionName: Permissions): Promise<PermissionResponse> {
@@ -232,5 +223,29 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
         }
       }
     }
+  }
+
+  private async getFileSize(assetUri: string): Promise<number | null> {
+    const fsTarget = this.resolveFsTarget(assetUri);
+
+    if (!fsTarget) {
+      return null;
+    }
+
+    try {
+      const stat = await fs.stat(fsTarget);
+      return Number(stat.size ?? 0);
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  private resolveFsTarget(assetUri: string): string | null {
+    if (assetUri.startsWith('file://')) {
+      const filePath = assetUri.slice('file://'.length);
+      return filePath.startsWith('/') ? filePath : null;
+    }
+
+    return assetUri.startsWith('/') ? assetUri : null;
   }
 }

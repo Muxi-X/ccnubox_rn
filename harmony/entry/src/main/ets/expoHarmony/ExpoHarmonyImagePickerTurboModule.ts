@@ -1,8 +1,10 @@
 import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
+import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
+import camera from '@ohos.multimedia.camera';
+import cameraPicker from '@ohos.multimedia.cameraPicker';
 import image from '@ohos.multimedia.image';
-import fs from '@ohos.file.fs';
 import { UITurboModule } from '@rnoh/react-native-openharmony/ts';
 
 type PermissionResponse = {
@@ -100,30 +102,35 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
   }
 
   async launchCamera(options?: LaunchCameraOptions): Promise<ImagePickerResult> {
+    const normalizedMediaTypes = this.normalizeMediaTypes(options?.mediaTypes);
     const requestedAssetType = this.inferAssetTypeFromMediaTypes(options?.mediaTypes);
 
     await this.ensurePermissionGranted('ohos.permission.CAMERA', false);
     await this.ensurePermissionGranted('ohos.permission.READ_IMAGEVIDEO', true);
-    if (requestedAssetType === 'video') {
+    if (normalizedMediaTypes.includes('video')) {
       await this.ensurePermissionGranted('ohos.permission.MICROPHONE', false);
     }
 
-    const cameraEntryPicker = new photoAccessHelper.PhotoViewPicker();
-    const selection = await cameraEntryPicker.select(
-      this.createPhotoSelectOptions(
-        {
-          mediaTypes: requestedAssetType === 'video' ? 'videos' : 'images',
-          allowsMultipleSelection: false,
-        },
-        true,
-      ),
+    const profile = new cameraPicker.PickerProfile();
+    profile.cameraPosition =
+      options?.cameraType === 'front'
+        ? camera.CameraPosition.CAMERA_POSITION_FRONT
+        : camera.CameraPosition.CAMERA_POSITION_BACK;
+    const capturedResult = await cameraPicker.pick(
+      this.ctx.uiAbilityContext,
+      this.createCameraPickerMediaTypes(normalizedMediaTypes),
+      profile,
     );
-    const selectedUris = this.normalizeSelectedUris(selection?.photoUris);
 
-    if (selectedUris.length === 0) {
+    if (
+      !capturedResult ||
+      typeof capturedResult.resultUri !== 'string' ||
+      capturedResult.resultUri.length === 0
+    ) {
       return this.createCanceledResult();
     }
 
+    const selectedUris = [capturedResult.resultUri];
     const authorizedUris = await this.requestAuthorizedUris(selectedUris);
     const assetUri = authorizedUris[0] ?? selectedUris[0];
 
@@ -187,10 +194,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       );
     }
 
-    return this.permissionResponseFromStatus(
-      abilityAccessCtrl.PermissionStatus.DENIED,
-      isMediaLibraryPermission,
-    );
+    return this.getPermissionResponse(permissionName, isMediaLibraryPermission);
   }
 
   private resolvePermissionStatus(permissionName: Permissions): abilityAccessCtrl.PermissionStatus {
@@ -301,6 +305,18 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return picker.PhotoViewMIMETypes.IMAGE_TYPE;
   }
 
+  private createCameraPickerMediaTypes(normalizedMediaTypes: string[]): cameraPicker.PickerMediaType[] {
+    if (normalizedMediaTypes.includes('video') && !normalizedMediaTypes.includes('image')) {
+      return [cameraPicker.PickerMediaType.VIDEO];
+    }
+
+    if (normalizedMediaTypes.includes('video') && normalizedMediaTypes.includes('image')) {
+      return [cameraPicker.PickerMediaType.PHOTO, cameraPicker.PickerMediaType.VIDEO];
+    }
+
+    return [cameraPicker.PickerMediaType.PHOTO];
+  }
+
   private inferAssetTypeFromMediaTypes(
     rawMediaTypes?: string | string[],
   ): 'image' | 'video' | null {
@@ -310,7 +326,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       return 'video';
     }
 
-    if (normalized.includes('image')) {
+    if (normalized.includes('image') && !normalized.includes('video')) {
       return 'image';
     }
 
@@ -526,7 +542,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private resolveFsTarget(assetUri: string): string | null {
     if (assetUri.startsWith('file://')) {
-      return assetUri.slice('file://'.length);
+      const filePath = assetUri.slice('file://'.length);
+      // Photo picker media-library URIs are not direct filesystem paths.
+      return filePath.startsWith('/') ? filePath : null;
     }
 
     return assetUri.startsWith('/') ? assetUri : null;

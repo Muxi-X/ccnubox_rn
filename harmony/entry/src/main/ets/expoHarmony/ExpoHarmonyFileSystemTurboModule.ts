@@ -1,5 +1,7 @@
 import fs from '@ohos.file.fs';
-import { AnyThreadTurboModuleContext, AnyThreadTurboModule } from '@rnoh/react-native-openharmony/ts';
+import { AnyThreadTurboModule, AnyThreadTurboModuleContext } from '@rnoh/react-native-openharmony/ts';
+
+const MAX_IN_MEMORY_DOWNLOAD_BYTES = 25 * 1024 * 1024;
 
 type FileInfoOptions = {
   md5?: boolean;
@@ -73,6 +75,8 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
   }
 
   async getInfo(path: string, options?: FileInfoOptions): Promise<FileInfoResult> {
+    this.assertMd5Unsupported(options);
+
     const normalizedPath = this.normalizeSandboxPath(path);
     const stat = await this.getStatOrNull(normalizedPath);
 
@@ -161,12 +165,14 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
   async copy(from: string, to: string): Promise<void> {
     const fromPath = this.normalizeSandboxPath(from);
     const toPath = this.normalizeSandboxPath(to);
+    this.assertNotSelfOrDescendant(fromPath, toPath, 'copy');
     await this.copyInternal(fromPath, toPath);
   }
 
   async move(from: string, to: string): Promise<void> {
     const fromPath = this.normalizeSandboxPath(from);
     const toPath = this.normalizeSandboxPath(to);
+    this.assertNotSelfOrDescendant(fromPath, toPath, 'move');
     const stat = await fs.stat(fromPath);
 
     await this.ensureParentDirectory(toPath);
@@ -181,11 +187,16 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
   }
 
   async download(url: string, destinationPath: string, options?: DownloadOptions): Promise<DownloadResult> {
+    this.assertMd5Unsupported(options);
+
     const normalizedDestinationPath = this.normalizeSandboxPath(destinationPath);
     await this.ensureParentDirectory(normalizedDestinationPath);
     const fetchFn = (globalThis as {
       fetch?: (input: string, init?: { headers?: Record<string, string> }) => Promise<{
         arrayBuffer: () => Promise<ArrayBuffer>;
+        headers?: {
+          get?: (name: string) => string | null;
+        };
         status?: number;
       }>;
     }).fetch;
@@ -197,7 +208,18 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     const response = await fetchFn(url, {
       headers: options?.headers ?? {},
     });
+    const contentLength = this.getContentLength(response.headers);
+
+    if (contentLength !== null && contentLength > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
+      throw new Error('ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.');
+    }
+
     const responseBuffer = new Uint8Array(await response.arrayBuffer());
+
+    if (responseBuffer.byteLength > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
+      throw new Error('ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.');
+    }
+
     const file = await fs.open(
       normalizedDestinationPath,
       fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC,
@@ -254,6 +276,47 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     }
 
     await fs.mkdir(parentPath, true);
+  }
+
+  private assertMd5Unsupported(options?: FileInfoOptions | DownloadOptions): void {
+    if (options?.md5 === true) {
+      throw new Error('ExpoHarmonyFileSystem does not support md5 calculation yet.');
+    }
+  }
+
+  private assertNotSelfOrDescendant(fromPath: string, toPath: string, operation: string): void {
+    const normalizedFromPath = this.normalizeComparablePath(fromPath);
+    const normalizedToPath = this.normalizeComparablePath(toPath);
+
+    if (
+      normalizedToPath === normalizedFromPath ||
+      normalizedToPath.startsWith(`${normalizedFromPath}/`)
+    ) {
+      throw new Error(`ExpoHarmonyFileSystem cannot ${operation} a directory into itself.`);
+    }
+  }
+
+  private normalizeComparablePath(targetPath: string): string {
+    let normalizedPath = targetPath;
+
+    while (normalizedPath.length > 1 && normalizedPath.endsWith('/')) {
+      normalizedPath = normalizedPath.slice(0, -1);
+    }
+
+    return normalizedPath;
+  }
+
+  private getContentLength(headers?: { get?: (name: string) => string | null }): number | null {
+    const rawContentLength = headers?.get?.('content-length') ?? headers?.get?.('Content-Length');
+
+    if (typeof rawContentLength !== 'string' || rawContentLength.length === 0) {
+      return null;
+    }
+
+    const parsedContentLength = Number(rawContentLength);
+    return Number.isFinite(parsedContentLength) && parsedContentLength >= 0
+      ? parsedContentLength
+      : null;
   }
 
   private getParentPath(targetPath: string): string | null {
