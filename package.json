@@ -89,7 +89,7 @@
     "commitlint": "^19.8.1",
     "dotenv": "^17.4.2",
     "dotenv-flow": "^4.1.0",
-    "eslint": "^9.27.0",
+    "eslint": "^10.4.0",
     "eslint-config-expo": "~55.0.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.32.0",
