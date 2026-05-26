@@ -1,8 +1,8 @@
 diff --git a/plugin/build/ios/appDelegate.js b/plugin/build/ios/appDelegate.js
-index 33f44b8a4f0f4a5197c447d3cfd5b8f18fe92726..4cc2f5e1a0a4836c204cd783e8a0f329f8fbc19b 100644
+index 33adf82..b6a30d8 100644
 --- a/plugin/build/ios/appDelegate.js
 +++ b/plugin/build/ios/appDelegate.js
-@@ -36,8 +36,9 @@ function getAppDelegateClassClosingLine(src) {
+@@ -35,8 +35,9 @@ function getAppDelegateClassClosingLine(src) {
      return classRange.endLine;
  }
  function applyIosAppDelegate(contents) {
@@ -14,3 +14,11 @@ index 33f44b8a4f0f4a5197c447d3cfd5b8f18fe92726..4cc2f5e1a0a4836c204cd783e8a0f329
          newSrc: 'import UserNotifications',
          tag: 'jpush-swift-import-usernotifications',
          getLineIndex: getLastImportLine,
+@@ -219,6 +220,6 @@ const getJPushDelegateExtension = () => {
+   // 通知设置
+   @objc public func jpushNotificationCenter(_ center: UNUserNotificationCenter,
+-                                           openSettingsFor notification: UNNotification?) {
++                                           openSettingsFor notification: UNNotification) {
+     #if DEBUG
+     print("打开通知设置")
+     #endif
