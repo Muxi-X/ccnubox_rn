@@ -8,6 +8,10 @@ import { buildAndroidWidgetCourseData } from '@/utils/courseRuntime';
 export const updateCourseData = async () => {
   const { WidgetManager } = NativeModules;
 
+  if (!WidgetManager?.updateCourseData) {
+    return;
+  }
+
   const currentWeek = useTimeStore.getState().getCurrentWeek();
 
   const courses = useCourseStore.getState().courses;

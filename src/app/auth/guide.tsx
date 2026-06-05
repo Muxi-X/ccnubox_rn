@@ -1,5 +1,4 @@
 import { Icon, Toast } from '@ant-design/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -33,6 +32,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import NextIcon from '@/assets/images/next.png';
 import { GUIDE_CONTENTS } from '@/constants/GUIDE';
+import { setItem } from '@/platform/storage';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
@@ -118,7 +118,7 @@ const GuidePage: FC = () => {
 
   const handleStart = () => {
     router.navigate('/auth/login');
-    AsyncStorage.setItem('firstLaunch', 'true');
+    void setItem('firstLaunch', 'true');
   };
 
   // 跳转第几条内容

@@ -1,11 +1,6 @@
-import * as FileSystem from 'expo-file-system';
-import * as React from 'react';
-import { ActivityIndicator, Dimensions, StyleSheet } from 'react-native';
-import PdfRendererView from 'react-native-pdf-renderer';
-import { WebView } from 'react-native-webview';
+import { Dimensions, StyleSheet } from 'react-native';
 
-import Text from '@/components/text';
-import View from '@/components/view';
+import SafeWebView from '@/components/webview/SafeWebView';
 
 // 这个链接去本科生院的华大校历找：https://jwc.ccnu.edu.cn/index/hdxl.htm
 const pdfUrl =
@@ -13,7 +8,7 @@ const pdfUrl =
 
 export default function Calendar() {
   return (
-    <WebView
+    <SafeWebView
       style={styles.container}
       source={{
         uri: pdfUrl,
@@ -22,63 +17,19 @@ export default function Calendar() {
       scalesPageToFit={true}
       javaScriptEnabled={true}
       domStorageEnabled={true}
+      fallbackTitle="当前平台暂不支持校历内嵌查看"
+      fallbackMessage="鸿蒙适配阶段请改用系统浏览器打开校历页面。"
       injectedJavaScript={`
       document.body.style.overflowX = 'hidden';
     `}
     />
   );
 }
-// 这个没用上 但是留着备用
-// eslint-disable-next-line unused-imports/no-unused-vars
-const AndroidCalendar: React.FC = () => {
-  const [downloading, setDownloading] = React.useState<boolean>(false);
-  const [source, setSource] = React.useState<string>();
-
-  const downloadWithExpoFileSystem = React.useCallback(async () => {
-    try {
-      setDownloading(true);
-      const response = await FileSystem.downloadAsync(
-        pdfUrl,
-        FileSystem.documentDirectory + 'file.pdf'
-      );
-      setSource(response.uri);
-    } catch (err) {
-      //console.warn(err);
-    } finally {
-      setDownloading(false);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    downloadWithExpoFileSystem();
-    // downloadWithBlobUtil();
-  }, [downloadWithExpoFileSystem]);
-
-  if (downloading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#7878F8" />
-        <Text style={styles.loadingText}>加载中...</Text>
-      </View>
-    );
-  }
-
-  return <PdfRendererView source={source}></PdfRendererView>;
-};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    paddingVertical: 10,
   },
 });

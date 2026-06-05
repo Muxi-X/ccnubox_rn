@@ -1,6 +1,6 @@
 import { TextStyle, ViewStyle } from 'react-native';
 /** 布局类型 */
-export type LayoutName = 'android' | 'ios';
+export type LayoutName = 'android' | 'harmony' | 'ios';
 export type ThemeName = 'dark' | 'light';
 /** 可配置style名 */
 export type ConfigurableThemeNames =

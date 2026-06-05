@@ -41,7 +41,7 @@ async function getFileInfo(
     }
 
     const fileContent = await FileSystem.readAsStringAsync(fileUri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: 'base64',
     });
 
     const bytes = base64ToUint8Array(fileContent);

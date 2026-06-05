@@ -14,8 +14,7 @@ index 33adf82..b6a30d8 100644
          newSrc: 'import UserNotifications',
          tag: 'jpush-swift-import-usernotifications',
          getLineIndex: getLastImportLine,
-@@ -218,7 +219,7 @@ const getJPushDelegateExtension = () => {
- 
+@@ -219,6 +220,6 @@ const getJPushDelegateExtension = () => {
    // 通知设置
    @objc public func jpushNotificationCenter(_ center: UNUserNotificationCenter,
 -                                           openSettingsFor notification: UNNotification?) {

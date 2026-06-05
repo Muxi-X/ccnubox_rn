@@ -1,72 +1,79 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
+# Dependencies
 node_modules/
 
-# Expo
-
-# Expo
+# Expo and web output
 .expo/
 dist/
 web-build/
 expo-env.d.ts
 
-# Native
-.kotlin/
-*.orig.*
-web-build/
-expo-env.d.ts
+# Expo Harmony reproducible metadata is kept, transient output is ignored.
+.expo-harmony/*-report.json
+.expo-harmony/signing.local.json
+.expo-harmony/shims/
 
-# Native
+# Harmony build intermediates
+harmony/.hvigor/
+harmony/.idea/
+harmony/**/.cxx/
+harmony/**/.preview/
+harmony/**/build/
+harmony/**/oh_modules/
+harmony/**/oh-package-lock.json5
+harmony/**/hvigorw
+harmony/**/hvigorw.bat
+harmony/entry/src/main/resources/rawfile/bundle.harmony.js
+harmony/entry/src/main/resources/rawfile/assets/
+harmony/expo-harmony-local-deps/
+*.hap
+*.hsp
+*.app
+*.har
+*.abc
+*.ap
+*.res
+*.so
+*.dSYM/
+*.log
+hvigor-*.log
+
+# Native build output and signing material
+signing/
+android/.gradle/
+android/.idea/
+android/app/build/
+android/build/
+ios/build/
 .kotlin/
 *.orig.*
+*.apk
+*.ipa
 *.jks
 *.p8
 *.p12
+*.p7b
+*.cer
 *.key
 *.mobileprovision
+*.pem
 
+# Local environment and service secrets
+.env
+.env*.local
+secret/google-services.json
+android/app/agconnect-services.json
+sentry.properties
+.eas/
 
-# macOS
-.DS_Store
-
-# IDEs
-.vscode/
-# IDEs
-.vscode/
-.idea/
-
-
-# Metro
+# Tooling caches
 .metro-health-check*
-
-# debug
+*.tsbuildinfo
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+pnpm-debug.log*
 
-*.pem
-
-# local env files
-.env
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-secret/google-services.json
-android/app/agconnect-services.json
-
-# output
-*.apk
-*.ipa
-sentry.properties
-.eas
-
-# output
-*.apk
-*.ipa
-sentry.properties
+# Editors and OS files
+.DS_Store
+.vscode/
+.idea/

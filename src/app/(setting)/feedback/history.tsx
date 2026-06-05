@@ -1,6 +1,5 @@
 import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import React, {
   useCallback,
   useEffect,
@@ -18,6 +17,7 @@ import {
 
 import Loading from '@/components/loading';
 
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import {
@@ -217,21 +217,23 @@ export default function FeedbackHistory() {
   const [pageToken, setPageToken] = useState<string>('');
   const [feedbackHistory, setFeedbackHistory] = useState<FeedbackItem[]>([]);
   const loadingRef = useRef<boolean>(false);
-  const user = getItem('user');
+  const userId = useUserStore(state => state.student_id);
 
   const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
     currentStyle,
   }));
 
   const getUserFeedbackSheet = async (isInit: boolean) => {
+    if (!userId) {
+      return;
+    }
+
     if (!isInit && (loadingRef.current || !hasMore)) return;
 
     loadingRef.current = true;
     setIsLoading(true);
 
     try {
-      const userId = JSON.parse(user!)?.state?.student_id;
-
       const query = {
         page_token: pageToken,
         record_names: FEEDBACK_RECORD_NAMES,
@@ -258,8 +260,18 @@ export default function FeedbackHistory() {
   };
 
   useEffect(() => {
-    getUserFeedbackSheet(true);
-  }, []);
+    if (!userId) {
+      setFeedbackHistory([]);
+      setHasMore(false);
+      setPageToken('');
+      return;
+    }
+
+    setFeedbackHistory([]);
+    setHasMore(false);
+    setPageToken('');
+    void getUserFeedbackSheet(true);
+  }, [userId]);
 
   const handleEndReached = () => {
     getUserFeedbackSheet(false);

@@ -1,6 +1,5 @@
 import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Image,
@@ -20,6 +19,7 @@ import SearchBar from '@/components/searchBar';
 import ThemeBasedView from '@/components/view';
 
 import useFAQStore from '@/store/FAQs';
+import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import NormalIcon from '@/assets/images/normal-question.png.png';
@@ -34,8 +34,7 @@ import { SheetItem } from '@/types/feedback';
 function FeedbackPage() {
   const router = useRouter();
   const number = '791185783';
-  const user = getItem('user');
-  const userId = user ? JSON.parse(user)?.state?.student_id : '';
+  const userId = useUserStore(state => state.student_id);
 
   const [value, setValue] = useState('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -87,8 +86,12 @@ function FeedbackPage() {
   };
 
   useEffect(() => {
-    getFeedbackFAQs();
-  }, []);
+    if (!userId) {
+      return;
+    }
+
+    void getFeedbackFAQs();
+  }, [userId]);
 
   const handleToggle = (index: number) => {
     const isExpanding = expandedIndex !== index;

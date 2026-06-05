@@ -1,7 +1,6 @@
 import { Input } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { deleteItemAsync } from 'expo-secure-store';
 import { useMemo, useState } from 'react';
 import {
   Image,
@@ -19,6 +18,8 @@ import Modal from '@/components/modal';
 import useUserStore from '@/store/user';
 
 import logo from '@/assets/images/mx-logo.png';
+import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
+import { deleteItemAsync } from '@/platform/storage';
 import { deactivate } from '@/request/api/auth';
 import { commonColors, commonStyles } from '@/styles/common';
 
@@ -45,10 +46,11 @@ function SignOff() {
         try {
           deactivate(password)
             .then(() => {
-              Promise.all([
+              return Promise.all([
                 AsyncStorage.multiRemove(['courses']),
                 deleteItemAsync('longToken'),
                 deleteItemAsync('shortToken'),
+                clearHarmonyDebugSession(),
                 deleteItemAsync('user'),
               ]);
             })

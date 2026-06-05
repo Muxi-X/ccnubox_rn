@@ -1,4 +1,4 @@
-import { setItem } from 'expo-secure-store';
+import { setItem } from '@/platform/storage';
 
 import { FEEDBACK_BASE_URL, FEEDBACK_DEV_BASE_URL } from './constants';
 import getFeedbackToken from './getFeedbackToken';

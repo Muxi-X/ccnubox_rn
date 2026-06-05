@@ -19,6 +19,21 @@
     ],
     "extra": {
       "EXPO_PUBLIC_API_URL": "https://v3.ccnubox.muxixyz.com/api/v1",
+      "expoHarmony": {
+        "doctor": {
+          "coverageProfile": "managed-native-heavy",
+          "excludeDependencies": [
+            "@bacons/apple-targets",
+            "@react-navigation/core"
+          ],
+          "excludePlugins": [
+            "mx-jpush-expo",
+            "@bacons/apple-targets",
+            "./plugins/config-android-url-scheme.js",
+            "react-native-edge-to-edge"
+          ]
+        }
+      },
       "router": {
         "origin": false
       },

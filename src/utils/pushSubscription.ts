@@ -1,9 +1,8 @@
-import { getItemAsync } from 'expo-secure-store';
-
 import { initializeJPush } from '@/hooks/useJPush';
 
 import usePushSubscriptionStore from '@/store/pushSubscription';
 
+import { getItemAsync } from '@/platform/storage';
 import { removeFeedToken, saveFeedToken } from '@/request/api/feeds';
 import { getPushToken, waitForPushToken } from '@/utils/pushToken';
 
