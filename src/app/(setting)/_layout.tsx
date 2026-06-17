@@ -1,92 +1,66 @@
-import { Stack } from 'expo-router';
-import { StyleProp, StyleSheet, View } from 'react-native';
+import { Stack, useSegments } from 'expo-router';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import useThemeBasedComponents from '@/store/themeBasedComponents';
+import CustomStackHeader from '@/components/CustomStackHeader';
 import useVisualScheme from '@/store/visualScheme';
 
 import { SETTING_ITEMS } from '@/constants/SETTING';
-import { keyGenerator } from '@/utils';
+
+const EXTRA_TITLES: Record<string, string> = {
+  privacy: '隐私条例',
+  agreement: '用户协议',
+  feedback: '帮助与反馈',
+};
+
+function useCurrentTitle() {
+  const segments = useSegments();
+  const lastName = segments[segments.length - 1];
+  return (
+    EXTRA_TITLES[lastName] ??
+    SETTING_ITEMS.find(c => c.name === lastName)?.title ??
+    ''
+  );
+}
 
 export default function Layout() {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
-  const CurrentComponents = useThemeBasedComponents(
-    state => state.CurrentComponents
-  );
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const segments = useSegments();
+  const title = useCurrentTitle();
+
+  // feedback 有独立的子布局，避免渲染双重 header
+  const isFeedbackSubRoute = segments.includes('feedback');
 
   return (
     <SafeAreaView
       edges={[]}
       style={[styles.container, currentStyle?.background_style]}
     >
+      {!isFeedbackSubRoute && <CustomStackHeader title={title} />}
       <Stack
         screenOptions={{
+          headerShown: false,
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
-          headerBackVisible: false,
-          headerLeft: () => (
-            <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
-          ),
-          headerRight: () => <View style={{ height: 22, width: 22 }}></View>,
-          headerStyle: currentStyle?.header_background_style as StyleProp<{
-            backgroundColor: string | undefined;
-            flexDirection: 'row';
-            justifyContent: 'space-between'; // 确保 Header 内部均匀分布
-            alignItems: 'center';
-          }>,
+          animation: 'slide_from_right',
         }}
       >
         {SETTING_ITEMS.map(config => (
           <Stack.Screen
-            key={keyGenerator.next().value as unknown as number}
+            key={config.name}
             name={config.name}
-            options={{
-              headerShown: config.sub ? false : true,
-              headerTitle: () => (
-                <>
-                  {CurrentComponents && (
-                    <CurrentComponents.HeaderCenter title={config.title} />
-                  )}
-                </>
-              ),
-            }}
-          ></Stack.Screen>
+            options={
+              config.sub ? { headerShown: false } : {}
+            }
+          />
         ))}
-        <Stack.Screen
-          name="privacy"
-          options={{
-            headerTitle: () => (
-              <>
-                {CurrentComponents && (
-                  <CurrentComponents.HeaderCenter title="隐私条例" />
-                )}
-              </>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="agreement"
-          options={{
-            headerTitle: () => (
-              <>
-                {CurrentComponents && (
-                  <CurrentComponents.HeaderCenter title="用户协议" />
-                )}
-              </>
-            ),
-          }}
-        />
+        <Stack.Screen name="privacy" />
+        <Stack.Screen name="agreement" />
       </Stack>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  container: { flex: 1 },
 });

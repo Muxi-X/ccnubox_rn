@@ -118,7 +118,8 @@
           "schemes": ["weixin", "alipays", "tel", "sms"]
         }
       ],
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      "./plugins/ios-disable-liquid-glass"
     ],
     "experiments": {
       "typedRoutes": true

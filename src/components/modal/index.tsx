@@ -55,12 +55,9 @@ const Modal: React.FC<ModalProps> & {
     return mode !== 'middle';
   }, [mode]);
   const [visible, setVisible] = useState<boolean>(initVisible);
-  const { currentStyle, themeName } = useVisualScheme(
-    ({ currentStyle, themeName }) => ({ currentStyle, themeName })
-  );
-  const { deleteChildren } = usePortalStore(({ deleteChildren }) => ({
-    deleteChildren,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const themeName = useVisualScheme(state => state.themeName);
+  const deleteChildren = usePortalStore(state => state.deleteChildren);
   useEffect(() => {
     setVisible(initVisible);
     const backAction = () => {

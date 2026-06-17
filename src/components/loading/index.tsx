@@ -12,9 +12,7 @@ const Loading: React.FC<LoadingProps> = ({
   containerStyle,
   textStyle,
 }) => {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
     <View style={[styles.container, containerStyle]}>

@@ -22,9 +22,7 @@ function CheckUpdate(): React.ReactNode {
   const updateInfo = Constants.default.expoConfig?.extra
     ?.updateInfo as UpdateInfo;
   const [loading, setLoading] = useState(false);
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   useEffect(() => {
     if (isUpdatePending) {

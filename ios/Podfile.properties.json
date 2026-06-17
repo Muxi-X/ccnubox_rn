@@ -1,7 +1,10 @@
 {
   "expo.jsEngine": "hermes",
+  "ios.deploymentTarget": "16.4",
   "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
   "newArchEnabled": "true",
   "apple.privacyManifestAggregationEnabled": "true",
-  "ios.forceStaticLinking": "[]"
+  "ios.forceStaticLinking": "[]",
+  "expo.inlineModules.watchedDirectories": "[]",
+  "EXPO_USE_PRECOMPILED_MODULES": "true"
 }

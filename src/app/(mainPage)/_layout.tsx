@@ -1,98 +1,69 @@
-import { Stack } from 'expo-router';
-import { StyleProp, StyleSheet } from 'react-native';
+import { Stack, useSegments } from 'expo-router';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import useThemeBasedComponents from '@/store/themeBasedComponents';
+import CustomStackHeader from '@/components/CustomStackHeader';
+import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
-
-import { keyGenerator } from '@/utils';
 import { getMainPageApplications } from '@/utils/getMainPageApps';
 
-// 定义需要统一 header 的子页面配置
-// const pagesWithHeader = [
-//   { name: 'electricityBillinBalance', title: '电费查询' },
-//   { name: 'webview', title: '常用网站' },
-// ];
+const TITLE_MAP: Record<string, string> = {
+  electricityBillinBalance: '电费查询',
+  webview: '常用网站',
+  scoreCalculation: '计算学分绩',
+};
+
+// 这些页面有自己的内部 header，不需要布局层的 CustomStackHeader
+const PAGES_WITH_OWN_HEADER = new Set<string>([]);
+
+function useCurrentTitle() {
+  const segments = useSegments();
+  const lastName = segments[segments.length - 1];
+  return (
+    TITLE_MAP[lastName] ??
+    getMainPageApplications().find(a => a.name === lastName)?.title ??
+    ''
+  );
+}
 
 export default function Layout() {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
-  const CurrentComponents = useThemeBasedComponents(
-    state => state.CurrentComponents
-  );
-  // 通用的 header 配置
-  const createHeaderOptions = (title?: string) => ({
-    headerTitle: () => (
-      <>
-        {CurrentComponents && (
-          <CurrentComponents.HeaderCenter title={title || ''} />
-        )}
-      </>
-    ),
-    headerLeft: () => (
-      <>{CurrentComponents && <CurrentComponents.HeaderLeft />}</>
-    ),
-    headerStyle: currentStyle?.header_background_style as StyleProp<{
-      backgroundColor: string | undefined;
-      flexDirection: 'row';
-      justifyContent: 'space-between';
-      alignItems: 'center';
-    }>,
-  });
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const segments = useSegments();
+  const title = useCurrentTitle();
+  const headerRight = useHeaderRightStore(state => state.content);
+
+  const lastName = segments[segments.length - 1];
+  const hideHeader = PAGES_WITH_OWN_HEADER.has(lastName);
 
   return (
     <SafeAreaView
       edges={['bottom']}
       style={[styles.container, currentStyle?.background_style]}
     >
+      {!hideHeader && (
+        <CustomStackHeader title={title} headerRight={headerRight} />
+      )}
       <Stack
         screenOptions={{
+          headerShown: false,
           contentStyle:
             useVisualScheme.getState().currentStyle?.background_style,
-          headerBackVisible: false,
-          headerShadowVisible: false,
+          animation: 'slide_from_right',
         }}
       >
-        {/* 主页面 - 来自 mainPageApplications */}
         {getMainPageApplications()
           .filter(app => app.href)
           .map(config => (
-            <Stack.Screen
-              key={keyGenerator.next().value as unknown as number}
-              name={config.name}
-              options={createHeaderOptions(config.title)}
-            ></Stack.Screen>
+            <Stack.Screen key={config.name} name={config.name} />
           ))}
-        {/* 特殊页面 - 不需要 header */}
-        <Stack.Screen
-          name="scoreCalculation"
-          options={{ headerShown: false }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="electricityBillinBalance"
-          key={keyGenerator.next().value as unknown as number}
-          options={createHeaderOptions('电费查询')}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="webview"
-          key={keyGenerator.next().value as unknown as number}
-          options={({ route }) =>
-            createHeaderOptions(
-              (route.params as Record<string, string> | undefined)?.title ??
-                '常用网站'
-            )
-          }
-        ></Stack.Screen>
+        <Stack.Screen name="scoreCalculation" />
+        <Stack.Screen name="electricityBillinBalance" />
+        <Stack.Screen name="webview" />
       </Stack>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  container: { flex: 1 },
 });

@@ -49,9 +49,7 @@ function FeedbackPage() {
     pageX: number;
     pageY: number;
   } | null>(null);
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
   const { FAQs, updateFAQs } = useFAQStore();
   const scrollViewRef = useRef<ScrollView>(null);
 

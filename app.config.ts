@@ -1,7 +1,7 @@
-import 'dotenv-flow/config';
 import type { ConfigContext, ExpoConfig } from 'expo/config';
+import 'dotenv-flow/config';
 
-import updateInfo from './src/assets/data/updateInfo.json';
+import updateInfo from './src/assets/data/updateInfo.json' with { type: 'json' };
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';

@@ -108,9 +108,7 @@ function transformRecordsToFeedbackItems(
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
-    const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-      currentStyle,
-    }));
+    const currentStyle = useVisualScheme(state => state.currentStyle);
 
     const router = useRouter();
 
@@ -219,9 +217,7 @@ export default function FeedbackHistory() {
   const loadingRef = useRef<boolean>(false);
   const user = getItem('user');
 
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const getUserFeedbackSheet = async (isInit: boolean) => {
     if (!isInit && (loadingRef.current || !hasMore)) return;

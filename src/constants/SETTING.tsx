@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import { deleteItemAsync } from 'expo-secure-store';
 
 import Modal from '@/components/modal';
@@ -67,7 +67,6 @@ export const SETTING_ITEMS: SettingItem[] = [
     icon: exitPng,
     text: '退出',
     to: () => {
-      const navigation = useRouter();
       Modal.show({
         mode: 'middle',
         title: '退出登录',
@@ -89,7 +88,7 @@ export const SETTING_ITEMS: SettingItem[] = [
               AsyncStorage.multiRemove(['courses']);
               deleteItemAsync('longToken');
             })
-            .finally(() => navigation.navigate('/auth/login'));
+            .finally(() => router.replace('/auth/login'));
         },
       });
     },

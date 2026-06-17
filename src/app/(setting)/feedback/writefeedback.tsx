@@ -46,9 +46,7 @@ function WriteFeedback() {
   const [contact, setContact] = useState('');
   const [images, setImages] = useState<ImageItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const currentModules = useMemo(() => {
     return MODULE_MAP[selectedIssueType];

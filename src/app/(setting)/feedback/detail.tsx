@@ -52,9 +52,7 @@ export default function FeedbackDetail() {
     null
   );
 
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const currentSource = params.item
     ? 'history'

@@ -1,4 +1,3 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { FC, memo, useEffect, useState } from 'react';
@@ -6,6 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
@@ -16,7 +16,7 @@ import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryBanners } from '@/request/api';
-import { keyGenerator, percent2px } from '@/utils';
+import { percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
 
@@ -32,7 +32,7 @@ const IndexPage: FC = () => {
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const tabbarHeight = useBottomTabBarHeight();
+  const tabbarHeight = useSafeAreaInsets().bottom;
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
@@ -112,11 +112,11 @@ const IndexPage: FC = () => {
             autoPlay
             loop
             scrollAnimationDuration={1500}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               return (
                 <View
                   style={styles.bannerItem}
-                  key={keyGenerator.next().value as unknown as number}
+                  key={index}
                 >
                   <Pressable onPress={() => openBrowser(item.navUrl)}>
                     <Image

@@ -7,15 +7,10 @@ import ThemeBasedView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SelectTheme() {
-  const { currentStyle, themeName, layoutName, changeLayout } = useVisualScheme(
-    ({ currentStyle, layoutName, changeTheme, changeLayout, themeName }) => ({
-      currentStyle,
-      changeTheme,
-      themeName,
-      layoutName,
-      changeLayout,
-    })
-  );
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const themeName = useVisualScheme(state => state.themeName);
+  const layoutName = useVisualScheme(state => state.layoutName);
+  const changeLayout = useVisualScheme(state => state.changeLayout);
   const isApplied = (layout: string) => layout === layoutName;
   return (
     <ThemeBasedView style={{ flex: 1, paddingVertical: 20 }}>

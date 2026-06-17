@@ -3,7 +3,7 @@ allowBuilds:
   core-js: true
   unrs-resolver: true
 packages:
-  - './*'
+  - '.'
 patchedDependencies:
-  '@bacons/apple-targets@4.0.6': 'patches/@bacons__apple-targets@4.0.6.patch'
-  'mx-jpush-expo@1.2.5': 'patches/mx-jpush-expo@1.2.5.patch'
+  '@bacons/apple-targets@4.0.7': 'patches/@bacons__apple-targets@4.0.7.patch'
+  # 'mx-jpush-expo@1.2.5': 'patches/mx-jpush-expo@1.2.5.patch'

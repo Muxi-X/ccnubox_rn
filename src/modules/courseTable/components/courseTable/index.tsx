@@ -53,9 +53,8 @@ const Schedule: React.FC<CourseTableProps> = ({
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
   const [snapshot, setSnapShot] = useState(false);
-  const { currentStyle, themeName } = useVisualScheme(
-    ({ currentStyle, themeName }) => ({ currentStyle, themeName })
-  );
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const themeName = useVisualScheme(state => state.themeName);
   const {
     backgroundUri,
     backgroundMode,

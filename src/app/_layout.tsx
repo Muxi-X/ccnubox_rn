@@ -27,7 +27,8 @@ export default function RootLayout() {
   const isAutoTheme = useVisualScheme(state => state.isAutoTheme);
   const scraperRef = React.useRef<WebView>(null);
   const portalRef = React.useRef<View>(null);
-  const { ref, setRef } = useScraper(({ ref, setRef }) => ({ ref, setRef }));
+  const ref = useScraper(state => state.ref);
+  const setRef = useScraper(state => state.setRef);
 
   // 爬虫回调
   const handleMessage = React.useCallback((data: string) => {

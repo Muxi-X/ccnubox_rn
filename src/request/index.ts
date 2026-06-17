@@ -7,8 +7,6 @@ import Toast from '@/components/toast';
 
 import requestBus from '@/store/currentRequests';
 
-import { logger } from '@/utils';
-
 import { paths } from './schema';
 
 import { OtherTokenConfig } from '@/types/axios';
@@ -52,13 +50,12 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
     const longToken = getItem('longToken');
     if (!longToken) {
-      // throw new Error('长 token 不存在');
-      logger.log.debug('长 token 不存在');
+      router.replace('/auth/login');
+      throw new Error('长 token 不存在，跳转登录');
     }
 
     // 刷新短 token
     const response = await axios.get(
-      // `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
       `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
       {
         headers: { Authorization: `Bearer ${longToken}` },
@@ -67,7 +64,6 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
 
     if (response.status === 200 || response.status === 201) {
       const newShortToken = response.headers['x-jwt-token'];
-      //   console.log(newShortToken);
       setItem('shortToken', newShortToken);
       return newShortToken;
     }

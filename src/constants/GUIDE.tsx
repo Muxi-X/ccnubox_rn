@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import MuxiSvg from '@/assets/images/muxi.svg';
 import { commonStyles } from '@/styles/common';
-import { keyGenerator } from '@/utils';
 
 export const GuideContent: FC<{
   texts: string[];
@@ -14,14 +13,14 @@ export const GuideContent: FC<{
       contentContainerStyle={styles.contentWrap}
       showsVerticalScrollIndicator={true}
     >
-      {texts.map(text => (
+      {texts.map((text, index) => (
         <Text
           style={[
             commonStyles.fontMedium,
             commonStyles.fontBold,
             styles.textStyle,
           ]}
-          key={keyGenerator.next().value as unknown as number}
+          key={index}
         >
           {text}
         </Text>
