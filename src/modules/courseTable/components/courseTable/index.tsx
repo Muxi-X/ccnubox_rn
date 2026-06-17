@@ -356,8 +356,6 @@ const Schedule: React.FC<CourseTableProps> = ({
       const [rowIndex, colIndex] = key.split('-').map(Number);
 
       // 当一个时间槽有多节课时，优先显示当前周的课程
-      let courseToShow: CourseTransferType | null = null;
-
       const getPriority = (c: CourseTransferType) => {
         const idx = idxMap.get(c.id) || 0; // 查找序列，越往后越大
         const base = (c.isThisWeek ? 2 : 0) + (!c.is_official ? 1 : 0); // 3/2/1/0
@@ -369,7 +367,7 @@ const Schedule: React.FC<CourseTableProps> = ({
           (a: CourseTransferType, b: CourseTransferType) =>
             getPriority(b) - getPriority(a)
         );
-      courseToShow = sorted[0] ?? null;
+      const courseToShow = sorted[0] ?? null;
 
       if (courseToShow) {
         timetableMatrix[rowIndex][colIndex] = {
