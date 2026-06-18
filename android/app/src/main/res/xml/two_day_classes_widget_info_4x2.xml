@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/two_day_classes_widget_4x2"
+    android:minHeight="110dp"
+    android:minWidth="280dp"
+    android:updatePeriodMillis="1800000" />
+
+
