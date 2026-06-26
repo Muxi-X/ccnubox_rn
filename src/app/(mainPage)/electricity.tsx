@@ -6,7 +6,7 @@ export default function Electricity() {
     <WebView
       style={styles.container}
       source={{
-        uri: 'https://jnb.ccnu.edu.cn/MobilePayWeb/#/home',
+        uri: 'https://jnb.ccnu.edu.cn/#/home',
       }}
     />
   );
