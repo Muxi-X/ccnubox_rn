@@ -59,7 +59,7 @@
     "jcore-react-native": "^2.3.6",
     "jpush-react-native": "3.2.7",
     "lottie-react-native": "7.3.8",
-    "mx-jpush-expo": "^1.2.7",
+    "mx-jpush-expo": "^1.3.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.85.3",
