@@ -27,7 +27,7 @@
     "@react-navigation/elements": "^2.6.0",
     "@rneui/base": "5.0.0",
     "@rneui/themed": "5.0.0",
-    "@shopify/react-native-skia": "2.6.2",
+    "@shopify/react-native-skia": "2.6.5",
     "axios": "^1.17.0",
     "dayjs": "^1.11.21",
     "expo": "^56.0.0",
