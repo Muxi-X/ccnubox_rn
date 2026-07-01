@@ -24,7 +24,9 @@ export default function TabLayout() {
   const enabled = usePushSubscriptionStore(state => state.enabled);
   const hydrated = usePushSubscriptionStore(state => state.hydrated);
   const promptShown = usePushSubscriptionStore(state => state.promptShown);
-  const setPromptShown = usePushSubscriptionStore(state => state.setPromptShown);
+  const setPromptShown = usePushSubscriptionStore(
+    state => state.setPromptShown
+  );
 
   useEffect(() => {
     if (!enabled) return;

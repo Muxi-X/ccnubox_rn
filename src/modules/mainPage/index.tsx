@@ -114,10 +114,7 @@ const IndexPage: FC = () => {
             scrollAnimationDuration={1500}
             renderItem={({ item, index }) => {
               return (
-                <View
-                  style={styles.bannerItem}
-                  key={index}
-                >
+                <View style={styles.bannerItem} key={index}>
                   <Pressable onPress={() => openBrowser(item.navUrl)}>
                     <Image
                       source={{ uri: item.bannerUrl, cache: 'force-cache' }}

@@ -3,13 +3,12 @@ import { Image, StyleSheet } from 'react-native';
 import Text from '@/components/text';
 import View from '@/components/view';
 
+import MuxiLogo from '@/assets/images/mx-logo.png';
+
 export default function More() {
   return (
     <View style={styles.container}>
-      <Image
-        source={require('@/assets/images/mx-logo.png')}
-        style={styles.image}
-      ></Image>
+      <Image source={MuxiLogo} style={styles.image}></Image>
       <Text style={styles.text}>更多功能敬请期待</Text>
     </View>
   );

@@ -155,10 +155,7 @@ export default memo(SkeletonLoader);
 export const SkeletonView: FC<SkeletonViewType> = ({ loading, children }) => {
   const wrappedChildren = React.Children.map(children, (child, index) => {
     return (
-      <SkeletonLoader
-        loading={loading}
-        key={index}
-      >
+      <SkeletonLoader loading={loading} key={index}>
         {React.cloneElement(child as ReactElement)}
       </SkeletonLoader>
     );

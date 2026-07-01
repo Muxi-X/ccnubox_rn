@@ -8,15 +8,14 @@ import { SystemBars } from 'react-native-edge-to-edge';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
-import useBadgeSync from '../hooks/useBadgeSync';
+
 import PortalRoot from '../components/portal';
 import Scraper from '../components/scraper';
-
+import useBadgeSync from '../hooks/useBadgeSync';
 import useJPush, { setPushNavigationReady } from '../hooks/useJPush';
 import { usePortalStore } from '../store/portal';
 import useScraper from '../store/scraper';
 import useVisualScheme from '../store/visualScheme';
-
 import { commonColors } from '../styles/common';
 import { fetchUpdate } from '../utils';
 

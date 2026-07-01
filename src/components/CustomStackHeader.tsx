@@ -1,5 +1,11 @@
 import { useRouter, usePathname } from 'expo-router';
-import { StyleSheet, Text, TextStyle, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -53,10 +59,7 @@ const CustomStackHeader = ({ title, showBack, headerRight }: Props) => {
         </View>
 
         <View style={styles.center}>
-          <Text
-            style={[textStyle, commonStyles.fontLarge]}
-            numberOfLines={1}
-          >
+          <Text style={[textStyle, commonStyles.fontLarge]} numberOfLines={1}>
             {title}
           </Text>
         </View>

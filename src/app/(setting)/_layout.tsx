@@ -49,9 +49,7 @@ export default function Layout() {
           <Stack.Screen
             key={config.name}
             name={config.name}
-            options={
-              config.sub ? { headerShown: false } : {}
-            }
+            options={config.sub ? { headerShown: false } : {}}
           />
         ))}
         <Stack.Screen name="privacy" />

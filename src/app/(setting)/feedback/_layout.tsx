@@ -30,9 +30,7 @@ export default function FeedbacksLayout() {
         title={title}
         headerRight={
           title === '帮助与反馈' ? (
-            <TouchableOpacity
-              onPress={() => router.push('/feedback/history')}
-            >
+            <TouchableOpacity onPress={() => router.push('/feedback/history')}>
               <Ionicons
                 name="time-outline"
                 size={22}
