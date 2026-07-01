@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
-import { PickerConnector, PickerView } from '@/components/picker/pickerView';
+import { PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -148,7 +148,6 @@ const Picker: React.FC<DatePickerProps> = ({
             <View
               style={{
                 flex: 1,
-                borderLeftWidth: BORDER_LEFT_WIDTH,
                 borderLeftColor,
                 opacity: 0.6,
                 borderRadius: 5,
