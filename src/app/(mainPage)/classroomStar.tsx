@@ -6,13 +6,19 @@ import {
   useClassroomData,
 } from '@/modules/mainPage/components/classroom';
 
+import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
 
 export default function ClassroomStar() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const setHeaderRight = useHeaderRightStore(state => state.setContent);
 
   // 使用共享的教室数据管理Hook，设置为过滤收藏的教室
   const classroomProps = useClassroomData(true);
+
+  React.useEffect(() => {
+    setHeaderRight(null);
+  }, [setHeaderRight]);
 
   // 空状态配置
   const emptyStateConfig = {

@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -34,10 +34,12 @@ export default function Classroom() {
     [currentStyle?.header_text_style]
   );
 
-  React.useEffect(() => {
-    setHeaderRight(starButton);
-    return () => setHeaderRight(null);
-  }, [starButton, setHeaderRight]);
+  useFocusEffect(
+    React.useCallback(() => {
+      setHeaderRight(starButton);
+      return () => setHeaderRight(null);
+    }, [starButton, setHeaderRight])
+  );
 
   return (
     <View style={styles.container}>
