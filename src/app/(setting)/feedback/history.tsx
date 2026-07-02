@@ -23,6 +23,7 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
+  STATUS_STYLE_KEY,
 } from '@/constants/FEEDBACKS';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
@@ -189,15 +190,17 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
           <View
             style={[
               styles.itemFooterContainer,
-              currentStyle?.feedback_status_style?.getStyle(item.fields.status),
+              currentStyle?.feedback_status_style?.[
+                STATUS_STYLE_KEY[item.fields.status] ?? 'pending'
+              ],
             ]}
           >
             <Text
               style={[
                 styles.itemFootertext,
-                currentStyle?.feedback_statusText_style?.getStyle(
-                  item.fields.status
-                ),
+                currentStyle?.feedback_statusText_style?.[
+                  STATUS_STYLE_KEY[item.fields.status] ?? 'pending'
+                ],
               ]}
             >
               {item.fields.status}
