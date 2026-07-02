@@ -39,9 +39,9 @@ export const ClassroomColumns = [
   ],
 ];
 
-// TOFIX: 手动硬编码判断当前学年和学期，需添加自动获取逻辑
-export const currentYear = '2024-2025';
-export const currentSemester = 1;
+// 学年格式转换：'2024' -> '2024-2025'（classroom API 所需格式）
+const formatAcademicYear = (year: string): string =>
+  year ? `${year}-${parseInt(year, 10) + 1}` : '';
 
 // 共享接口类型
 export interface ClassroomClassroomAvailableStat {
@@ -161,6 +161,8 @@ export const useClassroomData = (filterStarred: boolean = false) => {
   const { starredClassrooms, isClassroomStarred, toggleStarredClassroom } =
     useClassroomStarStore();
   const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
+  const storeYear = useTimeStore(state => state.year);
+  const storeSemester = useTimeStore(state => state.semester);
   const currentWeek = getCurrentWeek();
   const currentDayOfWeek = getCurrentDayOfWeek();
   const currentTimeSlot = getCurrentTimeSlot();
@@ -215,8 +217,8 @@ export const useClassroomData = (filterStarred: boolean = false) => {
       const sections = getSelectedPeriods(timeSlot);
 
       const queryParams = {
-        year: currentYear.toString(),
-        semester: currentSemester.toString(),
+        year: formatAcademicYear(storeYear),
+        semester: storeSemester,
         week: currentWeek,
         day: currentDayOfWeek,
         sections: sections,
