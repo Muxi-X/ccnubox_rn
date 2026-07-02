@@ -1,6 +1,7 @@
 import { Href } from 'expo-router';
 
 import AndroidCardSvg from '@/assets/images/icons/android/card.svg';
+import AndroidClassroomSvg from '@/assets/images/icons/android/classroom.svg';
 import AndroidDateSvg from '@/assets/images/icons/android/date.svg';
 import AndroidEnergySvg from '@/assets/images/icons/android/energy.svg';
 import AndroidEventGlideSvg from '@/assets/images/icons/android/event-glide.svg';
@@ -9,9 +10,10 @@ import AndroidInformationSvg from '@/assets/images/icons/android/information.svg
 import AndroidKestackSvg from '@/assets/images/icons/android/kestack.svg';
 import AndroidMapSvg from '@/assets/images/icons/android/map.svg';
 import AndroidMoreSvg from '@/assets/images/icons/android/more.svg';
-import AndroidSiteSvg from '@/assets/images/icons/android/site.svg';
+import AndroidSeatSvg from '@/assets/images/icons/android/seat.svg';
 import AndroidWebSvg from '@/assets/images/icons/android/web.svg';
 import IosCardSvg from '@/assets/images/icons/ios/card.svg';
+import IosClassroomSvg from '@/assets/images/icons/ios/classroom.svg';
 import IosDateSvg from '@/assets/images/icons/ios/date.svg';
 import IosEnergySvg from '@/assets/images/icons/ios/energy.svg';
 import IosEventGlideSvg from '@/assets/images/icons/ios/event-glide.svg';
@@ -20,7 +22,7 @@ import IosInformationSvg from '@/assets/images/icons/ios/information.svg';
 import IosKestackSvg from '@/assets/images/icons/ios/kestack.svg';
 import IosMapSvg from '@/assets/images/icons/ios/map.svg';
 import IosMoreSvg from '@/assets/images/icons/ios/more.svg';
-import IosSiteSvg from '@/assets/images/icons/ios/site.svg';
+import IosSeatSvg from '@/assets/images/icons/ios/seat.svg';
 import IosWebSvg from '@/assets/images/icons/ios/web.svg';
 import { handleOpenURL } from '@/utils/handleOpenURL';
 
@@ -77,9 +79,9 @@ export const HOME_ITEMS = [
     title: '空闲教室',
     name: 'classroom',
     imageUrl: {
-      ios: IosCardSvg,
-      android: AndroidCardSvg,
-      default: AndroidCardSvg,
+      ios: IosClassroomSvg,
+      android: AndroidClassroomSvg,
+      default: AndroidClassroomSvg,
     },
     key: 'grid-5',
     href: '/classroom' as Href,
@@ -168,9 +170,9 @@ export const HOME_ITEMS = [
     title: '座位预约',
     name: 'site',
     imageUrl: {
-      ios: IosSiteSvg,
-      android: AndroidSiteSvg,
-      default: AndroidSiteSvg,
+      ios: IosSeatSvg,
+      android: AndroidSeatSvg,
+      default: AndroidSeatSvg,
     },
     key: 'grid-12',
     href: `/(mainPage)/webview?title=座位预约&link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
