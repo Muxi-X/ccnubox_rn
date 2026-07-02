@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Picker from '@/components/picker';
 import Text from '@/components/text';
 
-import useClassroomStarStore from '@/store/classroomStar';
+import { useClassroomStarStore } from '@/store/classroom';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 

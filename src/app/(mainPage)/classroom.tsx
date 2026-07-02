@@ -2,9 +2,11 @@ import { router, useFocusEffect } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import Modal from '@/components/modal';
 import Text from '@/components/text';
 
 import { useHeaderRightStore } from '@/store/headerRight';
+import { useClassroomWarningStore } from '@/store/classroom';
 import useVisualScheme from '@/store/visualScheme';
 
 import StarIcon from '@/assets/icons/star.svg';
@@ -18,6 +20,25 @@ export default function Classroom() {
   const setHeaderRight = useHeaderRightStore(state => state.setContent);
 
   const classroomProps = useClassroomData();
+
+  const warningHydrated = useClassroomWarningStore(state => state.hydrated);
+  const warningShown = useClassroomWarningStore(state => state.warningShown);
+  const setWarningShown = useClassroomWarningStore(
+    state => state.setWarningShown
+  );
+
+  React.useEffect(() => {
+    if (!warningHydrated || warningShown) return;
+    Modal.show({
+      title: '温馨提示',
+      children:
+        '空闲教室数据来自学校官方平台，但仍可能更新不及时或出现错误，请以实际教室使用情况为准。',
+      confirmText: '我知道了',
+      mode: 'middle',
+      onConfirm: () => setWarningShown(true),
+      onClose: () => setWarningShown(true),
+    });
+  }, [warningHydrated, warningShown, setWarningShown]);
 
   const starButton = React.useMemo(
     () => (
