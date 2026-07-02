@@ -108,19 +108,6 @@ export const getClassPeriods = (timeSlot: string) => {
   }
 };
 
-export const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'outTime':
-      return '#D6D6D6'; // 灰色 - 过时
-    case 'free':
-      return '#D4EFA6'; // 绿色 - 空闲
-    case 'occupied':
-      return '#FF9D9D'; // 红色 - 占用
-    default:
-      return '#D6D6D6';
-  }
-};
-
 export const getSelectedPeriods = (timeSlot: string) => {
   switch (timeSlot) {
     case '上午':
@@ -351,10 +338,22 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
         data={ClassroomColumns}
         defaultValue={selectedValues}
       >
-        <View style={[styles.textContainer, styles.containerBorder]}>
-          <Text style={styles.textItem}>{selectedLabels[0]}</Text>
-          <Text style={styles.textItem}>{selectedLabels[1]}</Text>
-          <Text style={styles.textItem}>{selectedLabels[2]}</Text>
+        <View
+          style={[
+            styles.textContainer,
+            styles.containerBorder,
+            currentStyle?.classroom_border_style,
+          ]}
+        >
+          <Text style={[styles.textItem, currentStyle?.text_style]}>
+            {selectedLabels[0]}
+          </Text>
+          <Text style={[styles.textItem, currentStyle?.text_style]}>
+            {selectedLabels[1]}
+          </Text>
+          <Text style={[styles.textItem, currentStyle?.text_style]}>
+            {selectedLabels[2]}
+          </Text>
           <ChooseIcon
             width={25}
             height={25}
@@ -366,9 +365,19 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
 
       {/* 显示课程节数表头 */}
       {selectedLabels[2] && (
-        <View style={[styles.periodsContainer, styles.containerBorder]}>
+        <View
+          style={[
+            styles.periodsContainer,
+            styles.containerBorder,
+            currentStyle?.classroom_border_style,
+          ]}
+        >
           <View style={styles.periodItem}>
-            <Text style={styles.periodText}>教室</Text>
+            <Text
+              style={[styles.periodText, currentStyle?.notification_text_style]}
+            >
+              教室
+            </Text>
           </View>
           {getClassPeriods(selectedLabels[2]).map((period, index) => {
             const periodNumber = parseInt(period.replace('节', ''));
@@ -379,11 +388,13 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
                 style={[
                   styles.periodItem,
                   isCurrentPeriod && styles.currentPeriodItem,
+                  isCurrentPeriod && currentStyle?.classroom_accent_style,
                 ]}
               >
                 <Text
                   style={[
                     styles.periodText,
+                    currentStyle?.notification_text_style,
                     isCurrentPeriod && styles.currentPeriodText,
                   ]}
                 >
@@ -400,27 +411,51 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
         <ScrollView style={styles.classroomList}>
           {loading ? (
             <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>加载中...</Text>
+              <Text
+                style={[
+                  styles.loadingText,
+                  currentStyle?.notification_text_style,
+                ]}
+              >
+                加载中...
+              </Text>
             </View>
           ) : error ? (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
+              <Text
+                style={[
+                  styles.errorText,
+                  currentStyle?.notification_text_style,
+                ]}
+              >
+                {error}
+              </Text>
             </View>
           ) : emptyStateConfig && starredClassrooms.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
+              <Text style={[styles.emptyText, currentStyle?.text_style]}>
                 {emptyStateConfig.noStarredTitle}
               </Text>
-              <Text style={styles.emptySubText}>
+              <Text
+                style={[
+                  styles.emptySubText,
+                  currentStyle?.notification_text_style,
+                ]}
+              >
                 {emptyStateConfig.noStarredSubtitle}
               </Text>
             </View>
           ) : emptyStateConfig && classroomData.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
+              <Text style={[styles.emptyText, currentStyle?.text_style]}>
                 {emptyStateConfig.noDataTitle}
               </Text>
-              <Text style={styles.emptySubText}>
+              <Text
+                style={[
+                  styles.emptySubText,
+                  currentStyle?.notification_text_style,
+                ]}
+              >
                 {emptyStateConfig.noDataSubtitle}
               </Text>
             </View>
@@ -428,10 +463,16 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
             classroomData.map((classroom, index) => {
               const selectedPeriods = getSelectedPeriods(selectedLabels[2]);
               return (
-                <View key={index} style={styles.classroomItem}>
+                <View
+                  key={index}
+                  style={[
+                    styles.classroomItem,
+                    currentStyle?.secondary_background_style,
+                  ]}
+                >
                   {/* 教室号码和收藏按钮 */}
                   <View style={styles.roomNumberContainer}>
-                    <Text style={styles.roomNumber}>
+                    <Text style={[styles.roomNumber, currentStyle?.text_style]}>
                       {classroom.roomNumber}
                     </Text>
                     <TouchableOpacity
@@ -466,10 +507,15 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
                           key={period}
                           style={[
                             styles.statusItem,
-                            { backgroundColor: getStatusColor(finalStatus) },
+                            currentStyle?.classroom_status_style?.[finalStatus],
                           ]}
                         >
-                          <Text style={styles.statusText}>
+                          <Text
+                            style={[
+                              styles.statusText,
+                              currentStyle?.classroom_accent_text_style,
+                            ]}
+                          >
                             {showStatusText
                               ? finalStatus === 'outTime'
                                 ? ''

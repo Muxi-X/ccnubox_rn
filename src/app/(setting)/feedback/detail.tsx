@@ -17,7 +17,11 @@ import ThemeBasedView from '@/components/view';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { FEEDBACK_TABLE_IDENTIFY, STATUS_LABELS } from '@/constants/FEEDBACKS';
+import {
+  FEEDBACK_TABLE_IDENTIFY,
+  STATUS_LABELS,
+  STATUS_STYLE_KEY,
+} from '@/constants/FEEDBACKS';
 import {
   getFeedbackImg,
   getSingleFeedbackRecord,
@@ -202,12 +206,12 @@ export default function FeedbackDetail() {
                 style={[
                   styles.circle,
                   statusStep === step
-                    ? currentStyle?.feedback_detail_statusCircle_style?.getStyle(
-                        STATUS_LABELS[step - 1]
-                      )
-                    : currentStyle?.feedback_detail_statusCircle_style?.getStyle(
-                        '默认'
-                      ),
+                    ? currentStyle?.feedback_detail_statusCircle_style?.[
+                        STATUS_STYLE_KEY[STATUS_LABELS[step - 1]]
+                      ]
+                    : currentStyle?.feedback_detail_statusCircle_style?.[
+                        'default'
+                      ],
                 ]}
               >
                 <Text
@@ -225,9 +229,9 @@ export default function FeedbackDetail() {
                 style={[
                   styles.stepLabel,
                   statusStep === step &&
-                    currentStyle?.feedback_statusText_style?.getStyle(
-                      STATUS_LABELS[step - 1]
-                    ),
+                    currentStyle?.feedback_statusText_style?.[
+                      STATUS_STYLE_KEY[STATUS_LABELS[step - 1]]
+                    ],
                 ]}
               >
                 {STATUS_LABELS[index]}
@@ -241,9 +245,9 @@ export default function FeedbackDetail() {
                     key={i}
                     style={[
                       styles.connectorBar,
-                      currentStyle?.feedback_detail_statusCircle_style?.getStyle(
-                        '默认'
-                      ),
+                      currentStyle?.feedback_detail_statusCircle_style?.[
+                        'default'
+                      ],
                     ]}
                   />
                 ))}
@@ -297,17 +301,17 @@ export default function FeedbackDetail() {
               <View
                 style={[
                   styles.itemStatuscontainer,
-                  currentStyle?.feedback_status_style?.getStyle(
-                    feedbackItem.fields.status
-                  ),
+                  currentStyle?.feedback_status_style?.[
+                    STATUS_STYLE_KEY[feedbackItem.fields.status] ?? 'pending'
+                  ],
                 ]}
               >
                 <Text
                   style={[
                     styles.itemStatustext,
-                    currentStyle?.feedback_statusText_style?.getStyle(
-                      feedbackItem.fields.status
-                    ),
+                    currentStyle?.feedback_statusText_style?.[
+                      STATUS_STYLE_KEY[feedbackItem.fields.status] ?? 'pending'
+                    ],
                   ]}
                 >
                   {feedbackItem.fields.status}

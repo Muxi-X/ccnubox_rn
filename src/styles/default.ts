@@ -84,58 +84,37 @@ export const defaultStyles = generateStyleSheet({
       color: '#E8E6FF',
     },
     feedback_status_style: {
-      getStyle: (status: '待处理' | '处理中' | '已完成' | string) => {
-        const statusMap: Record<string, { backgroundColor: string }> = {
-          待处理: {
-            backgroundColor: '#9CA3AF78',
-          },
-          处理中: {
-            backgroundColor: '#FFCC001A',
-          },
-          已完成: {
-            backgroundColor: '#4CAF501A',
-          },
-        };
-        return statusMap[status] || statusMap['待处理'];
-      },
+      pending: { backgroundColor: '#9CA3AF78' },
+      inProgress: { backgroundColor: '#FFCC001A' },
+      completed: { backgroundColor: '#4CAF501A' },
     },
     feedback_statusText_style: {
-      getStyle: (status: '待处理' | '处理中' | '已完成' | string) => {
-        const statusMap: Record<string, { color: string }> = {
-          待处理: {
-            color: '#E5E7EB',
-          },
-          处理中: {
-            color: '#FFC107',
-          },
-          已完成: {
-            color: '#4CAF50',
-          },
-        };
-        return statusMap[status] || statusMap['待处理'];
-      },
+      pending: { color: '#E5E7EB' },
+      inProgress: { color: '#FFC107' },
+      completed: { color: '#4CAF50' },
     },
     feedback_detail_statusCircle_style: {
-      getStyle: (status: '待处理' | '处理中' | '已完成' | string) => {
-        const statusMap: Record<string, { backgroundColor: string }> = {
-          待处理: {
-            backgroundColor: '#E5E7EB',
-          },
-          处理中: {
-            backgroundColor: '#FFD248',
-          },
-          已完成: {
-            backgroundColor: '#66D06A',
-          },
-          默认: {
-            backgroundColor: '#9E9E9E',
-          },
-        };
-        return statusMap[status] || statusMap['默认'];
-      },
+      pending: { backgroundColor: '#E5E7EB' },
+      inProgress: { backgroundColor: '#FFD248' },
+      completed: { backgroundColor: '#66D06A' },
+      default: { backgroundColor: '#9E9E9E' },
     },
     feedback_detail_text_style: {
       color: '#9E9E9E',
+    },
+    classroom_border_style: {
+      borderColor: '#50505080',
+    },
+    classroom_accent_style: {
+      backgroundColor: '#5A5AD8',
+    },
+    classroom_accent_text_style: {
+      color: '#8A8AF8',
+    },
+    classroom_status_style: {
+      outTime: { backgroundColor: '#4A4A4A' },
+      free: { backgroundColor: '#3A5A2A' },
+      occupied: { backgroundColor: '#5A2A2A' },
     },
   },
   light: {
@@ -221,58 +200,37 @@ export const defaultStyles = generateStyleSheet({
       color: '#7B70F1',
     },
     feedback_status_style: {
-      getStyle: (status: '待处理' | '处理中' | '已完成' | string) => {
-        const statusMap: Record<string, { backgroundColor: string }> = {
-          待处理: {
-            backgroundColor: '#F3F4F6',
-          },
-          处理中: {
-            backgroundColor: '#FFCC001A',
-          },
-          已完成: {
-            backgroundColor: '#4CAF501A',
-          },
-        };
-        return statusMap[status] || statusMap['待处理'];
-      },
+      pending: { backgroundColor: '#F3F4F6' },
+      inProgress: { backgroundColor: '#FFCC001A' },
+      completed: { backgroundColor: '#4CAF501A' },
     },
     feedback_statusText_style: {
-      getStyle: (status: '待处理' | '处理中' | '已完成' | string) => {
-        const statusMap: Record<string, { color: string }> = {
-          待处理: {
-            color: '#4B5563',
-          },
-          处理中: {
-            color: '#FFC107',
-          },
-          已完成: {
-            color: '#4CAF50',
-          },
-        };
-        return statusMap[status] || statusMap['待处理'];
-      },
+      pending: { color: '#4B5563' },
+      inProgress: { color: '#FFC107' },
+      completed: { color: '#4CAF50' },
     },
     feedback_detail_statusCircle_style: {
-      getStyle: (status: '待处理' | '处理中' | '已完成' | string) => {
-        const statusMap: Record<string, { backgroundColor: string }> = {
-          待处理: {
-            backgroundColor: '#A8A8A8',
-          },
-          处理中: {
-            backgroundColor: '#FFD248',
-          },
-          已完成: {
-            backgroundColor: '#66D06A',
-          },
-          默认: {
-            backgroundColor: '#E5E7EB',
-          },
-        };
-        return statusMap[status] || statusMap['默认'];
-      },
+      pending: { backgroundColor: '#A8A8A8' },
+      inProgress: { backgroundColor: '#FFD248' },
+      completed: { backgroundColor: '#66D06A' },
+      default: { backgroundColor: '#E5E7EB' },
     },
     feedback_detail_text_style: {
       color: '#9CA3AF',
+    },
+    classroom_border_style: {
+      borderColor: '#D8D8D880',
+    },
+    classroom_accent_style: {
+      backgroundColor: '#7878F8',
+    },
+    classroom_accent_text_style: {
+      color: '#7878F8',
+    },
+    classroom_status_style: {
+      outTime: { backgroundColor: '#D6D6D6' },
+      free: { backgroundColor: '#D4EFA6' },
+      occupied: { backgroundColor: '#FF9D9D' },
     },
   },
 });
