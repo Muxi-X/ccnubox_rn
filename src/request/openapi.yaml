@@ -190,9 +190,12 @@ paths:
         - calendar
   /class/add:
     post:
-      description: 添加新的课表
+      description:
+        给当前登录学生添加一门自定义课程。weeks 必须是周次数组，例如
+        [1,2,3]；dur_class 是节次范围，例如 "1-2"。成功时
+        code=0；添加失败、课程已存在、时间冲突等会返回 code=50001 和对应 msg。
       parameters:
-        - description: Bearer Token
+        - description: Bearer Token，例如 Bearer xxx
           in: header
           name: Authorization
           required: true
@@ -203,31 +206,39 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/class.AddClassRequest'
-        description: 课表信息
+        description: 自定义课程信息
         required: true
       responses:
         '200':
-          description: 成功添加课表
+          description: 成功添加课程，code=0
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-      summary: 添加课表
+        '401':
+          description: 未登录或 token 无效，code=40001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '422':
+          description: 请求参数错误，code=40002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 添加自定义课程
       tags:
         - class
   /class/day/get:
     get:
-      description: 获取当前周
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      description:
+        获取当前学期的开学日期和放假日期，返回秒级时间戳。前端用 school_time
+        计算当前周，用 holiday_time 判断学期边界。成功时
+        code=0；配置缺失或格式错误会返回 code=50001。
       responses:
         '200':
-          description: 成功获取到当前周
+          description: 成功返回学期日期配置
           content:
             application/json:
               schema:
@@ -237,14 +248,17 @@ paths:
                       data:
                         $ref: '#/components/schemas/class.GetSchoolDayResp'
                     type: object
-      summary: 获取当前周
+      summary: 获取学期日期配置
       tags:
         - class
   /class/delete:
     post:
-      description: 根据课表ID删除课表
+      description:
+        根据课程 ID
+        删除当前登录学生的自定义课程。教务系统导入课程不支持删除。成功时
+        code=0；删除失败或删除官方课程会返回 code=50001 和 msg。
       parameters:
-        - description: Bearer Token
+        - description: Bearer Token，例如 Bearer xxx
           in: header
           name: Authorization
           required: true
@@ -255,40 +269,58 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/class.DeleteClassRequest'
-        description: 删除课表请求
+        description: 删除课程请求
         required: true
       responses:
         '200':
-          description: 成功删除课表
+          description: 成功删除课程，code=0
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-      summary: 删除课表
+        '401':
+          description: 未登录或 token 无效，code=40001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '422':
+          description: 请求参数错误，code=40002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 删除自定义课程
       tags:
         - class
   /class/get:
     get:
-      description: 根据学期、学年等条件获取课表
+      description:
+        根据学年、学期获取当前登录学生的课表。refresh=false
+        优先读缓存/本地数据，refresh=true 会触发刷新。成功时
+        code=0；业务失败通常仍由统一响应体返回 code=50001 和 msg。
       parameters:
-        - description: Bearer Token
+        - description: Bearer Token，例如 Bearer xxx
           in: header
           name: Authorization
           required: true
           schema:
             type: string
-        - in: query
+        - description: 是否强制刷新课表
+          example: false
+          in: query
           name: refresh
           required: true
           schema:
             type: boolean
-        - description: binding:"required" // 为添加默认值处理的妥协做法
+        - description: 学期,"1"第一学期,"2"第二学期,"3"第三学期
+          example: '2'
           in: query
           name: semester
           schema:
             type: string
-        - description:
-            binding:"required" //学年,格式为"2024"代表"2024-2025学年"`
+        - description: 学年,格式为"2025"代表"2025-2026学年"
+          example: '2025'
           in: query
           name: year
           schema:
@@ -305,51 +337,28 @@ paths:
                       data:
                         $ref: '#/components/schemas/class.GetClassListResp'
                     type: object
-      summary: 获取课表
-      tags:
-        - class
-  /class/getRecycle:
-    get:
-      description: 获取已删除但未彻底清除的课表信息
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: 学期,格式为"1"代表第一学期，"2"代表第二学期，"3"代表第三学期
-          in: query
-          name: semester
-          required: true
-          schema:
-            type: string
-        - description: 学年,格式为"2024"代表"2024-2025学年"
-          in: query
-          name: year
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功获取回收站课表信息
+        '401':
+          description: 未登录或 token 无效，code=40001
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/class.GetRecycleBinClassInfosResp'
-                    type: object
-      summary: 获取回收站课表信息
+                $ref: '#/components/schemas/web.Response'
+        '422':
+          description: 请求参数错误，code=40002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 获取课表
       tags:
         - class
   /class/note/delete:
     post:
-      description: 根据课程 ID 删除课程备注
+      description:
+        根据课程 ID 删除当前登录学生的课程备注。成功时
+        code=0；课程不存在或删除失败会返回 code=50001 和 msg。
       parameters:
-        - description: Bearer Token
+        - description: Bearer Token，例如 Bearer xxx
           in: header
           name: Authorization
           required: true
@@ -364,7 +373,19 @@ paths:
         required: true
       responses:
         '200':
-          description: 成功删除课程备注
+          description: 成功删除课程备注，code=0
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '401':
+          description: 未登录或 token 无效，code=40001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '422':
+          description: 请求参数错误，code=40002
           content:
             application/json:
               schema:
@@ -374,9 +395,11 @@ paths:
         - class
   /class/note/insert:
     post:
-      description: 根据课程 ID 更新课程备注
+      description:
+        根据课程 ID 给当前登录学生的课程添加或更新备注。成功时
+        code=0；课程不存在或保存失败会返回 code=50001 和 msg。
       parameters:
-        - description: Bearer Token
+        - description: Bearer Token，例如 Bearer xxx
           in: header
           name: Authorization
           required: true
@@ -387,176 +410,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/class.UpdateClassNoteReq'
-        description: 更新课程备注请求
+        description: 添加或更新课程备注请求
         required: true
       responses:
         '200':
-          description: 成功插入课程备注
+          description: 成功添加或更新课程备注，code=0
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-      summary: 插入课程备注
-      tags:
-        - class
-  /class/recover:
-    put:
-      description: 从回收站恢复课表
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/class.RecoverClassRequest'
-        description: 恢复课表请求
-        required: true
-      responses:
-        '200':
-          description: 成功恢复课表
+        '401':
+          description: 未登录或 token 无效，code=40001
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-      summary: 恢复课表
-      tags:
-        - class
-  /class/search:
-    get:
-      description: 根据关键词[教师或者课程名]搜索课程,**注意,但当返回的结果数量大于page_size时,代表还有下一页**,最开始请求的是第一页
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: 页码
-          in: query
-          name: page
-          required: true
-          schema:
-            type: integer
-        - description: 每页大小
-          in: query
-          name: page_size
-          required: true
-          schema:
-            type: integer
-        - description: 搜索关键词,匹配的是课程名称和教师姓名
-          in: query
-          name: searchKeyWords
-          required: true
-          schema:
-            type: string
-        - description: 学期,格式为"1"代表第一学期，"2"代表第二学期，"3"代表第三学期
-          in: query
-          name: semester
-          required: true
-          schema:
-            type: string
-        - description: 学年,格式为"2024"代表"2024-2025学年"
-          in: query
-          name: year
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功搜索到课程
+        '422':
+          description: 请求参数错误，code=40002
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/class.SearchClassResp'
-                    type: object
-      summary: 搜索课程
-      tags:
-        - class
-  /class/toBeStudied:
-    get:
-      description: 获取需要上的课程, 返回全部课程
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功获取待修课程
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        allOf:
-                          - $ref: '#/components/schemas/class.GetToBeStudiedClassResp'
-                          - properties:
-                              common_educate:
-                                items:
-                                  $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
-                                type: array
-                              identity_develop:
-                                items:
-                                  $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
-                                type: array
-                              specific_skill:
-                                items:
-                                  $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
-                                type: array
-                            type: object
-                    type: object
-      summary: 获取人培课程(全部)
-      tags:
-        - class
-    post:
-      description: 根据用户选择返回各种状态的课程
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/class.GetToBeStudiedClassReq'
-        description: 获取待修课请求
-        required: true
-      responses:
-        '200':
-          description: 成功获取待修课程
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/class.GetToBeStudiedClassResp'
-                    type: object
-      summary: 获取人培课程(部分)
+                $ref: '#/components/schemas/web.Response'
+      summary: 添加或更新课程备注
       tags:
         - class
   /class/update:
     put:
-      description: 根据课表ID更新课表信息
+      description:
+        根据课程 ID
+        更新当前登录学生的自定义课程。可更新课程名称、节次、地点、教师、周次、星期几、学分；更新后课程
+        ID 可能改变。成功时 code=0；更新失败或时间冲突会返回 code=50001 和 msg。
       parameters:
-        - description: Bearer Token
+        - description: Bearer Token，例如 Bearer xxx
           in: header
           name: Authorization
           required: true
@@ -567,16 +452,28 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/class.UpdateClassRequest'
-        description: 更新课表请求
+        description: 更新课程请求
         required: true
       responses:
         '200':
-          description: 成功更新课表
+          description: 成功更新课程，code=0
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-      summary: 更新课表信息
+        '401':
+          description: 未登录或 token 无效，code=40001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '422':
+          description: 请求参数错误，code=40002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 更新自定义课程
       tags:
         - class
   /classroom/getFreeClassRoom:
@@ -1739,37 +1636,6 @@ paths:
       summary: 获取图书馆研讨间信息
       tags:
         - library
-  /library/get_history_records:
-    get:
-      description: 获取1年内的预约记录和三个月内的取消记录
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功返回历史预约记录
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/web.Response'
-                  - properties:
-                      data:
-                        $ref: '#/components/schemas/library.GetHistoryResponse'
-                    type: object
-        '500':
-          description: 系统异常，获取失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/web.Response'
-      summary: 获取历史预约记录
-      tags:
-        - library
   /library/get_seat:
     post:
       description: 默认获取当天图书馆座位信息
@@ -1809,8 +1675,8 @@ paths:
       tags:
         - library
   /library/get_seat_records:
-    get:
-      description: 获取即将到来的预约
+    post:
+      description: 获取预约记录
       parameters:
         - description: Bearer Token
           in: header
@@ -1818,9 +1684,16 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/library.GetSeatRecordRequest'
+        description: 预约座位的请求参数
+        required: true
       responses:
         '200':
-          description: 成功返回即将到来的预约
+          description: 成功返回预约记录
           content:
             application/json:
               schema:
@@ -1836,7 +1709,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
-      summary: 获取未来预约
+      summary: 获取预约记录
       tags:
         - library
   /library/reserve_discussion:
@@ -2148,6 +2021,14 @@ paths:
   /users/deactivate:
     post:
       description: 用户输入密码验明身份后注销
+      parameters:
+        - description: Bearer 短 token，格式：Bearer {x-jwt-token}
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            default: Bearer <x-jwt-token>
       requestBody:
         content:
           application/json:
@@ -2157,7 +2038,19 @@ paths:
         required: true
       responses:
         '200':
-          description: Success
+          description: 注销成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '401':
+          description: 账号或密码错误，code=40005
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '500':
+          description: 注销失败或 token 清理失败，code=50001
           content:
             application/json:
               schema:
@@ -2179,7 +2072,28 @@ paths:
         required: true
       responses:
         '200':
-          description: Success
+          description: 登录成功，token 通过响应头返回
+          headers:
+            x-jwt-token:
+              description: 短 token
+              schema:
+                type: string
+            x-refresh-token:
+              description: 刷新 token
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '401':
+          description: 账号或密码错误，code=40005
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '500':
+          description: 登录失败或 token 生成失败，code=50001
           content:
             application/json:
               schema:
@@ -2190,9 +2104,29 @@ paths:
   /users/logout:
     get:
       description: 通过短token登出
+      parameters:
+        - description: Bearer 短 token，格式：Bearer {x-jwt-token}
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            default: Bearer <x-jwt-token>
       responses:
         '200':
-          description: Success
+          description: 登出成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '401':
+          description: Authorization 错误或过期，code=40001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '500':
+          description: 登出失败，code=50001
           content:
             application/json:
               schema:
@@ -2203,9 +2137,34 @@ paths:
   /users/refresh_token:
     get:
       description: 通过长token刷新短token
+      parameters:
+        - description: Bearer 刷新 token，格式：Bearer {x-refresh-token}
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            default: Bearer <x-refresh-token>
       responses:
         '200':
-          description: Success
+          description: 刷新成功，新的短 token 通过响应头返回
+          headers:
+            x-jwt-token:
+              description: 新的短 token
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '401':
+          description: 刷新 token 无效或过期，code=40001
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '500':
+          description: 刷新 token 失败，code=50001
           content:
             application/json:
               schema:
@@ -2327,32 +2286,43 @@ components:
       properties:
         credit:
           description: 学分
+          example: 1
           type: number
         day:
           description: 星期几
+          example: 1
           type: integer
         dur_class:
-          description: 第几节 '形如 "1-3","1-1"'
+          description: 上课节次,形如 "1-2","9-10"
+          example: 1-2
           type: string
         name:
           description: 课程名称
+          example: 测试课程
           type: string
         semester:
           description: 学期
+          example: '2'
           type: string
         teacher:
           description: 教师
+          example: 测试老师
           type: string
         weeks:
-          description: 哪些周
+          description: 上课周次数组
+          example:
+            - 1
+            - 2
           items:
             type: integer
           type: array
         where:
           description: 地点
+          example: 测试教室
           type: string
         year:
           description: 学年
+          example: '2025'
           type: string
       required:
         - day
@@ -2367,48 +2337,64 @@ components:
     class.ClassInfo:
       properties:
         class_when:
-          description: 上课是第几节（如1-2,3-4）
+          description: 上课节次
+          example: 1-2
           type: string
         classname:
           description: 课程名称
+          example: 测试课程
           type: string
         credit:
           description: 学分
+          example: 1
           type: number
         day:
-          description: 星期几
+          description: 星期几,1-7表示周一到周日
+          example: 1
           type: integer
         id:
-          description: 集合了课程信息的字符串，便于标识（课程ID）
+          description: 课程ID
+          example: Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
           type: string
         is_official:
           description: 是否为官方课程
+          example: true
           type: boolean
         nature:
           description: 课程性质
+          example: 专业主干课程
           type: string
         note:
           description: 备注
+          example: 课前预习
           type: string
         semester:
           description: 学期
+          example: '2'
           type: string
         teacher:
           description: 任课教师
+          example: 测试老师
           type: string
         week_duration:
-          description: 上课的周数
+          description: 上课周数文本
+          example: 1-2周
           type: string
         weeks:
-          description: 哪些周
+          description: 上课周次数组
+          example:
+            - 1
+            - 2
           items:
             type: integer
           type: array
         where:
           description: 上课地点
+          example: 测试教室
           type: string
         year:
           description: 学年
+          example: '2025'
           type: string
       required:
         - class_when
@@ -2426,44 +2412,19 @@ components:
         - where
         - year
       type: object
-    class.ClassToBeStudiedInfo:
-      properties:
-        credit:
-          description: 学分
-          type: string
-        id:
-          description: 课程ID
-          type: string
-        name:
-          description: 课程名称
-          type: string
-        property:
-          description: 课程性质，
-          type: string
-        status:
-          description: 课程状态，未修读/修读中/已修读
-          type: string
-        studiable:
-          description: 开设学年期
-          type: string
-      required:
-        - credit
-        - id
-        - name
-        - property
-        - status
-        - studiable
-      type: object
     class.DeleteClassNoteReq:
       properties:
         classId:
           description: 课程ID
+          example: Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
           type: string
         semester:
           description: 学期
+          example: '2'
           type: string
         year:
           description: 学年
+          example: '2025'
           type: string
       required:
         - classId
@@ -2474,12 +2435,15 @@ components:
       properties:
         id:
           description: 要被删的课程id
+          example: Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
           type: string
         semester:
           description: 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期
+          example: '2'
           type: string
         year:
           description: 学年  "2024" -> 代表"2024-2025学年"
+          example: '2025'
           type: string
       required:
         - id
@@ -2494,100 +2458,43 @@ components:
           type: array
         last_refresh_time:
           description: 上次刷新时间的时间戳,上海时区
+          example: 1717248000
           type: integer
       required:
         - classes
         - last_refresh_time
       type: object
-    class.GetRecycleBinClassInfosResp:
-      properties:
-        classInfos:
-          items:
-            $ref: '#/components/schemas/class.ClassInfo'
-          type: array
-      required:
-        - classInfos
-      type: object
     class.GetSchoolDayResp:
       properties:
         holiday_time:
+          description: 放假日期零点时间戳,秒级
+          example: 1751644800
           type: integer
         school_time:
+          description: 开学日期零点时间戳,秒级
+          example: 1739721600
           type: integer
       required:
         - holiday_time
         - school_time
       type: object
-    class.GetToBeStudiedClassReq:
-      properties:
-        status:
-          description: 课程状态，未修读/修读中/已修读
-          type: string
-      required:
-        - status
-      type: object
-    class.GetToBeStudiedClassResp:
-      properties:
-        common_educate:
-          description: 通识教育课
-          items:
-            $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
-          type: array
-        identity_develop:
-          description: 个性发展课
-          items:
-            $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
-          type: array
-        specific_skill:
-          description: 专业主干课
-          items:
-            $ref: '#/components/schemas/class.ClassToBeStudiedInfo'
-          type: array
-      required:
-        - common_educate
-        - identity_develop
-        - specific_skill
-      type: object
-    class.RecoverClassRequest:
-      properties:
-        classId:
-          description:
-            课程的ID（唯一标识）
-            更新后这个可能会换，所以响应的时候会把新的ID返回
-          type: string
-        semester:
-          description: 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期
-          type: string
-        year:
-          description: 学年  "2024" 代表"2024-2025学年"
-          type: string
-      required:
-        - classId
-        - semester
-        - year
-      type: object
-    class.SearchClassResp:
-      properties:
-        classInfos:
-          items:
-            $ref: '#/components/schemas/class.ClassInfo'
-          type: array
-      required:
-        - classInfos
-      type: object
     class.UpdateClassNoteReq:
       properties:
         classId:
           description: 课程ID
+          example: Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
           type: string
         note:
           description: 备注
+          example: 课前预习
           type: string
         semester:
           description: 学期
+          example: '2'
           type: string
         year:
           description: 学年
+          example: '2025'
           type: string
       required:
         - classId
@@ -2601,35 +2508,47 @@ components:
           description:
             课程的ID（唯一标识）
             更新后这个可能会换，所以响应的时候会把新的ID返回
+          example: Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
           type: string
         credit:
           description: 学分
+          example: 1
           type: number
         day:
           description: 星期几
+          example: 1
           type: integer
         dur_class:
-          description: 第几节 '形如 "1-3","1-1"'
+          description: 上课节次,形如 "1-2","9-10"
+          example: 1-2
           type: string
         name:
           description: 课程名称
+          example: 测试课程
           type: string
         semester:
           description: 学期
+          example: '2'
           type: string
         teacher:
           description: 教师
+          example: 测试老师
           type: string
         weeks:
-          description: 哪些周
+          description: 上课周次数组
+          example:
+            - 1
+            - 2
           items:
             type: integer
           type: array
         where:
           description: 地点
+          example: 测试教室
           type: string
         year:
           description: 学年
+          example: '2025'
           type: string
       required:
         - classId
@@ -3389,38 +3308,35 @@ components:
         total:
           type: string
       type: object
-    library.Discussion:
-      properties:
-        devId:
-          type: string
-        devName:
-          type: string
-        kindId:
-          type: string
-        kindName:
-          type: string
-        labId:
-          type: string
-        labName:
-          type: string
-        ts:
-          items:
-            $ref: '#/components/schemas/library.DiscussionTS'
-          type: array
-      type: object
-    library.DiscussionTS:
+    library.DisableTime:
       properties:
         end:
           type: string
-        occupy:
-          type: boolean
-        owner:
-          type: string
         start:
           type: string
-        state:
+      type: object
+    library.Discussion:
+      properties:
+        address:
           type: string
-        title:
+        disableList:
+          items:
+            $ref: '#/components/schemas/library.DisableTime'
+          type: array
+        name:
+          type: string
+        room_id:
+          type: string
+        room_type:
+          type: string
+        venue_id:
+          type: string
+      type: object
+    library.FreeTime:
+      properties:
+        end:
+          type: string
+        start:
           type: string
       type: object
     library.GetCreditPointResponse:
@@ -3430,9 +3346,11 @@ components:
       type: object
     library.GetDiscussionRequest:
       properties:
-        class_id:
-          type: string
         date:
+          type: string
+        room_type_id:
+          type: string
+        venue_id:
           type: string
       type: object
     library.GetDiscussionResponse:
@@ -3442,11 +3360,11 @@ components:
             $ref: '#/components/schemas/library.Discussion'
           type: array
       type: object
-    library.GetHistoryResponse:
+    library.GetSeatRecordRequest:
       properties:
-        history:
+        date:
           items:
-            $ref: '#/components/schemas/library.History'
+            type: string
           type: array
       type: object
     library.GetSeatRecordResponse:
@@ -3470,40 +3388,33 @@ components:
             $ref: '#/components/schemas/library.Room'
           type: array
       type: object
-    library.History:
-      properties:
-        date:
-          type: string
-        floor:
-          type: string
-        place:
-          type: string
-        status:
-          type: string
-        submitTime:
-          type: string
-      type: object
     library.Record:
       properties:
-        devName:
+        build_name:
           type: string
-        end:
+        floor_name:
           type: string
         id:
           type: string
-        labName:
+        make_begin:
           type: string
-        owner:
+        make_date:
           type: string
-        roomId:
+        make_end:
           type: string
-        roomName:
+        message:
           type: string
-        start:
+        room_id:
           type: string
-        states:
+        room_name:
           type: string
-        timeDesc:
+        seat_id:
+          type: string
+        seat_label:
+          type: string
+        status:
+          type: string
+        stu_id:
           type: string
       type: object
     library.ReserveDiscussionRequest:
@@ -3527,12 +3438,12 @@ components:
       type: object
     library.ReserveSeatRandomlyRequest:
       properties:
-        dev_id:
-          type: string
         end:
           type: string
         room_ids:
-          type: string
+          items:
+            type: string
+          type: array
         start:
           type: string
       type: object
@@ -3577,30 +3488,19 @@ components:
       type: object
     library.Seat:
       properties:
-        devId:
-          type: string
-        devName:
-          type: string
-        kindName:
-          type: string
-        labName:
-          type: string
-        ts:
-          items:
-            $ref: '#/components/schemas/library.TimeSlot'
-          type: array
-      type: object
-    library.TimeSlot:
-      properties:
-        end:
-          type: string
-        occupy:
+        afterFree:
           type: boolean
-        owner:
+        ft:
+          items:
+            $ref: '#/components/schemas/library.FreeTime'
+          type: array
+        id:
           type: string
-        start:
+        label:
           type: string
-        state:
+        name:
+          type: string
+        status:
           type: string
       type: object
     metrics.MetricsReq:
@@ -3622,6 +3522,8 @@ components:
     user.DeleteAccountReq:
       properties:
         password:
+          description: 密码
+          example: your_password
           type: string
       required:
         - password
@@ -3630,8 +3532,11 @@ components:
       properties:
         password:
           description: 密码
+          example: your_password
           type: string
         student_id:
+          description: 学号
+          example: '2024210000'
           type: string
       required:
         - password

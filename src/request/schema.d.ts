@@ -405,28 +405,46 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 添加课表
-     * @description 添加新的课表
+     * 添加自定义课程
+     * @description 给当前登录学生添加一门自定义课程。weeks 必须是周次数组，例如 [1,2,3]；dur_class 是节次范围，例如 "1-2"。成功时 code=0；添加失败、课程已存在、时间冲突等会返回 code=50001 和对应 msg。
      */
     post: {
       parameters: {
         query?: never;
         header: {
-          /** @description Bearer Token */
+          /** @description Bearer Token，例如 Bearer xxx */
           Authorization: string;
         };
         path?: never;
         cookie?: never;
       };
-      /** @description 课表信息 */
+      /** @description 自定义课程信息 */
       requestBody: {
         content: {
           'application/json': components['schemas']['class.AddClassRequest'];
         };
       };
       responses: {
-        /** @description 成功添加课表 */
+        /** @description 成功添加课程，code=0 */
         200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 未登录或 token 无效，code=40001 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 请求参数错误，code=40002 */
+        422: {
           headers: {
             [name: string]: unknown;
           };
@@ -450,22 +468,19 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 获取当前周
-     * @description 获取当前周
+     * 获取学期日期配置
+     * @description 获取当前学期的开学日期和放假日期，返回秒级时间戳。前端用 school_time 计算当前周，用 holiday_time 判断学期边界。成功时 code=0；配置缺失或格式错误会返回 code=50001。
      */
     get: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
       requestBody?: never;
       responses: {
-        /** @description 成功获取到当前周 */
+        /** @description 成功返回学期日期配置 */
         200: {
           headers: {
             [name: string]: unknown;
@@ -496,28 +511,46 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 删除课表
-     * @description 根据课表ID删除课表
+     * 删除自定义课程
+     * @description 根据课程 ID 删除当前登录学生的自定义课程。教务系统导入课程不支持删除。成功时 code=0；删除失败或删除官方课程会返回 code=50001 和 msg。
      */
     post: {
       parameters: {
         query?: never;
         header: {
-          /** @description Bearer Token */
+          /** @description Bearer Token，例如 Bearer xxx */
           Authorization: string;
         };
         path?: never;
         cookie?: never;
       };
-      /** @description 删除课表请求 */
+      /** @description 删除课程请求 */
       requestBody: {
         content: {
           'application/json': components['schemas']['class.DeleteClassRequest'];
         };
       };
       responses: {
-        /** @description 成功删除课表 */
+        /** @description 成功删除课程，code=0 */
         200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 未登录或 token 无效，code=40001 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 请求参数错误，code=40002 */
+        422: {
           headers: {
             [name: string]: unknown;
           };
@@ -542,19 +575,29 @@ export interface paths {
     };
     /**
      * 获取课表
-     * @description 根据学期、学年等条件获取课表
+     * @description 根据学年、学期获取当前登录学生的课表。refresh=false 优先读缓存/本地数据，refresh=true 会触发刷新。成功时 code=0；业务失败通常仍由统一响应体返回 code=50001 和 msg。
      */
     get: {
       parameters: {
         query: {
+          /**
+           * @description 是否强制刷新课表
+           * @example false
+           */
           refresh: boolean;
-          /** @description binding:"required" // 为添加默认值处理的妥协做法 */
+          /**
+           * @description 学期,"1"第一学期,"2"第二学期,"3"第三学期
+           * @example 2
+           */
           semester?: string;
-          /** @description binding:"required" //学年,格式为"2024"代表"2024-2025学年"` */
+          /**
+           * @description 学年,格式为"2025"代表"2025-2026学年"
+           * @example 2025
+           */
           year?: string;
         };
         header: {
-          /** @description Bearer Token */
+          /** @description Bearer Token，例如 Bearer xxx */
           Authorization: string;
         };
         path?: never;
@@ -573,53 +616,22 @@ export interface paths {
             };
           };
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/class/getRecycle': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取回收站课表信息
-     * @description 获取已删除但未彻底清除的课表信息
-     */
-    get: {
-      parameters: {
-        query: {
-          /** @description 学期,格式为"1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
-          semester: string;
-          /** @description 学年,格式为"2024"代表"2024-2025学年" */
-          year: string;
-        };
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功获取回收站课表信息 */
-        200: {
+        /** @description 未登录或 token 无效，code=40001 */
+        401: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['class.GetRecycleBinClassInfosResp'];
-            };
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 请求参数错误，code=40002 */
+        422: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -643,13 +655,13 @@ export interface paths {
     put?: never;
     /**
      * 删除课程备注
-     * @description 根据课程 ID 删除课程备注
+     * @description 根据课程 ID 删除当前登录学生的课程备注。成功时 code=0；课程不存在或删除失败会返回 code=50001 和 msg。
      */
     post: {
       parameters: {
         query?: never;
         header: {
-          /** @description Bearer Token */
+          /** @description Bearer Token，例如 Bearer xxx */
           Authorization: string;
         };
         path?: never;
@@ -662,8 +674,26 @@ export interface paths {
         };
       };
       responses: {
-        /** @description 成功删除课程备注 */
+        /** @description 成功删除课程备注，code=0 */
         200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 未登录或 token 无效，code=40001 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 请求参数错误，code=40002 */
+        422: {
           headers: {
             [name: string]: unknown;
           };
@@ -689,27 +719,27 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * 插入课程备注
-     * @description 根据课程 ID 更新课程备注
+     * 添加或更新课程备注
+     * @description 根据课程 ID 给当前登录学生的课程添加或更新备注。成功时 code=0；课程不存在或保存失败会返回 code=50001 和 msg。
      */
     post: {
       parameters: {
         query?: never;
         header: {
-          /** @description Bearer Token */
+          /** @description Bearer Token，例如 Bearer xxx */
           Authorization: string;
         };
         path?: never;
         cookie?: never;
       };
-      /** @description 更新课程备注请求 */
+      /** @description 添加或更新课程备注请求 */
       requestBody: {
         content: {
           'application/json': components['schemas']['class.UpdateClassNoteReq'];
         };
       };
       responses: {
-        /** @description 成功插入课程备注 */
+        /** @description 成功添加或更新课程备注，code=0 */
         200: {
           headers: {
             [name: string]: unknown;
@@ -718,45 +748,8 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/class/recover': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * 恢复课表
-     * @description 从回收站恢复课表
-     */
-    put: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 恢复课表请求 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['class.RecoverClassRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功恢复课表 */
-        200: {
+        /** @description 未登录或 token 无效，code=40001 */
+        401: {
           headers: {
             [name: string]: unknown;
           };
@@ -764,141 +757,13 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-      };
-    };
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/class/search': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 搜索课程
-     * @description 根据关键词[教师或者课程名]搜索课程,**注意,但当返回的结果数量大于page_size时,代表还有下一页**,最开始请求的是第一页
-     */
-    get: {
-      parameters: {
-        query: {
-          /** @description 页码 */
-          page: number;
-          /** @description 每页大小 */
-          page_size: number;
-          /** @description 搜索关键词,匹配的是课程名称和教师姓名 */
-          searchKeyWords: string;
-          /** @description 学期,格式为"1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
-          semester: string;
-          /** @description 学年,格式为"2024"代表"2024-2025学年" */
-          year: string;
-        };
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功搜索到课程 */
-        200: {
+        /** @description 请求参数错误，code=40002 */
+        422: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['class.SearchClassResp'];
-            };
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/class/toBeStudied': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取人培课程(全部)
-     * @description 获取需要上的课程, 返回全部课程
-     */
-    get: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功获取待修课程 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['class.GetToBeStudiedClassResp'] & {
-                common_educate?: components['schemas']['class.ClassToBeStudiedInfo'][];
-                identity_develop?: components['schemas']['class.ClassToBeStudiedInfo'][];
-                specific_skill?: components['schemas']['class.ClassToBeStudiedInfo'][];
-              };
-            };
-          };
-        };
-      };
-    };
-    put?: never;
-    /**
-     * 获取人培课程(部分)
-     * @description 根据用户选择返回各种状态的课程
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 获取待修课请求 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['class.GetToBeStudiedClassReq'];
-        };
-      };
-      responses: {
-        /** @description 成功获取待修课程 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['class.GetToBeStudiedClassResp'];
-            };
+            'application/json': components['schemas']['web.Response'];
           };
         };
       };
@@ -918,28 +783,46 @@ export interface paths {
     };
     get?: never;
     /**
-     * 更新课表信息
-     * @description 根据课表ID更新课表信息
+     * 更新自定义课程
+     * @description 根据课程 ID 更新当前登录学生的自定义课程。可更新课程名称、节次、地点、教师、周次、星期几、学分；更新后课程 ID 可能改变。成功时 code=0；更新失败或时间冲突会返回 code=50001 和 msg。
      */
     put: {
       parameters: {
         query?: never;
         header: {
-          /** @description Bearer Token */
+          /** @description Bearer Token，例如 Bearer xxx */
           Authorization: string;
         };
         path?: never;
         cookie?: never;
       };
-      /** @description 更新课表请求 */
+      /** @description 更新课程请求 */
       requestBody: {
         content: {
           'application/json': components['schemas']['class.UpdateClassRequest'];
         };
       };
       responses: {
-        /** @description 成功更新课表 */
+        /** @description 成功更新课程，code=0 */
         200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 未登录或 token 无效，code=40001 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 请求参数错误，code=40002 */
+        422: {
           headers: {
             [name: string]: unknown;
           };
@@ -2850,59 +2733,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/library/get_history_records': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取历史预约记录
-     * @description 获取1年内的预约记录和三个月内的取消记录
-     */
-    get: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功返回历史预约记录 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['library.GetHistoryResponse'];
-            };
-          };
-        };
-        /** @description 系统异常，获取失败 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/library/get_seat': {
     parameters: {
       query?: never;
@@ -2968,11 +2798,13 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    get?: never;
+    put?: never;
     /**
-     * 获取未来预约
-     * @description 获取即将到来的预约
+     * 获取预约记录
+     * @description 获取预约记录
      */
-    get: {
+    post: {
       parameters: {
         query?: never;
         header: {
@@ -2982,9 +2814,14 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: never;
+      /** @description 预约座位的请求参数 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['library.GetSeatRecordRequest'];
+        };
+      };
       responses: {
-        /** @description 成功返回即将到来的预约 */
+        /** @description 成功返回预约记录 */
         200: {
           headers: {
             [name: string]: unknown;
@@ -3006,8 +2843,6 @@ export interface paths {
         };
       };
     };
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -3591,7 +3426,10 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer 短 token，格式：Bearer {x-jwt-token} */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -3602,8 +3440,26 @@ export interface paths {
         };
       };
       responses: {
-        /** @description Success */
+        /** @description 注销成功 */
         200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 账号或密码错误，code=40005 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 注销失败或 token 清理失败，code=50001 */
+        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -3646,8 +3502,30 @@ export interface paths {
         };
       };
       responses: {
-        /** @description Success */
+        /** @description 登录成功，token 通过响应头返回 */
         200: {
+          headers: {
+            /** @description 短 token */
+            'x-jwt-token'?: string;
+            /** @description 刷新 token */
+            'x-refresh-token'?: string;
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 账号或密码错误，code=40005 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 登录失败或 token 生成失败，code=50001 */
+        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -3677,14 +3555,35 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer 短 token，格式：Bearer {x-jwt-token} */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
       requestBody?: never;
       responses: {
-        /** @description Success */
+        /** @description 登出成功 */
         200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description Authorization 错误或过期，code=40001 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 登出失败，code=50001 */
+        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -3716,14 +3615,37 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          /** @description Bearer 刷新 token，格式：Bearer {x-refresh-token} */
+          Authorization: string;
+        };
         path?: never;
         cookie?: never;
       };
       requestBody?: never;
       responses: {
-        /** @description Success */
+        /** @description 刷新成功，新的短 token 通过响应头返回 */
         200: {
+          headers: {
+            /** @description 新的短 token */
+            'x-jwt-token'?: string;
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 刷新 token 无效或过期，code=40001 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 刷新 token 失败，code=50001 */
+        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -3964,150 +3886,259 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     'class.AddClassRequest': {
-      /** @description 学分 */
+      /**
+       * @description 学分
+       * @example 1
+       */
       credit?: number;
-      /** @description 星期几 */
+      /**
+       * @description 星期几
+       * @example 1
+       */
       day: number;
-      /** @description 第几节 '形如 "1-3","1-1"' */
+      /**
+       * @description 上课节次,形如 "1-2","9-10"
+       * @example 1-2
+       */
       dur_class: string;
-      /** @description 课程名称 */
+      /**
+       * @description 课程名称
+       * @example 测试课程
+       */
       name: string;
-      /** @description 学期 */
+      /**
+       * @description 学期
+       * @example 2
+       */
       semester: string;
-      /** @description 教师 */
+      /**
+       * @description 教师
+       * @example 测试老师
+       */
       teacher: string;
-      /** @description 哪些周 */
+      /**
+       * @description 上课周次数组
+       * @example [
+       *       1,
+       *       2
+       *     ]
+       */
       weeks: number[];
-      /** @description 地点 */
+      /**
+       * @description 地点
+       * @example 测试教室
+       */
       where: string;
-      /** @description 学年 */
+      /**
+       * @description 学年
+       * @example 2025
+       */
       year: string;
     };
     'class.ClassInfo': {
-      /** @description 上课是第几节（如1-2,3-4） */
+      /**
+       * @description 上课节次
+       * @example 1-2
+       */
       class_when: string;
-      /** @description 课程名称 */
+      /**
+       * @description 课程名称
+       * @example 测试课程
+       */
       classname: string;
-      /** @description 学分 */
+      /**
+       * @description 学分
+       * @example 1
+       */
       credit: number;
-      /** @description 星期几 */
+      /**
+       * @description 星期几,1-7表示周一到周日
+       * @example 1
+       */
       day: number;
-      /** @description 集合了课程信息的字符串，便于标识（课程ID） */
+      /**
+       * @description 课程ID
+       * @example Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
+       */
       id: string;
-      /** @description 是否为官方课程 */
+      /**
+       * @description 是否为官方课程
+       * @example true
+       */
       is_official: boolean;
-      /** @description 课程性质 */
+      /**
+       * @description 课程性质
+       * @example 专业主干课程
+       */
       nature: string;
-      /** @description 备注 */
+      /**
+       * @description 备注
+       * @example 课前预习
+       */
       note: string;
-      /** @description 学期 */
+      /**
+       * @description 学期
+       * @example 2
+       */
       semester: string;
-      /** @description 任课教师 */
+      /**
+       * @description 任课教师
+       * @example 测试老师
+       */
       teacher: string;
-      /** @description 上课的周数 */
+      /**
+       * @description 上课周数文本
+       * @example 1-2周
+       */
       week_duration: string;
-      /** @description 哪些周 */
+      /**
+       * @description 上课周次数组
+       * @example [
+       *       1,
+       *       2
+       *     ]
+       */
       weeks: number[];
-      /** @description 上课地点 */
+      /**
+       * @description 上课地点
+       * @example 测试教室
+       */
       where: string;
-      /** @description 学年 */
+      /**
+       * @description 学年
+       * @example 2025
+       */
       year: string;
     };
-    'class.ClassToBeStudiedInfo': {
-      /** @description 学分 */
-      credit: string;
-      /** @description 课程ID */
-      id: string;
-      /** @description 课程名称 */
-      name: string;
-      /** @description 课程性质， */
-      property: string;
-      /** @description 课程状态，未修读/修读中/已修读 */
-      status: string;
-      /** @description 开设学年期 */
-      studiable: string;
-    };
     'class.DeleteClassNoteReq': {
-      /** @description 课程ID */
+      /**
+       * @description 课程ID
+       * @example Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
+       */
       classId: string;
-      /** @description 学期 */
+      /**
+       * @description 学期
+       * @example 2
+       */
       semester: string;
-      /** @description 学年 */
+      /**
+       * @description 学年
+       * @example 2025
+       */
       year: string;
     };
     'class.DeleteClassRequest': {
-      /** @description 要被删的课程id */
+      /**
+       * @description 要被删的课程id
+       * @example Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
+       */
       id: string;
-      /** @description 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
+      /**
+       * @description 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期
+       * @example 2
+       */
       semester: string;
-      /** @description 学年  "2024" -> 代表"2024-2025学年" */
+      /**
+       * @description 学年  "2024" -> 代表"2024-2025学年"
+       * @example 2025
+       */
       year: string;
     };
     'class.GetClassListResp': {
       classes: components['schemas']['class.ClassInfo'][];
-      /** @description 上次刷新时间的时间戳,上海时区 */
+      /**
+       * @description 上次刷新时间的时间戳,上海时区
+       * @example 1717248000
+       */
       last_refresh_time: number;
     };
-    'class.GetRecycleBinClassInfosResp': {
-      classInfos: components['schemas']['class.ClassInfo'][];
-    };
     'class.GetSchoolDayResp': {
+      /**
+       * @description 放假日期零点时间戳,秒级
+       * @example 1751644800
+       */
       holiday_time: number;
+      /**
+       * @description 开学日期零点时间戳,秒级
+       * @example 1739721600
+       */
       school_time: number;
     };
-    'class.GetToBeStudiedClassReq': {
-      /** @description 课程状态，未修读/修读中/已修读 */
-      status: string;
-    };
-    'class.GetToBeStudiedClassResp': {
-      /** @description 通识教育课 */
-      common_educate: components['schemas']['class.ClassToBeStudiedInfo'][];
-      /** @description 个性发展课 */
-      identity_develop: components['schemas']['class.ClassToBeStudiedInfo'][];
-      /** @description 专业主干课 */
-      specific_skill: components['schemas']['class.ClassToBeStudiedInfo'][];
-    };
-    'class.RecoverClassRequest': {
-      /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
-      classId: string;
-      /** @description 学期 "1"代表第一学期，"2"代表第二学期，"3"代表第三学期 */
-      semester: string;
-      /** @description 学年  "2024" 代表"2024-2025学年" */
-      year: string;
-    };
-    'class.SearchClassResp': {
-      classInfos: components['schemas']['class.ClassInfo'][];
-    };
     'class.UpdateClassNoteReq': {
-      /** @description 课程ID */
+      /**
+       * @description 课程ID
+       * @example Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
+       */
       classId: string;
-      /** @description 备注 */
+      /**
+       * @description 备注
+       * @example 课前预习
+       */
       note: string;
-      /** @description 学期 */
+      /**
+       * @description 学期
+       * @example 2
+       */
       semester: string;
-      /** @description 学年 */
+      /**
+       * @description 学年
+       * @example 2025
+       */
       year: string;
     };
     'class.UpdateClassRequest': {
-      /** @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回 */
+      /**
+       * @description 课程的ID（唯一标识） 更新后这个可能会换，所以响应的时候会把新的ID返回
+       * @example Class:测试课程:2025:2:1:1-2:测试老师:测试教室:3
+       */
       classId: string;
-      /** @description 学分 */
+      /**
+       * @description 学分
+       * @example 1
+       */
       credit?: number;
-      /** @description 星期几 */
+      /**
+       * @description 星期几
+       * @example 1
+       */
       day?: number;
-      /** @description 第几节 '形如 "1-3","1-1"' */
+      /**
+       * @description 上课节次,形如 "1-2","9-10"
+       * @example 1-2
+       */
       dur_class?: string;
-      /** @description 课程名称 */
+      /**
+       * @description 课程名称
+       * @example 测试课程
+       */
       name?: string;
-      /** @description 学期 */
+      /**
+       * @description 学期
+       * @example 2
+       */
       semester: string;
-      /** @description 教师 */
+      /**
+       * @description 教师
+       * @example 测试老师
+       */
       teacher?: string;
-      /** @description 哪些周 */
+      /**
+       * @description 上课周次数组
+       * @example [
+       *       1,
+       *       2
+       *     ]
+       */
       weeks?: number[];
-      /** @description 地点 */
+      /**
+       * @description 地点
+       * @example 测试教室
+       */
       where?: string;
-      /** @description 学年 */
+      /**
+       * @description 学年
+       * @example 2025
+       */
       year: string;
     };
     'classroom.ClassroomAvailableStat': {
@@ -4477,35 +4508,35 @@ export interface components {
       system?: string;
       total?: string;
     };
-    'library.Discussion': {
-      devId?: string;
-      devName?: string;
-      kindId?: string;
-      kindName?: string;
-      labId?: string;
-      labName?: string;
-      ts?: components['schemas']['library.DiscussionTS'][];
-    };
-    'library.DiscussionTS': {
+    'library.DisableTime': {
       end?: string;
-      occupy?: boolean;
-      owner?: string;
       start?: string;
-      state?: string;
-      title?: string;
+    };
+    'library.Discussion': {
+      address?: string;
+      disableList?: components['schemas']['library.DisableTime'][];
+      name?: string;
+      room_id?: string;
+      room_type?: string;
+      venue_id?: string;
+    };
+    'library.FreeTime': {
+      end?: string;
+      start?: string;
     };
     'library.GetCreditPointResponse': {
       creditPoints?: components['schemas']['library.CreditPoints'];
     };
     'library.GetDiscussionRequest': {
-      class_id?: string;
       date?: string;
+      room_type_id?: string;
+      venue_id?: string;
     };
     'library.GetDiscussionResponse': {
       discussions?: components['schemas']['library.Discussion'][];
     };
-    'library.GetHistoryResponse': {
-      history?: components['schemas']['library.History'][];
+    'library.GetSeatRecordRequest': {
+      date?: string[];
     };
     'library.GetSeatRecordResponse': {
       records?: components['schemas']['library.Record'][];
@@ -4516,24 +4547,20 @@ export interface components {
     'library.GetSeatResponse': {
       rooms?: components['schemas']['library.Room'][];
     };
-    'library.History': {
-      date?: string;
-      floor?: string;
-      place?: string;
-      status?: string;
-      submitTime?: string;
-    };
     'library.Record': {
-      devName?: string;
-      end?: string;
+      build_name?: string;
+      floor_name?: string;
       id?: string;
-      labName?: string;
-      owner?: string;
-      roomId?: string;
-      roomName?: string;
-      start?: string;
-      states?: string;
-      timeDesc?: string;
+      make_begin?: string;
+      make_date?: string;
+      make_end?: string;
+      message?: string;
+      room_id?: string;
+      room_name?: string;
+      seat_id?: string;
+      seat_label?: string;
+      status?: string;
+      stu_id?: string;
     };
     'library.ReserveDiscussionRequest': {
       dev_id?: string;
@@ -4545,9 +4572,8 @@ export interface components {
       title?: string;
     };
     'library.ReserveSeatRandomlyRequest': {
-      dev_id?: string;
       end?: string;
-      room_ids?: string;
+      room_ids?: string[];
       start?: string;
     };
     'library.ReserveSeatRandomlyResponse': {
@@ -4572,18 +4598,12 @@ export interface components {
       search?: components['schemas']['library.Search'];
     };
     'library.Seat': {
-      devId?: string;
-      devName?: string;
-      kindName?: string;
-      labName?: string;
-      ts?: components['schemas']['library.TimeSlot'][];
-    };
-    'library.TimeSlot': {
-      end?: string;
-      occupy?: boolean;
-      owner?: string;
-      start?: string;
-      state?: string;
+      afterFree?: boolean;
+      ft?: components['schemas']['library.FreeTime'][];
+      id?: string;
+      label?: string;
+      name?: string;
+      status?: string;
     };
     'metrics.MetricsReq': {
       /** @description 错误等级,分为info,error,warn,debug四个等级 */
@@ -4596,11 +4616,22 @@ export interface components {
       domain_name?: string;
     };
     'user.DeleteAccountReq': {
+      /**
+       * @description 密码
+       * @example your_password
+       */
       password: string;
     };
     'user.LoginByCCNUReq': {
-      /** @description 密码 */
+      /**
+       * @description 密码
+       * @example your_password
+       */
       password: string;
+      /**
+       * @description 学号
+       * @example 2024210000
+       */
       student_id: string;
     };
     'web.Response': {
