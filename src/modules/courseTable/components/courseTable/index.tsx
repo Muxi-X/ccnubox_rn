@@ -1,8 +1,7 @@
 import {
+  BackdropBlur,
   Canvas,
   makeImageFromView,
-  Paint,
-  Rect,
   Skia,
   Image as SkImage,
   SkImage as SkImageType,
@@ -59,7 +58,8 @@ const Schedule: React.FC<CourseTableProps> = ({
     backgroundUri,
     backgroundMode,
     foregroundOpacity,
-    backgroundMaskEnabled,
+    backgroundMaskOpacity,
+    backgroundBlurRadius,
   } = useCourseTableAppearance();
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
@@ -102,7 +102,7 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   // 优先使用手动加载的图片，否则使用hook加载的
   const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
-  const normalizedForegroundOpacity = foregroundOpacity / 100;
+  const normalizedForegroundOpacity = (100 - foregroundOpacity) / 100;
 
   const renderBackgroundContent = (
     children: React.ReactNode,
@@ -129,11 +129,7 @@ const Schedule: React.FC<CourseTableProps> = ({
         </View>
       );
     }
-    const maskOpacity = normalizedForegroundOpacity * 0.5;
-    const maskColor =
-      themeName === 'dark'
-        ? `rgba(0, 0, 0, ${maskOpacity})`
-        : `rgba(255, 255, 255, ${maskOpacity})`;
+    const bgOpacity = 1 - backgroundMaskOpacity / 100;
 
     const width = (baseStyle.width as number) || 0;
     const height = (baseStyle.height as number) || 0;
@@ -155,11 +151,10 @@ const Schedule: React.FC<CourseTableProps> = ({
             width={width}
             height={height}
             fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            opacity={bgOpacity}
           />
-          {/* 遮罩层 */}
-          {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={width} height={height} color={maskColor} />
-          )}
+          {/* 高斯模糊 */}
+          <BackdropBlur blur={backgroundBlurRadius} />
         </Canvas>
         {children}
       </View>
@@ -461,19 +456,10 @@ const Schedule: React.FC<CourseTableProps> = ({
             width={fullTableWidth}
             height={fullTableHeight}
             fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            opacity={1 - backgroundMaskOpacity / 100}
           />
-          {/* 遮罩层 */}
-          {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={fullTableWidth} height={fullTableHeight}>
-              <Paint
-                color={
-                  themeName === 'dark'
-                    ? `rgba(0, 0, 0, ${normalizedForegroundOpacity * 0.5})`
-                    : `rgba(255, 255, 255, ${normalizedForegroundOpacity * 0.5})`
-                }
-              />
-            </Rect>
-          )}
+          {/* 高斯模糊 */}
+          <BackdropBlur blur={backgroundBlurRadius} />
           {/* 前景内容 */}
           <SkImage
             image={foregroundImage}

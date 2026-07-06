@@ -1,26 +1,74 @@
-import { Switch } from '@ant-design/react-native';
-import { Slider } from '@rneui/themed';
-import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useRef, useState } from 'react';
+import { ButtonGroup } from '@rneui/themed';
 import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from 'react-native';
+  BackdropBlur,
+  Canvas,
+  Skia,
+  Image as SkImage,
+  SkImage as SkImageType,
+  useImage,
+} from '@shopify/react-native-skia';
+import * as ImagePicker from 'expo-image-picker';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import Button from '@/components/button';
+import Slider from '@/components/slider';
 import Toast from '@/components/toast';
-import ThemeBasedView from '@/components/view';
+import { default as ThemeBasedView } from '@/components/view';
 
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
+import BaseLightImage from '@/assets/images/theme/base.png';
+import BaseDarkImage from '@/assets/images/theme/baseDark.png';
+import IosLightImage from '@/assets/images/theme/ios.png';
+import IosDarkImage from '@/assets/images/theme/iosDark.png';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 import { commonColors } from '@/styles/common';
+
+const LAYOUTS = [
+  {
+    key: 'android',
+    label: '原版',
+    imageDark: BaseDarkImage,
+    imageLight: BaseLightImage,
+  },
+  {
+    key: 'ios',
+    label: 'iOS版',
+    imageDark: IosDarkImage,
+    imageLight: IosLightImage,
+  },
+] as const;
+
+const LayoutButton = memo(function LayoutButton({
+  label,
+  image,
+  selected,
+  dark,
+}: {
+  label: string;
+  image: any;
+  selected: boolean;
+  dark: boolean;
+}) {
+  return (
+    <View style={styles.layoutButtonContent}>
+      <Image source={image} style={styles.layoutPreview} resizeMode="cover" />
+      <Text
+        style={[
+          styles.layoutLabel,
+          dark && styles.layoutLabelDark,
+          selected && styles.layoutLabelSelected,
+        ]}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+});
 
 const PREVIEW_COURSE_DATA: CourseTransferType = {
   id: 'preview',
@@ -49,14 +97,18 @@ export default function OtherStyle({
   onSliderTouchEnd,
 }: OtherStyleProps) {
   const { currentStyle, themeName } = useVisualScheme();
+  const layoutName = useVisualScheme(state => state.layoutName);
+  const changeLayout = useVisualScheme(state => state.changeLayout);
   const {
     backgroundUri,
     backgroundMode,
     foregroundOpacity,
-    backgroundMaskEnabled,
+    backgroundMaskOpacity,
+    backgroundBlurRadius,
     setBackgroundUri,
     setForegroundOpacity,
-    setBackgroundMaskEnabled,
+    setBackgroundMaskOpacity,
+    setBackgroundBlurRadius,
   } = useCourseTableAppearance();
 
   const CourseItem = useThemeBasedComponents(
@@ -66,70 +118,107 @@ export default function OtherStyle({
   const [isPicking, setIsPicking] = useState(false);
   // 使用本地 state 存储滑块的临时值，减少 store 更新频率
   const [localOpacity, setLocalOpacity] = useState(foregroundOpacity);
-  const updateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const renderSettingRow = (
-    label: string,
-    right: React.ReactNode,
-    extraStyle?: ViewStyle
-  ) => (
-    <View style={[styles.settingRow, extraStyle]}>
-      <Text style={[currentStyle?.text_style, styles.settingLabel]}>
-        {label}
-      </Text>
-      {right}
-    </View>
+  const [localBlurRadius, setLocalBlurRadius] = useState(backgroundBlurRadius);
+  const [localMaskOpacity, setLocalMaskOpacity] = useState(
+    backgroundMaskOpacity
   );
+  const opacityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const maskTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 背景图加载 — 与课表实际渲染保持一致
+  const backgroundImageFromHook = useImage(backgroundUri || '');
+  const [loadedBackgroundImage, setLoadedBackgroundImage] =
+    useState<SkImageType | null>(null);
+
+  useEffect(() => {
+    let aborted = false;
+    const loadImage = async () => {
+      if (!backgroundUri) {
+        if (!aborted) setLoadedBackgroundImage(null);
+        return;
+      }
+      try {
+        const data = await Skia.Data.fromURI(backgroundUri);
+        if (!aborted && data) {
+          const image = Skia.Image.MakeImageFromEncoded(data);
+          if (!aborted) setLoadedBackgroundImage(image);
+        }
+      } catch {
+        if (!aborted) setLoadedBackgroundImage(null);
+      }
+    };
+    loadImage();
+    return () => {
+      aborted = true;
+    };
+  }, [backgroundUri]);
+
+  const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
 
   // 同步 store 的值到本地 state
   useEffect(() => {
     setLocalOpacity(foregroundOpacity);
   }, [foregroundOpacity]);
+  useEffect(() => {
+    setLocalBlurRadius(backgroundBlurRadius);
+  }, [backgroundBlurRadius]);
+  useEffect(() => {
+    setLocalMaskOpacity(backgroundMaskOpacity);
+  }, [backgroundMaskOpacity]);
 
-  const previewCourse = CourseItem ? (
-    <CourseItem {...PREVIEW_COURSE_DATA} />
-  ) : (
-    <View style={styles.previewPlaceholder}>
-      <Text style={[currentStyle?.text_style, styles.previewPlaceholderText]}>
-        示例课程
-      </Text>
-    </View>
-  );
-
-  const renderPreviewContent = () => {
-    const normalizedOpacity = localOpacity / 100;
-    return (
-      <View style={styles.previewContent}>
-        <View style={[styles.previewCourse, { opacity: normalizedOpacity }]}>
-          {previewCourse}
+  const renderCoursePreview = (opacity: number) =>
+    CourseItem ? (
+      <View style={styles.previewRow}>
+        <View style={[styles.previewCourse, { opacity }]}>
+          <CourseItem {...PREVIEW_COURSE_DATA} id="preview-1" />
+        </View>
+        <View style={[styles.previewCourse, { opacity }]}>
+          <CourseItem {...PREVIEW_COURSE_DATA} id="preview-2" />
+        </View>
+      </View>
+    ) : (
+      <View style={styles.previewCourse}>
+        <View style={styles.previewPlaceholder}>
+          <Text
+            style={[currentStyle?.text_style, styles.previewPlaceholderText]}
+          >
+            示例课程
+          </Text>
         </View>
       </View>
     );
-  };
 
   const renderPreview = () => {
-    if (!backgroundUri) {
-      return renderPreviewContent();
+    const normalizedOpacity = (100 - localOpacity) / 100;
+
+    if (!backgroundUri || !backgroundImage) {
+      return (
+        <View style={styles.previewContent}>
+          {renderCoursePreview(normalizedOpacity)}
+        </View>
+      );
     }
 
-    const normalizedOpacity = localOpacity / 100;
-    const maskOpacity = normalizedOpacity * 0.5;
-    const maskColor =
-      themeName === 'dark'
-        ? `rgba(0, 0, 0, ${maskOpacity})`
-        : `rgba(255, 255, 255, ${maskOpacity})`;
-
     return (
-      <ImageBackground
-        source={{ uri: backgroundUri }}
-        style={styles.previewBackground}
-        imageStyle={{ resizeMode: backgroundMode }}
-      >
-        {backgroundMaskEnabled && (
-          <View style={[styles.previewMask, { backgroundColor: maskColor }]} />
-        )}
-        {renderPreviewContent()}
-      </ImageBackground>
+      <View style={styles.previewBackground}>
+        {/* 与课表实际渲染完全一致：Canvas 绘制背景图 + 模糊 */}
+        <Canvas style={styles.previewBlurCanvas}>
+          <SkImage
+            image={backgroundImage}
+            x={0}
+            y={0}
+            width={COURSE_ITEM_WIDTH * 3}
+            height={180}
+            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            opacity={1 - localMaskOpacity / 100}
+          />
+          <BackdropBlur blur={localBlurRadius} />
+        </Canvas>
+        <View style={styles.previewContent}>
+          {renderCoursePreview(normalizedOpacity)}
+        </View>
+      </View>
     );
   };
 
@@ -148,7 +237,7 @@ export default function OtherStyle({
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: false,
         quality: 0.9,
       });
@@ -178,37 +267,144 @@ export default function OtherStyle({
     });
   };
 
+  const handleBlurRadiusChange = (value: number) => {
+    const roundedValue = Math.round(value);
+    setLocalBlurRadius(roundedValue);
+
+    if (blurTimerRef.current) {
+      clearTimeout(blurTimerRef.current);
+    }
+
+    blurTimerRef.current = setTimeout(() => {
+      setBackgroundBlurRadius(roundedValue);
+      blurTimerRef.current = null;
+    }, 100);
+  };
+
   const handleOpacityChange = (value: number) => {
-    // 立即更新本地 state 以保持 UI 响应
     const roundedValue = Math.round(value);
     setLocalOpacity(roundedValue);
 
-    // 清除之前的定时器
-    if (updateTimerRef.current) {
-      clearTimeout(updateTimerRef.current);
+    if (opacityTimerRef.current) {
+      clearTimeout(opacityTimerRef.current);
     }
 
-    // 延迟更新 store，减少更新频率
-    updateTimerRef.current = setTimeout(() => {
+    opacityTimerRef.current = setTimeout(() => {
       setForegroundOpacity(roundedValue);
-      updateTimerRef.current = null;
+      opacityTimerRef.current = null;
+    }, 100);
+  };
+
+  const handleMaskOpacityChange = (value: number) => {
+    const roundedValue = Math.round(value);
+    setLocalMaskOpacity(roundedValue);
+
+    if (maskTimerRef.current) {
+      clearTimeout(maskTimerRef.current);
+    }
+
+    maskTimerRef.current = setTimeout(() => {
+      setBackgroundMaskOpacity(roundedValue);
+      maskTimerRef.current = null;
     }, 100);
   };
 
   // 清理定时器
   useEffect(() => {
     return () => {
-      if (updateTimerRef.current) {
-        clearTimeout(updateTimerRef.current);
-      }
+      if (opacityTimerRef.current) clearTimeout(opacityTimerRef.current);
+      if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
+      if (maskTimerRef.current) clearTimeout(maskTimerRef.current);
     };
   }, []);
 
+  const selectedLayoutIndex = LAYOUTS.findIndex(l => l.key === layoutName);
+
+  const layoutButtons = useMemo(
+    () =>
+      LAYOUTS.map(l => ({
+        element: () => (
+          <LayoutButton
+            label={l.label}
+            image={themeName === 'dark' ? l.imageDark : l.imageLight}
+            selected={l.key === layoutName}
+            dark={themeName === 'dark'}
+          />
+        ),
+      })),
+    [themeName, layoutName]
+  );
+
   return (
     <ThemeBasedView style={styles.container}>
-      {/* 选择背景图片 */}
-      {renderSettingRow(
-        '课表背景',
+      {/* 实时预览 */}
+      <View style={styles.previewSection}>
+        <Text style={[currentStyle?.text_style, styles.previewTitle]}>
+          效果预览
+        </Text>
+        <View
+          style={[
+            styles.previewWrapper,
+            {
+              borderColor: currentStyle?.schedule_border_style?.borderColor,
+              backgroundColor: currentStyle?.background_style?.backgroundColor,
+            },
+          ]}
+        >
+          {renderPreview()}
+        </View>
+      </View>
+
+      {/* 样式选择 */}
+      <Text style={[currentStyle?.text_style, styles.sectionLabel]}>
+        样式选择
+      </Text>
+      <ButtonGroup
+        buttons={layoutButtons}
+        selectedIndex={selectedLayoutIndex}
+        onPress={index => {
+          const layout = LAYOUTS[index];
+          if (layout && layout.key !== layoutName) {
+            changeLayout(layout.key);
+          }
+        }}
+        containerStyle={[
+          styles.layoutButtonGroup,
+          {
+            borderColor: themeName === 'dark' ? '#444' : '#ddd',
+            backgroundColor: themeName === 'dark' ? '#1c1c1e' : '#fff',
+          },
+        ]}
+        buttonStyle={[
+          styles.layoutButton,
+          {
+            backgroundColor: 'transparent',
+          },
+        ]}
+        buttonContainerStyle={styles.layoutButtonContainer}
+        selectedButtonStyle={[
+          styles.layoutButtonSelected,
+          {
+            backgroundColor:
+              themeName === 'dark'
+                ? 'rgba(147, 121, 246, 0.15)'
+                : 'rgba(147, 121, 246, 0.08)',
+          },
+        ]}
+        innerBorderStyle={{
+          color: themeName === 'dark' ? '#444' : '#ddd',
+          width: 1,
+        }}
+      />
+
+      {/* 背景设置 */}
+      <Text style={[currentStyle?.text_style, styles.sectionLabel]}>
+        背景设置
+      </Text>
+      <View style={styles.settingRow}>
+        <Text style={[currentStyle?.text_style, styles.settingLabel]}>
+          背景图片
+        </Text>
         <View style={styles.actionButtons}>
           {backgroundUri && (
             <Button
@@ -230,45 +426,68 @@ export default function OtherStyle({
             {backgroundUri ? '更换' : '选择'}
           </Button>
         </View>
-      )}
-
-      {/* 实时预览 */}
-      <View style={styles.previewSection}>
-        <Text style={[currentStyle?.text_style, styles.previewTitle]}>
-          预览效果
-        </Text>
-        <View
-          style={[
-            styles.previewWrapper,
-            {
-              borderColor: currentStyle?.schedule_border_style?.borderColor,
-              backgroundColor: currentStyle?.background_style?.backgroundColor,
-            },
-          ]}
-        >
-          {renderPreview()}
-        </View>
       </View>
 
-      {/* 背景遮罩开关 */}
-      {backgroundUri &&
-        renderSettingRow(
-          '背景遮罩',
-          <Switch
-            checked={backgroundMaskEnabled}
-            onChange={setBackgroundMaskEnabled}
-            style={styles.switch}
-          />,
-          styles.settingRowSpacing
-        )}
+      {/* 遮罩不透明度 */}
+      {backgroundUri && (
+        <View style={styles.sliderSection}>
+          <Text style={[currentStyle?.text_style, styles.sliderTitle]}>
+            背景透明度：{localMaskOpacity}%
+          </Text>
+          <Slider
+            value={localMaskOpacity}
+            minimumValue={0}
+            maximumValue={100}
+            step={1}
+            onValueChange={handleMaskOpacityChange}
+            onSlidingStart={onSliderTouchStart}
+            onSlidingComplete={onSliderTouchEnd}
+            thumbStyle={styles.sliderThumb}
+            style={{ paddingVertical: 8 }}
+            minimumTrackTintColor={commonColors.purple}
+          />
+          <View style={styles.sliderLabelRow}>
+            <Text style={[currentStyle?.text_style, styles.sliderLabel]}>
+              0%
+            </Text>
+            <Text style={[currentStyle?.text_style, styles.sliderLabel]}>
+              100%
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* 模糊程度设置 */}
+      {backgroundUri && (
+        <View style={styles.sliderSection}>
+          <Text style={[currentStyle?.text_style, styles.sliderTitle]}>
+            模糊程度：{Math.round((localBlurRadius / 30) * 100)}%
+          </Text>
+          <Slider
+            value={localBlurRadius}
+            minimumValue={0}
+            maximumValue={30}
+            step={1}
+            onValueChange={handleBlurRadiusChange}
+            onSlidingStart={onSliderTouchStart}
+            onSlidingComplete={onSliderTouchEnd}
+            thumbStyle={styles.sliderThumb}
+            style={{ paddingVertical: 8 }}
+            minimumTrackTintColor={commonColors.purple}
+          />
+          <View style={styles.sliderLabelRow}>
+            <Text style={[currentStyle?.text_style, styles.sliderLabel]}>
+              0%
+            </Text>
+            <Text style={[currentStyle?.text_style, styles.sliderLabel]}>
+              100%
+            </Text>
+          </View>
+        </View>
+      )}
 
       {/* 前景透明度设置 */}
-      <View
-        style={styles.sliderSection}
-        onTouchStart={onSliderTouchStart}
-        onTouchEnd={onSliderTouchEnd}
-        onTouchCancel={onSliderTouchEnd}
-      >
+      <View style={styles.sliderSection}>
         <Text style={[currentStyle?.text_style, styles.sliderTitle]}>
           前景透明度：{localOpacity}%
         </Text>
@@ -278,9 +497,10 @@ export default function OtherStyle({
           maximumValue={100}
           step={1}
           onValueChange={handleOpacityChange}
+          onSlidingStart={onSliderTouchStart}
           onSlidingComplete={onSliderTouchEnd}
           thumbStyle={styles.sliderThumb}
-          style={{ paddingVertical: 0 }}
+          style={{ paddingVertical: 8 }}
           minimumTrackTintColor={commonColors.purple}
         />
         <View style={styles.sliderLabelRow}>
@@ -313,17 +533,18 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     flexDirection: 'row',
-    marginRight: 10,
+    marginRight: 40,
   },
   actionButton: {
-    width: 100,
+    width: 60,
+    height: 30,
     borderRadius: 10,
   },
   actionButtonSpacing: {
     marginRight: 10,
   },
   previewSection: {
-    marginTop: 30,
+    marginBottom: 20,
     marginHorizontal: 40,
   },
   previewTitle: {
@@ -349,7 +570,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  previewMask: {
+  previewBlurCanvas: {
     position: 'absolute',
     width: '100%',
     height: '100%',
@@ -361,8 +582,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
+  previewRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
   previewCourse: {
-    width: COURSE_ITEM_WIDTH * 1.5,
+    // flex: 1,
+    width: COURSE_ITEM_WIDTH,
   },
   previewPlaceholder: {
     paddingVertical: 12,
@@ -383,15 +609,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sliderThumb: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
     backgroundColor: commonColors.purple,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
   },
   sliderLabelRow: {
     flexDirection: 'row',
@@ -401,7 +619,47 @@ const styles = StyleSheet.create({
   sliderLabel: {
     fontSize: 14,
   },
-  switch: {
-    marginRight: 20,
+  sectionLabel: {
+    fontSize: 16,
+    paddingLeft: 40,
+    marginBottom: 12,
+    opacity: 0.7,
+  },
+  layoutButtonGroup: {
+    height: 120,
+    marginBottom: 20,
+    marginHorizontal: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    overflow: 'hidden',
+  },
+  layoutButton: {
+    paddingVertical: 16,
+  },
+  layoutButtonContainer: {
+    flex: 1,
+  },
+  layoutButtonSelected: {
+    backgroundColor: 'rgba(147, 121, 246, 0.08)',
+  },
+  layoutButtonContent: {
+    alignItems: 'center',
+    gap: 10,
+  },
+  layoutPreview: {
+    width: 120,
+    height: 80,
+  },
+  layoutLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#666',
+  },
+  layoutLabelDark: {
+    color: '#aaa',
+  },
+  layoutLabelSelected: {
+    color: '#9379F6',
   },
 });
