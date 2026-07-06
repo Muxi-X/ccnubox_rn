@@ -3,8 +3,8 @@
     "name": "华师匣子",
     "slug": "ccnubox",
     "owner": "muxi_fe",
-    "version": "3.1.6",
-    "runtimeVersion": "3.1.3",
+    "version": "3.1.7",
+    "runtimeVersion": "3.1.7",
     "platforms": ["ios", "android"],
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
@@ -37,7 +37,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "18",
+      "buildNumber": "19",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -70,7 +70,7 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 18
+      "versionCode": 19
     },
     "plugins": [
       "expo-router",
