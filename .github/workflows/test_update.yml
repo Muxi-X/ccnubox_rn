@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "src/assets/data/updateInfo.json"
+  workflow_dispatch:
 
 jobs:
   eas-update:
@@ -26,11 +27,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install EAS CLI
-        run: pnpm install -g eas-cli
-
       - name: Run EAS Update
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          eas update --branch test --message "${{ github.event.head_commit.message }}"
+          pnpx eas-cli update --branch test --message "${{ github.event.head_commit.message }}"
