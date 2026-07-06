@@ -1,4 +1,7 @@
-const { withAppDelegate } = require('expo/config-plugins');
+const { withAppDelegate } = require('@expo/config-plugins');
+const {
+  mergeContents,
+} = require('@expo/config-plugins/build/utils/generateCode');
 
 /**
  * iOS 26 液态玻璃(Liquid Glass)导航栏样式禁用插件
@@ -10,13 +13,9 @@ const { withAppDelegate } = require('expo/config-plugins');
  */
 function withDisableLiquidGlass(config) {
   return withAppDelegate(config, config => {
-    const contents = config.modResults.contents;
+    const src = config.modResults.contents;
 
-    // 匹配 Swift AppDelegate 中的 return super.application(...) 行
-    const didFinishLaunchingReturn =
-      /(return\s+super\.application\(application,\s*didFinishLaunchingWithOptions:\s*launchOptions\))/;
-
-    const injectionCode = `
+    const newSrc = `
     // Disable iOS 26 Liquid Glass navigation bar appearance
     if #available(iOS 26.0, *) {
       let opaqueAppearance = UINavigationBarAppearance()
@@ -28,11 +27,18 @@ function withDisableLiquidGlass(config) {
     }
 `;
 
-    if (didFinishLaunchingReturn.test(contents)) {
-      config.modResults.contents = contents.replace(
-        didFinishLaunchingReturn,
-        `${injectionCode}  $1`
-      );
+    const result = mergeContents({
+      tag: 'disable-liquid-glass',
+      src,
+      newSrc: newSrc.trim(),
+      anchor:
+        /(\breturn\s+super\.application\(application,\s*didFinishLaunchingWithOptions:\s*launchOptions\))/,
+      offset: 0,
+      comment: '//',
+    });
+
+    if (result.didMerge || result.didClear) {
+      config.modResults.contents = result.contents;
     }
 
     return config;
