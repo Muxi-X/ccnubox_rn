@@ -81,6 +81,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
+    "@expo/config-plugins": "^56.0.8",
     "@bacons/apple-targets": "4.0.7",
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
