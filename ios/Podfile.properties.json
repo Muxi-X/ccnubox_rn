@@ -7,5 +7,6 @@
   "ios.forceStaticLinking": "[]",
   "expo.inlineModules.watchedDirectories": "[]",
   "EXPO_USE_PRECOMPILED_MODULES": "true",
-  "expo.inlineModules.xcodeProjectTargets": "{\"mainTarget\":\"app\",\"targets\":[]}"
+  "expo.inlineModules.xcodeProjectTargets": "{\"mainTarget\":\"app\",\"targets\":[]}",
+  "ios.buildReactNativeFromSource": "false"
 }
