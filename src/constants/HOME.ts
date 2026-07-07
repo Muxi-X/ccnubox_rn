@@ -3,6 +3,7 @@ import { Href } from 'expo-router';
 import AndroidCardSvg from '@/assets/images/icons/android/card.svg';
 import AndroidDateSvg from '@/assets/images/icons/android/date.svg';
 import AndroidEnergySvg from '@/assets/images/icons/android/energy.svg';
+import AndroidEventGlideSvg from '@/assets/images/icons/android/event-glide.svg';
 import AndroidGradesSvg from '@/assets/images/icons/android/grades.svg';
 import AndroidInformationSvg from '@/assets/images/icons/android/information.svg';
 import AndroidKestackSvg from '@/assets/images/icons/android/kestack.svg';
@@ -13,6 +14,7 @@ import AndroidWebSvg from '@/assets/images/icons/android/web.svg';
 import IosCardSvg from '@/assets/images/icons/ios/card.svg';
 import IosDateSvg from '@/assets/images/icons/ios/date.svg';
 import IosEnergySvg from '@/assets/images/icons/ios/energy.svg';
+import IosEventGlideSvg from '@/assets/images/icons/ios/event-glide.svg';
 import IosGradesSvg from '@/assets/images/icons/ios/grades.svg';
 import IosInformationSvg from '@/assets/images/icons/ios/information.svg';
 import IosKestackSvg from '@/assets/images/icons/ios/kestack.svg';
@@ -173,6 +175,21 @@ export const HOME_ITEMS = [
     href: `/(mainPage)/webview?title=座位预约&link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
   },
   {
+    title: '校灵通',
+    name: 'eventGlide',
+    imageUrl: {
+      ios: IosEventGlideSvg,
+      android: AndroidEventGlideSvg,
+      default: AndroidEventGlideSvg,
+    },
+    key: 'grid-5',
+    action: () =>
+      handleOpenURL(
+        'weixin://dl/business/?appid=wx326be910b0f5468c&path=pages/main/index',
+        '微信'
+      ),
+  },
+  {
     title: '更多',
     name: 'more',
     imageUrl: {
@@ -182,6 +199,7 @@ export const HOME_ITEMS = [
     },
     key: 'grid-13',
     href: '/more' as Href,
+    disabledDrag: true,
   },
   // {
   //   title: '更新小组件',

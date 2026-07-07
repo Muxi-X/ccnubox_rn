@@ -36,6 +36,7 @@ const IndexPage: FC = () => {
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
+  const [isDragging, setIsDragging] = useState(false);
   const [, setRegisterId] = useState('');
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const IndexPage: FC = () => {
     });
   }, []);
   const onDragRelease = async (data: MainPageGridDataType[]) => {
-    // 直接更新 store，自动同步到 AsyncStorage
+    setIsDragging(false);
     updateGridOrder(data);
   };
 
@@ -132,7 +133,10 @@ const IndexPage: FC = () => {
         </View>
       </Skeleton>
       {/* 功能列表 */}
-      <ScrollView contentContainerStyle={{ paddingBottom: tabbarHeight + 10 }}>
+      <ScrollView
+        scrollEnabled={!isDragging}
+        contentContainerStyle={{ paddingBottom: tabbarHeight + 10 }}
+      >
         <DraggableGrid
           onItemPress={data => {
             if (data.href) {
@@ -143,7 +147,10 @@ const IndexPage: FC = () => {
             }
           }}
           numColumns={3}
-          onDragItemActive={() => Haptics.selectionAsync()}
+          onDragItemActive={() => {
+            setIsDragging(true);
+            Haptics.selectionAsync();
+          }}
           renderItem={render}
           data={gridData}
           onDragRelease={onDragRelease}
