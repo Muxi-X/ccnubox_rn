@@ -1,7 +1,5 @@
-const { withAppDelegate } = require('@expo/config-plugins');
-const {
-  mergeContents,
-} = require('@expo/config-plugins/build/utils/generateCode');
+const { CodeGenerator, withAppDelegate } = require('expo/config-plugins');
+const { mergeContents } = CodeGenerator;
 
 /**
  * iOS 26 液态玻璃(Liquid Glass)导航栏样式禁用插件

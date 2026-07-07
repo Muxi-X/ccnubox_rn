@@ -75,6 +75,7 @@
     "plugins": [
       "expo-router",
       "expo-web-browser",
+			"expo-font",
       [
         "react-native-edge-to-edge",
         {
