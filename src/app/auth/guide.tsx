@@ -46,7 +46,7 @@ const GuidePage: FC = () => {
   const [toVisible, setToVisible] = useState<boolean>(true);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [reachedLastPage, setReachedLastPage] = useState<boolean>(false);
-  const { agreement, setAgreement } = usePrivacy();
+  const { hydrated, agreement, setAgreement } = usePrivacy();
   const gradientValue = useSharedValue(0);
   // eslint-disable-next-line unused-imports/no-unused-vars
   const timeoutFn = (activeIndex: number, timeout: number) => {
@@ -59,7 +59,7 @@ const GuidePage: FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!agreement) {
+      if (hydrated && !agreement) {
         Modal.show({
           children: <AgreementModal />,
           mode: 'middle',
@@ -86,7 +86,7 @@ const GuidePage: FC = () => {
         });
       }
       return () => {};
-    }, [])
+    }, [hydrated, agreement])
   );
 
   useEffect(() => {
