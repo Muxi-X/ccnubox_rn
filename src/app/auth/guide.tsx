@@ -1,5 +1,5 @@
 import { Icon, Toast } from '@ant-design/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setItem } from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -118,7 +118,7 @@ const GuidePage: FC = () => {
 
   const handleStart = () => {
     router.navigate('/auth/login');
-    AsyncStorage.setItem('firstLaunch', 'true');
+    setItem('firstLaunch', 'true');
   };
 
   // 跳转第几条内容

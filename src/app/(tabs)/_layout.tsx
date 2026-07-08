@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { Platform, Text } from 'react-native';
 
 import Modal from '@/components/modal';
+
+import { updateCourseData } from '@/utils/updateWidget';
 import TabBar from '@/components/navi';
 import Toast from '@/components/toast';
 
@@ -27,6 +29,14 @@ export default function TabLayout() {
   const setPromptShown = usePushSubscriptionStore(
     state => state.setPromptShown
   );
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      updateCourseData().catch(error =>
+        console.error('更新小组件失败:', error)
+      );
+    }
+  }, []);
 
   useEffect(() => {
     if (!enabled) return;

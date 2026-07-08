@@ -48,9 +48,8 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
 
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
-    const longToken = getItem('longToken');
+    const longToken = await getItem('longToken');
     if (!longToken) {
-      router.replace('/auth/login');
       throw new Error('长 token 不存在，跳转登录');
     }
 
