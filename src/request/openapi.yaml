@@ -541,6 +541,24 @@ paths:
       summary: 查询空闲教室
       tags:
         - classroom
+  /classroom/list:
+    get:
+      description: 返回 be-class 中 classrooms.json 的教室列表
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/classroom.GetClassroomsResp'
+                    type: object
+      summary: 获取教室列表
+      tags:
+        - classroom
   /department/delDepartment:
     post:
       description: 删除部门信息
@@ -1892,13 +1910,6 @@ paths:
   /semester/getSemester:
     get:
       description: 获取当前所属学期
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: 成功
@@ -1917,13 +1928,6 @@ paths:
   /semester/getSemesterList:
     get:
       description: 获取所有学期信息
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: 成功
@@ -1942,13 +1946,6 @@ paths:
   /semester/saveSemester:
     post:
       description: 保存学期信息
-      parameters:
-        - description: Bearer Token
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -2565,6 +2562,13 @@ components:
         classroom:
           description: 教室名
           type: string
+      type: object
+    classroom.GetClassroomsResp:
+      properties:
+        class_rooms:
+          items:
+            type: string
+          type: array
       type: object
     classroom.GetFreeClassRoomResp:
       properties:
