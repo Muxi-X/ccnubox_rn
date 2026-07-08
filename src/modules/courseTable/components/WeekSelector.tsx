@@ -296,7 +296,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                         commonStyles.fontSemiBold,
                         {
                           position: 'absolute',
-                          bottom: -12,
+                          bottom: -14,
                           width: 31,
                           overflow: 'visible',
                           color: '#7878F8',
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     position: 'absolute',
     width: '100%',
-    borderEndStartRadius: 8,
+    borderStartEndRadius: 8,
     borderEndEndRadius: 8,
     padding: 10,
     shadowColor: '#000',
@@ -367,6 +367,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 16,
     left: 16,
+    paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },

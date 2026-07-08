@@ -18,6 +18,7 @@ import Animated, {
 
 import Divider from '@/components/divider';
 import Toast from '@/components/toast';
+import { COURSE_HEADER_HEIGHT, TIME_WIDTH } from '@/constants/SCHEDULE';
 
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
@@ -63,9 +64,6 @@ const TimetableScrollView = (
   const prevTranslateX = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
-  // FIX_ME 此处为两个 sticky 交界处，会覆盖，很丑，目前方式为计算重叠块大小，用一个块覆盖
-  const cornerWidth = useSharedValue(0);
-  const cornerHeight = useSharedValue(0);
   // 下拉刷新背景高度
   const backHeight = useSharedValue(0);
   const isAtTop = useSharedValue(false);
@@ -330,22 +328,22 @@ const TimetableScrollView = (
   // Animated style for content margins
   const contentMarginStyle = useAnimatedStyle(() => {
     return {
-      marginLeft: cornerWidth.value,
+      marginLeft: TIME_WIDTH,
     };
   }, []);
 
   // Animated style for corner dimensions
   const defaultCornerStyle = useAnimatedStyle(() => {
     return {
-      height: cornerHeight.value,
-      width: cornerWidth.value,
+      height: COURSE_HEADER_HEIGHT,
+      width: TIME_WIDTH,
     };
   }, []);
 
   // Animated style for sticky top margin
   const stickyTopMarginStyle = useAnimatedStyle(() => {
     return {
-      marginLeft: cornerWidth.value,
+      marginLeft: TIME_WIDTH,
     };
   }, []);
   // For the sticky top, we only want horizontal scrolling, not vertical
@@ -419,9 +417,6 @@ const TimetableScrollView = (
             stickyTopMarginStyle,
             animatedOnlyX,
           ]}
-          onLayout={layout => {
-            cornerHeight.value = layout.nativeEvent.layout.height;
-          }}
         >
           {stickyTop}
         </Animated.View>
@@ -446,9 +441,6 @@ const TimetableScrollView = (
         >
           {/* stickyLeft */}
           <Animated.View
-            onLayout={layout => {
-              cornerWidth.value = layout.nativeEvent.layout.width;
-            }}
             style={[
               styles.stickyLeft,
               { height: containerSize.height },
