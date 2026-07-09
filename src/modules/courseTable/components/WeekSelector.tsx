@@ -10,7 +10,6 @@ import {
 
 import Modal from '@/components/modal';
 
-import useCourse from '@/store/course';
 import useTimeStore, { computeSemesterAndYear } from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -29,6 +28,7 @@ const SEMESTER_LABELS: Record<string, string> = {
 const WeekSelector: FC<WeekSelectorProps> = ({
   currentWeek,
   showWeekPicker,
+  totalWeeks,
   year,
   semester,
   semesterOptions,
@@ -37,7 +37,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
-  const schoolTime = useCourse(state => state.schoolTime);
+  const schoolTime = useTimeStore(state => state.schoolTime);
 
   // 根据 schoolTime 推算真实当前学期
   const actualSemester = useMemo(
@@ -257,7 +257,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
             </View>
             {/* 周次选择区域 */}
             <View style={styles.weekGrid}>
-              {[...Array(20)].map((_, i) => (
+              {Array.from({ length: totalWeeks }).map((_, i) => (
                 <Pressable
                   key={i}
                   onPress={() => handleWeekSelect(i + 1)}

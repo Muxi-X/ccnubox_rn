@@ -63,6 +63,8 @@ export interface SemesterWeekParams {
 export interface WeekSelectorProps {
   currentWeek: number;
   showWeekPicker: boolean;
+  /** 当前学期总周数 */
+  totalWeeks: number;
   /** 当前学年，如 "2025" */
   year: string;
   /** 当前学期，"1" | "2" | "3" */

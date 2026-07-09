@@ -66,14 +66,7 @@ const CourseTablePage: FC = () => {
     return new ExtensionStorage('group.release-20240916');
   }, []);
 
-  const {
-    courses,
-    updateCourses,
-    setLastUpdate,
-    setHolidayTime,
-    schoolTime,
-    setSchoolTime,
-  } = useCourse();
+  const { courses, updateCourses, setLastUpdate } = useCourse();
   const {
     semester,
     setSemester,
@@ -81,6 +74,9 @@ const CourseTablePage: FC = () => {
     setYear,
     selectedWeek,
     setSelectedWeek,
+    setHolidayTime,
+    schoolTime,
+    setSchoolTime,
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
@@ -92,6 +88,8 @@ const CourseTablePage: FC = () => {
     () => buildSemesterOptions(studentId),
     [studentId]
   );
+
+  const totalWeeks = useTimeStore(state => state.getSemesterWeekCount());
 
   const syncCoursesToWidget = useCallback(
     (nextCourses: courseType[]) => {
@@ -227,6 +225,10 @@ const CourseTablePage: FC = () => {
     }
   }, [schoolTime]);
 
+  useEffect(() => {
+    setSelectedWeek(selectedWeek);
+  }, [selectedWeek, setSelectedWeek, totalWeeks]);
+
   // 启用 Live Activity 自动提醒
   useCourseLiveActivity(courses);
 
@@ -278,6 +280,7 @@ const CourseTablePage: FC = () => {
         <WeekSelector
           currentWeek={selectedWeek}
           showWeekPicker={showWeekPicker}
+          totalWeeks={totalWeeks}
           year={year}
           semester={semester}
           semesterOptions={semesterOptions}

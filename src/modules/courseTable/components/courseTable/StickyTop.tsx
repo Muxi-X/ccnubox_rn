@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
 
-import useCourse from '@/store/course';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
@@ -17,7 +16,7 @@ import {
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { selectedWeek } = useTimeStore();
-  const schoolTime = useCourse(state => state.schoolTime);
+  const schoolTime = useTimeStore(state => state.schoolTime);
   const { backgroundUri } = useCourseTableAppearance();
   const [dates, setDates] = useState<string[]>([]);
 

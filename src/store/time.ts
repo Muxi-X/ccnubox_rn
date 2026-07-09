@@ -2,7 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import useCourse from './course';
+import {
+  calculateSemesterWeekCount,
+  clampWeekToSemester,
+} from '@/utils/semesterWeeks';
 
 /**
  * 根据开学时间戳计算当前学期和学年
@@ -34,31 +37,47 @@ interface TimeState {
   setYear: (_year: string) => void;
   selectedWeek: number;
   setSelectedWeek: (_week: number) => void;
+  holidayTime: number;
+  setHolidayTime: (_time: number) => void;
+  schoolTime: number;
+  setSchoolTime: (_time: number) => void;
   showWeekPicker: boolean;
   setShowWeekPicker: (_opened: boolean) => void;
   getCurrentWeek: () => number;
+  getSemesterWeekCount: () => number;
   /** 根据开学时间戳计算并更新 semester/year */
   computeAndSetSemester: (_startTimestamp: number) => void;
 }
 
 const useTimeStore = create<TimeState>()(
   persist(
-    set => {
+    (set, get) => {
       return {
         semester: '',
         setSemester: (semester: string) => set({ semester }),
         year: '',
         setYear: (year: string) => set({ year }),
         selectedWeek: 1,
-        setSelectedWeek: (week: number) => set({ selectedWeek: week }),
+        setSelectedWeek: (week: number) => {
+          const totalWeeks = get().getSemesterWeekCount();
+          set({ selectedWeek: clampWeekToSemester(week, totalWeeks) });
+        },
+        holidayTime: 0,
+        setHolidayTime: (_time: number) => set({ holidayTime: _time }),
+        schoolTime: 0,
+        setSchoolTime: (_time: number) => set({ schoolTime: _time }),
         showWeekPicker: false,
         setShowWeekPicker: (showWeekPicker: boolean) =>
           set({ showWeekPicker: showWeekPicker }),
         getCurrentWeek: () => {
-          const startTimestamp = useCourse.getState().schoolTime * 1000;
+          const startTimestamp = get().schoolTime * 1000;
           const diffTime = new Date().getTime() - startTimestamp;
           const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
           return Math.floor(diffDays / 7) + 1;
+        },
+        getSemesterWeekCount: () => {
+          const { schoolTime, holidayTime } = get();
+          return calculateSemesterWeekCount(schoolTime, holidayTime);
         },
         computeAndSetSemester: (startTimestamp: number) => {
           const { semester, year } = computeSemesterAndYear(startTimestamp);
