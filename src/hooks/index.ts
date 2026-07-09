@@ -1,4 +1,5 @@
 export { default as useBadgeSync } from './useBadgeSync';
+export { default as useClassroomData } from './useClassroomData';
 export { default as useDebounce } from './useDebounce';
 export { default as useJPush } from './useJPush';
 export { default as useKeyboardStatus } from './useKeyboardStatus';

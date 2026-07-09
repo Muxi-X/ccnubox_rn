@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import type { ClassroomStatus } from '@/hooks/useClassroomData';
+
 import Picker from '@/components/picker';
 import Text from '@/components/text';
 
-import { useClassroomStarStore } from '@/store/classroom';
-import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import ChooseIcon from '@/assets/icons/choose.svg';
-import StarGrayIcon from '@/assets/icons/star-gray.svg';
 import StarIcon from '@/assets/icons/star.svg';
-import { queryFreeClassroom } from '@/request/api/queryClassroom';
+import StarGrayIcon from '@/assets/icons/star-gray.svg';
 
 // 共享常量
 export const prefix = ['自习地点', '楼层', '时间'];
@@ -19,6 +18,7 @@ export const prefix = ['自习地点', '楼层', '时间'];
 export const ClassroomColumns = [
   [
     { label: '南湖综合楼', value: 'n' },
+    { label: '3号楼', value: '3' },
     { label: '7号楼', value: '7' },
     { label: '8号楼', value: '8' },
     { label: '9号楼', value: '9' },
@@ -31,6 +31,8 @@ export const ClassroomColumns = [
     { label: '4层', value: '4' },
     { label: '5层', value: '5' },
     { label: '6层', value: '6' },
+    { label: '7层', value: '7' },
+    { label: '8层', value: '8' },
   ],
   [
     { label: '上午', value: '上午' },
@@ -39,33 +41,8 @@ export const ClassroomColumns = [
   ],
 ];
 
-// 学年格式转换：'2024' -> '2024-2025'（classroom API 所需格式）
-const formatAcademicYear = (year: string): string =>
-  year ? `${year}-${parseInt(year, 10) + 1}` : '';
-
-// 共享接口类型
-export interface ClassroomClassroomAvailableStat {
-  availableStat?: boolean[];
-  classroom?: string;
-}
-
-export interface ClassroomGetFreeClassRoomResp {
-  stat?: ClassroomClassroomAvailableStat[];
-}
-
-export interface Response {
-  code?: number;
-  data?: ClassroomGetFreeClassRoomResp;
-  msg?: string;
-}
-
-export interface ClassroomStatus {
-  roomNumber: string;
-  status: {
-    period: number;
-    status: 'outTime' | 'free' | 'occupied';
-  }[];
-}
+export type PickerColumnItem = { label: string; value: string };
+export type PickerColumns = PickerColumnItem[][];
 
 // 共享工具函数
 export const getCurrentTimeSlot = (): '上午' | '下午' | '晚上' => {
@@ -156,151 +133,22 @@ export const isCurrentOrUpcomingPeriod = (period: number): boolean => {
   return currentPeriod === period;
 };
 
-// 自定义Hook用于教室数据管理
-export const useClassroomData = (filterStarred: boolean = false) => {
-  const { starredClassrooms, isClassroomStarred, toggleStarredClassroom } =
-    useClassroomStarStore();
-  const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
-  const storeYear = useTimeStore(state => state.year);
-  const storeSemester = useTimeStore(state => state.semester);
-  const currentWeek = getCurrentWeek();
-  const currentDayOfWeek = getCurrentDayOfWeek();
-  const currentTimeSlot = getCurrentTimeSlot();
-
-  const [selectedValues, setSelectedValues] = React.useState<string[]>([
-    'n',
-    '1',
-    currentTimeSlot,
-  ]);
-  const [selectedLabels, setSelectedLabels] = React.useState<string[]>([
-    '南湖综合楼',
-    '1层',
-    currentTimeSlot,
-  ]);
-  const [classroomData, setClassroomData] = React.useState<ClassroomStatus[]>(
-    []
-  );
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string>('');
-
-  const handlePickerConfirm = (result: string[]) => {
-    if (result.length > 0) {
-      const [locationValue, floorValue, timeValue] = result;
-      const values = [
-        locationValue || 'n',
-        floorValue || '1',
-        timeValue || currentTimeSlot,
-      ];
-      const labels = getLabelsFromValues(values);
-
-      setSelectedValues(values);
-      setSelectedLabels(labels);
-    } else {
-      const defaultValues = ['n', '1', currentTimeSlot];
-      const defaultLabels = getLabelsFromValues(defaultValues);
-      setSelectedValues(defaultValues);
-      setSelectedLabels(defaultLabels);
-    }
-  };
-
-  const handlePickerCancel = () => {
-    // 保持当前状态不变
-  };
-
-  const fetchClassroomData = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
-      const [locationValue, floorValue, timeSlot] = selectedValues;
-      const wherePrefix = locationValue + floorValue;
-      const sections = getSelectedPeriods(timeSlot);
-
-      const queryParams = {
-        year: formatAcademicYear(storeYear),
-        semester: storeSemester,
-        week: currentWeek,
-        day: currentDayOfWeek,
-        sections: sections,
-        wherePrefix: wherePrefix,
-      };
-
-      const response: Response = await queryFreeClassroom(queryParams);
-
-      if (response && response.data && response.data.stat) {
-        const convertedData: ClassroomStatus[] = response.data.stat.map(
-          (item: ClassroomClassroomAvailableStat) => ({
-            roomNumber: item.classroom || '',
-            status: item.availableStat
-              ? item.availableStat.map(
-                  (isAvailable: boolean, index: number) => ({
-                    period: sections[index] || index + 1,
-                    status: isAvailable ? 'free' : 'occupied',
-                  })
-                )
-              : [],
-          })
-        );
-
-        // 如果需要过滤收藏的教室
-        const finalData = filterStarred
-          ? convertedData.filter(classroom =>
-              starredClassrooms.includes(classroom.roomNumber)
-            )
-          : convertedData;
-
-        setClassroomData(finalData);
-        setError('');
-      } else {
-        setClassroomData([]);
-        setError(
-          '由于假期等原因，空闲教室不可查询，具体信息请查询学校通知，敬请见谅~'
-        );
-      }
-    } catch (error) {
-      console.error('查询教室数据失败:', error);
-      setClassroomData([]);
-      setError(
-        '由于假期等原因，空闲教室不可查询，具体信息请查询学校通知，敬请见谅~'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchClassroomData();
-  }, [
-    selectedValues,
-    currentWeek,
-    currentDayOfWeek,
-    ...(filterStarred ? [starredClassrooms] : []),
-  ]);
-
-  return {
-    selectedValues,
-    selectedLabels,
-    classroomData,
-    loading,
-    error,
-    starredClassrooms,
-    isClassroomStarred,
-    toggleStarredClassroom,
-    handlePickerConfirm,
-    handlePickerCancel,
-  };
-};
-
 // 共享组件Props类型
 export interface ClassroomContentProps {
   selectedValues: string[];
   selectedLabels: string[];
+  inPickerValues: string[];
+  pickerColumns?: PickerColumns;
   classroomData: ClassroomStatus[];
   loading: boolean;
   error: string;
   starredClassrooms: string[];
   isClassroomStarred: (roomNumber: string) => boolean;
   toggleStarredClassroom: (roomNumber: string) => void;
+  handleColumnChange: (
+    values: (string | number)[],
+    changedIndex: number
+  ) => void;
   handlePickerConfirm: (result: string[]) => void;
   handlePickerCancel: () => void;
   showStatusText?: boolean;
@@ -316,12 +164,15 @@ export interface ClassroomContentProps {
 export const ClassroomContent: React.FC<ClassroomContentProps> = ({
   selectedValues,
   selectedLabels,
+  inPickerValues,
+  pickerColumns = ClassroomColumns,
   classroomData,
   loading,
   error,
   starredClassrooms,
   isClassroomStarred,
   toggleStarredClassroom,
+  handleColumnChange,
   handlePickerConfirm,
   handlePickerCancel,
   showStatusText = true,
@@ -337,8 +188,10 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
         mode="middle"
         prefixes={prefix}
         titleDisplayLogic={() => '请选择'}
-        data={ClassroomColumns}
+        data={pickerColumns}
         defaultValue={selectedValues}
+        controlledValue={inPickerValues}
+        onColumnChange={handleColumnChange}
       >
         <View
           style={[
@@ -347,6 +200,12 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
             currentStyle?.classroom_border_style,
           ]}
         >
+          <ChooseIcon
+            width={25}
+            height={25}
+            color={currentStyle?.text_style?.color}
+            style={{ marginRight: 14 }}
+          />
           <Text style={[styles.textItem, currentStyle?.text_style]}>
             {selectedLabels[0]}
           </Text>
@@ -356,12 +215,6 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
           <Text style={[styles.textItem, currentStyle?.text_style]}>
             {selectedLabels[2]}
           </Text>
-          <ChooseIcon
-            width={25}
-            height={25}
-            color={currentStyle?.text_style?.color}
-            style={{ marginLeft: 6 }}
-          />
         </View>
       </Picker>
 
@@ -554,6 +407,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 25,
   },
   textItem: {
+    flex: 1,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',

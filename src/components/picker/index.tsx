@@ -74,6 +74,8 @@ const Picker: React.FC<DatePickerProps> = ({
   onConfirm,
   onClose,
   defaultValue,
+  controlledValue,
+  onColumnChange,
   prefixes,
   mode = 'bottom',
   style,
@@ -97,6 +99,9 @@ const Picker: React.FC<DatePickerProps> = ({
       : commonColors.darkGray;
   }, [themeName]);
   const [pickerValue, setPickerValue] = useState<(string | number)[]>([]);
+  // 用 ref 追踪上一次值，用于检测哪列发生了变化
+  const prevPickerValue = React.useRef<(string | number)[]>([]);
+
   const title = useMemo(
     () => titleDisplayLogic(pickerValue, data),
     [pickerValue, data]
@@ -104,12 +109,29 @@ const Picker: React.FC<DatePickerProps> = ({
   const isBottomMode = useMemo(() => {
     return mode !== 'middle';
   }, [mode]);
-  // 默认选择逻辑
+  // 默认选择逻辑（仅 mount 时）
   useEffect(() => {
-    handlePick(defaultValue ? defaultValue : data.map(item => item[0].value));
+    const initial = defaultValue ?? data.map(item => item[0].value);
+    prevPickerValue.current = initial;
+    setPickerValue(initial);
   }, []);
+  // 外部 controlledValue 变化时同步内部状态（用于级联重置）
+  useEffect(() => {
+    if (!controlledValue) return;
+    const serialized = JSON.stringify(controlledValue);
+    if (serialized === JSON.stringify(prevPickerValue.current)) return;
+    prevPickerValue.current = [...controlledValue];
+    setPickerValue([...controlledValue]);
+  }, [JSON.stringify(controlledValue)]);
+
   const handlePick = (pickedValue: (string | number)[]) => {
+    const prev = prevPickerValue.current;
+    const changedIndex = pickedValue.findIndex((v, i) => v !== prev[i]);
+    prevPickerValue.current = [...pickedValue];
     setPickerValue(pickedValue);
+    if (onColumnChange && changedIndex >= 0) {
+      onColumnChange(pickedValue, changedIndex);
+    }
   };
   const handleConfirm = () => {
     if (onConfirm) onConfirm(pickerValue.map(item => String(item)));
