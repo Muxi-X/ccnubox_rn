@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
-import { PickerView } from '@/components/picker/pickerView';
+import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -153,10 +153,19 @@ const Picker: React.FC<DatePickerProps> = ({
         <View style={styles.prefixContainer}>
           {prefixes.map((prefix, index) => (
             <Text style={styles.prefix} key={`prefix-${index}`}>
-              {prefix ?? '1'}
+              {prefix ?? ''}
             </Text>
           ))}
         </View>
+      )}
+
+      {connectors && connectors.length > 0 && (
+        <PickerConnector
+          connectors={connectors}
+          totalWidth={contentWidth}
+          itemHeight={itemHeight}
+          data={data}
+        />
       )}
 
       <PickerView
@@ -217,17 +226,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: 0,
     backgroundColor: 'transparent',
-  },
-  content: {
-    position: 'absolute',
-    alignItems: 'center',
-    flex: 1,
-    right: 30,
-    width: percent2px(94) - 60,
-    display: 'flex',
-    flexDirection: 'row',
-    // justifyContent: 'space-around',
-    height: 30,
   },
   maskTop: {
     flex: 1,

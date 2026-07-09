@@ -93,7 +93,7 @@ export interface ClassroomGetFreeClassRoomResp {
   stat?: ClassroomClassroomAvailableStat[];
 }
 
-export interface Response {
+export interface ClassroomResponse {
   code?: number;
   data?: ClassroomGetFreeClassRoomResp;
   msg?: string;
@@ -154,6 +154,7 @@ const useClassroomData = (filterStarred: boolean = false) => {
   );
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>('');
+  const requestIdRef = React.useRef(0);
 
   React.useEffect(() => {
     getClassroomList()
@@ -199,10 +200,11 @@ const useClassroomData = (filterStarred: boolean = false) => {
   };
 
   const fetchClassroomData = async () => {
-    try {
-      setLoading(true);
-      setError('');
+    const requestId = ++requestIdRef.current;
+    setLoading(true);
+    setError('');
 
+    try {
       const [locationValue, floorValue, timeSlot] = selectedValues;
       const wherePrefix = locationValue + floorValue;
       const sections = getSelectedPeriods(timeSlot);
@@ -216,7 +218,9 @@ const useClassroomData = (filterStarred: boolean = false) => {
         wherePrefix: wherePrefix,
       };
 
-      const response: Response = await queryFreeClassroom(queryParams);
+      const response: ClassroomResponse = await queryFreeClassroom(queryParams);
+
+      if (requestId !== requestIdRef.current) return;
 
       if (response && response.data && response.data.stat) {
         const convertedData: ClassroomStatus[] = response.data.stat.map(
@@ -233,13 +237,7 @@ const useClassroomData = (filterStarred: boolean = false) => {
           })
         );
 
-        const finalData = filterStarred
-          ? convertedData.filter(classroom =>
-              starredClassrooms.includes(classroom.roomNumber)
-            )
-          : convertedData;
-
-        setClassroomData(finalData);
+        setClassroomData(convertedData);
         setError('');
       } else {
         setClassroomData([]);
@@ -248,30 +246,38 @@ const useClassroomData = (filterStarred: boolean = false) => {
         );
       }
     } catch {
+      if (requestId !== requestIdRef.current) return;
       setClassroomData([]);
       setError(
         '由于假期等原因，空闲教室不可查询，具体信息请查询学校通知，敬请见谅~'
       );
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
 
   React.useEffect(() => {
     fetchClassroomData();
-  }, [
-    selectedValues,
-    currentWeek,
-    currentDayOfWeek,
-    ...(filterStarred ? [starredClassrooms] : []),
-  ]);
+  }, [selectedValues, currentWeek, currentDayOfWeek]);
+
+  const filteredClassroomData = React.useMemo(
+    () =>
+      filterStarred
+        ? classroomData.filter(classroom =>
+            starredClassrooms.includes(classroom.roomNumber)
+          )
+        : classroomData,
+    [classroomData, filterStarred, starredClassrooms]
+  );
 
   return {
     selectedValues,
     selectedLabels,
     inPickerValues,
     pickerColumns,
-    classroomData,
+    classroomData: filteredClassroomData,
     loading,
     error,
     starredClassrooms,

@@ -190,10 +190,12 @@ function resolvePathWithParams<P extends Path>(
           const value = query[key];
           // 处理数组参数
           if (Array.isArray(value)) {
-            value.forEach(item => {
-              queryParams.append(key, String(item));
-            });
-          } else {
+            value
+              .filter(item => item != null)
+              .forEach(item => {
+                queryParams.append(key, String(item));
+              });
+          } else if (value != null) {
             queryParams.append(key, String(value));
           }
         }

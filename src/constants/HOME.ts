@@ -185,7 +185,7 @@ export const HOME_ITEMS = [
       android: AndroidEventGlideSvg,
       default: AndroidEventGlideSvg,
     },
-    key: 'grid-5',
+    key: 'grid-14',
     action: () =>
       handleOpenURL(
         'weixin://dl/business/?appid=wx326be910b0f5468c&path=pages/main/index',

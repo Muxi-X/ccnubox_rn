@@ -128,11 +128,6 @@ export const getCurrentPeriod = (): number => {
   return 13;
 };
 
-export const isCurrentOrUpcomingPeriod = (period: number): boolean => {
-  const currentPeriod = getCurrentPeriod();
-  return currentPeriod === period;
-};
-
 // 共享组件Props类型
 export interface ClassroomContentProps {
   selectedValues: string[];
@@ -179,6 +174,7 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
   emptyStateConfig,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const currentPeriod = getCurrentPeriod();
 
   return (
     <View style={[styles.content, currentStyle?.background_style]}>
@@ -236,7 +232,7 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
           </View>
           {getClassPeriods(selectedLabels[2]).map((period, index) => {
             const periodNumber = parseInt(period.replace('节', ''));
-            const isCurrentPeriod = isCurrentOrUpcomingPeriod(periodNumber);
+            const isCurrentPeriod = currentPeriod === periodNumber;
             return (
               <View
                 key={index}
@@ -315,11 +311,11 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
               </Text>
             </View>
           ) : (
-            classroomData.map((classroom, index) => {
+            classroomData.map(classroom => {
               const selectedPeriods = getSelectedPeriods(selectedLabels[2]);
               return (
                 <View
-                  key={index}
+                  key={classroom.roomNumber}
                   style={[
                     styles.classroomItem,
                     currentStyle?.secondary_background_style,
@@ -350,7 +346,6 @@ export const ClassroomContent: React.FC<ClassroomContentProps> = ({
                         s => s.period === period
                       );
                       // 判断是否已过时
-                      const currentPeriod = getCurrentPeriod();
                       const isOutTime =
                         currentPeriod > 0 && period < currentPeriod;
                       const finalStatus = isOutTime
