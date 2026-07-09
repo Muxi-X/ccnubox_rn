@@ -11,10 +11,9 @@ const TITLE_MAP: Record<string, string> = {
   electricityBillinBalance: '电费查询',
   webview: '常用网站',
   scoreCalculation: '计算学分绩',
+  classroom: '空闲教室',
+  classroomStar: '我的收藏',
 };
-
-// 这些页面有自己的内部 header，不需要布局层的 CustomStackHeader
-const PAGES_WITH_OWN_HEADER = new Set<string>([]);
 
 function useCurrentTitle() {
   const segments = useSegments();
@@ -28,21 +27,15 @@ function useCurrentTitle() {
 
 export default function Layout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const segments = useSegments();
   const title = useCurrentTitle();
   const headerRight = useHeaderRightStore(state => state.content);
-
-  const lastName = segments[segments.length - 1];
-  const hideHeader = PAGES_WITH_OWN_HEADER.has(lastName);
 
   return (
     <SafeAreaView
       edges={['bottom']}
       style={[styles.container, currentStyle?.background_style]}
     >
-      {!hideHeader && (
-        <CustomStackHeader title={title} headerRight={headerRight} />
-      )}
+      <CustomStackHeader title={title} headerRight={headerRight} />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -59,6 +52,7 @@ export default function Layout() {
         <Stack.Screen name="scoreCalculation" />
         <Stack.Screen name="electricityBillinBalance" />
         <Stack.Screen name="webview" />
+        <Stack.Screen name="classroomStar" />
       </Stack>
     </SafeAreaView>
   );

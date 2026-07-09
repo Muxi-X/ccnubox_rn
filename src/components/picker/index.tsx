@@ -74,6 +74,8 @@ const Picker: React.FC<DatePickerProps> = ({
   onConfirm,
   onClose,
   defaultValue,
+  controlledValue,
+  onColumnChange,
   prefixes,
   mode = 'bottom',
   style,
@@ -97,6 +99,9 @@ const Picker: React.FC<DatePickerProps> = ({
       : commonColors.darkGray;
   }, [themeName]);
   const [pickerValue, setPickerValue] = useState<(string | number)[]>([]);
+  // 用 ref 追踪上一次值，用于检测哪列发生了变化
+  const prevPickerValue = React.useRef<(string | number)[]>([]);
+
   const title = useMemo(
     () => titleDisplayLogic(pickerValue, data),
     [pickerValue, data]
@@ -104,12 +109,29 @@ const Picker: React.FC<DatePickerProps> = ({
   const isBottomMode = useMemo(() => {
     return mode !== 'middle';
   }, [mode]);
-  // 默认选择逻辑
+  // 默认选择逻辑（仅 mount 时）
   useEffect(() => {
-    handlePick(defaultValue ? defaultValue : data.map(item => item[0].value));
+    const initial = defaultValue ?? data.map(item => item[0].value);
+    prevPickerValue.current = initial;
+    setPickerValue(initial);
   }, []);
+  // 外部 controlledValue 变化时同步内部状态（用于级联重置）
+  useEffect(() => {
+    if (!controlledValue) return;
+    const serialized = JSON.stringify(controlledValue);
+    if (serialized === JSON.stringify(prevPickerValue.current)) return;
+    prevPickerValue.current = [...controlledValue];
+    setPickerValue([...controlledValue]);
+  }, [JSON.stringify(controlledValue)]);
+
   const handlePick = (pickedValue: (string | number)[]) => {
+    const prev = prevPickerValue.current;
+    const changedIndex = pickedValue.findIndex((v, i) => v !== prev[i]);
+    prevPickerValue.current = [...pickedValue];
     setPickerValue(pickedValue);
+    if (onColumnChange && changedIndex >= 0) {
+      onColumnChange(pickedValue, changedIndex);
+    }
   };
   const handleConfirm = () => {
     if (onConfirm) onConfirm(pickerValue.map(item => String(item)));
@@ -127,32 +149,15 @@ const Picker: React.FC<DatePickerProps> = ({
       triggerComponent={children}
       style={style}
     >
-      <View
-        style={[
-          styles.content,
-          { top: (3 * itemHeight - commonStyles.fontMedium.fontSize) / 2 },
-        ]}
-      >
-        {/* FIX_ME：前缀，目前采用手动计算 */}
-        {prefixes &&
-          prefixes.map((prefix, index) => (
-            <Text
-              style={[
-                styles.prefix,
-                {
-                  // 手动计算距离左侧距离
-                  left:
-                    (contentWidth / prefixes.length +
-                      commonStyles.fontMedium.fontSize) /
-                    2,
-                },
-              ]}
-              key={index}
-            >
-              {prefix ?? '1'}
+      {prefixes && (
+        <View style={styles.prefixContainer}>
+          {prefixes.map((prefix, index) => (
+            <Text style={styles.prefix} key={`prefix-${index}`}>
+              {prefix ?? ''}
             </Text>
           ))}
-      </View>
+        </View>
+      )}
 
       {connectors && connectors.length > 0 && (
         <PickerConnector
@@ -174,7 +179,6 @@ const Picker: React.FC<DatePickerProps> = ({
             <View
               style={{
                 flex: 1,
-                borderLeftWidth: BORDER_LEFT_WIDTH,
                 borderLeftColor,
                 opacity: 0.6,
                 borderRadius: 5,
@@ -217,14 +221,11 @@ const Picker: React.FC<DatePickerProps> = ({
 export default Picker;
 
 const styles = StyleSheet.create({
-  content: {
-    position: 'absolute',
-    alignItems: 'center',
-    flex: 1,
-    right: 30,
-    width: percent2px(94) - 60,
-    display: 'flex',
-    justifyContent: 'center',
+  prefixContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    backgroundColor: 'transparent',
   },
   maskTop: {
     flex: 1,

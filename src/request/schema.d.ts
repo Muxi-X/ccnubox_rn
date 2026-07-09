@@ -896,6 +896,47 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/classroom/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 获取教室列表
+     * @description 返回 be-class 中 classrooms.json 的教室列表
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 查询成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: components['schemas']['classroom.GetClassroomsResp'];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/department/delDepartment': {
     parameters: {
       query?: never;
@@ -3171,10 +3212,7 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
@@ -3215,10 +3253,7 @@ export interface paths {
     get: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
@@ -3261,10 +3296,7 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
+        header?: never;
         path?: never;
         cookie?: never;
       };
@@ -4146,6 +4178,9 @@ export interface components {
       availableStat?: boolean[];
       /** @description 教室名 */
       classroom?: string;
+    };
+    'classroom.GetClassroomsResp': {
+      class_rooms?: string[];
     };
     'classroom.GetFreeClassRoomResp': {
       /** @description 各教室的空闲情况 */

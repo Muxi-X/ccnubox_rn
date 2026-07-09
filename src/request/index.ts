@@ -187,7 +187,17 @@ function resolvePathWithParams<P extends Path>(
       const queryParams = new URLSearchParams();
       for (const key in query) {
         if (Object.prototype.hasOwnProperty.call(query, key)) {
-          queryParams.append(key, query[key]);
+          const value = query[key];
+          // 处理数组参数
+          if (Array.isArray(value)) {
+            value
+              .filter(item => item != null)
+              .forEach(item => {
+                queryParams.append(key, String(item));
+              });
+          } else if (value != null) {
+            queryParams.append(key, String(value));
+          }
         }
       }
       const queryString = queryParams.toString();
