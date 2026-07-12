@@ -6,10 +6,10 @@ import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.net.toUri
+import com.muxixyz.ccnubox.MainActivity
 import com.muxixyz.ccnubox.R
 import com.muxixyz.ccnubox.widgets.utils.TimeTableUtils
-import com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider2x2
-import com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider4x2
 
 class ScheduleRemoteViewsFactory(private val context: Context, val widgetType: String) : RemoteViewsService.RemoteViewsFactory {
 
@@ -42,14 +42,10 @@ class ScheduleRemoteViewsFactory(private val context: Context, val widgetType: S
         if (todayCourses.isEmpty()||position !in todayCourses.indices)return null
         val course = todayCourses[position]
         Log.d("course",course.toString())
-        val clickIntent = Intent(context, when (widgetType) {
-            "2x2" -> RecentClassesProvider2x2::class.java
-            "4x2" -> RecentClassesProvider4x2::class.java
-            else -> RecentClassesProvider2x2::class.java // 默认值
-        }).apply {
-            action = "com.muxixyz.ccnubox.ACTION_WIDGET_CLICK"
+        val clickIntent = Intent(Intent.ACTION_VIEW, "ccnubox://schedule".toUri(), context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-        val clickPendingIntent = PendingIntent.getBroadcast(
+        val clickPendingIntent = PendingIntent.getActivity(
             context,
             0,
             clickIntent,

@@ -9,6 +9,8 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider2x2
+import com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider4x2
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -23,13 +25,16 @@ class WidgetManagerModule(private val reactContext: ReactApplicationContext):Rea
             parseCoursesWithOrgJson(text)
             Log.d("course_data",text)
 
-            val updateIntent = Intent("com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET").apply {
-                component = ComponentName(
-                    reactContext.packageName,
-                    "com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider"
-                )
+            val widgetProviders = listOf(
+                RecentClassesProvider2x2::class.java,
+                RecentClassesProvider4x2::class.java
+            )
+            widgetProviders.forEach { provider ->
+                val updateIntent = Intent("com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET").apply {
+                    component = ComponentName(reactContext, provider)
+                }
+                reactContext.sendBroadcast(updateIntent)
             }
-            reactContext.sendBroadcast(updateIntent)
             promise.resolve("Widget data update successfully")
         }catch (e:Exception){
             promise.reject("Update_ERROR","Failed to update widget data",e)

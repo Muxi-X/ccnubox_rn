@@ -9,6 +9,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.net.toUri
+import com.muxixyz.ccnubox.MainActivity
 import com.muxixyz.ccnubox.R
 import com.muxixyz.ccnubox.widgets.utils.TimeTableUtils
 import com.muxixyz.ccnubox.widgets.services.RecentClassesService
@@ -20,8 +21,7 @@ class RecentClassesProvider4x2 : AppWidgetProvider() {
 
         if (action == Intent.ACTION_TIME_CHANGED ||
             action == AppWidgetManager.ACTION_APPWIDGET_UPDATE ||
-            action == "com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" ||
-            action == "com.muxixyz.ccnubox.ACTION_WIDGET_CLICK" // 新增点击事件处理
+            action == "com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"
         ) {
             Log.d("4x2action",action)
             updateWidgetData(context)
@@ -38,7 +38,7 @@ class RecentClassesProvider4x2 : AppWidgetProvider() {
         val componentName = ComponentName(context, RecentClassesProvider4x2::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
 
-        val views = RemoteViews(context.packageName, R.layout.recent_classes_widget_2x2)
+        val views = RemoteViews(context.packageName, R.layout.recent_classes_widget_4x2)
 
         val weekday = TimeTableUtils.getWeekday()
         views.setTextViewText(R.id.date_in_year, TimeTableUtils.getDateString())
@@ -51,11 +51,10 @@ class RecentClassesProvider4x2 : AppWidgetProvider() {
         views.setRemoteAdapter(R.id.lv, serviceIntent)
         views.setEmptyView(R.id.lv, R.id.layout_empty)
 
-        // 设置点击事件
-        val clickIntent = Intent(context, RecentClassesProvider4x2::class.java).apply {
-            action = "com.muxixyz.ccnubox.ACTION_WIDGET_CLICK"
+        val clickIntent = Intent(Intent.ACTION_VIEW, "ccnubox://schedule".toUri(), context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-        val clickPendingIntent = PendingIntent.getBroadcast(
+        val clickPendingIntent = PendingIntent.getActivity(
             context,
             0,
             clickIntent,
