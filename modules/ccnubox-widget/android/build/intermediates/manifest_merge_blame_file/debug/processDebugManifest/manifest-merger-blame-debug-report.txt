@@ -1,0 +1,70 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.muxixyz.ccnubox.widgets" >
+4
+5    <uses-sdk android:minSdkVersion="24" />
+6
+7    <application>
+7-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:2:3-33:17
+8        <service
+8-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:3:5-6:34
+9            android:name="com.muxixyz.ccnubox.widgets.services.RecentClassesService"
+9-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:4:7-52
+10            android:exported="false"
+10-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:6:7-31
+11            android:permission="android.permission.BIND_REMOTEVIEWS" />
+11-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:5:7-63
+12
+13        <receiver
+13-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:8:5-19:16
+14            android:name="com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider2x2"
+14-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:9:7-57
+15            android:enabled="true"
+15-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:10:7-29
+16            android:exported="true" >
+16-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:11:7-30
+17            <intent-filter>
+17-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:12:7-15:23
+18                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+18-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:13:9-76
+18-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:13:17-73
+19                <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" />
+19-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:14:9-75
+19-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:14:17-72
+20            </intent-filter>
+21
+22            <meta-data
+22-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:16:7-18:66
+23                android:name="android.appwidget.provider"
+23-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:17:9-50
+24                android:resource="@xml/recent_classes_widget_info_2x2" />
+24-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:18:9-63
+25        </receiver>
+26        <receiver
+26-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:21:5-32:16
+27            android:name="com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider4x2"
+27-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:22:7-57
+28            android:enabled="true"
+28-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:23:7-29
+29            android:exported="true" >
+29-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:24:7-30
+30            <intent-filter>
+30-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:12:7-15:23
+31                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+31-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:13:9-76
+31-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:13:17-73
+32                <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" />
+32-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:14:9-75
+32-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:14:17-72
+33            </intent-filter>
+34
+35            <meta-data
+35-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:16:7-18:66
+36                android:name="android.appwidget.provider"
+36-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:17:9-50
+37                android:resource="@xml/recent_classes_widget_info_4x2" />
+37-->/Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:18:9-63
+38        </receiver>
+39    </application>
+40
+41</manifest>

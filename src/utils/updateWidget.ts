@@ -1,5 +1,5 @@
 import { ExtensionStorage } from '@bacons/apple-targets';
-import { NativeModules, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import useCourseStore from '@/store/course';
 import useTimeStore from '@/store/time';
@@ -10,9 +10,9 @@ import {
   serializeCoursesForAppleWidget,
 } from '@/utils/courseRuntime';
 
-export const updateCourseData = async (nextCourses?: courseType[]) => {
-  const { WidgetManager } = NativeModules;
+import CcnuboxWidget from '../../modules/ccnubox-widget';
 
+export const updateCourseData = async (nextCourses?: courseType[]) => {
   const currentWeek = useTimeStore.getState().getCurrentWeek();
 
   const courses = nextCourses ?? useCourseStore.getState().courses;
@@ -26,11 +26,13 @@ export const updateCourseData = async (nextCourses?: courseType[]) => {
 
   console.log(courseData);
 
-  await WidgetManager.updateCourseData(JSON.stringify(courseData))
+  if (!CcnuboxWidget) {
+    throw new Error('CcnuboxWidget native module is unavailable');
+  }
+
+  await CcnuboxWidget.updateCourseData(JSON.stringify(courseData))
     .then((result: string) => {
-      console.log('数据更新成功:', result); // Force widget to refresh
-      // console.log("Course Data:", JSON.stringify(courseData));
-      WidgetManager.refreshWidget?.();
+      console.log('数据更新成功:', result);
     })
     .catch((error: unknown) => {
       console.error('数据更新失败:', error);

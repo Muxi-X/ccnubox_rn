@@ -13,7 +13,6 @@ import com.facebook.soloader.SoLoader
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ExpoReactHostFactory
-import com.muxixyz.ccnubox.widgets.WidgetManagerPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -41,8 +40,6 @@ class MainApplication : Application(), ReactApplication {
   }
 
   private fun getPackages(): List<ReactPackage> {
-    return PackageList(this).getPackages().also {
-      it.add(WidgetManagerPackage())
-    }
+    return PackageList(this).getPackages()
   }
 }
