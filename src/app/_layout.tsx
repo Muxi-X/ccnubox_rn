@@ -17,7 +17,6 @@ import { usePortalStore } from '../store/portal';
 import useScraper from '../store/scraper';
 import useVisualScheme from '../store/visualScheme';
 import { commonColors } from '../styles/common';
-import { fetchUpdate } from '../utils';
 
 export default function RootLayout() {
   const rootNavigationState = useRootNavigationState();
@@ -40,19 +39,16 @@ export default function RootLayout() {
   useJPush();
   useBadgeSync();
 
-  const initApp = React.useCallback(async () => {
+  React.useEffect(() => {
     // 引入所有样式以及基于 theme 的组件
     initVisualScheme();
     // 加载字体
     void loadAsync({
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
     });
     // 配置Toast
     Toast.config({ mask: false, stackable: true });
-    // 获取更新
-    if (!__DEV__) {
-      fetchUpdate();
-    }
     // 在 store 中设置爬虫 ref
     setRef(scraperRef as React.RefObject<WebView>);
     // 在 store 中配置 portal ref
@@ -60,15 +56,13 @@ export default function RootLayout() {
   }, [initVisualScheme, setPortalRef, setRef]);
 
   React.useEffect(() => {
-    initApp();
     const listener = Appearance.addChangeListener(scheme => {
-      console.log('toggled change scheme', scheme);
       if (isAutoTheme) {
         changeTheme(scheme.colorScheme === 'dark' ? 'dark' : 'light');
       }
     });
     return () => listener.remove();
-  }, [isAutoTheme, changeTheme, initApp]);
+  }, [isAutoTheme, changeTheme]);
 
   React.useEffect(() => {
     const activeRootRouteName =
