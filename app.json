@@ -77,7 +77,7 @@
     "plugins": [
       "expo-router",
       "expo-web-browser",
-			"expo-font",
+      "expo-font",
       [
         "react-native-edge-to-edge",
         {
@@ -112,8 +112,8 @@
           "android": {
             "usesCleartextTraffic": true
           },
-					"ios": {
-            "buildReactNativeFromSource": false 
+          "ios": {
+            "buildReactNativeFromSource": false
           }
         }
       ],

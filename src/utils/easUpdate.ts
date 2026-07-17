@@ -1,9 +1,7 @@
 import * as Updates from 'expo-updates';
 
 export type EasUpdateResult =
-  | { status: 'disabled' }
-  | { status: 'up-to-date' }
-  | { status: 'downloaded' };
+  { status: 'disabled' } | { status: 'up-to-date' } | { status: 'downloaded' };
 
 export type EasUpdateProgress = 'checking' | 'downloading';
 
@@ -15,7 +13,7 @@ type EasUpdateOptions = {
 let activeUpdateOperation: Promise<EasUpdateResult> | null = null;
 
 const runUpdateOperation = async (
-  options: EasUpdateOptions,
+  options: EasUpdateOptions
 ): Promise<EasUpdateResult> => {
   if (!Updates.isEnabled) {
     return { status: 'disabled' };
@@ -39,7 +37,7 @@ const runUpdateOperation = async (
 };
 
 export const checkAndDownloadUpdateAsync = (
-  options: EasUpdateOptions = {},
+  options: EasUpdateOptions = {}
 ): Promise<EasUpdateResult> => {
   if (activeUpdateOperation) {
     return activeUpdateOperation;

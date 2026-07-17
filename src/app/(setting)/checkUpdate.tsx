@@ -24,8 +24,8 @@ const mxLogo = require('../../assets/images/mx-logo.png');
 
 function CheckUpdate(): React.ReactNode {
   const version = Application.nativeApplicationVersion;
-  const updateInfo = Constants.default.expoConfig?.extra
-    ?.updateInfo as UpdateInfo | undefined;
+  const updateInfo = Constants.default.expoConfig?.extra?.updateInfo as
+    UpdateInfo | undefined;
   const [manualProgress, setManualProgress] = useState<
     EasUpdateProgress | 'restarting' | null
   >(null);
