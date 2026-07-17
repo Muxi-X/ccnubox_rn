@@ -39,7 +39,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "19",
+      "buildNumber": "23",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -72,7 +72,7 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 19
+      "versionCode": 23
     },
     "plugins": [
       "expo-router",
