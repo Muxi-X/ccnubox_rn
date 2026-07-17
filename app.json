@@ -113,7 +113,8 @@
             "usesCleartextTraffic": true
           },
           "ios": {
-            "buildReactNativeFromSource": false
+            "buildReactNativeFromSource": false,
+            "usePrecompiledModules": false
           }
         }
       ],
