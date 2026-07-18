@@ -1,7 +1,6 @@
-import { StyleProp, TextStyle } from 'react-native';
-import { RectButtonProps } from 'react-native-gesture-handler';
+import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
-export interface ButtonProps extends RectButtonProps {
+export interface ButtonProps {
   /**
    * 是否在加载中
    */
@@ -14,4 +13,10 @@ export interface ButtonProps extends RectButtonProps {
    * 文字样式
    */
   text_style?: StyleProp<TextStyle>;
+
+  style?: StyleProp<ViewStyle>;
+
+  onPress?: () => void;
+
+  disabled?: boolean;
 }
