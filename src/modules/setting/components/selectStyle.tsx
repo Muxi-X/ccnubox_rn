@@ -1,4 +1,4 @@
-import { Switch } from '@ant-design/react-native';
+import Switch from '@/components/switch';
 import { Image, Text, View } from 'react-native';
 
 import Button from '@/components/button';
