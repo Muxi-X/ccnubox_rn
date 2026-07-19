@@ -5,7 +5,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
@@ -16,17 +15,29 @@ import View from '@/components/view';
 
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
-import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
-import { queryCourseTable, queryCurrentWeek } from '@/request/api/course';
+import { queryCourseTable } from '@/request/api/course';
+import {
+  queryCurrentSemester,
+  querySemesterList,
+} from '@/request/api/semester';
 import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
 } from '@/utils/courseLiveActivity';
 import { serializeCoursesForAppleWidget } from '@/utils/courseRuntime';
-import { buildSemesterOptions } from '@/utils/generateSemesterOptions';
+import {
+  buildSemesterOptions,
+  parseSemester,
+  type SemesterOptionBase,
+} from '@/utils/generateSemesterOptions';
 import { log } from '@/utils/logger';
+import {
+  calculateSemesterWeekCount,
+  calculateWeekFromStart,
+  clampWeekToSemester,
+} from '@/utils/semesterWeeks';
 
 import CourseTable from './components/courseTable';
 import type {
@@ -35,33 +46,8 @@ import type {
 } from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
 
-// 根据开学时间计算学期和年份
-const computeSemesterAndYear = (startTimestamp: number) => {
-  const startDate = new Date(startTimestamp * 1000);
-  const month = startDate.getMonth() + 1; // 获取开学时间的月份
-  let semester = '1'; // 默认学期为 '1'
-  let year = startDate.getFullYear().toString(); // 默认年份为当前年
-
-  // 根据开学时间计算学期和年份
-  if (month >= 1 && month <= 5) {
-    // 1月到5月 => 第二学期
-    semester = '2';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 6 && month <= 7) {
-    // 6月到7月 => 第三学期
-    semester = '3';
-    year = (new Date().getFullYear() - 1).toString(); // 前一年
-  } else if (month >= 8 && month <= 12) {
-    // 8月到12月 => 第一学期
-    semester = '1';
-    year = new Date().getFullYear().toString(); // 当前年
-  }
-  return { semester, year };
-};
-
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const studentId = useUserStore(state => state.student_id);
   const extensionStorage = useMemo(() => {
     return new ExtensionStorage('group.release-20240916');
   }, []);
@@ -75,19 +61,20 @@ const CourseTablePage: FC = () => {
     selectedWeek,
     setSelectedWeek,
     setHolidayTime,
-    schoolTime,
     setSchoolTime,
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
 
   const [isLoadingTimetable, setIsLoadingTimetable] = useState(false);
-
-  // 根据学号生成学期列表
-  const semesterOptions = useMemo(
-    () => buildSemesterOptions(studentId),
-    [studentId]
+  const [semesterOptions, setSemesterOptions] = useState<SemesterOptionBase[]>(
+    []
   );
+  const [currentSemester, setCurrentSemester] = useState<Pick<
+    SemesterOptionBase,
+    'year' | 'semester'
+  > | null>(null);
+  const [actualCurrentWeek, setActualCurrentWeek] = useState(1);
 
   const totalWeeks = useTimeStore(state => state.getSemesterWeekCount());
 
@@ -102,66 +89,82 @@ const CourseTablePage: FC = () => {
     [extensionStorage]
   );
 
-  const fetchCurrentWeek = useCallback(async () => {
-    try {
-      const res = await queryCurrentWeek();
-      if (res?.code === 0 && res.data?.school_time && res.data?.holiday_time) {
-        setSchoolTime(res.data.school_time);
-        setHolidayTime(res.data.holiday_time);
-        const { semester, year } = computeSemesterAndYear(res.data.school_time);
-        setSemester(semester);
-        setYear(year);
+  const applySemesterTime = useCallback(
+    (option: SemesterOptionBase) => {
+      setSchoolTime(option.startTimestamp);
+      setHolidayTime(option.endTimestamp);
+      extensionStorage.set('schoolTime', option.startTimestamp);
+      extensionStorage.set('holidayTime', option.endTimestamp);
+      ExtensionStorage.reloadWidget();
+    },
+    [extensionStorage, setHolidayTime, setSchoolTime]
+  );
 
-        // 保存当前周数据到 UserDefaults 供 widget 使用
-        extensionStorage.set('schoolTime', res.data.school_time);
-        extensionStorage.set('holidayTime', res.data.holiday_time);
-        ExtensionStorage.reloadWidget();
+  const fetchSemesterInfo = useCallback(async () => {
+    const [currentRes, listRes] = await Promise.all([
+      queryCurrentSemester(),
+      querySemesterList(),
+    ]);
+    const current = parseSemester(currentRes.data);
+    const options = buildSemesterOptions(listRes.data ?? []);
 
-        setTimeout(
-          () => setSelectedWeek(useTimeStore.getState().getCurrentWeek()),
-          0
-        );
-      }
-    } catch (err) {
-      log.error('Failed to fetch current week:', err);
+    if (
+      currentRes.code !== 0 ||
+      listRes.code !== 0 ||
+      !current ||
+      options.length === 0
+    ) {
+      throw new Error('学期接口返回无效数据');
     }
-  }, [
-    setSchoolTime,
-    setHolidayTime,
-    setSemester,
-    setYear,
-    extensionStorage,
-    setSelectedWeek,
-  ]);
+
+    setSemesterOptions(options);
+    setCurrentSemester({ year: current.year, semester: current.semester });
+    setYear(current.year);
+    setSemester(current.semester);
+    applySemesterTime(current);
+
+    const currentWeek = clampWeekToSemester(
+      calculateWeekFromStart(current.startTimestamp),
+      calculateSemesterWeekCount(current.startTimestamp, current.endTimestamp)
+    );
+    setActualCurrentWeek(currentWeek);
+    setSelectedWeek(currentWeek);
+
+    return current;
+  }, [applySemesterTime, setSelectedWeek, setSemester, setYear]);
+
+  const fetchTimetable = useCallback(
+    async (
+      targetYear: string,
+      targetSemester: string,
+      forceRefresh = false
+    ) => {
+      const res = await queryCourseTable({
+        semester: targetSemester,
+        year: targetYear,
+        refresh: forceRefresh,
+      });
+
+      if (res?.code === 0 && res.data?.classes && res.data.last_refresh_time) {
+        const nextCourses = res.data.classes as courseType[];
+        updateCourses(nextCourses);
+        syncCoursesToWidget(nextCourses);
+        setLastUpdate(res.data.last_refresh_time);
+      }
+    },
+    [setLastUpdate, syncCoursesToWidget, updateCourses]
+  );
 
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
       try {
-        const res = await queryCourseTable({
-          semester,
-          year,
-          refresh: forceRefresh,
-        });
-
-        if (
-          res?.code === 0 &&
-          res.data?.classes &&
-          res.data.last_refresh_time
-        ) {
-          const nextCourses = res.data.classes as courseType[];
-          updateCourses(nextCourses);
-          syncCoursesToWidget(nextCourses);
-          setLastUpdate(res.data.last_refresh_time);
-        }
+        await fetchTimetable(year, semester, forceRefresh);
       } catch (error) {
         log.error('Failed to refresh timetable:', error);
       }
     },
-    [semester, year, updateCourses, syncCoursesToWidget, setLastUpdate]
+    [fetchTimetable, semester, year]
   );
-
-  const onTimetableRefreshRef = useRef(onTimetableRefresh);
-  onTimetableRefreshRef.current = onTimetableRefresh;
 
   const handleApply = useCallback(
     async ({
@@ -172,26 +175,16 @@ const CourseTablePage: FC = () => {
       const semesterChanged = newYear !== year || newSemester !== semester;
       setYear(newYear);
       setSemester(newSemester);
+      const nextSemester = semesterOptions.find(
+        option => option.year === newYear && option.semester === newSemester
+      );
+      if (nextSemester) applySemesterTime(nextSemester);
       if (week !== undefined) setSelectedWeek(week);
 
       if (semesterChanged) {
         setIsLoadingTimetable(true);
         try {
-          const res = await queryCourseTable({
-            semester: newSemester,
-            year: newYear,
-            refresh: false,
-          });
-          if (
-            res?.code === 0 &&
-            res.data?.classes &&
-            res.data.last_refresh_time
-          ) {
-            const nextCourses = res.data.classes as courseType[];
-            updateCourses(nextCourses);
-            syncCoursesToWidget(nextCourses);
-            setLastUpdate(res.data.last_refresh_time);
-          }
+          await fetchTimetable(newYear, newSemester);
         } catch (error) {
           log.error('切换学期失败:', error);
         } finally {
@@ -205,25 +198,26 @@ const CourseTablePage: FC = () => {
       semester,
       setYear,
       setSemester,
+      semesterOptions,
+      applySemesterTime,
       setSelectedWeek,
-      updateCourses,
-      syncCoursesToWidget,
-      setLastUpdate,
+      fetchTimetable,
       setShowWeekPicker,
     ]
   );
 
-  // 获取当前周数
   useEffect(() => {
-    void fetchCurrentWeek();
-  }, [fetchCurrentWeek]);
+    const initialize = async () => {
+      try {
+        const current = await fetchSemesterInfo();
+        await fetchTimetable(current.year, current.semester);
+      } catch (error) {
+        log.error('Failed to initialize semester data:', error);
+      }
+    };
 
-  // schoolTime 就绪后加载一次课表（切换学期由 handleApply 负责）
-  useEffect(() => {
-    if (schoolTime) {
-      void onTimetableRefreshRef.current();
-    }
-  }, [schoolTime]);
+    void initialize();
+  }, [fetchSemesterInfo, fetchTimetable]);
 
   useEffect(() => {
     setSelectedWeek(selectedWeek);
@@ -284,6 +278,8 @@ const CourseTablePage: FC = () => {
           year={year}
           semester={semester}
           semesterOptions={semesterOptions}
+          currentSemester={currentSemester}
+          actualCurrentWeek={actualCurrentWeek}
           onApply={handleApply}
           isLoading={isLoadingTimetable}
         />

@@ -182,6 +182,16 @@ export const CourseDataForm = (props: CourseFormProps) => {
       });
       return;
     }
+    if (!props.onSubmit && (!semester || !year)) {
+      Modal.show({
+        title: '提示',
+        children: '学期信息尚未加载，请稍后重试',
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+      });
+      return;
+    }
 
     setLoading(true);
     try {
@@ -193,18 +203,14 @@ export const CourseDataForm = (props: CourseFormProps) => {
       // default create behavior
       const data = {
         ...formData,
-        semester: semester || '1',
-        year: year || new Date().getFullYear().toString(),
+        semester,
+        year,
         is_official: false, // 自主添加而非教务系统的课
       } as any;
 
       await addCourse(data);
 
-      createAndCacheCourse(
-        formData,
-        semester || '1',
-        year || new Date().getFullYear().toString()
-      );
+      createAndCacheCourse(formData, semester, year);
 
       Modal.show({
         title: '成功',

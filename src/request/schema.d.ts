@@ -406,7 +406,7 @@ export interface paths {
     put?: never;
     /**
      * 添加自定义课程
-     * @description 给当前登录学生添加一门自定义课程。weeks 必须是周次数组，例如 [1,2,3]；dur_class 是节次范围，例如 "1-2"。成功时 code=0；添加失败、课程已存在、时间冲突等会返回 code=50001 和对应 msg。
+     * @description 给当前登录学生添加一门自定义课程。weeks 必须是周次数组，例如 [1,2,3]；dur_class 是节次范围，例如 "1-2"。成功时 code=0；课程时间冲突返回 code=40601，课程已存在返回 code=40602，其他添加失败返回 code=50602。
      */
     post: {
       parameters: {
@@ -443,8 +443,26 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
+        /** @description 课程时间冲突，code=40601；课程已存在，code=40602 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
         /** @description 请求参数错误，code=40002 */
         422: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 添加课程失败，code=50602 */
+        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -469,7 +487,7 @@ export interface paths {
     };
     /**
      * 获取学期日期配置
-     * @description 获取当前学期的开学日期和放假日期，返回秒级时间戳。前端用 school_time 计算当前周，用 holiday_time 判断学期边界。成功时 code=0；配置缺失或格式错误会返回 code=50001。
+     * @description 获取当前学期的开学日期和放假日期，返回秒级时间戳。前端用 school_time 计算当前周，用 holiday_time 判断学期边界。成功时 code=0；类型转换失败返回 code=50003。
      */
     get: {
       parameters: {
@@ -512,7 +530,7 @@ export interface paths {
     put?: never;
     /**
      * 删除自定义课程
-     * @description 根据课程 ID 删除当前登录学生的自定义课程。教务系统导入课程不支持删除。成功时 code=0；删除失败或删除官方课程会返回 code=50001 和 msg。
+     * @description 根据课程 ID 删除当前登录学生的自定义课程。教务系统导入课程不支持删除。成功时 code=0；删除失败返回 code=50603。
      */
     post: {
       parameters: {
@@ -575,7 +593,7 @@ export interface paths {
     };
     /**
      * 获取课表
-     * @description 根据学年、学期获取当前登录学生的课表。refresh=false 优先读缓存/本地数据，refresh=true 会触发刷新。成功时 code=0；业务失败通常仍由统一响应体返回 code=50001 和 msg。
+     * @description 根据学年、学期获取当前登录学生的课表。refresh=false 优先读缓存/本地数据，refresh=true 会触发刷新。成功时 code=0；获取失败返回 code=50601。
      */
     get: {
       parameters: {
@@ -655,7 +673,7 @@ export interface paths {
     put?: never;
     /**
      * 删除课程备注
-     * @description 根据课程 ID 删除当前登录学生的课程备注。成功时 code=0；课程不存在或删除失败会返回 code=50001 和 msg。
+     * @description 根据课程 ID 删除当前登录学生的课程备注。成功时 code=0；删除失败返回 code=50604。
      */
     post: {
       parameters: {
@@ -720,7 +738,7 @@ export interface paths {
     put?: never;
     /**
      * 添加或更新课程备注
-     * @description 根据课程 ID 给当前登录学生的课程添加或更新备注。成功时 code=0；课程不存在或保存失败会返回 code=50001 和 msg。
+     * @description 根据课程 ID 给当前登录学生的课程添加或更新备注。成功时 code=0；保存失败返回 code=50604。
      */
     post: {
       parameters: {
@@ -784,7 +802,7 @@ export interface paths {
     get?: never;
     /**
      * 更新自定义课程
-     * @description 根据课程 ID 更新当前登录学生的自定义课程。可更新课程名称、节次、地点、教师、周次、星期几、学分；更新后课程 ID 可能改变。成功时 code=0；更新失败或时间冲突会返回 code=50001 和 msg。
+     * @description 根据课程 ID 更新当前登录学生的自定义课程。可更新课程名称、节次、地点、教师、周次、星期几、学分；更新后课程 ID 可能改变。成功时 code=0；课程时间冲突返回 code=40601，其他更新失败返回 code=50604。
      */
     put: {
       parameters: {
@@ -821,8 +839,26 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
+        /** @description 课程时间冲突，code=40601 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
         /** @description 请求参数错误，code=40002 */
         422: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 更新课程失败，code=50604 */
+        500: {
           headers: {
             [name: string]: unknown;
           };
@@ -3224,7 +3260,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            '*/*': components['schemas']['web.Response'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['content.GetSemesterResponse'];
             };
           };
@@ -3265,7 +3301,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            '*/*': components['schemas']['web.Response'] & {
+            'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['content.GetSemesterListResponse'];
             };
           };
@@ -3490,7 +3526,7 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-        /** @description 注销失败或 token 清理失败，code=50001 */
+        /** @description 注销失败或 token 清理失败，code=51401 */
         500: {
           headers: {
             [name: string]: unknown;
@@ -3556,7 +3592,7 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-        /** @description 登录失败或 token 生成失败，code=50001 */
+        /** @description 登录失败，code=51201；token 生成失败，code=51401 */
         500: {
           headers: {
             [name: string]: unknown;
@@ -3614,7 +3650,7 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-        /** @description 登出失败，code=50001 */
+        /** @description 登出失败，code=51401 */
         500: {
           headers: {
             [name: string]: unknown;
@@ -3667,7 +3703,7 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-        /** @description 刷新 token 无效或过期，code=40001 */
+        /** @description 刷新 token 无效，code=40001；已过期，code=41401 */
         401: {
           headers: {
             [name: string]: unknown;
@@ -3676,7 +3712,7 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
-        /** @description 刷新 token 失败，code=50001 */
+        /** @description 刷新 token 失败，code=51401 */
         500: {
           headers: {
             [name: string]: unknown;
@@ -4229,11 +4265,11 @@ export interface components {
     'content.GetInfoSumsResponse': {
       info_sums?: components['schemas']['content.InfoSum'][];
     };
-    'content.GetSemesterListResponse': {
-      semesters?: components['schemas']['content.Semester'][];
-    };
+    'content.GetSemesterListResponse': components['schemas']['content.Semester'][];
     'content.GetSemesterResponse': {
+      end_date?: string;
       semester?: string;
+      start_date?: string;
     };
     'content.GetUpdateVersionResponse': {
       version?: string;

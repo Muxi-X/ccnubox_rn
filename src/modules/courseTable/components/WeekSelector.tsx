@@ -10,11 +10,11 @@ import {
 
 import Modal from '@/components/modal';
 
-import useTimeStore, { computeSemesterAndYear } from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 
 import { commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
+import { calculateSemesterWeekCount } from '@/utils/semesterWeeks';
 
 import { WeekSelectorProps } from './courseTable/type';
 
@@ -32,19 +32,12 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   year,
   semester,
   semesterOptions,
+  currentSemester,
+  actualCurrentWeek,
   onApply,
   isLoading = false,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const getCurrentWeek = useTimeStore(state => state.getCurrentWeek);
-  const schoolTime = useTimeStore(state => state.schoolTime);
-
-  // 根据 schoolTime 推算真实当前学期
-  const actualSemester = useMemo(
-    () => (schoolTime ? computeSemesterAndYear(schoolTime) : null),
-    [schoolTime]
-  );
-
   // 本地预选学期状态（箭头切换只改这里，不立即请求）
   const [pendingYear, setPendingYear] = useState(year);
   const [pendingSemester, setPendingSemester] = useState(semester);
@@ -69,15 +62,24 @@ const WeekSelector: FC<WeekSelectorProps> = ({
     pendingIndex >= 0 && pendingIndex < semesterOptions.length - 1;
   const canGoNext = pendingIndex > 0;
 
+  const pendingTotalWeeks = useMemo(() => {
+    if (pendingIndex < 0) return totalWeeks;
+    const option = semesterOptions[pendingIndex];
+    return calculateSemesterWeekCount(
+      option.startTimestamp,
+      option.endTimestamp
+    );
+  }, [pendingIndex, semesterOptions, totalWeeks]);
+
   // 预选学期是否与当前学期不同
   const hasSemesterChanged =
     pendingYear !== year || pendingSemester !== semester;
 
   // 预选学期是否为真实当前学期（用于决定是否渲染「当前周」标识）
   const isCurrentSemester =
-    actualSemester !== null &&
-    pendingYear === actualSemester.year &&
-    pendingSemester === actualSemester.semester;
+    currentSemester !== null &&
+    pendingYear === currentSemester.year &&
+    pendingSemester === currentSemester.semester;
 
   // 向前切换（更早的学期）—— 只改本地状态
   const handlePrev = useCallback(() => {
@@ -257,7 +259,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
             </View>
             {/* 周次选择区域 */}
             <View style={styles.weekGrid}>
-              {Array.from({ length: totalWeeks }).map((_, i) => (
+              {Array.from({ length: pendingTotalWeeks }).map((_, i) => (
                 <Pressable
                   key={i}
                   onPress={() => handleWeekSelect(i + 1)}
@@ -280,7 +282,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                         color:
                           !hasSemesterChanged && currentWeek === i + 1
                             ? '#FFFFFF'
-                            : isCurrentSemester && getCurrentWeek() === i + 1
+                            : isCurrentSemester && actualCurrentWeek === i + 1
                               ? '#7878F8'
                               : currentStyle?.schedule_text_style?.color ||
                                 '#000000',
@@ -289,7 +291,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
                   >
                     {i + 1}
                   </Text>
-                  {isCurrentSemester && getCurrentWeek() === i + 1 && (
+                  {isCurrentSemester && actualCurrentWeek === i + 1 && (
                     <Text
                       style={[
                         commonStyles.fontSmall,
@@ -319,7 +321,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
 
 const styles = StyleSheet.create({
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
   },
