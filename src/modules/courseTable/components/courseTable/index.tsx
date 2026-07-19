@@ -1,15 +1,15 @@
 import {
   BackdropBlur,
   Canvas,
+  Image as SkImage,
   makeImageFromView,
   Skia,
-  Image as SkImage,
   SkImage as SkImageType,
   useCanvasRef,
   useImage,
 } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
-import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library/legacy';
 import React, {
   RefObject,
   useDeferredValue,

@@ -1,4 +1,5 @@
-import { SystemBars } from 'react-native-edge-to-edge';
+import { isRunningInExpoGo } from 'expo';
+import { StatusBar } from 'react-native';
 
 /**
  * 设置系统UI主题
@@ -7,6 +8,15 @@ import { SystemBars } from 'react-native-edge-to-edge';
 export const setSystemUITheme = (themeName: 'dark' | 'light') => {
   const isDark = themeName === 'dark';
 
-  // 使用 SystemBars 设置状态栏和导航栏样式
-  SystemBars.setStyle(isDark ? 'light' : 'dark');
+  StatusBar.setBarStyle(isDark ? 'light-content' : 'dark-content', true);
+
+  if (isRunningInExpoGo()) return;
+
+  void import('react-native-edge-to-edge')
+    .then(({ SystemBars }) => {
+      SystemBars.setStyle(isDark ? 'light' : 'dark');
+    })
+    .catch(() => {
+      // Expo Go and older native clients do not include this module.
+    });
 };
