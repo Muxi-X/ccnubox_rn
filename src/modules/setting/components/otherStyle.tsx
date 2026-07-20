@@ -2,8 +2,8 @@ import { ButtonGroup } from '@rneui/themed';
 import {
   BackdropBlur,
   Canvas,
-  Skia,
   Image as SkImage,
+  Skia,
   SkImage as SkImageType,
   useImage,
 } from '@shopify/react-native-skia';
@@ -17,7 +17,6 @@ import Toast from '@/components/toast';
 import { default as ThemeBasedView } from '@/components/view';
 
 import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useThemeBasedComponents from '@/store/themeBasedComponents';
 import useVisualScheme from '@/store/visualScheme';
 
 import BaseLightImage from '@/assets/images/theme/base.png';
@@ -27,6 +26,7 @@ import IosDarkImage from '@/assets/images/theme/iosDark.png';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 import { commonColors } from '@/styles/common';
+import { componentMap } from '@/themeBasedComponents';
 
 const LAYOUTS = [
   {
@@ -111,9 +111,7 @@ export default function OtherStyle({
     setBackgroundBlurRadius,
   } = useCourseTableAppearance();
 
-  const CourseItem = useThemeBasedComponents(
-    state => state.CurrentComponents?.CourseItem
-  );
+  const CourseItem = componentMap?.[layoutName].CourseItem;
 
   const [isPicking, setIsPicking] = useState(false);
   // 使用本地 state 存储滑块的临时值，减少 store 更新频率

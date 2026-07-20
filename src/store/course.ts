@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { courseType } from '@/modules/courseTable/components/courseTable/type';
-import { updateCourseData } from '@/utils/updateWidget';
+import { updateCourseWidgetData } from '@/utils/updateWidget';
 
 interface CourseState {
   hydrated: boolean;
@@ -29,15 +28,11 @@ const useCourse = create<CourseState>()(
         courses: [],
         courseCategories: [],
         updateCourses: (courses: courseType[]) => {
-          // 推送到小组件
-          if (Platform.OS === 'android') {
-            updateCourseData();
-          }
-
           set(state => ({
             courses,
             courseCategories: state.courseCategories,
           }));
+          void updateCourseWidgetData(courses);
         },
         updatecourseCategories: (courseCategories: string[]) => {
           set(state => ({
@@ -46,19 +41,23 @@ const useCourse = create<CourseState>()(
           }));
         },
         addCourse: (course: courseType) => {
-          set(state => ({ courses: [...state.courses, course] }));
+          const courses = [...useCourse.getState().courses, course];
+          set({ courses });
+          void updateCourseWidgetData(courses);
         },
         deleteCourse: (id: string) => {
-          set(state => ({
-            courses: state.courses.filter(c => c.id !== id),
-          }));
+          const courses = useCourse.getState().courses.filter(c => c.id !== id);
+          set({ courses });
+          void updateCourseWidgetData(courses);
         },
         updateCourseNote: (id: string, note: string) => {
-          set(state => ({
-            courses: state.courses.map(course =>
+          const courses = useCourse
+            .getState()
+            .courses.map(course =>
               course.id === id ? { ...course, note } : course
-            ),
-          }));
+            );
+          set({ courses });
+          void updateCourseWidgetData(courses);
         },
         lastUpdate: 0,
         setLastUpdate: (time: number) => set({ lastUpdate: time }),

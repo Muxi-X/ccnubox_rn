@@ -1,0 +1,19 @@
+R_DEF: Internal format may change without notice
+local
+drawable purple_bar
+drawable widget_bg
+id course_container
+id course_location
+id course_name
+id course_time
+id date_in_week
+id date_in_year
+id layout_empty
+id layout_root
+id lv
+layout item_course
+layout recent_classes_widget_2x2
+layout recent_classes_widget_4x2
+string widget_today_no_class
+xml recent_classes_widget_info_2x2
+xml recent_classes_widget_info_4x2

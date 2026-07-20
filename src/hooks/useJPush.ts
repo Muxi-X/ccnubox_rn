@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+import { isRunningInExpoGo } from 'expo';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { NativeModules, Platform } from 'react-native';
@@ -16,6 +16,20 @@ type JPushNotificationResult = {
   notificationEventType?: 'notificationArrived' | 'notificationOpened';
   title?: string;
 };
+
+type NotificationsModule = typeof import('expo-notifications');
+type NotificationPermissionsStatus =
+  import('expo-notifications').NotificationPermissionsStatus;
+
+let notificationsModulePromise: Promise<NotificationsModule> | null = null;
+
+const getNotificationsModule =
+  async (): Promise<NotificationsModule | null> => {
+    if (isRunningInExpoGo()) return null;
+
+    notificationsModulePromise ??= import('expo-notifications');
+    return notificationsModulePromise;
+  };
 
 const normalizeExtras = (extras: unknown): Record<string, string> | null => {
   if (!extras) return null;
@@ -238,7 +252,8 @@ const handleCustomMessage = (result: unknown) => {
 };
 
 const hasGrantedPushPermission = (
-  settings: Notifications.NotificationPermissionsStatus
+  settings: NotificationPermissionsStatus,
+  Notifications: NotificationsModule
 ) => {
   return (
     settings.granted ||
@@ -247,8 +262,11 @@ const hasGrantedPushPermission = (
 };
 
 export const ensurePushPermission = async (requestIfNeeded = false) => {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) return false;
+
   const currentSettings = await Notifications.getPermissionsAsync();
-  if (hasGrantedPushPermission(currentSettings)) {
+  if (hasGrantedPushPermission(currentSettings, Notifications)) {
     return true;
   }
 
@@ -257,7 +275,7 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
   }
 
   const requestedSettings = await Notifications.requestPermissionsAsync();
-  return hasGrantedPushPermission(requestedSettings);
+  return hasGrantedPushPermission(requestedSettings, Notifications);
 };
 
 const registerJPushListeners = async () => {
@@ -296,6 +314,9 @@ export const initializeJPush = async ({
         console.warn('[JPush] 原生模块不存在，跳过初始化');
         return false;
       }
+
+      const Notifications = await getNotificationsModule();
+      if (!Notifications) return false;
 
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('tips', {

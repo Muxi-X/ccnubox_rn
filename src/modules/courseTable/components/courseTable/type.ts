@@ -5,6 +5,8 @@ import {
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import { StyleProps } from 'react-native-reanimated';
+
+import type { SemesterOptionBase } from '@/utils/generateSemesterOptions';
 export type courseType = {
   class_when: string;
   classname: string;
@@ -46,11 +48,7 @@ export interface CourseTransferType {
   is_official: boolean; // 是否为教务系统课程
 }
 
-export interface SemesterOption {
-  label: string;
-  year: string;
-  semester: string;
-}
+export type SemesterOption = SemesterOptionBase;
 
 /** 学期 + 周次 应用参数 */
 export interface SemesterWeekParams {
@@ -71,6 +69,10 @@ export interface WeekSelectorProps {
   semester: string;
   /** 可选学期列表 */
   semesterOptions: SemesterOption[];
+  /** 后端返回的真实当前学期 */
+  currentSemester: Pick<SemesterOption, 'year' | 'semester'> | null;
+  /** 真实当前学期的当前周 */
+  actualCurrentWeek: number;
   /** 应用学期/周次变更并关闭，由父组件负责更新状态、拉取课表、关闭弹窗 */
   onApply: (params: SemesterWeekParams) => void | Promise<void>;
   /** 拉取课表数据中，遮罩层显示 loading */

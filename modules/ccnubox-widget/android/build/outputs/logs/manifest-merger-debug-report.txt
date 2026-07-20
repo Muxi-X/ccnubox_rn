@@ -1,0 +1,58 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:1:1-34:12
+INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:1:1-34:12
+	package
+		INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:1:11-69
+application
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:2:3-33:17
+service#com.muxixyz.ccnubox.widgets.services.RecentClassesService
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:3:5-6:34
+	android:exported
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:6:7-31
+	android:permission
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:5:7-63
+	android:name
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:4:7-52
+receiver#com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider2x2
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:8:5-19:16
+	android:enabled
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:10:7-29
+	android:exported
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:11:7-30
+	android:name
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:9:7-57
+intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE+action:name:com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:12:7-15:23
+action#android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:13:9-76
+	android:name
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:13:17-73
+action#com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:14:9-75
+	android:name
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:14:17-72
+meta-data#android.appwidget.provider
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:16:7-18:66
+	android:resource
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:18:9-63
+	android:name
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:17:9-50
+receiver#com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider4x2
+ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:21:5-32:16
+	android:enabled
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:23:7-29
+	android:exported
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:24:7-30
+	android:name
+		ADDED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml:22:7-57
+uses-sdk
+INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml
+INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/bingling-sama/Projects/ccnubox_rn/modules/ccnubox-widget/android/src/main/AndroidManifest.xml

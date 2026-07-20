@@ -11,7 +11,9 @@
     "scheme": "ccnubox",
     "userInterfaceStyle": "automatic",
     "updates": {
-      "url": "https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621"
+      "url": "https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "src/assets/images/",
@@ -37,7 +39,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "19",
+      "buildNumber": "23",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
         "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
@@ -70,12 +72,12 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 19
+      "versionCode": 23
     },
     "plugins": [
       "expo-router",
       "expo-web-browser",
-			"expo-font",
+      "expo-font",
       [
         "react-native-edge-to-edge",
         {
@@ -110,8 +112,9 @@
           "android": {
             "usesCleartextTraffic": true
           },
-					"ios": {
-            "buildReactNativeFromSource": false 
+          "ios": {
+            "buildReactNativeFromSource": false,
+            "usePrecompiledModules": false
           }
         }
       ],
