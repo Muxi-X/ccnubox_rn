@@ -77,11 +77,10 @@ export default function Webview() {
         ref={webview}
         javaScriptEnabled
         // injectedJavaScript={login}
-        geolocationEnabled
         injectedJavaScriptForMainFrameOnly={false}
         originWhitelist={['*']}
         setSupportMultipleWindows={false} // Android 必须
-        onShouldStartLoadWithRequest={request => true}
+        onShouldStartLoadWithRequest={_request => true}
         onNavigationStateChange={autoLogin}
         style={styles.container}
         onMessage={event => {

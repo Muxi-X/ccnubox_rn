@@ -24,9 +24,11 @@ import BaseDarkImage from '@/assets/images/theme/baseDark.png';
 import IosLightImage from '@/assets/images/theme/ios.png';
 import IosDarkImage from '@/assets/images/theme/iosDark.png';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
+import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 import { commonColors } from '@/styles/common';
 import { componentMap } from '@/themeBasedComponents';
+import { runSensitiveAction } from '@/utils/requestSensitivePermission';
 
 const LAYOUTS = [
   {
@@ -223,24 +225,17 @@ export default function OtherStyle({
   const handlePickImage = async () => {
     try {
       setIsPicking(true);
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Toast.show({
-          text: '需要相册权限才能选择背景图片',
-          icon: 'fail',
-        });
-        setIsPicking(false);
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: false,
-        quality: 0.9,
+      const result = await runSensitiveAction({
+        action: () =>
+          ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: false,
+            quality: 0.9,
+          }),
+        purpose: SENSITIVE_PERMISSION_PURPOSES.courseTableBackground,
       });
 
-      if (!result.canceled && result.assets?.[0]?.uri) {
+      if (result && !result.canceled && result.assets?.[0]?.uri) {
         setBackgroundUri(result.assets[0].uri);
         Toast.show({
           text: '背景图片设置成功',

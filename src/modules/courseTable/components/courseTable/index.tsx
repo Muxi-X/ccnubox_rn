@@ -34,8 +34,10 @@ import {
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
+import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
+import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
 
 import CourseContent from './CourseContent';
 import { StickyBottom } from './StickyBottom';
@@ -61,7 +63,6 @@ const Schedule: React.FC<CourseTableProps> = ({
     backgroundMaskOpacity,
     backgroundBlurRadius,
   } = useCourseTableAppearance();
-  const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
@@ -163,16 +164,18 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   const onSaveImageAsync = async () => {
     try {
-      // 在真正需要使用权限时才请求
-      if (status?.status !== 'granted') {
-        const permissionResult = await requestPermission();
-        if (permissionResult.status !== 'granted') {
-          Toast.show({
-            text: '需要相册权限才能保存截图',
-            icon: 'fail',
-          });
-          return;
-        }
+      const hasPermission = await requestSensitivePermission({
+        getPermission: () => MediaLibrary.getPermissionsAsync(true),
+        isGranted: permission => permission.granted,
+        purpose: SENSITIVE_PERMISSION_PURPOSES.saveCourseTable,
+        requestPermission: () => MediaLibrary.requestPermissionsAsync(true),
+      });
+      if (!hasPermission) {
+        Toast.show({
+          text: '需要相册权限才能保存截图',
+          icon: 'fail',
+        });
+        return;
       }
       setSnapShot(true);
       // 确保截图前视图已完全渲染

@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview';
 export default function Map() {
   return (
     <WebView
+      geolocationEnabled
       style={styles.container}
       source={{ uri: 'https://gis.ccnu.edu.cn/' }}
     />

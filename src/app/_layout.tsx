@@ -8,6 +8,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 
+import SensitivePermissionNotice from '@/components/sensitivePermissionNotice';
+
 import PortalRoot from '../components/portal';
 import Scraper from '../components/scraper';
 import useBadgeSync from '../hooks/useBadgeSync';
@@ -110,6 +112,7 @@ export default function RootLayout() {
           </Stack>
           {/* portal */}
           <PortalRoot ref={portalRef} />
+          <SensitivePermissionNotice />
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </Provider>
