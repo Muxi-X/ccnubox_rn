@@ -1,11 +1,9 @@
-import React, { FC } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { RectButton } from 'react-native-gesture-handler';
+import { FC } from 'react';
+import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
+import { Button as RNEButton } from 'react-native-elements';
 
 import { ButtonProps } from '@/components/button/type';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors } from '@/styles/common';
 
 const Button: FC<ButtonProps> = ({
@@ -16,29 +14,31 @@ const Button: FC<ButtonProps> = ({
   children,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const btnGlobalStyle = currentStyle?.button_style ?? {};
+  const textGlobalStyle = currentStyle?.button_text_style ?? {};
+  const ripplePurple = commonColors.lightPurple ?? '#B8A6F5';
+
   return (
-    <RectButton
-      rippleColor={commonColors.lightPurple}
-      activeOpacity={0.6}
-      style={[
-        styles.rect_button,
-        currentStyle?.button_style,
-        { opacity: isLoading ? 0.4 : 1 },
-        style,
-      ]}
-      onPress={(...props) => {
-        if (!isLoading) onPress?.(...props);
-      }}
+    <TouchableNativeFeedback
+      background={TouchableNativeFeedback.Ripple(ripplePurple, false)}
+      disabled={isLoading}
+      onPress={() => onPress?.(true)}
     >
-      <View accessible accessibilityRole="button" style={[styles.button]}>
-        {isLoading && (
-          <ActivityIndicator color="#fff" style={{ marginRight: 5 }} /> // 加载指示器
-        )}
-        <Text style={[currentStyle?.button_text_style, text_style]}>
-          {children}
-        </Text>
+      <View
+        style={[styles.rect_button, { opacity: isLoading ? 0.4 : 1 }, style]}
+      >
+        <RNEButton
+          activeOpacity={1}
+          containerStyle={[btnGlobalStyle]}
+          buttonStyle={styles.button}
+          titleStyle={[textGlobalStyle, text_style]}
+          loading={isLoading}
+          loadingProps={{ color: '#fff', style: { marginRight: 5 } }}
+          title={children}
+          accessibilityRole="button"
+        />
       </View>
-    </RectButton>
+    </TouchableNativeFeedback>
   );
 };
 
@@ -49,10 +49,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   button: {
-    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
     borderRadius: 6,
   },
 });
