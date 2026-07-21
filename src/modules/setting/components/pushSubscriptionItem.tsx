@@ -1,4 +1,4 @@
-import { Switch } from '@ant-design/react-native';
+import Switch from '@/components/switch';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';

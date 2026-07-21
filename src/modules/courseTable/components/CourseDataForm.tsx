@@ -1,4 +1,5 @@
-import { Button, Input, WhiteSpace } from '@ant-design/react-native';
+import { Input, WhiteSpace } from '@ant-design/react-native';
+import Button from '@/components/button';
 import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -405,9 +406,8 @@ export const CourseDataForm = (props: CourseFormProps) => {
         ></FlatList>
         <WhiteSpace size="lg" />
         <Button
-          type="primary"
           style={styles.button}
-          loading={loading}
+          isLoading={loading}
           onPress={handleSubmit}
         >
           {submitText}
