@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Switch as RNEUIswitch } from '@rneui/themed';
+import { Switch as RNEUISwitch } from '@rneui/themed';
 import { SwitchProps } from './type';
 
 const Switch: FC<SwitchProps> = ({
@@ -11,7 +11,7 @@ const Switch: FC<SwitchProps> = ({
   thumbColor,
 }) => {
   return (
-    <RNEUIswitch
+    <RNEUISwitch
       value={checked}
       onValueChange={onChange}
       style={style}

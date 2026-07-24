@@ -170,6 +170,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
           }}
         >
           <TouchableOpacity
+            style={styles.touchableBtn}
+            accessibilityRole="button"
             onPress={() => {
               Modal.clear();
               Modal.show({
@@ -195,6 +197,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
             </View>
           </TouchableOpacity>
           <TouchableOpacity
+            style={styles.touchableBtn}
+            accessibilityRole="button"
             onPress={() => {
               Modal.clear();
               router.push({

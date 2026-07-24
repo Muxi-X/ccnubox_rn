@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 export interface SwitchProps {
   //是否选中
   checked?: boolean;
-  //切换状态回回调函数
+  //切换状态回调函数
   onChange?: (checked: boolean) => void;
   //开关外容器样式
   style?: StyleProp<ViewStyle>;

@@ -11,8 +11,10 @@ const Button: FC<ButtonProps> = ({
   onPress,
   text_style,
   style,
+  buttonStyle,
   children,
   disabled,
+  ...rest
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
@@ -20,11 +22,16 @@ const Button: FC<ButtonProps> = ({
       title={children}
       onPress={onPress}
       disabled={disabled || isLoading}
-      buttonStyle={[currentStyle?.button_style, { borderRadius: 6 }]}
+      buttonStyle={[
+        currentStyle?.button_style,
+        { borderRadius: 6 },
+        buttonStyle,
+      ]}
       containerStyle={[{ width: 200, height: 40 }, style]}
       loading={isLoading}
-      loadingProps={{ color: '#fff' }} //指定加载指示器的样式
+      loadingProps={{ color: '#fff', ...rest.loadingProps }} //指定加载指示器的样式
       titleStyle={[currentStyle?.button_text_style, text_style]}
+      {...rest}
     />
   );
 };
