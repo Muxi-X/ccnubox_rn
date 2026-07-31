@@ -74,7 +74,6 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
 
     // 刷新短 token
     const response = await axios.get(
-      // `${process.env.EXPO_PUBLIC_API_URL}/users/refresh_token`,
       `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
       {
         headers: { Authorization: `Bearer ${longToken}` },
@@ -210,7 +209,17 @@ function resolvePathWithParams<P extends Path>(
       const queryParams = new URLSearchParams();
       for (const key in query) {
         if (Object.prototype.hasOwnProperty.call(query, key)) {
-          queryParams.append(key, query[key]);
+          const value = query[key];
+          // 处理数组参数
+          if (Array.isArray(value)) {
+            value
+              .filter(item => item != null)
+              .forEach(item => {
+                queryParams.append(key, String(item));
+              });
+          } else if (value != null) {
+            queryParams.append(key, String(value));
+          }
         }
       }
       const queryString = queryParams.toString();

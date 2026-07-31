@@ -12,6 +12,13 @@ export const STATUS_BG_COLORS: Record<string, string> = {
 
 export const STATUS_LABELS = ['待处理', '处理中', '已完成'];
 
+export const STATUS_STYLE_KEY: Record<string, string> = {
+  待处理: 'pending',
+  处理中: 'inProgress',
+  已完成: 'completed',
+  默认: 'default',
+};
+
 export const ISSUE_TYPE_MAP: Record<string, string> = {
   function: '功能异常',
   improvement: '产品改进',

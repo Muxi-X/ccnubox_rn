@@ -3,7 +3,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import Modal from '@/components/modal';
 
-import useThemeBasedComponents from '@/store/themeBasedComponents';
+import useVisualScheme from '@/store/visualScheme';
 
 import {
   COURSE_HORIZONTAL_PADDING,
@@ -12,6 +12,7 @@ import {
   COURSE_VERTICAL_PADDING,
   DAYS_OF_WEEK,
 } from '@/constants/SCHEDULE';
+import { componentMap } from '@/themeBasedComponents';
 
 import ModalContent from './ModalContent';
 import { CourseTransferType, courseType } from './type';
@@ -27,9 +28,8 @@ const CourseContent: React.FC<CourseContentProps> = memo(
   function CourseContent(props) {
     const { class_when, originalData, currentWeek } = props;
 
-    const CourseItem = useThemeBasedComponents(
-      state => state.CurrentComponents?.CourseItem
-    );
+    const layoutName = useVisualScheme(state => state.layoutName);
+    const CourseItem = componentMap?.[layoutName].CourseItem;
 
     // 解析课程范围
     function parseRange(str: string) {

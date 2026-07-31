@@ -6,11 +6,13 @@ interface CourseTableAppearanceState {
   backgroundUri?: string;
   backgroundMode: 'cover' | 'contain' | 'stretch';
   foregroundOpacity: number;
-  backgroundMaskEnabled: boolean;
+  backgroundMaskOpacity: number;
+  backgroundBlurRadius: number;
   setBackgroundUri: (uri?: string) => void;
   setBackgroundMode: (mode: 'cover' | 'contain' | 'stretch') => void;
   setForegroundOpacity: (opacity: number) => void;
-  setBackgroundMaskEnabled: (enabled: boolean) => void;
+  setBackgroundMaskOpacity: (opacity: number) => void;
+  setBackgroundBlurRadius: (radius: number) => void;
   reset: () => void;
 }
 
@@ -19,8 +21,9 @@ const useCourseTableAppearance = create<CourseTableAppearanceState>()(
     set => ({
       backgroundUri: undefined,
       backgroundMode: 'cover',
-      foregroundOpacity: 100,
-      backgroundMaskEnabled: false,
+      foregroundOpacity: 0,
+      backgroundMaskOpacity: 0,
+      backgroundBlurRadius: 0,
 
       setBackgroundUri: (uri?: string) => set({ backgroundUri: uri }),
       setBackgroundMode: (mode: 'cover' | 'contain' | 'stretch') =>
@@ -28,15 +31,25 @@ const useCourseTableAppearance = create<CourseTableAppearanceState>()(
       setForegroundOpacity: (opacity: number) =>
         set({
           foregroundOpacity: Math.max(0, Math.min(100, Math.round(opacity))),
-        }), // 限制在 0-100 之间并转为整数
-      setBackgroundMaskEnabled: (enabled: boolean) =>
-        set({ backgroundMaskEnabled: enabled }),
+        }),
+      setBackgroundMaskOpacity: (opacity: number) =>
+        set({
+          backgroundMaskOpacity: Math.max(
+            0,
+            Math.min(100, Math.round(opacity))
+          ),
+        }),
+      setBackgroundBlurRadius: (radius: number) =>
+        set({
+          backgroundBlurRadius: Math.max(0, Math.min(30, Math.round(radius))),
+        }),
       reset: () =>
         set({
           backgroundUri: undefined,
           backgroundMode: 'cover',
-          foregroundOpacity: 100,
-          backgroundMaskEnabled: false,
+          foregroundOpacity: 0,
+          backgroundMaskOpacity: 0,
+          backgroundBlurRadius: 0,
         }),
     }),
     {

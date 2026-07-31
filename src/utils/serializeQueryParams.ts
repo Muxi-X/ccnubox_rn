@@ -16,6 +16,6 @@ export function serializeQueryParams(
 
     return searchParams.toString();
   } catch (error) {
-    throw new Error(`序列化query失败: ${error}`);
+    throw new Error(`序列化query失败: ${error}`, { cause: error });
   }
 }

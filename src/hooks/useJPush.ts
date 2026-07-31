@@ -1,3 +1,4 @@
+import { isRunningInExpoGo } from 'expo';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { NativeModules, Platform } from 'react-native';
@@ -16,6 +17,20 @@ type JPushNotificationResult = {
   notificationEventType?: 'notificationArrived' | 'notificationOpened';
   title?: string;
 };
+
+type NotificationsModule = typeof import('expo-notifications');
+type NotificationPermissionsStatus =
+  import('expo-notifications').NotificationPermissionsStatus;
+
+let notificationsModulePromise: Promise<NotificationsModule> | null = null;
+
+const getNotificationsModule =
+  async (): Promise<NotificationsModule | null> => {
+    if (isHarmony || isRunningInExpoGo()) return null;
+
+    notificationsModulePromise ??= import('expo-notifications');
+    return notificationsModulePromise;
+  };
 
 const normalizeExtras = (extras: unknown): Record<string, string> | null => {
   if (!extras) return null;
@@ -76,16 +91,6 @@ type NativeJPushColdStartBridgeModule = {
     string,
     unknown
   > | null>;
-};
-
-type NotificationsModule = typeof import('expo-notifications');
-
-const getNotificationsModule = (): NotificationsModule | null => {
-  if (isHarmony) {
-    return null;
-  }
-
-  return require('expo-notifications') as NotificationsModule;
 };
 
 const consumeNativeInitialJPushOpened = async (stage: string) => {
@@ -247,20 +252,13 @@ const handleCustomMessage = (result: unknown) => {
   console.log('收到自定义消息:', result);
 };
 
-const hasGrantedPushPermission = (settings: {
-  granted?: boolean;
-  ios?: {
-    status?: unknown;
-  };
-}) => {
-  const Notifications = getNotificationsModule();
-
+const hasGrantedPushPermission = (
+  settings: NotificationPermissionsStatus,
+  Notifications: NotificationsModule
+) => {
   return (
     settings.granted ||
-    (Notifications
-      ? settings.ios?.status ===
-        Notifications.IosAuthorizationStatus.PROVISIONAL
-      : false)
+    settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
   );
 };
 
@@ -269,14 +267,11 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
     return false;
   }
 
-  const Notifications = getNotificationsModule();
-
-  if (!Notifications) {
-    return true;
-  }
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) return isHarmony;
 
   const currentSettings = await Notifications.getPermissionsAsync();
-  if (hasGrantedPushPermission(currentSettings)) {
+  if (hasGrantedPushPermission(currentSettings, Notifications)) {
     return true;
   }
 
@@ -285,7 +280,7 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
   }
 
   const requestedSettings = await Notifications.requestPermissionsAsync();
-  return hasGrantedPushPermission(requestedSettings);
+  return hasGrantedPushPermission(requestedSettings, Notifications);
 };
 
 const registerJPushListeners = async () => {
@@ -329,7 +324,8 @@ export const initializeJPush = async ({
         return false;
       }
 
-      const Notifications = getNotificationsModule();
+      const Notifications = await getNotificationsModule();
+      if (!Notifications && !isHarmony) return false;
 
       if (Platform.OS === 'android' && Notifications) {
         await Notifications.setNotificationChannelAsync('tips', {

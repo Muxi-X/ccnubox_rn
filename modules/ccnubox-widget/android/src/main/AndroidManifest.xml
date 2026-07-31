@@ -1,0 +1,34 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <service
+      android:name=".services.RecentClassesService"
+      android:permission="android.permission.BIND_REMOTEVIEWS"
+      android:exported="false" />
+
+    <receiver
+      android:name=".providers.RecentClassesProvider2x2"
+      android:enabled="true"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/recent_classes_widget_info_2x2" />
+    </receiver>
+
+    <receiver
+      android:name=".providers.RecentClassesProvider4x2"
+      android:enabled="true"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/recent_classes_widget_info_4x2" />
+    </receiver>
+  </application>
+</manifest>

@@ -14,6 +14,19 @@ interface GridOrderState {
   resetGridOrder: () => void;
 }
 
+// 确保"更多"选项始终在最后
+const ensureMoreLast = (data: MainPageGridDataType[]) => {
+  const moreIndex = data.findIndex(item => item.key === 'grid-13');
+  if (moreIndex === -1 || moreIndex === data.length - 1) {
+    return data;
+  }
+
+  const newData = [...data];
+  const [moreItem] = newData.splice(moreIndex, 1);
+  newData.push(moreItem);
+  return newData;
+};
+
 const buildGridDataWithOrder = (
   order: MainPageGridDataType[] | { key: string }[]
 ) => {
@@ -27,7 +40,9 @@ const buildGridDataWithOrder = (
   const orderedKeys = new Set(ordered.map(item => item.key));
   const remaining = apps.filter(app => !orderedKeys.has(app.key));
 
-  return ordered.length || remaining.length ? [...ordered, ...remaining] : apps;
+  const result =
+    ordered.length || remaining.length ? [...ordered, ...remaining] : apps;
+  return ensureMoreLast(result);
 };
 
 const useGridOrder = create<GridOrderState>()(
@@ -36,8 +51,8 @@ const useGridOrder = create<GridOrderState>()(
       // 初始状态
       gridData: getMainPageApplications(),
 
-      // 更新顺序
-      updateGridOrder: newOrder => set({ gridData: newOrder }),
+      // 更新顺序（确保"更多"始终在最后）
+      updateGridOrder: newOrder => set({ gridData: ensureMoreLast(newOrder) }),
 
       // 重置为默认顺序
       resetGridOrder: () => set({ gridData: getMainPageApplications() }),

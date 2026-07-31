@@ -12,4 +12,5 @@ export interface MainPageGridDataType extends Omit<
   href?: Href;
   action?: () => void;
   key: string;
+  disabledDrag?: boolean;
 }

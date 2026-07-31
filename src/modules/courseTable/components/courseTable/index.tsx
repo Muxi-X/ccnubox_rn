@@ -1,16 +1,15 @@
 import {
+  BackdropBlur,
   Canvas,
-  makeImageFromView,
-  Paint,
-  Rect,
-  Skia,
   Image as SkImage,
+  makeImageFromView,
+  Skia,
   SkImage as SkImageType,
   useCanvasRef,
   useImage,
 } from '@shopify/react-native-skia';
 import * as ImageManipulator from 'expo-image-manipulator';
-import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library/legacy';
 import React, {
   RefObject,
   useDeferredValue,
@@ -35,8 +34,10 @@ import {
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
+import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
+import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
 
 import CourseContent from './CourseContent';
 import { StickyBottom } from './StickyBottom';
@@ -53,16 +54,15 @@ const Schedule: React.FC<CourseTableProps> = ({
   // 是否为刷新状态
   const [_, setIsFetching] = useState<boolean>(false);
   const [snapshot, setSnapShot] = useState(false);
-  const { currentStyle, themeName } = useVisualScheme(
-    ({ currentStyle, themeName }) => ({ currentStyle, themeName })
-  );
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+  const themeName = useVisualScheme(state => state.themeName);
   const {
     backgroundUri,
     backgroundMode,
     foregroundOpacity,
-    backgroundMaskEnabled,
+    backgroundMaskOpacity,
+    backgroundBlurRadius,
   } = useCourseTableAppearance();
-  const [status, requestPermission] = MediaLibrary.usePermissions();
   const imageRef = useRef<View>(null);
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
@@ -103,7 +103,7 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   // 优先使用手动加载的图片，否则使用hook加载的
   const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
-  const normalizedForegroundOpacity = foregroundOpacity / 100;
+  const normalizedForegroundOpacity = (100 - foregroundOpacity) / 100;
 
   const renderBackgroundContent = (
     children: React.ReactNode,
@@ -130,11 +130,7 @@ const Schedule: React.FC<CourseTableProps> = ({
         </View>
       );
     }
-    const maskOpacity = normalizedForegroundOpacity * 0.5;
-    const maskColor =
-      themeName === 'dark'
-        ? `rgba(0, 0, 0, ${maskOpacity})`
-        : `rgba(255, 255, 255, ${maskOpacity})`;
+    const bgOpacity = 1 - backgroundMaskOpacity / 100;
 
     const width = (baseStyle.width as number) || 0;
     const height = (baseStyle.height as number) || 0;
@@ -156,11 +152,10 @@ const Schedule: React.FC<CourseTableProps> = ({
             width={width}
             height={height}
             fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            opacity={bgOpacity}
           />
-          {/* 遮罩层 */}
-          {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={width} height={height} color={maskColor} />
-          )}
+          {/* 高斯模糊 */}
+          <BackdropBlur blur={backgroundBlurRadius} />
         </Canvas>
         {children}
       </View>
@@ -169,16 +164,18 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   const onSaveImageAsync = async () => {
     try {
-      // 在真正需要使用权限时才请求
-      if (status?.status !== 'granted') {
-        const permissionResult = await requestPermission();
-        if (permissionResult.status !== 'granted') {
-          Toast.show({
-            text: '需要相册权限才能保存截图',
-            icon: 'fail',
-          });
-          return;
-        }
+      const hasPermission = await requestSensitivePermission({
+        getPermission: () => MediaLibrary.getPermissionsAsync(true),
+        isGranted: permission => permission.granted,
+        purpose: SENSITIVE_PERMISSION_PURPOSES.saveCourseTable,
+        requestPermission: () => MediaLibrary.requestPermissionsAsync(true),
+      });
+      if (!hasPermission) {
+        Toast.show({
+          text: '需要相册权限才能保存截图',
+          icon: 'fail',
+        });
+        return;
       }
       setSnapShot(true);
       // 确保截图前视图已完全渲染
@@ -357,8 +354,6 @@ const Schedule: React.FC<CourseTableProps> = ({
       const [rowIndex, colIndex] = key.split('-').map(Number);
 
       // 当一个时间槽有多节课时，优先显示当前周的课程
-      let courseToShow: CourseTransferType | null = null;
-
       const getPriority = (c: CourseTransferType) => {
         const idx = idxMap.get(c.id) || 0; // 查找序列，越往后越大
         const base = (c.isThisWeek ? 2 : 0) + (!c.is_official ? 1 : 0); // 3/2/1/0
@@ -370,7 +365,7 @@ const Schedule: React.FC<CourseTableProps> = ({
           (a: CourseTransferType, b: CourseTransferType) =>
             getPriority(b) - getPriority(a)
         );
-      courseToShow = sorted[0] ?? null;
+      const courseToShow = sorted[0] ?? null;
 
       if (courseToShow) {
         timetableMatrix[rowIndex][colIndex] = {
@@ -464,19 +459,10 @@ const Schedule: React.FC<CourseTableProps> = ({
             width={fullTableWidth}
             height={fullTableHeight}
             fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            opacity={1 - backgroundMaskOpacity / 100}
           />
-          {/* 遮罩层 */}
-          {backgroundMaskEnabled && (
-            <Rect x={0} y={0} width={fullTableWidth} height={fullTableHeight}>
-              <Paint
-                color={
-                  themeName === 'dark'
-                    ? `rgba(0, 0, 0, ${normalizedForegroundOpacity * 0.5})`
-                    : `rgba(255, 255, 255, ${normalizedForegroundOpacity * 0.5})`
-                }
-              />
-            </Rect>
-          )}
+          {/* 高斯模糊 */}
+          <BackdropBlur blur={backgroundBlurRadius} />
           {/* 前景内容 */}
           <SkImage
             image={foregroundImage}

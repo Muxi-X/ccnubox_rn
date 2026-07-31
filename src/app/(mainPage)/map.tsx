@@ -5,6 +5,7 @@ import SafeWebView from '@/components/webview/SafeWebView';
 export default function Map() {
   return (
     <SafeWebView
+      geolocationEnabled
       style={styles.container}
       source={{ uri: 'https://gis.ccnu.edu.cn/' }}
       fallbackTitle="当前平台暂不支持内嵌地图"

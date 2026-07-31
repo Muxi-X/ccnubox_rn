@@ -47,20 +47,38 @@ export type ConfigurableThemeNames =
   | 'feedback_status_style'
   | 'feedback_statusText_style'
   | 'feedback_detail_statusCircle_style'
-  | 'feedback_detail_text_style';
+  | 'feedback_detail_text_style'
+  | 'classroom_border_style'
+  | 'classroom_accent_style'
+  | 'classroom_accent_text_style'
+  | 'classroom_status_style';
+
+/** 状态-样式映射名（从 ConfigurableThemeNames 中按命名自动提取） */
+type StatusStyleNames = Extract<
+  ConfigurableThemeNames,
+  `${string}status${string}`
+>;
 
 /** 按命名约定分类配置名 */
-type TextStyleNames = Extract<
-  ConfigurableThemeNames,
-  `${string}_text_style` | 'text_style'
+type TextStyleNames = Exclude<
+  Extract<ConfigurableThemeNames, `${string}_text_style` | 'text_style'>,
+  StatusStyleNames
 >;
-type ViewStyleNames = Exclude<ConfigurableThemeNames, TextStyleNames>;
+type ViewStyleNames = Exclude<
+  Exclude<ConfigurableThemeNames, TextStyleNames>,
+  StatusStyleNames
+>;
 
-/** 单个 Theme 配置类型（使用精确分类） */
+/** 状态-样式映射表 */
+type StatusStyleMap = Record<string, ViewStyle | TextStyle>;
+
+/** 单个 Theme 配置类型 */
 export type SingleThemeType = {
   [K in TextStyleNames]?: TextStyle;
 } & {
   [K in ViewStyleNames]?: ViewStyle;
+} & {
+  [K in StatusStyleNames]?: StatusStyleMap;
 };
 
 /** 完整 layout 应有配置类型 */

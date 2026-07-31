@@ -7,7 +7,7 @@ export default function Electricity() {
     <SafeWebView
       style={styles.container}
       source={{
-        uri: 'https://jnb.ccnu.edu.cn/MobileWebPayStandard_Vue/#/home',
+        uri: 'https://jnb.ccnu.edu.cn/#/home',
       }}
       fallbackTitle="暂不支持内嵌电费页面"
       fallbackMessage="鸿蒙适配阶段请改用系统浏览器打开电费查询页面。"

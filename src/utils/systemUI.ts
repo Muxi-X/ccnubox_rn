@@ -1,3 +1,5 @@
+import { StatusBar } from 'react-native';
+
 import { setPlatformSystemBarStyle } from '@/platform/systemBars';
 
 /**
@@ -7,6 +9,6 @@ import { setPlatformSystemBarStyle } from '@/platform/systemBars';
 export const setSystemUITheme = (themeName: 'dark' | 'light') => {
   const isDark = themeName === 'dark';
 
-  // 使用 SystemBars 设置状态栏和导航栏样式
+  StatusBar.setBarStyle(isDark ? 'light-content' : 'dark-content', true);
   setPlatformSystemBarStyle(isDark ? 'light' : 'dark');
 };

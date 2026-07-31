@@ -7,10 +7,17 @@ export type ConnectorDataType = { content: string; columnIndex: number }[];
 export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
   /** 数据，必须有 label 和 value */
   data?: PickerDataType;
-  /** 默认选择的数据 */
+  /** 默认选择的数据（仅首次 mount 时生效） */
   defaultValue?: (string | number)[];
+  /** 外部控制当前选中值，变化时同步到内部 pickerValue */
+  controlledValue?: (string | number)[];
   /** 与 Modal 不同，这里 onConfirm 需要带回选中数据 */
   onConfirm?: (_values: string[]) => void;
+  /** 用户滑动任意列时实时回调，可用于级联更新 data */
+  onColumnChange?: (
+    _values: (string | number)[],
+    _changedIndex: number
+  ) => void;
   /** 自定义标题展示逻辑 */
   titleDisplayLogic?: (
     _picked: (string | number)[],

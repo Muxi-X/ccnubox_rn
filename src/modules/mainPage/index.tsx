@@ -1,10 +1,10 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useRouter } from 'expo-router';
 import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
@@ -16,7 +16,7 @@ import useVisualScheme from '@/store/visualScheme';
 
 import * as Haptics from '@/platform/haptics';
 import { queryBanners } from '@/request/api';
-import { keyGenerator, percent2px } from '@/utils';
+import { percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
 
@@ -32,10 +32,11 @@ const IndexPage: FC = () => {
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const tabbarHeight = useBottomTabBarHeight();
+  const tabbarHeight = useSafeAreaInsets().bottom;
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
+  const [isDragging, setIsDragging] = useState(false);
   const [, setRegisterId] = useState('');
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const IndexPage: FC = () => {
       });
   }, []);
   const onDragRelease = async (data: MainPageGridDataType[]) => {
-    // 直接更新 store，自动同步到 AsyncStorage
+    setIsDragging(false);
     updateGridOrder(data);
   };
 
@@ -116,12 +117,9 @@ const IndexPage: FC = () => {
             autoPlay
             loop
             scrollAnimationDuration={1500}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               return (
-                <View
-                  style={styles.bannerItem}
-                  key={keyGenerator.next().value as unknown as number}
-                >
+                <View style={styles.bannerItem} key={index}>
                   <Pressable onPress={() => openBrowser(item.navUrl)}>
                     <Image
                       source={{ uri: item.bannerUrl, cache: 'force-cache' }}
@@ -139,7 +137,10 @@ const IndexPage: FC = () => {
         </View>
       </Skeleton>
       {/* 功能列表 */}
-      <ScrollView contentContainerStyle={{ paddingBottom: tabbarHeight + 10 }}>
+      <ScrollView
+        scrollEnabled={!isDragging}
+        contentContainerStyle={{ paddingBottom: tabbarHeight + 10 }}
+      >
         <DraggableGrid
           onItemPress={data => {
             if (data.href) {
@@ -150,7 +151,10 @@ const IndexPage: FC = () => {
             }
           }}
           numColumns={3}
-          onDragItemActive={() => Haptics.selectionAsync()}
+          onDragItemActive={() => {
+            setIsDragging(true);
+            Haptics.selectionAsync();
+          }}
           renderItem={render}
           data={gridData}
           onDragRelease={onDragRelease}

@@ -59,9 +59,7 @@ const FAQItem: React.FC<FAQItemProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<status>(
     initialStatus || 'notSelected'
   );
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const getItemBounds = () => {
     viewRef.current?.measure((x, y, width, height) => {

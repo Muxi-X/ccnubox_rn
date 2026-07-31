@@ -23,6 +23,7 @@ import useVisualScheme from '@/store/visualScheme';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
+  STATUS_STYLE_KEY,
 } from '@/constants/FEEDBACKS';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 
@@ -108,9 +109,7 @@ function transformRecordsToFeedbackItems(
 
 const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
   ({ item }) => {
-    const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-      currentStyle,
-    }));
+    const currentStyle = useVisualScheme(state => state.currentStyle);
 
     const router = useRouter();
 
@@ -191,15 +190,17 @@ const FeedbackListItem: React.FC<{ item: FeedbackItem }> = React.memo(
           <View
             style={[
               styles.itemFooterContainer,
-              currentStyle?.feedback_status_style?.getStyle(item.fields.status),
+              currentStyle?.feedback_status_style?.[
+                STATUS_STYLE_KEY[item.fields.status] ?? 'pending'
+              ],
             ]}
           >
             <Text
               style={[
                 styles.itemFootertext,
-                currentStyle?.feedback_statusText_style?.getStyle(
-                  item.fields.status
-                ),
+                currentStyle?.feedback_statusText_style?.[
+                  STATUS_STYLE_KEY[item.fields.status] ?? 'pending'
+                ],
               ]}
             >
               {item.fields.status}
@@ -219,9 +220,7 @@ export default function FeedbackHistory() {
   const loadingRef = useRef<boolean>(false);
   const userId = useUserStore(state => state.student_id);
 
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const getUserFeedbackSheet = async (isInit: boolean) => {
     if (!userId) {

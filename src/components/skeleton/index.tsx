@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, {
   FC,
@@ -15,7 +15,6 @@ import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { keyGenerator } from '@/utils';
 import globalEventBus from '@/utils/eventBus';
 
 /**
@@ -154,12 +153,9 @@ export default memo(SkeletonLoader);
  * @constructor
  */
 export const SkeletonView: FC<SkeletonViewType> = ({ loading, children }) => {
-  const wrappedChildren = React.Children.map(children, child => {
+  const wrappedChildren = React.Children.map(children, (child, index) => {
     return (
-      <SkeletonLoader
-        loading={loading}
-        key={keyGenerator.next().value as unknown as number}
-      >
+      <SkeletonLoader loading={loading} key={index}>
         {React.cloneElement(child as ReactElement)}
       </SkeletonLoader>
     );

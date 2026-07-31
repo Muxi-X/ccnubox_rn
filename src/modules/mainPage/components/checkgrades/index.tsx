@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 
 import MultiPicker from '@/components/picker/multiPicker';
-import { PickerDataType } from '@/components/picker/types';
+import type { PickerDataType } from '@/components/picker/types';
 
 import useCourse from '@/store/course';
-import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryGradeType } from '@/request/api/grade';
+import { querySemesterList } from '@/request/api/semester';
 import { generateSemesterOptions } from '@/utils/generateSemesterOptions';
 
 const formatCourseType = (types: string[]) => {
@@ -26,38 +26,54 @@ const formatCourseType = (types: string[]) => {
 
 const CheckGrades = () => {
   const { courseCategories, updatecourseCategories } = useCourse();
-  const studentId = useUserStore(state => state.student_id);
-  const semesterOptions = generateSemesterOptions(studentId);
   const [loading, setLoading] = useState(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const [semesterOptions, setSemesterOptions] = useState<PickerDataType>([[]]);
   const [courseType, setCourseType] = useState<PickerDataType>([
     formatCourseType(courseCategories),
   ]);
   const [selectedCourseType, setSelectedCourseType] =
     useState<(number | string)[]>(courseCategories);
   const [selectedSemester, setSelectedSemester] = useState<(number | string)[]>(
-    semesterOptions.flatMap(option => option.map(item => item.value))
+    []
   );
 
   useEffect(() => {
-    setLoading(true);
-    queryGradeType()
-      .then(res => {
-        // tips: kcxz是课程性质
-        if (res.code === 0 && res.data?.kcxzmc) {
-          const kcxz = res.data.kcxzmc;
+    const fetchFilters = async () => {
+      setLoading(true);
+      try {
+        const [gradeTypeRes, semesterListRes] = await Promise.all([
+          queryGradeType(),
+          querySemesterList(),
+        ]);
 
-          setSelectedCourseType(kcxz);
-          setCourseType([formatCourseType(kcxz)]);
-          // 缓存课程类别
-          updatecourseCategories(kcxz);
+        if (
+          gradeTypeRes.code !== 0 ||
+          !gradeTypeRes.data?.kcxzmc ||
+          semesterListRes.code !== 0 ||
+          !semesterListRes.data
+        ) {
+          throw new Error('成绩筛选接口返回无效数据');
         }
-      })
-      .catch(() => {
-        Toast.fail('获取课程性质失败');
-      })
-      .finally(() => setLoading(false));
-  }, []);
+
+        const courseTypes = gradeTypeRes.data.kcxzmc;
+        const options = generateSemesterOptions(semesterListRes.data);
+        setSelectedCourseType(courseTypes);
+        setCourseType([formatCourseType(courseTypes)]);
+        updatecourseCategories(courseTypes);
+        setSemesterOptions(options);
+        setSelectedSemester(
+          options.flatMap(option => option.map(item => item.value))
+        );
+      } catch {
+        Toast.fail('获取成绩筛选条件失败');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchFilters();
+  }, [updatecourseCategories]);
 
   const SemesterPickerTrigger = (
     <View style={[styles.item, styles.itemBorder]}>
@@ -82,7 +98,7 @@ const CheckGrades = () => {
           {selectedSemester
             .map(
               semester =>
-                semesterOptions[0].find(option => option.value === semester)
+                semesterOptions[0]?.find(option => option.value === semester)
                   ?.label
             )
             .join('，')}

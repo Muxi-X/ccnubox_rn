@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import TabBar from '@/components/tabs';
@@ -22,7 +21,7 @@ const ScoreInquiry = () => {
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      <TabBar tabs={tabs} style={{ paddingTop: 20 }}>
+      <TabBar tabs={tabs} style={{ paddingTop: 6 }}>
         <View style={styles.content}>
           <CheckGrades />
         </View>
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: 6,
     paddingHorizontal: 20,
   },
 });

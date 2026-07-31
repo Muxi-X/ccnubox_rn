@@ -33,6 +33,17 @@ public class AppDelegate: ExpoAppDelegate {
       launchOptions: launchOptions)
 #endif
 
+// @generated begin disable-liquid-glass - expo prebuild (DO NOT MODIFY) sync-4aaf284e0feae60f081dbf50a67a8a3ac8d4e921
+// Disable iOS 26 Liquid Glass navigation bar appearance
+    if #available(iOS 26.0, *) {
+      let opaqueAppearance = UINavigationBarAppearance()
+      opaqueAppearance.configureWithOpaqueBackground()
+      opaqueAppearance.backgroundEffect = nil
+      UINavigationBar.appearance().standardAppearance = opaqueAppearance
+      UINavigationBar.appearance().scrollEdgeAppearance = opaqueAppearance
+      UINavigationBar.appearance().compactAppearance = opaqueAppearance
+    }
+// @generated end disable-liquid-glass
 // @generated begin jpush-swift-initialization - expo prebuild (DO NOT MODIFY) sync-f2466d2721650a20f81fa09cdbb285913c1a7327
 
     // JPush 注册配置
@@ -73,7 +84,7 @@ public class AppDelegate: ExpoAppDelegate {
       object: nil
     )
 // @generated end jpush-swift-initialization
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   // Linking API

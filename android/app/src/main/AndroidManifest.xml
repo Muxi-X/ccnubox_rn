@@ -1,21 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-  <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.CAMERA" tools:node="remove"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:replace="android:maxSdkVersion"/>
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
   <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:replace="android:maxSdkVersion"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -49,11 +44,11 @@
     <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}"/>
     <meta-data android:name="JPUSH_CHANNEL" android:value="${JPUSH_CHANNEL}"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
+    <meta-data android:name="expo.modules.updates.ENABLE_BSDIFF_PATCH_SUPPORT" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621"/>
-    <service android:name=".widgets.services.RecentClassesService" android:permission="android.permission.BIND_REMOTEVIEWS" android:exported="false"/>
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -72,20 +67,6 @@
         <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE"/>
         <category android:name="com.muxixyz.ccnubox"/>
       </intent-filter>
-    </receiver>
-    <receiver android:name=".widgets.providers.RecentClassesProvider2x2" android:exported="true">
-      <intent-filter>
-        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
-        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-      </intent-filter>
-      <meta-data android:name="android.appwidget.provider" android:resource="@xml/recent_classes_widget_info_2x2"/>
-    </receiver>
-    <receiver android:name=".widgets.providers.RecentClassesProvider4x2" android:exported="true">
-      <intent-filter>
-        <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET"/>
-        <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-      </intent-filter>
-      <meta-data android:name="android.appwidget.provider" android:resource="@xml/recent_classes_widget_info_4x2"/>
     </receiver>
   </application>
 </manifest>

@@ -1,10 +1,16 @@
-import { PickerDataType } from '@/components/picker/types';
+import type { PickerDataType } from '@/components/picker/types';
+
+import type { components } from '@/request/schema';
+
+type SemesterResponse = components['schemas']['content.Semester'];
 
 /** 学期选项基础结构 */
 export interface SemesterOptionBase {
   label: string;
   year: string;
   semester: string;
+  startTimestamp: number;
+  endTimestamp: number;
 }
 
 const SEMESTER_LABELS: Record<string, string> = {
@@ -13,63 +19,58 @@ const SEMESTER_LABELS: Record<string, string> = {
   '3': '第三学期',
 };
 
-/**
- * 根据学号前四位和当前日期计算学期列表（入学到当前）
- *
- * 逻辑：
- * - 学年：9 月起算新学年
- * - 学期：9-1 第一学期，2-6 第二学期，7-8 第三学期
- */
-export const computeSemesterOptions = (
-  studentId: string
+const parseDateTimestamp = (value?: string) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value ?? '');
+  if (!match) return 0;
+
+  const [, year, month, day] = match;
+  return Math.floor(
+    new Date(Number(year), Number(month) - 1, Number(day)).getTime() / 1000
+  );
+};
+
+export const parseSemester = (semester?: SemesterResponse) => {
+  const match = /^(\d{4})-([123])$/.exec(semester?.semester ?? '');
+  if (!match) return null;
+
+  const [, year, semesterNumber] = match;
+  const startTimestamp = parseDateTimestamp(semester?.start_date);
+  const endTimestamp = parseDateTimestamp(semester?.end_date);
+  if (!startTimestamp || !endTimestamp || endTimestamp <= startTimestamp) {
+    return null;
+  }
+
+  return {
+    label: `${year.slice(2)}~${String(Number(year) + 1).slice(2)}学年-${SEMESTER_LABELS[semesterNumber]}`,
+    year,
+    semester: semesterNumber,
+    startTimestamp,
+    endTimestamp,
+  } satisfies SemesterOptionBase;
+};
+
+/** 将接口学期列表转换为统一的页面选项，并按学期倒序排列。 */
+export const buildSemesterOptions = (
+  semesters: SemesterResponse[]
 ): SemesterOptionBase[] => {
-  if (!studentId || studentId.length < 4) return [];
-  const admissionYear = Number(studentId.slice(0, 4));
-  if (isNaN(admissionYear) || admissionYear <= 0) return [];
-
-  const today = new Date();
-  const currentCalendarYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
-
-  const currentAcademicYear =
-    currentMonth >= 9 ? currentCalendarYear : currentCalendarYear - 1;
-
-  let currentSemester = 1;
-  if (currentMonth >= 2 && currentMonth <= 6) {
-    currentSemester = 2;
-  } else if (currentMonth >= 7 && currentMonth <= 8) {
-    currentSemester = 3;
-  }
-
-  const options: SemesterOptionBase[] = [];
-  for (let y = admissionYear; y <= currentAcademicYear; y++) {
-    const maxSem = y === currentAcademicYear ? currentSemester : 3;
-    for (let s = 1; s <= maxSem; s++) {
-      options.push({
-        label: `${String(y).slice(2)}~${String(y + 1).slice(2)}学年-${SEMESTER_LABELS[String(s)]}`,
-        year: String(y),
-        semester: String(s),
-      });
-    }
-  }
-  return options.reverse();
+  return semesters
+    .map(parseSemester)
+    .filter((option): option is SemesterOptionBase => option !== null)
+    .sort(
+      (a, b) =>
+        Number(b.year) - Number(a.year) ||
+        Number(b.semester) - Number(a.semester)
+    );
 };
 
 /**
  * 生成 Picker 组件所需的学期选项（多选成绩等场景）
  */
-export const generateSemesterOptions = (studentId: string): PickerDataType => {
-  const opts = computeSemesterOptions(studentId);
+export const generateSemesterOptions = (
+  semesters: SemesterResponse[]
+): PickerDataType => {
+  const opts = buildSemesterOptions(semesters);
   return [
     opts.map(o => ({ label: o.label, value: `${o.year}-${o.semester}` })),
   ];
-};
-
-/**
- * 生成课表周选择器所需的学期选项
- */
-export const buildSemesterOptions = (
-  studentId: string
-): SemesterOptionBase[] => {
-  return computeSemesterOptions(studentId);
 };

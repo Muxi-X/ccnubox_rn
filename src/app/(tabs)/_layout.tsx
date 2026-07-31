@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { Platform, Text } from 'react-native';
 
 import Modal from '@/components/modal';
+
+import { updateCourseData } from '@/utils/updateWidget';
 import TabBar from '@/components/navi';
 import Toast from '@/components/toast';
 
@@ -22,13 +24,20 @@ import { SinglePageType } from '@/types/tabBarTypes';
 export default function TabLayout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const promptTriggeredRef = useRef(false);
-  const { enabled, hydrated, promptShown, setPromptShown } =
-    usePushSubscriptionStore(state => ({
-      enabled: state.enabled,
-      hydrated: state.hydrated,
-      promptShown: state.promptShown,
-      setPromptShown: state.setPromptShown,
-    }));
+  const enabled = usePushSubscriptionStore(state => state.enabled);
+  const hydrated = usePushSubscriptionStore(state => state.hydrated);
+  const promptShown = usePushSubscriptionStore(state => state.promptShown);
+  const setPromptShown = usePushSubscriptionStore(
+    state => state.setPromptShown
+  );
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      updateCourseData().catch(error =>
+        console.error('更新小组件失败:', error)
+      );
+    }
+  }, []);
 
   useEffect(() => {
     if (!platformCapabilities.push) {

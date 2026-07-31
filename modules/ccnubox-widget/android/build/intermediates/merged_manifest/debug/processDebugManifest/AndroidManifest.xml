@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.muxixyz.ccnubox.widgets" >
+
+    <uses-sdk android:minSdkVersion="24" />
+
+    <application>
+        <service
+            android:name="com.muxixyz.ccnubox.widgets.services.RecentClassesService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name="com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider2x2"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recent_classes_widget_info_2x2" />
+        </receiver>
+        <receiver
+            android:name="com.muxixyz.ccnubox.widgets.providers.RecentClassesProvider4x2"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.muxixyz.ccnubox.UPDATE_COURSE_WIDGET" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recent_classes_widget_info_4x2" />
+        </receiver>
+    </application>
+
+</manifest>

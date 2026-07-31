@@ -17,9 +17,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   iconColor = '#9CA3AF',
   placeholderTextColor = '#9CA3AF',
 }) => {
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle,
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   return (
     <View

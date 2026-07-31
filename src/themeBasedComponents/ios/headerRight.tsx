@@ -16,9 +16,7 @@ const HeaderRight: React.FC<HeaderRightProps> = ({
   mainPagePath,
 }) => {
   const pathname = usePathname();
-  const { currentStyle } = useVisualScheme(({ currentStyle }) => ({
-    currentStyle
-  }));
+  const currentStyle = useVisualScheme(state => state.currentStyle);
 
   if (!mainPagePath || pathname !== mainPagePath) {
     return null;

@@ -1,8 +1,7 @@
 import { ActivityIndicator, Icon, WingBlank } from '@ant-design/react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import {
 
 import Modal from '@/components/modal';
 
+import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
 
 import { queryGradeDetail } from '@/request/api/grade';
@@ -61,14 +61,17 @@ const ScoreCalculation: React.FC = () => {
     updateSelectionState(newSelection);
   };
 
-  const handleSelectAllToggle = (isSelected: boolean) => {
-    const newSelection = isSelected
-      ? new Set(gradeData.map(course => course.key))
-      : new Set<string>();
-    setSelectedCourses(newSelection);
-    setIsPartiallySelected(false);
-    setIsAllSelected(isSelected);
-  };
+  const handleSelectAllToggle = useCallback(
+    (isSelected: boolean) => {
+      const newSelection = isSelected
+        ? new Set(gradeData.map(course => course.key))
+        : new Set<string>();
+      setSelectedCourses(newSelection);
+      setIsPartiallySelected(false);
+      setIsAllSelected(isSelected);
+    },
+    [gradeData]
+  );
 
   const updateSelectionState = (selection: Set<string>) => {
     const isPartial = selection.size > 0 && selection.size < gradeData.length;
@@ -210,45 +213,46 @@ const ScoreCalculation: React.FC = () => {
       });
   }, [semester, courseType]);
 
+  const setHeaderRight = useHeaderRightStore(state => state.setContent);
+
+  const selectAllNode = useMemo(
+    () => (
+      <View style={styles.headerRightRow}>
+        <Text style={[styles.headerRightLabel, textStyle]}>全选</Text>
+        <TouchableOpacity
+          onPress={() => handleSelectAllToggle(!isAllSelected)}
+          style={[
+            styles.checkbox,
+            {
+              backgroundColor: isAllSelected ? '#9379F6' : '#fff',
+              borderColor: isAllSelected ? '#9379F6' : '#C7C7C7',
+            },
+          ]}
+        >
+          {isAllSelected && (
+            <Icon
+              name="check"
+              size={20}
+              color="#fff"
+              style={styles.checkIcon}
+            />
+          )}
+          {isPartiallySelected && !isAllSelected && (
+            <View style={styles.partialCheckbox} />
+          )}
+        </TouchableOpacity>
+      </View>
+    ),
+    [isAllSelected, isPartiallySelected, handleSelectAllToggle, textStyle]
+  );
+
+  useEffect(() => {
+    setHeaderRight(selectAllNode);
+    return () => setHeaderRight(null);
+  }, [selectAllNode, setHeaderRight]);
+
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
-      <View style={[styles.header, currentStyle?.navbar_background_style]}>
-        <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Image
-              style={styles.backIcon}
-              source={require('../../assets/images/arrow-left.png')}
-            />
-          </TouchableOpacity>
-          <Text style={[styles.headerTitle, textStyle]}>成绩</Text>
-        </View>
-        <View style={styles.headerRight}>
-          <Text style={textStyle}>全选：</Text>
-          <TouchableOpacity
-            onPress={() => handleSelectAllToggle(!isAllSelected)}
-            style={[
-              styles.checkbox,
-              {
-                backgroundColor: isAllSelected ? '#9379F6' : '#fff',
-                borderColor: isAllSelected ? '#9379F6' : '#C7C7C7',
-              },
-            ]}
-          >
-            {isAllSelected && (
-              <Icon
-                name="check"
-                size={20}
-                color="#fff"
-                style={styles.checkIcon}
-              />
-            )}
-            {isPartiallySelected && !isAllSelected && (
-              <View style={styles.partialCheckbox} />
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#7878F8" />
@@ -333,35 +337,13 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 7,
-    paddingTop: 50,
-    paddingVertical: 6,
-    backgroundColor: '#F7F7F7',
-  },
-  headerLeft: {
+  headerRightRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingRight: 18,
-  },
-  backIcon: {
-    width: 24,
-    height: 24,
-  },
-  headerTitle: {
-    fontSize: 20,
-    lineHeight: 24,
-    height: 24,
-    fontWeight: '600',
-    color: '#232323',
-    marginLeft: 20,
+  headerRightLabel: {
+    marginRight: 8,
+    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
@@ -376,7 +358,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    marginTop: 26,
+    marginTop: 10,
     marginBottom: 80,
   },
   courseItem: {

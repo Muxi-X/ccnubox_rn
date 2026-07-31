@@ -1,13 +1,11 @@
 import { useCallback, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
-// import TabBar from '@/components/tabbar';
 import TabBar from '@/components/tabs';
 import View from '@/components/view';
 
 import OtherStyle from '@/modules/setting/components/otherStyle';
 import SelectStyle from '@/modules/setting/components/selectStyle';
-import SelectTheme from '@/modules/setting/components/selectTheme';
 
 export default function Theme() {
   const [swipeable, setSwipeable] = useState(true);
@@ -18,34 +16,26 @@ export default function Theme() {
     <View style={styles.container}>
       <TabBar
         swipeable={swipeable}
-        tabs={[
-          {
-            title: '布局',
-          },
-          {
-            title: '样式',
-          },
-          {
-            title: '其他',
-          },
-        ]}
+        tabs={[{ title: '课表样式' }, { title: '颜色主题' }]}
       >
-        <SelectTheme />
+        <ScrollView
+          style={styles.scrollTab}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <OtherStyle
+            onSliderTouchStart={disableSwipe}
+            onSliderTouchEnd={enableSwipe}
+          />
+        </ScrollView>
         <SelectStyle />
-        <OtherStyle
-          onSliderTouchStart={disableSwipe}
-          onSliderTouchEnd={enableSwipe}
-        />
       </TabBar>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  tab: {
-    paddingVertical: 40,
-  },
+  container: { flex: 1 },
+  scrollTab: { flex: 1 },
+  scrollContent: { paddingBottom: 100 },
 });
