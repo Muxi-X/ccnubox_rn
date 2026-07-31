@@ -1,9 +1,9 @@
 import { router, SplashScreen } from 'expo-router';
-import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
 
 import useCourse from '@/store/course';
 
+import { getItem, setItem } from '@/platform/storage';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 
 const Index = () => {
@@ -24,7 +24,7 @@ const Index = () => {
 
         if (!token) {
           if (firstLaunch === null) {
-            setItem('firstLaunch', 'false');
+            await setItem('firstLaunch', 'false');
             console.log('首次启动，跳转到引导页');
             router.replace('/auth/guide');
           } else {

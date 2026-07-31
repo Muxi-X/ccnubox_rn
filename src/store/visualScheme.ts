@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Appearance, Platform } from 'react-native';
+import { Appearance } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { defaultLayoutName } from '@/platform/capabilities';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 import globalEventBus from '@/utils/eventBus';
@@ -16,8 +17,8 @@ const useVisualScheme = create<visualSchemeType>()(
     (set, get) => ({
       isAutoTheme: true,
       themeName: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
-      layoutName: Platform.OS === 'ios' ? 'ios' : 'android',
-      iconStyleName: Platform.OS === 'ios' ? 'ios' : 'android',
+      layoutName: defaultLayoutName,
+      iconStyleName: defaultLayoutName,
       currentStyle: null,
       layouts: new Map(),
       init: () => {
@@ -63,7 +64,7 @@ const useVisualScheme = create<visualSchemeType>()(
           return spec.default;
         }
 
-        const fallbackLayouts: LayoutName[] = ['ios', 'android'];
+        const fallbackLayouts: LayoutName[] = ['harmony', 'android', 'ios'];
         for (const fallback of fallbackLayouts) {
           const candidate = spec[fallback];
           if (candidate !== undefined) {
@@ -84,7 +85,7 @@ const useVisualScheme = create<visualSchemeType>()(
           return spec.default;
         }
 
-        const fallbackLayouts: LayoutName[] = ['ios', 'android'];
+        const fallbackLayouts: LayoutName[] = ['harmony', 'android', 'ios'];
         for (const fallback of fallbackLayouts) {
           const candidate = spec[fallback];
           if (candidate !== undefined) {

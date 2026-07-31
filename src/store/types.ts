@@ -1,5 +1,6 @@
 import React, { MutableRefObject, ReactElement } from 'react';
-import WebView from 'react-native-webview';
+
+import { SafeWebViewHandle } from '@/components/webview/SafeWebView';
 
 import {
   LayoutName,
@@ -46,13 +47,11 @@ export type visualSchemeType = {
 
 export type scraperType = {
   /* webview 的 ref */
-  ref: MutableRefObject<WebView<unknown> | undefined> | null;
+  ref: MutableRefObject<SafeWebViewHandle | null> | null;
   /* 注入的 js */
   injectJavaScript: (_injected: string) => void;
   /* 设置 ref */
-  setRef: (
-    _newRef: MutableRefObject<WebView<unknown> | undefined> | null
-  ) => void;
+  setRef: (_newRef: MutableRefObject<SafeWebViewHandle | null> | null) => void;
 };
 
 /** theme based components */

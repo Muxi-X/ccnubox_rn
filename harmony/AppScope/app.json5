@@ -1,0 +1,10 @@
+{
+  "app": {
+    "bundleName": "com.muxixyz.ccnubox",
+    "vendor": "expo-harmony-toolkit",
+    "versionCode": 1000000,
+    "versionName": "3.1.6",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}

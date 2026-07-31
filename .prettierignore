@@ -11,3 +11,7 @@ node_modules
 # ./ to ensure not ignore files in subdir
 android/
 ios/
+
+# Harmony sidecar and generated metadata are managed by expo-harmony-toolkit.
+.expo-harmony
+harmony

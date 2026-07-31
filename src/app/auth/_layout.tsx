@@ -60,7 +60,6 @@ export const styles = StyleSheet.create({
     height: '100%',
     top: 0,
     left: 0,
-    zIndex: -1,
   },
   text1: {
     position: 'absolute',

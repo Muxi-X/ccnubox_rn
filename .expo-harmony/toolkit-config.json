@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-05-14T11:24:46.025Z",
+  "toolkitVersion": "1.8.3",
+  "templateVersion": "rnoh-0.82.29",
+  "matrixId": "expo55-rnoh082-ui-stack",
+  "rnohVersion": "0.82.29",
+  "rnohCliVersion": "0.82.29",
+  "bundleName": "com.muxixyz.ccnubox",
+  "entryModuleName": "entry",
+  "coverageProfile": "managed-native-heavy",
+  "doctorConfig": {
+    "excludeDependencies": [
+      "@bacons/apple-targets",
+      "@react-navigation/core"
+    ],
+    "excludePlugins": [
+      "./plugins/config-android-url-scheme.js",
+      "@bacons/apple-targets",
+      "mx-jpush-expo",
+      "react-native-edge-to-edge"
+    ],
+    "coverageProfile": "managed-native-heavy"
+  },
+  "capabilities": [
+    {
+      "id": "expo-file-system",
+      "packageName": "expo-file-system",
+      "supportTier": "preview",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "expo-image-picker",
+      "packageName": "expo-image-picker",
+      "supportTier": "preview",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "expo-notifications",
+      "packageName": "expo-notifications",
+      "supportTier": "experimental",
+      "runtimeMode": "shim",
+      "evidence": {
+        "bundle": false,
+        "debugBuild": false,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "none",
+        "debugBuild": "none",
+        "device": "none",
+        "release": "none"
+      }
+    }
+  ],
+  "requestedHarmonyPermissions": [
+    "ohos.permission.CAMERA",
+    "ohos.permission.MICROPHONE",
+    "ohos.permission.READ_IMAGEVIDEO"
+  ],
+  "nextActions": [
+    "Use `expo-harmony doctor --project-root . --target-tier preview` to measure the current preview-capability baseline while keeping `latest` pinned to verified-only releases.",
+    "Keep combined sample smoke for regression coverage, but track bundle/debug/device/release evidence separately for each preview capability before promotion.",
+    "After every native-capability change, rerun `expo-harmony sync-template --project-root .`, `expo-harmony bundle --project-root .`, and `expo-harmony build-hap --project-root . --mode debug` to keep the managed sidecar and preview evidence aligned.",
+    "Keep `react-native-gesture-handler` out of the verified lane until its Harmony adapter path has stable doctor, sample, and build coverage.",
+    "Inspect unknown native-looking dependencies and either replace them, gate them behind preview work, or onboard them explicitly before promising Harmony portability.",
+    "Unknown JavaScript-only packages still sit outside the public matrix; verify bundling manually, but prioritize native gaps first."
+  ],
+  "project": {
+    "name": "华师匣子",
+    "slug": "ccnubox",
+    "version": "3.1.6",
+    "hvigorPluginFilename": "rnoh-hvigor-plugin-0.82.29.tgz"
+  }
+}

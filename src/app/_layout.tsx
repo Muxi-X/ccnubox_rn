@@ -1,14 +1,17 @@
 import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
-import * as Haptics from 'expo-haptics';
-import { Stack, useRootNavigationState } from 'expo-router';
+import { Slot, Stack, useRootNavigationState } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import WebView from 'react-native-webview';
 
 import SensitivePermissionNotice from '@/components/sensitivePermissionNotice';
+import { SafeWebViewHandle } from '@/components/webview/SafeWebView';
+
+import { isHarmony, platformCapabilities } from '@/platform/capabilities';
+import * as Haptics from '@/platform/haptics';
+import { PlatformSystemBars } from '@/platform/systemBars';
 
 import PortalRoot from '../components/portal';
 import Scraper from '../components/scraper';
@@ -24,7 +27,7 @@ export default function RootLayout() {
   const initVisualScheme = useVisualScheme(state => state.init);
   const changeTheme = useVisualScheme(state => state.changeTheme);
   const isAutoTheme = useVisualScheme(state => state.isAutoTheme);
-  const scraperRef = React.useRef<WebView>(null);
+  const scraperRef = React.useRef<SafeWebViewHandle | null>(null);
   const portalRef = React.useRef<View>(null);
   const ref = useScraper(state => state.ref);
   const setRef = useScraper(state => state.setRef);
@@ -51,7 +54,11 @@ export default function RootLayout() {
     // 配置Toast
     Toast.config({ mask: false, stackable: true });
     // 在 store 中设置爬虫 ref
-    setRef(scraperRef as React.RefObject<WebView>);
+    setRef(
+      platformCapabilities.webView
+        ? (scraperRef as React.RefObject<SafeWebViewHandle | null>)
+        : null
+    );
     // 在 store 中配置 portal ref
     setPortalRef(portalRef);
   }, [initVisualScheme, setPortalRef, setRef]);
@@ -87,29 +94,37 @@ export default function RootLayout() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
     >
+      {/* 系统状态栏和导航栏管理 */}
+      <PlatformSystemBars style="auto" />
       {/* Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删  */}
       {/* FIX_ME 自建 portal 组件，支持自定义 Toast Modal */}
       {/* 手势检测 */}
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Scraper
-          ref={ref as React.RefObject<WebView<any> | null>}
-          onMessage={handleMessage}
-        ></Scraper>
+        {platformCapabilities.webView ? (
+          <Scraper
+            ref={ref as React.RefObject<SafeWebViewHandle | null>}
+            onMessage={handleMessage}
+          ></Scraper>
+        ) : null}
         <SafeAreaProvider>
-          <Stack
-            screenOptions={{
-              headerBackVisible: false,
-              headerShown: false,
-            }}
-          >
-            {['index'].map(name => (
-              <Stack.Screen
-                key={name}
-                name={name}
-                options={{ headerShown: false }}
-              />
-            ))}
-          </Stack>
+          {isHarmony ? (
+            <Slot />
+          ) : (
+            <Stack
+              screenOptions={{
+                headerBackVisible: false,
+                headerShown: false,
+              }}
+            >
+              {['index'].map(name => (
+                <Stack.Screen
+                  key={name}
+                  name={name}
+                  options={{ headerShown: false }}
+                />
+              ))}
+            </Stack>
+          )}
           {/* portal */}
           <PortalRoot ref={portalRef} />
           <SensitivePermissionNotice />

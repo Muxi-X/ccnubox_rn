@@ -8,11 +8,10 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import PdfRendererView from 'react-native-pdf-renderer';
-import { WebView } from 'react-native-webview';
 
 import Text from '@/components/text';
 import View from '@/components/view';
+import SafeWebView from '@/components/webview/SafeWebView';
 
 import useVisualScheme from '@/store/visualScheme';
 
@@ -163,23 +162,19 @@ export default function Calendar() {
         />
       </View>
       {selectedYear && links[selectedYear] ? (
-        Platform.select({
-          ios: (
-            <WebView
-              style={[styles.webview, { width }]}
-              source={{ uri: links[selectedYear], cache: true }}
-              scalesPageToFit
-              javaScriptEnabled
-              domStorageEnabled
-            />
-          ),
-          android: (
-            <AndroidCalendarView
-              url={links[selectedYear]}
-              year={selectedYear}
-            />
-          ),
-        })
+        Platform.OS === 'android' ? (
+          <AndroidCalendarView url={links[selectedYear]} year={selectedYear} />
+        ) : (
+          <SafeWebView
+            style={[styles.webview, { width }]}
+            source={{ uri: links[selectedYear], cache: true }}
+            scalesPageToFit
+            javaScriptEnabled
+            domStorageEnabled
+            fallbackTitle="当前平台暂不支持校历内嵌查看"
+            fallbackMessage="鸿蒙适配阶段请改用系统浏览器打开校历页面。"
+          />
+        )
       ) : (
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>暂无校历数据</Text>
@@ -194,6 +189,9 @@ const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
   url,
   year,
 }) => {
+  const { default: PdfRendererView } =
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('react-native-pdf-renderer') as typeof import('react-native-pdf-renderer');
   const [downloading, setDownloading] = React.useState(true);
   const [source, setSource] = React.useState<string>();
 

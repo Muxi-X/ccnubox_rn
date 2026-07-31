@@ -1,0 +1,27 @@
+{
+  modelVersion: '5.0.0',
+  name: 'com.muxixyz.ccnubox',
+  version: '3.1.6',
+  description: '华师匣子 official minimal Harmony sample',
+  dependencies: {
+    '@react-native-oh-tpl/async-storage': 'file:../node_modules/@react-native-oh-tpl/async-storage/harmony/async_storage.har',
+    '@react-native-oh-tpl/camera-roll': 'file:../node_modules/@react-native-oh-tpl/camera-roll/harmony/camera_roll.har',
+    '@react-native-oh-tpl/clipboard': 'file:../node_modules/@react-native-oh-tpl/clipboard/harmony/clipboard.har',
+    '@react-native-oh-tpl/lottie-react-native': 'file:../node_modules/@react-native-oh-tpl/lottie-react-native/harmony/lottie.har',
+    '@react-native-oh-tpl/react-native-fs': 'file:../node_modules/@react-native-oh-tpl/react-native-fs/harmony/fs.har',
+    '@react-native-oh-tpl/react-native-gesture-handler': 'file:../node_modules/@react-native-oh-tpl/react-native-gesture-handler/harmony/gesture_handler.har',
+    '@react-native-oh-tpl/react-native-image-picker': 'file:../node_modules/@react-native-oh-tpl/react-native-image-picker/harmony/image_picker.har',
+    '@react-native-oh-tpl/react-native-reanimated': 'file:../node_modules/@react-native-oh-tpl/react-native-reanimated/harmony/reanimated.har',
+    '@react-native-oh-tpl/react-native-safe-area-context': 'file:../node_modules/@react-native-oh-tpl/react-native-safe-area-context/harmony/safe_area.har',
+    '@react-native-oh-tpl/react-native-screens': 'file:../node_modules/@react-native-oh-tpl/react-native-screens/harmony/screens.har',
+    '@react-native-oh-tpl/react-native-skia': 'file:../node_modules/@react-native-oh-tpl/react-native-skia/harmony/skia.har',
+    '@react-native-oh-tpl/react-native-svg': 'file:../node_modules/@react-native-oh-tpl/react-native-svg/harmony/svg.har',
+    '@react-native-oh-tpl/react-native-webview': 'file:../node_modules/@react-native-oh-tpl/react-native-webview/harmony/rn_webview.har',
+  },
+  devDependencies: {
+    '@ohos/hypium': '1.0.6',
+  },
+  overrides: {
+    '@rnoh/react-native-openharmony': 'file:../node_modules/@react-native-oh/react-native-harmony/react_native_openharmony.har',
+  },
+}

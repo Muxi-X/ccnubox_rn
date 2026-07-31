@@ -5,11 +5,10 @@ import { NativeModules, Platform } from 'react-native';
 
 import usePushSubscriptionStore from '@/store/pushSubscription';
 
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import { isHarmony, platformCapabilities } from '@/platform/capabilities';
 import { JPushSecrets } from '@/secret/JPush';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
-import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
 
 type JPushNotificationResult = {
   content?: string;
@@ -27,7 +26,7 @@ let notificationsModulePromise: Promise<NotificationsModule> | null = null;
 
 const getNotificationsModule =
   async (): Promise<NotificationsModule | null> => {
-    if (isRunningInExpoGo()) return null;
+    if (isHarmony || isRunningInExpoGo()) return null;
 
     notificationsModulePromise ??= import('expo-notifications');
     return notificationsModulePromise;
@@ -95,7 +94,7 @@ type NativeJPushColdStartBridgeModule = {
 };
 
 const consumeNativeInitialJPushOpened = async (stage: string) => {
-  if (Platform.OS !== 'ios') return null;
+  if (Platform.OS !== 'ios' && !isHarmony) return null;
 
   const nativeBridge = (
     NativeModules as { JPushColdStartBridge?: NativeJPushColdStartBridgeModule }
@@ -264,8 +263,12 @@ const hasGrantedPushPermission = (
 };
 
 export const ensurePushPermission = async (requestIfNeeded = false) => {
+  if (!platformCapabilities.push) {
+    return false;
+  }
+
   const Notifications = await getNotificationsModule();
-  if (!Notifications) return false;
+  if (!Notifications) return isHarmony;
 
   const currentSettings = await Notifications.getPermissionsAsync();
   if (hasGrantedPushPermission(currentSettings, Notifications)) {
@@ -306,6 +309,10 @@ export const initializeJPush = async ({
 }: {
   requestPermission?: boolean;
 } = {}) => {
+  if (!platformCapabilities.push) {
+    return false;
+  }
+
   if (initializationPromise) {
     return initializationPromise;
   }
@@ -318,9 +325,9 @@ export const initializeJPush = async ({
       }
 
       const Notifications = await getNotificationsModule();
-      if (!Notifications) return false;
+      if (!Notifications && !isHarmony) return false;
 
-      if (Platform.OS === 'android') {
+      if (Platform.OS === 'android' && Notifications) {
         await Notifications.setNotificationChannelAsync('tips', {
           name: '消息通知',
           importance: Notifications.AndroidImportance.MAX,
@@ -407,6 +414,7 @@ const useJPush = () => {
   const enabled = usePushSubscriptionStore(state => state.enabled);
 
   useEffect(() => {
+    if (!platformCapabilities.push) return;
     if (!enabled) return;
     initializeJPush().catch(error => {
       console.error('JPush 自动初始化失败:', error);

@@ -81,16 +81,63 @@
 
 ## 开发环境版本
 
-- **Node.js**: >=18.0.0
-- **pnpm**: >=9.14.4
-- **React**: 18.2.0
-- **React Native**: 0.74.5
-- **Expo**: 51.0.38
+- **Node.js**: >=22.13.0
+- **pnpm**: 11.1.1
+- **React**: 19.1.1
+- **React Native**: 0.82.1
+- **Expo**: 55.0.24
 - **Gradle**: 8.6
 - **Android SDK**: 34 (compileSdkVersion)
 - **Android Build Tools**: 34.0.0
 - **JDK**: 17
-- **TypeScript**: ~5.3.3
+- **TypeScript**: ~5.9.3
+
+## Harmony 适配构建
+
+当前 Harmony 适配依赖 `expo-harmony-toolkit@1.8.3`，矩阵边界如下：
+
+- Expo 保持远端 `main` 的 SDK 55 patch 线。
+- `react` / `react-dom` 锁定为 `19.1.1`，`react-native` 锁定为 `0.82.1`。
+- `@react-native-oh/react-native-harmony` 和
+  `@react-native-oh/react-native-harmony-cli` 锁定为 `0.82.29`。
+- 公开矩阵仍是 `expo55-rnoh082-ui-stack`，当前不声明 RN `0.83.x`
+  已支持 Harmony。
+- `react-native-svg` Harmony adapter 使用 toolkit 矩阵允许的 npm fallback
+  `15.0.1-rc.11`，避免 GitHub tarball 在安装阶段执行 prepack 失败。
+
+常用命令：
+
+```bash
+pnpm install --frozen-lockfile
+pnpm harmony:doctor --target-tier experimental --json
+pnpm harmony:sync-template
+pnpm harmony:bundle
+pnpm harmony:build:debug
+```
+
+如果本机有 HarmonyOS 模拟器和签名材料，可以再运行：
+
+```bash
+pnpm harmony:env
+pnpm harmony:build:release
+hdc install -r harmony/entry/build/default/outputs/default/entry-default-signed.hap
+aa start -a EntryAbility -b com.muxixyz.ccnubox
+```
+
+签名材料只放在本地，例如：
+
+```text
+harmony/signing/release.p12
+harmony/signing/release.p7b
+harmony/signing/release.cer
+```
+
+真实密码、p12、profile、cert、HAP/HAR、`oh_modules`、raw
+bundle/assets都不应提交。可以复制 `.expo-harmony/signing.local.example.json`
+为本地 `signing.local.json` 后填写真实路径和密码。
+
+本 PR 的构建或模拟器证据只说明本地 build-chain
+/ 模拟器启动链路通过，不等同于真机 verified、AppGallery 生产签名或所有业务能力的运行时验收。
 
 ## 推荐开发调试方法
 

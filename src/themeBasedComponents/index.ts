@@ -6,4 +6,5 @@ import { defaultIOSComponents } from '@/themeBasedComponents/ios';
 export const componentMap: ThemeBasedComponentMap = {
   ios: defaultIOSComponents,
   android: defaultAndroidComponents,
+  harmony: defaultAndroidComponents,
 };

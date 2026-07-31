@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "华师匣子 official minimal Harmony sample"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "华师匣子 official minimal Harmony sample"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "华师匣子"
+    },
+    {
+      "name": "camera_reason",
+      "value": "Camera access is required for Harmony preview image capture flows."
+    },
+    {
+      "name": "microphone_reason",
+      "value": "Microphone access is required for Harmony preview video recording flows."
+    }
+  ]
+}
