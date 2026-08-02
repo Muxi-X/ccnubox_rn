@@ -26,8 +26,9 @@ import {
   ISSUE_TYPE_MAP,
   MODULE_MAP,
 } from '@/constants/FEEDBACKS';
+import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { createFeedbackRecord } from '@/request/api/feedback';
-import { log } from '@/utils/logger';
+import { runSensitiveAction } from '@/utils/requestSensitivePermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
@@ -89,24 +90,18 @@ function WriteFeedback() {
   };
 
   const handleSelectImage = async () => {
-    Toast.info('应用将申请相册权限用于上传图片');
     try {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        log.error('相册权限被拒绝');
-        Toast.fail('权限被拒绝,需要相册权限来选择图片');
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: 'images',
-        allowsEditing: true,
-        quality: 0.7,
-        aspect: [4, 3],
+      const result = await runSensitiveAction({
+        action: () =>
+          ImagePicker.launchImageLibraryAsync({
+            mediaTypes: 'images',
+            allowsEditing: true,
+            quality: 0.7,
+            aspect: [4, 3],
+          }),
+        purpose: SENSITIVE_PERMISSION_PURPOSES.feedbackImage,
       });
-
-      if (result.canceled) return;
+      if (!result || result.canceled) return;
 
       const assets = result.assets || [];
       if (assets.length === 0) return;

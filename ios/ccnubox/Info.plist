@@ -68,18 +68,14 @@
     <array>
       <string>_expo._tcp</string>
     </array>
-    <key>NSCameraUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your camera</string>
-    <key>NSFaceIDUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
     <key>NSLocalNetworkUsageDescription</key>
     <string>Expo Dev Launcher uses the local network to discover and connect to development servers running on your computer.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>用于地图功能获取您的当前位置并提供定位服务。</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>我们需要将图片保存到您的照片库。</string>
+    <string>用于将您主动生成的课表截图保存到相册。</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>我们需要访问您的照片库用于保存截图。</string>
+    <string>用于选择您主动添加的图片，以完成反馈或设置课表背景。</string>
     <key>NSSupportsLiveActivities</key>
     <true/>
     <key>NSUserActivityTypes</key>

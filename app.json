@@ -41,8 +41,9 @@
       "bundleIdentifier": "release-20240916",
       "buildNumber": "23",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "我们需要访问您的照片库用于保存截图。",
-        "NSPhotoLibraryAddUsageDescription": "我们需要将图片保存到您的照片库。",
+        "NSLocationWhenInUseUsageDescription": "用于地图功能获取您的当前位置并提供定位服务。",
+        "NSPhotoLibraryUsageDescription": "用于选择您主动添加的图片，以完成反馈或设置课表背景。",
+        "NSPhotoLibraryAddUsageDescription": "用于将您主动生成的课表截图保存到相册。",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
         },
@@ -63,21 +64,35 @@
         "backgroundColor": "#6666FF"
       },
       "permissions": [
-        "android.permission.SCHEDULE_EXACT_ALARM",
-        "android.permission.POST_NOTIFICATIONS",
-        "android.permission.ACCESS_NOTIFICATION_POLICY",
-        "android.permission.RECEIVE_BOOT_COMPLETED",
-        "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.FOREGROUND_SERVICE"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
       "package": "com.muxixyz.ccnubox",
       "versionCode": 23
     },
     "plugins": [
+      "./plugins/remove-unused-ios-permissions",
       "expo-router",
       "expo-web-browser",
       "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "用于选择您主动添加的图片，以完成反馈或设置课表背景。",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "用于访问您主动选择的图片。",
+          "savePhotosPermission": "用于将您主动生成的课表截图保存到相册。",
+          "granularPermissions": ["photo"]
+        }
+      ],
       [
         "react-native-edge-to-edge",
         {
