@@ -1,4 +1,3 @@
-import { Button } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import React, { memo, useState } from 'react';
 import {
@@ -170,12 +169,9 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
             borderTopColor: '#E1E2F1',
           }}
         >
-          <Button
-            styles={{
-              wrapperStyle: { borderWidth: 0 },
-              ghostRawText: { fontSize: 14 },
-            }}
-            type="ghost"
+          <TouchableOpacity
+            style={styles.touchableBtn}
+            accessibilityRole="button"
             onPress={() => {
               Modal.clear();
               Modal.show({
@@ -199,13 +195,10 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               />
               <Text style={currentStyle?.text_style}>删除</Text>
             </View>
-          </Button>
-          <Button
-            styles={{
-              wrapperStyle: { borderWidth: 0 },
-              ghostRawText: { fontSize: 14 },
-            }}
-            type="ghost"
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.touchableBtn}
+            accessibilityRole="button"
             onPress={() => {
               Modal.clear();
               router.push({
@@ -224,7 +217,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               />
               <Text style={currentStyle?.text_style}>编辑</Text>
             </View>
-          </Button>
+          </TouchableOpacity>
         </View>
       );
     }
