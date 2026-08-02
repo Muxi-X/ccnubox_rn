@@ -1,9 +1,3 @@
-import Toast from '@/components/toast';
-import { FeedIconList } from '@/constants/notificationItem';
-import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
-import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
-import useVisualScheme from '@/store/visualScheme';
-import Switch from '@/components/switch';
 import { MaterialIcons } from '@expo/vector-icons';
 import { type FC, useEffect, useState } from 'react';
 import {
@@ -14,6 +8,15 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+
+import Switch from '@/components/switch';
+import Toast from '@/components/toast';
+
+import useVisualScheme from '@/store/visualScheme';
+
+import { FeedIconList } from '@/constants/notificationItem';
+import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
+import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
 
 interface NotiPickerProps {
   visible: boolean;
@@ -109,7 +112,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
                 checked={!!checkList[item.name]}
                 style={styles.switch}
                 trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-                thumbColor="#979797"
+                thumbColor="#FFFFFF"
                 onChange={() => handleToggle(item.name)}
               />
             </View>
@@ -181,7 +184,7 @@ const styles = StyleSheet.create({
   },
   switch: {
     width: 40,
-    height: 20,
+    height: 24,
     marginRight: 10,
   },
   footer: {

@@ -75,5 +75,6 @@ const styles = StyleSheet.create({
   arrow: {
     fontSize: 18,
     color: '#ccc',
+    marginRight: 10,
   },
 });
