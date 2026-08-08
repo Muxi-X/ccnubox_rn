@@ -8,9 +8,13 @@ import Text from '@/components/text';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import ChooseIcon from '@/assets/icons/choose.svg';
-import StarIcon from '@/assets/icons/star.svg';
-import StarGrayIcon from '@/assets/icons/star-gray.svg';
+import { classroomIcons } from '@/assets/icons';
+
+const {
+  choose: ChooseIcon,
+  star: StarIcon,
+  starGray: StarGrayIcon,
+} = classroomIcons;
 
 // 共享常量
 export const prefix = ['自习地点', '楼层', '时间'];

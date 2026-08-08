@@ -11,8 +11,10 @@ import { useClassroomWarningStore } from '@/store/classroom';
 import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
 
-import StarIcon from '@/assets/icons/star.svg';
+import { classroomIcons } from '@/assets/icons';
 import { ClassroomContent } from '@/modules/mainPage/components/classroom';
+
+const StarIcon = classroomIcons.star;
 
 export default function Classroom() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

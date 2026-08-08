@@ -1,0 +1,235 @@
+import type { FC } from 'react';
+import type { ImageSourcePropType } from 'react-native';
+import type { SvgProps } from 'react-native-svg';
+
+import useVisualScheme from '@/store/visualScheme';
+
+import TabCalendarIcon from './calendar.svg';
+import AddCourseIcon from './calendar/add-course.svg';
+import CourseDeleteIcon from './calendar/delete.svg';
+import CourseEditIcon from './calendar/edit.svg';
+import CourseFailIcon from './calendar/fail.svg';
+import CourseLocationIcon from './calendar/location.svg';
+import CourseNoteIcon from './calendar/note.svg';
+import ScreenshotIcon from './calendar/screenshot.svg';
+import CourseSuccessIcon from './calendar/success.svg';
+import CourseTeacherIcon from './calendar/teacher.svg';
+import CourseTimeIcon from './calendar/time.svg';
+import CourseWeekIcon from './calendar/week.svg';
+import ChooseIcon from './choose.svg';
+import ResolvedFeedbackIcon from './feedback/resolved.svg';
+import ResolvedSelectedFeedbackIcon from './feedback/resolved_selected.svg';
+import UnresolvedFeedbackIcon from './feedback/unresolved.svg';
+import UnresolvedSelectedFeedbackIcon from './feedback/unresolved_selected.svg';
+import TabHomeIcon from './home.svg';
+import TabNotificationIcon from './notification.svg';
+import AndroidAirFeedIcon from './platform/android/air.png';
+import AndroidAllIcon from './platform/android/all.svg';
+import AndroidCardIcon from './platform/android/card.svg';
+import AndroidClassroomIcon from './platform/android/classroom.svg';
+import AndroidDateIcon from './platform/android/date.svg';
+import AndroidEnergyIcon from './platform/android/energy.svg';
+import AndroidEventGlideIcon from './platform/android/event-glide.svg';
+import AndroidFeedbackFeedIcon from './platform/android/feedback.png';
+import AndroidGradeFeedIcon from './platform/android/grade.png';
+import AndroidGradesIcon from './platform/android/grades.svg';
+import AndroidHolidayFeedIcon from './platform/android/holiday.png';
+import AndroidInformationIcon from './platform/android/information.svg';
+import AndroidKestackIcon from './platform/android/kestack.svg';
+import AndroidLessonIcon from './platform/android/lesson.svg';
+import AndroidMapIcon from './platform/android/map.svg';
+import AndroidMoreIcon from './platform/android/more.svg';
+import AndroidMuxiFeedIcon from './platform/android/muxi.png';
+import AndroidSeatIcon from './platform/android/seat.svg';
+import AndroidWebIcon from './platform/android/web.svg';
+import IosAirFeedIcon from './platform/ios/air.png';
+import IosAllIcon from './platform/ios/all.svg';
+import IosCardIcon from './platform/ios/card.svg';
+import IosClassroomIcon from './platform/ios/classroom.svg';
+import IosDateIcon from './platform/ios/date.svg';
+import IosEnergyIcon from './platform/ios/energy.svg';
+import IosEventGlideIcon from './platform/ios/event-glide.svg';
+import IosFeedbackFeedIcon from './platform/ios/feedback.png';
+import IosGradeFeedIcon from './platform/ios/grade.png';
+import IosGradesIcon from './platform/ios/grades.svg';
+import IosHolidayFeedIcon from './platform/ios/holiday.png';
+import IosInformationIcon from './platform/ios/information.svg';
+import IosKestackIcon from './platform/ios/kestack.svg';
+import IosLessonIcon from './platform/ios/lesson.svg';
+import IosMapIcon from './platform/ios/map.svg';
+import IosMoreIcon from './platform/ios/more.svg';
+import IosMuxiFeedIcon from './platform/ios/muxi.png';
+import IosSeatIcon from './platform/ios/seat.svg';
+import IosWebIcon from './platform/ios/web.svg';
+import TabSettingIcon from './setting.svg';
+import StarIcon from './star.svg';
+import StarGrayIcon from './star-gray.svg';
+
+export type SvgIcon = FC<SvgProps>;
+
+export type IconStyleIcons<T> = {
+  android: T;
+  ios: T;
+  default: T;
+};
+
+export const selectIconStyle = <T>(icons: IconStyleIcons<T>): T =>
+  useVisualScheme.getState().iconStyleSelect(icons);
+
+export const tabBarIcons = {
+  calendar: TabCalendarIcon,
+  home: TabHomeIcon,
+  notification: TabNotificationIcon,
+  setting: TabSettingIcon,
+} satisfies Record<string, SvgIcon>;
+
+export type TabBarIconName = keyof typeof tabBarIcons;
+
+export const courseTableIcons = {
+  addCourse: AddCourseIcon,
+  delete: CourseDeleteIcon,
+  edit: CourseEditIcon,
+  fail: CourseFailIcon,
+  location: CourseLocationIcon,
+  note: CourseNoteIcon,
+  screenshot: ScreenshotIcon,
+  success: CourseSuccessIcon,
+  teacher: CourseTeacherIcon,
+  time: CourseTimeIcon,
+  week: CourseWeekIcon,
+} satisfies Record<string, SvgIcon>;
+
+export const feedbackIcons = {
+  resolved: ResolvedFeedbackIcon,
+  resolvedSelected: ResolvedSelectedFeedbackIcon,
+  unresolved: UnresolvedFeedbackIcon,
+  unresolvedSelected: UnresolvedSelectedFeedbackIcon,
+} satisfies Record<string, SvgIcon>;
+
+export const classroomIcons = {
+  choose: ChooseIcon,
+  star: StarIcon,
+  starGray: StarGrayIcon,
+} satisfies Record<string, SvgIcon>;
+
+export const homeGridIcons = {
+  all: {
+    android: AndroidAllIcon,
+    ios: IosAllIcon,
+    default: AndroidAllIcon,
+  },
+  card: {
+    android: AndroidCardIcon,
+    ios: IosCardIcon,
+    default: AndroidCardIcon,
+  },
+  classroom: {
+    android: AndroidClassroomIcon,
+    ios: IosClassroomIcon,
+    default: AndroidClassroomIcon,
+  },
+  date: {
+    android: AndroidDateIcon,
+    ios: IosDateIcon,
+    default: AndroidDateIcon,
+  },
+  energy: {
+    android: AndroidEnergyIcon,
+    ios: IosEnergyIcon,
+    default: AndroidEnergyIcon,
+  },
+  eventGlide: {
+    android: AndroidEventGlideIcon,
+    ios: IosEventGlideIcon,
+    default: AndroidEventGlideIcon,
+  },
+  grades: {
+    android: AndroidGradesIcon,
+    ios: IosGradesIcon,
+    default: AndroidGradesIcon,
+  },
+  information: {
+    android: AndroidInformationIcon,
+    ios: IosInformationIcon,
+    default: AndroidInformationIcon,
+  },
+  kestack: {
+    android: AndroidKestackIcon,
+    ios: IosKestackIcon,
+    default: AndroidKestackIcon,
+  },
+  lesson: {
+    android: AndroidLessonIcon,
+    ios: IosLessonIcon,
+    default: AndroidLessonIcon,
+  },
+  map: {
+    android: AndroidMapIcon,
+    ios: IosMapIcon,
+    default: AndroidMapIcon,
+  },
+  more: {
+    android: AndroidMoreIcon,
+    ios: IosMoreIcon,
+    default: AndroidMoreIcon,
+  },
+  seat: {
+    android: AndroidSeatIcon,
+    ios: IosSeatIcon,
+    default: AndroidSeatIcon,
+  },
+  web: {
+    android: AndroidWebIcon,
+    ios: IosWebIcon,
+    default: AndroidWebIcon,
+  },
+} satisfies Record<string, IconStyleIcons<SvgIcon>>;
+
+export const feedIcons = {
+  energy: {
+    android: AndroidAirFeedIcon as ImageSourcePropType,
+    ios: IosAirFeedIcon as ImageSourcePropType,
+    default: AndroidAirFeedIcon as ImageSourcePropType,
+  },
+  feedback: {
+    android: AndroidFeedbackFeedIcon as ImageSourcePropType,
+    ios: IosFeedbackFeedIcon as ImageSourcePropType,
+    default: AndroidFeedbackFeedIcon as ImageSourcePropType,
+  },
+  grade: {
+    android: AndroidGradeFeedIcon as ImageSourcePropType,
+    ios: IosGradeFeedIcon as ImageSourcePropType,
+    default: AndroidGradeFeedIcon as ImageSourcePropType,
+  },
+  holiday: {
+    android: AndroidHolidayFeedIcon as ImageSourcePropType,
+    ios: IosHolidayFeedIcon as ImageSourcePropType,
+    default: AndroidHolidayFeedIcon as ImageSourcePropType,
+  },
+  muxi: {
+    android: AndroidMuxiFeedIcon as ImageSourcePropType,
+    ios: IosMuxiFeedIcon as ImageSourcePropType,
+    default: AndroidMuxiFeedIcon as ImageSourcePropType,
+  },
+} satisfies Record<string, IconStyleIcons<ImageSourcePropType>>;
+
+export {
+  AddCourseIcon,
+  ChooseIcon,
+  CourseDeleteIcon,
+  CourseEditIcon,
+  CourseFailIcon,
+  CourseLocationIcon,
+  CourseNoteIcon,
+  CourseSuccessIcon,
+  CourseTeacherIcon,
+  CourseTimeIcon,
+  CourseWeekIcon,
+  ResolvedFeedbackIcon,
+  ResolvedSelectedFeedbackIcon,
+  ScreenshotIcon,
+  StarGrayIcon,
+  StarIcon,
+  UnresolvedFeedbackIcon,
+  UnresolvedSelectedFeedbackIcon,
+};

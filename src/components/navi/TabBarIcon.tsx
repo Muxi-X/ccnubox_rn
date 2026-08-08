@@ -1,22 +1,13 @@
 import React from 'react';
 import { ColorValue, ViewStyle } from 'react-native';
 
-// 导入所有SVG图标
-import CalendarIcon from '@/assets/icons/calendar.svg';
-import HomeIcon from '@/assets/icons/home.svg';
-import SettingIcon from '@/assets/icons/setting.svg';
-import NotificationIcon from '@/assets/icons/notification.svg';
+import { type TabBarIconName, tabBarIcons } from '@/assets/icons';
 
-export const icons = {
-  calendar: CalendarIcon,
-  home: HomeIcon,
-  setting: SettingIcon,
-  notification: NotificationIcon,
-};
+export const icons = tabBarIcons;
 
 interface TabBarIconProps {
   style?: ViewStyle;
-  name?: keyof typeof icons;
+  name?: TabBarIconName;
   size?: number;
   color?: ColorValue;
 }
@@ -27,8 +18,9 @@ export function TabBarIcon({
   size = 24,
   color = 'black',
 }: TabBarIconProps) {
-  const Icon = icons[name];
+  const Icon = tabBarIcons[name];
   if (!Icon) {
+    // eslint-disable-next-line no-console
     console.warn(`Icon ${name} not found`);
     return null;
   }

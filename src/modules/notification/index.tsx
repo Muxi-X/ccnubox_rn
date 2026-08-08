@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { type FC, memo, useCallback, useState } from 'react';
+import { type FC, memo, useCallback, useMemo, useState } from 'react';
 import {
   Animated,
   Image,
@@ -19,7 +19,7 @@ import Toast from '@/components/toast';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
-import { FeedIconList } from '@/constants/notificationItem';
+import { getFeedIconList } from '@/constants/notificationItem';
 
 const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
@@ -105,10 +105,15 @@ export const ListItem: FC<EventProps> = ({
   extend_fields,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const feedIcon = FeedIconList.find(item => item.name === type);
+  const iconStyleName = useVisualScheme(state => state.iconStyleName);
+  const feedIcon = useMemo(
+    () => getFeedIconList().find(item => item.name === type),
+    [iconStyleName, type]
+  );
   const { markAsRead, deleteEvent } = useEvents();
 
   const readEvent = () => {
+    // eslint-disable-next-line no-console
     console.log('[Notification] 点击通知项:', { id, type, url, extend_fields });
     if (id && !read) {
       void markAsRead(id).catch(error => {
@@ -123,9 +128,11 @@ export const ListItem: FC<EventProps> = ({
     const fallbackUrl = extend_fields?.url;
     const targetUrl = url || fallbackUrl;
     if (targetUrl) {
+      // eslint-disable-next-line no-console
       console.log('[Notification] 发现跳转 URL:', targetUrl);
       openPushUrl(targetUrl);
     } else {
+      // eslint-disable-next-line no-console
       console.log('[Notification] 未发现跳转 URL');
     }
   };

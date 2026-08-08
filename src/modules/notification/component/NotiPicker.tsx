@@ -1,11 +1,6 @@
-import Toast from '@/components/toast';
-import { FeedIconList } from '@/constants/notificationItem';
-import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
-import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
-import useVisualScheme from '@/store/visualScheme';
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useMemo, useState } from 'react';
 import {
   Image,
   Modal,
@@ -14,6 +9,14 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+
+import Toast from '@/components/toast';
+
+import useVisualScheme from '@/store/visualScheme';
+
+import { getFeedIconList } from '@/constants/notificationItem';
+import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
+import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
 
 interface NotiPickerProps {
   visible: boolean;
@@ -30,6 +33,8 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   });
   const [loading, setLoading] = useState(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const iconStyleName = useVisualScheme(state => state.iconStyleName);
+  const feedIconList = useMemo(() => getFeedIconList(), [iconStyleName]);
 
   // 只在 modal 打开时获取数据
   useEffect(() => {
@@ -94,7 +99,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
             />
           </View>
 
-          {FeedIconList.map(item => (
+          {feedIconList.map(item => (
             <View
               style={[styles.listItem, currentStyle?.background_style]}
               key={item.name}
