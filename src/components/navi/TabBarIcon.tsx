@@ -1,7 +1,11 @@
 import React from 'react';
 import { ColorValue, ViewStyle } from 'react-native';
 
-import { type TabBarIconName, tabBarIcons } from '@/assets/icons';
+import {
+  type TabBarIconName,
+  tabBarIcons,
+  tabBarSelectedIcons,
+} from '@/assets/icons';
 
 export const icons = tabBarIcons;
 
@@ -10,6 +14,7 @@ interface TabBarIconProps {
   name?: TabBarIconName;
   size?: number;
   color?: ColorValue;
+  focused?: boolean;
 }
 
 export function TabBarIcon({
@@ -17,8 +22,9 @@ export function TabBarIcon({
   name = 'home',
   size = 24,
   color = 'black',
+  focused = false,
 }: TabBarIconProps) {
-  const Icon = tabBarIcons[name];
+  const Icon = focused ? tabBarSelectedIcons[name] : tabBarIcons[name];
   if (!Icon) {
     // eslint-disable-next-line no-console
     console.warn(`Icon ${name} not found`);

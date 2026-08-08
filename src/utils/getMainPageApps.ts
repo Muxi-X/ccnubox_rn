@@ -1,17 +1,14 @@
-import useVisualScheme from '@/store/visualScheme';
-
+import { selectIconStyle } from '@/assets/icons';
 import { HOME_ITEMS } from '@/constants/HOME';
 
 import type { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 export const getMainPageApplications = (): MainPageGridDataType[] => {
-  const { iconStyleSelect } = useVisualScheme.getState();
-
   return HOME_ITEMS.map(
     item =>
       ({
         ...item,
-        imageUrl: iconStyleSelect(item.imageUrl),
+        imageUrl: selectIconStyle(item.imageUrl),
       }) as MainPageGridDataType
   );
 };

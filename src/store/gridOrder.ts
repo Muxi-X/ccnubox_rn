@@ -86,16 +86,16 @@ const useGridOrder = create<GridOrderState>()(
   )
 );
 
-globalEventBus.on('layoutChange', () => {
+const rebuildGridDataWithCurrentOrder = () => {
   const state = useGridOrder.getState();
   const currentOrder = state.gridData.map(item => ({ key: item.key }));
   state.updateGridOrder(buildGridDataWithOrder(currentOrder));
-});
+};
 
-globalEventBus.on('iconStyleChange', () => {
-  const state = useGridOrder.getState();
-  const currentOrder = state.gridData.map(item => ({ key: item.key }));
-  state.updateGridOrder(buildGridDataWithOrder(currentOrder));
-});
+globalEventBus.on('layoutChange', rebuildGridDataWithCurrentOrder);
+
+globalEventBus.on('iconStyleChange', rebuildGridDataWithCurrentOrder);
+
+globalEventBus.on('themeChange', rebuildGridDataWithCurrentOrder);
 
 export default useGridOrder;

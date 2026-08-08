@@ -41,6 +41,7 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
           size={24}
           name={iconName}
           color={color}
+          focused={isFocused}
           style={styles.icon}
         />
         {unreadCount > 0 && (
@@ -52,7 +53,7 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
         )}
       </View>
     ),
-    [iconName, color, unreadCount]
+    [iconName, color, isFocused, unreadCount]
   );
 
   return (

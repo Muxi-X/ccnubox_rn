@@ -61,20 +61,63 @@ import IosMoreIcon from './platform/ios/more.svg';
 import IosMuxiFeedIcon from './platform/ios/muxi.png';
 import IosSeatIcon from './platform/ios/seat.svg';
 import IosWebIcon from './platform/ios/web.svg';
+import IosDarkCardIcon from './platform/ios-dark/card.svg';
+import IosDarkClassroomIcon from './platform/ios-dark/classroom.svg';
+import IosDarkDateIcon from './platform/ios-dark/date.svg';
+import IosDarkEnergyIcon from './platform/ios-dark/energy.svg';
+import IosDarkEventGlideIcon from './platform/ios-dark/event-glide.svg';
+import IosDarkGradesIcon from './platform/ios-dark/grades.svg';
+import IosDarkInformationIcon from './platform/ios-dark/information.svg';
+import IosDarkKestackIcon from './platform/ios-dark/kestack.svg';
+import IosDarkMapIcon from './platform/ios-dark/map.svg';
+import IosDarkMoreIcon from './platform/ios-dark/more.svg';
+import IosDarkSeatIcon from './platform/ios-dark/seat.svg';
+import IosDarkWebIcon from './platform/ios-dark/web.svg';
 import TabSettingIcon from './setting.svg';
 import StarIcon from './star.svg';
 import StarGrayIcon from './star-gray.svg';
+import TabCalendarSelectedIcon from './tabbar/calendar-selected.svg';
+import TabHomeSelectedIcon from './tabbar/home-selected.svg';
+import TabNotificationSelectedIcon from './tabbar/notification-selected.svg';
+import TabSettingSelectedIcon from './tabbar/setting-selected.svg';
 
 export type SvgIcon = FC<SvgProps>;
 
-export type IconStyleIcons<T> = {
-  android: T;
-  ios: T;
+export type ThemeIcons<T> = {
+  light: T;
+  dark: T;
   default: T;
 };
 
+export type IconStyleIconValue<T> = T | ThemeIcons<T>;
+
+export type IconStyleIcons<T> = {
+  android: IconStyleIconValue<T>;
+  ios: IconStyleIconValue<T>;
+  default: IconStyleIconValue<T>;
+};
+
+const isThemeIcons = <T>(
+  icon: IconStyleIconValue<T>
+): icon is ThemeIcons<T> =>
+  typeof icon === 'object' &&
+  icon !== null &&
+  'light' in icon &&
+  'dark' in icon;
+
+export const selectThemeIcon = <T>(icon: IconStyleIconValue<T>): T => {
+  if (!isThemeIcons(icon)) {
+    return icon;
+  }
+
+  const { themeName } = useVisualScheme.getState();
+  return icon[themeName] ?? icon.default;
+};
+
 export const selectIconStyle = <T>(icons: IconStyleIcons<T>): T =>
-  useVisualScheme.getState().iconStyleSelect(icons);
+  selectThemeIcon(
+    useVisualScheme.getState().iconStyleSelect<IconStyleIconValue<T>>(icons)
+  );
 
 export const tabBarIcons = {
   calendar: TabCalendarIcon,
@@ -84,6 +127,13 @@ export const tabBarIcons = {
 } satisfies Record<string, SvgIcon>;
 
 export type TabBarIconName = keyof typeof tabBarIcons;
+
+export const tabBarSelectedIcons = {
+  calendar: TabCalendarSelectedIcon,
+  home: TabHomeSelectedIcon,
+  notification: TabNotificationSelectedIcon,
+  setting: TabSettingSelectedIcon,
+} satisfies Record<TabBarIconName, SvgIcon>;
 
 export const courseTableIcons = {
   addCourse: AddCourseIcon,
@@ -120,42 +170,74 @@ export const homeGridIcons = {
   },
   card: {
     android: AndroidCardIcon,
-    ios: IosCardIcon,
+    ios: {
+      light: IosCardIcon,
+      dark: IosDarkCardIcon,
+      default: IosCardIcon,
+    },
     default: AndroidCardIcon,
   },
   classroom: {
     android: AndroidClassroomIcon,
-    ios: IosClassroomIcon,
+    ios: {
+      light: IosClassroomIcon,
+      dark: IosDarkClassroomIcon,
+      default: IosClassroomIcon,
+    },
     default: AndroidClassroomIcon,
   },
   date: {
     android: AndroidDateIcon,
-    ios: IosDateIcon,
+    ios: {
+      light: IosDateIcon,
+      dark: IosDarkDateIcon,
+      default: IosDateIcon,
+    },
     default: AndroidDateIcon,
   },
   energy: {
     android: AndroidEnergyIcon,
-    ios: IosEnergyIcon,
+    ios: {
+      light: IosEnergyIcon,
+      dark: IosDarkEnergyIcon,
+      default: IosEnergyIcon,
+    },
     default: AndroidEnergyIcon,
   },
   eventGlide: {
     android: AndroidEventGlideIcon,
-    ios: IosEventGlideIcon,
+    ios: {
+      light: IosEventGlideIcon,
+      dark: IosDarkEventGlideIcon,
+      default: IosEventGlideIcon,
+    },
     default: AndroidEventGlideIcon,
   },
   grades: {
     android: AndroidGradesIcon,
-    ios: IosGradesIcon,
+    ios: {
+      light: IosGradesIcon,
+      dark: IosDarkGradesIcon,
+      default: IosGradesIcon,
+    },
     default: AndroidGradesIcon,
   },
   information: {
     android: AndroidInformationIcon,
-    ios: IosInformationIcon,
+    ios: {
+      light: IosInformationIcon,
+      dark: IosDarkInformationIcon,
+      default: IosInformationIcon,
+    },
     default: AndroidInformationIcon,
   },
   kestack: {
     android: AndroidKestackIcon,
-    ios: IosKestackIcon,
+    ios: {
+      light: IosKestackIcon,
+      dark: IosDarkKestackIcon,
+      default: IosKestackIcon,
+    },
     default: AndroidKestackIcon,
   },
   lesson: {
@@ -165,22 +247,38 @@ export const homeGridIcons = {
   },
   map: {
     android: AndroidMapIcon,
-    ios: IosMapIcon,
+    ios: {
+      light: IosMapIcon,
+      dark: IosDarkMapIcon,
+      default: IosMapIcon,
+    },
     default: AndroidMapIcon,
   },
   more: {
     android: AndroidMoreIcon,
-    ios: IosMoreIcon,
+    ios: {
+      light: IosMoreIcon,
+      dark: IosDarkMoreIcon,
+      default: IosMoreIcon,
+    },
     default: AndroidMoreIcon,
   },
   seat: {
     android: AndroidSeatIcon,
-    ios: IosSeatIcon,
+    ios: {
+      light: IosSeatIcon,
+      dark: IosDarkSeatIcon,
+      default: IosSeatIcon,
+    },
     default: AndroidSeatIcon,
   },
   web: {
     android: AndroidWebIcon,
-    ios: IosWebIcon,
+    ios: {
+      light: IosWebIcon,
+      dark: IosDarkWebIcon,
+      default: IosWebIcon,
+    },
     default: AndroidWebIcon,
   },
 } satisfies Record<string, IconStyleIcons<SvgIcon>>;
