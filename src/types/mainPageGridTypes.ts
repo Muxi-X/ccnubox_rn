@@ -1,6 +1,7 @@
 import { Href } from 'expo-router';
 import { ImageSourcePropType } from 'react-native';
-import { SvgProps } from 'react-native-svg';
+
+import type { IconStyleIcons, SvgIcon } from '@/assets/icons';
 
 import { SinglePageType } from '@/types/tabBarTypes';
 
@@ -8,7 +9,7 @@ export interface MainPageGridDataType extends Omit<
   SinglePageType,
   'iconName' | 'headerLeft'
 > {
-  imageUrl: ImageSourcePropType | React.FC<SvgProps>;
+  imageUrl: IconStyleIcons<ImageSourcePropType | SvgIcon>;
   href?: Href;
   action?: () => void;
   key: string;

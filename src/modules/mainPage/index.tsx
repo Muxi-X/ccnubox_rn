@@ -15,6 +15,7 @@ import ThemeChangeView from '@/components/view';
 import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
 
+import { selectIconStyle } from '@/assets/icons';
 import { queryBanners } from '@/request/api';
 import { percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
@@ -31,6 +32,8 @@ const IndexPage: FC = () => {
     }[]
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const iconStyleName = useVisualScheme(state => state.iconStyleName);
+  const themeName = useVisualScheme(state => state.themeName);
 
   const tabbarHeight = useSafeAreaInsets().bottom;
 
@@ -62,11 +65,13 @@ const IndexPage: FC = () => {
   };
 
   const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
-    if (typeof imageUrl === 'function') {
-      const SvgComponent = imageUrl;
+    const resolvedIcon = selectIconStyle(imageUrl);
+
+    if (typeof resolvedIcon === 'function') {
+      const SvgComponent = resolvedIcon;
       return <SvgComponent width={50} height={50} />;
     }
-    return <Image source={imageUrl} />;
+    return <Image source={resolvedIcon} />;
   };
 
   const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
@@ -153,6 +158,7 @@ const IndexPage: FC = () => {
           }}
           renderItem={render}
           data={gridData}
+          key={`${iconStyleName}-${themeName}`}
           onDragRelease={onDragRelease}
         />
       </ScrollView>
