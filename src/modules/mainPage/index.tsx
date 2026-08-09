@@ -15,7 +15,6 @@ import ThemeChangeView from '@/components/view';
 import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
 
-import { selectIconStyle } from '@/assets/icons';
 import { queryBanners } from '@/request/api';
 import { percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
@@ -32,8 +31,6 @@ const IndexPage: FC = () => {
     }[]
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const iconStyleName = useVisualScheme(state => state.iconStyleName);
-  const themeName = useVisualScheme(state => state.themeName);
 
   const tabbarHeight = useSafeAreaInsets().bottom;
 
@@ -64,20 +61,12 @@ const IndexPage: FC = () => {
     updateGridOrder(data);
   };
 
-  const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
-    const resolvedIcon = selectIconStyle(imageUrl);
-
-    if (typeof resolvedIcon === 'function') {
-      const SvgComponent = resolvedIcon;
-      return <SvgComponent width={50} height={50} />;
-    }
-    return <Image source={resolvedIcon} />;
-  };
-
-  const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
+  const render = ({ Icon, key, title }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
-        <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
+        <View style={styles.itemImage}>
+          <Icon height={50} width={50} />
+        </View>
         <Text style={styles.itemText}>{title}</Text>
       </View>
     );
@@ -158,7 +147,6 @@ const IndexPage: FC = () => {
           }}
           renderItem={render}
           data={gridData}
-          key={`${iconStyleName}-${themeName}`}
           onDragRelease={onDragRelease}
         />
       </ScrollView>

@@ -7,7 +7,7 @@ export const HOME_ITEMS = [
   {
     title: '查算学分绩',
     name: 'scoreInquiry',
-    imageUrl: homeGridIcons.grades,
+    Icon: homeGridIcons.grades,
     key: 'grid-1',
     href: '/scoreInquiry',
   },
@@ -15,20 +15,20 @@ export const HOME_ITEMS = [
     title: '电费查询',
     name: 'electricity',
     href: '/electricity',
-    imageUrl: homeGridIcons.energy,
+    Icon: homeGridIcons.energy,
     key: 'grid-2',
   },
   {
     title: '地图',
     name: 'map',
-    imageUrl: homeGridIcons.map,
+    Icon: homeGridIcons.map,
     key: 'grid-3',
     href: '/map' as Href,
   },
   {
     title: '校园卡',
     name: 'schoolCard',
-    imageUrl: homeGridIcons.card,
+    Icon: homeGridIcons.card,
     key: 'grid-4',
     action: () =>
       handleOpenURL(
@@ -39,42 +39,42 @@ export const HOME_ITEMS = [
   {
     title: '空闲教室',
     name: 'classroom',
-    imageUrl: homeGridIcons.classroom,
+    Icon: homeGridIcons.classroom,
     key: 'grid-5',
     href: '/classroom' as Href,
   },
   // {
   //   title: '蹭课',
   //   name: 'spaceLesson',
-  //   imageUrl: homeGridIcons.lesson,
+  //   Icon: homeGridIcons.lesson,
   //   key: 'grid-6',
   //   href: '/spaceLesson' as Href,
   // },
   {
     title: '部门信息',
     name: 'departments',
-    imageUrl: homeGridIcons.information,
+    Icon: homeGridIcons.information,
     key: 'grid-7',
     href: '/departments' as Href,
   },
   {
     title: '校历',
     name: 'calendar',
-    imageUrl: homeGridIcons.date,
+    Icon: homeGridIcons.date,
     key: 'grid-8',
     href: '/calendar' as Href,
   },
   {
     title: '常用网站',
     name: 'websites',
-    imageUrl: homeGridIcons.web,
+    Icon: homeGridIcons.web,
     key: 'grid-9',
     href: '/websites' as Href,
   },
   {
     title: '木犀课栈',
     name: 'kestack',
-    imageUrl: homeGridIcons.kestack,
+    Icon: homeGridIcons.kestack,
     key: 'grid-10',
     // action: () => {
     //   // 暂时还不能用，等课栈提供生成加密 URL Scheme的接口
@@ -85,7 +85,7 @@ export const HOME_ITEMS = [
   // {
   //   title: '信息整合',
   //   name: 'all',
-  //   imageUrl: homeGridIcons.all,
+  //   Icon: homeGridIcons.all,
   //   key: 'grid-11',
   //   href: '/all' as Href,
   // },
@@ -93,21 +93,21 @@ export const HOME_ITEMS = [
   // {
   //   title: '座位预约',
   //   name: 'site',
-  //   imageUrl: homeGridIcons.seat,
+  //   Icon: homeGridIcons.seat,
   //   key: 'grid-12',
   //   href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=http://kjyy.ccnu.edu.cn/loginall.aspx?page=&pageId=1053906&wfwfid=1740&websiteId=548973')}` as Href,
   // },
   {
     title: '座位预约',
     name: 'site',
-    imageUrl: homeGridIcons.seat,
+    Icon: homeGridIcons.seat,
     key: 'grid-12',
     href: `/(mainPage)/webview?title=座位预约&link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
   },
   {
     title: '校灵通',
     name: 'eventGlide',
-    imageUrl: homeGridIcons.eventGlide,
+    Icon: homeGridIcons.eventGlide,
     key: 'grid-14',
     action: () =>
       handleOpenURL(
@@ -118,7 +118,7 @@ export const HOME_ITEMS = [
   {
     title: '更多',
     name: 'more',
-    imageUrl: homeGridIcons.more,
+    Icon: homeGridIcons.more,
     key: 'grid-13',
     href: '/more' as Href,
     disabledDrag: true,
@@ -126,7 +126,7 @@ export const HOME_ITEMS = [
   // {
   //   title: '更新小组件',
   //   name: 'updateWidget',
-  //   imageUrl: homeGridIcons.more,
+  //   Icon: homeGridIcons.more,
   //   key: 'grid-14',
   //   action: () =>
   //     updateCourseData()

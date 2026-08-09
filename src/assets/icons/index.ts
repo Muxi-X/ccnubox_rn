@@ -1,8 +1,15 @@
-import type { FC } from 'react';
-import type { ImageSourcePropType } from 'react-native';
+import { createElement, type FC } from 'react';
+import {
+  Image as RNImage,
+  type ImageSourcePropType,
+  type ImageStyle,
+  type StyleProp,
+} from 'react-native';
 import type { SvgProps } from 'react-native-svg';
 
 import useVisualScheme from '@/store/visualScheme';
+
+import type { LayoutName, ThemeName } from '@/styles/types';
 
 import TabCalendarIcon from './calendar.svg';
 import AddCourseIcon from './calendar/add-course.svg';
@@ -82,6 +89,11 @@ import TabNotificationSelectedIcon from './tabbar/notification-selected.svg';
 import TabSettingSelectedIcon from './tabbar/setting-selected.svg';
 
 export type SvgIcon = FC<SvgProps>;
+export type AppIconProps = SvgProps & {
+  imageStyle?: StyleProp<ImageStyle>;
+  size?: number;
+};
+export type AppIcon = FC<AppIconProps>;
 
 export type ThemeIcons<T> = {
   light: T;
@@ -105,6 +117,45 @@ const isThemeIcons = <T>(
   'light' in icon &&
   'dark' in icon;
 
+const isSvgIcon = (icon: AppIconSource): icon is SvgIcon =>
+  typeof icon === 'function';
+
+const selectThemeIconByTheme = <T>(
+  icon: IconStyleIconValue<T>,
+  themeName: ThemeName
+): T => {
+  if (!isThemeIcons(icon)) {
+    return icon;
+  }
+
+  return icon[themeName] ?? icon.default;
+};
+
+const selectIconStyleByState = <T>(
+  icons: IconStyleIcons<T>,
+  iconStyleName: LayoutName,
+  themeName: ThemeName
+): T => {
+  const iconStyleSpecific = icons[iconStyleName];
+  if (iconStyleSpecific !== undefined) {
+    return selectThemeIconByTheme(iconStyleSpecific, themeName);
+  }
+
+  if (icons.default !== undefined) {
+    return selectThemeIconByTheme(icons.default, themeName);
+  }
+
+  const fallbackLayouts: LayoutName[] = ['ios', 'android'];
+  for (const fallback of fallbackLayouts) {
+    const candidate = icons[fallback];
+    if (candidate !== undefined) {
+      return selectThemeIconByTheme(candidate, themeName);
+    }
+  }
+
+  throw new Error('selectIconStyle expected at least one layout value.');
+};
+
 export const selectThemeIcon = <T>(icon: IconStyleIconValue<T>): T => {
   if (!isThemeIcons(icon)) {
     return icon;
@@ -118,6 +169,56 @@ export const selectIconStyle = <T>(icons: IconStyleIcons<T>): T =>
   selectThemeIcon(
     useVisualScheme.getState().iconStyleSelect<IconStyleIconValue<T>>(icons)
   );
+
+type AppIconSource = SvgIcon | ImageSourcePropType;
+
+const createIcon = (
+  icons: IconStyleIcons<AppIconSource>,
+  displayName: string
+): AppIcon => {
+  const Icon: AppIcon = ({
+    height,
+    imageStyle,
+    size,
+    style,
+    width,
+    ...svgProps
+  }) => {
+    const iconStyleName = useVisualScheme(state => state.iconStyleName);
+    const themeName = useVisualScheme(state => state.themeName);
+    const ResolvedIcon = selectIconStyleByState(
+      icons,
+      iconStyleName,
+      themeName
+    );
+    const iconWidth = width ?? size;
+    const iconHeight = height ?? size;
+
+    if (isSvgIcon(ResolvedIcon)) {
+      return createElement(ResolvedIcon, {
+        ...svgProps,
+        height: iconHeight,
+        style,
+        width: iconWidth,
+      });
+    }
+
+    return createElement(RNImage, {
+      source: ResolvedIcon,
+      style: [
+        style as StyleProp<ImageStyle>,
+        iconWidth !== undefined && { width: iconWidth as ImageStyle['width'] },
+        iconHeight !== undefined && {
+          height: iconHeight as ImageStyle['height'],
+        },
+        imageStyle,
+      ],
+    });
+  };
+
+  Icon.displayName = displayName;
+  return Icon;
+};
 
 export const tabBarIcons = {
   calendar: TabCalendarIcon,
@@ -162,7 +263,7 @@ export const classroomIcons = {
   starGray: StarGrayIcon,
 } satisfies Record<string, SvgIcon>;
 
-export const homeGridIcons = {
+const homeGridIconSpecs = {
   all: {
     android: AndroidAllIcon,
     ios: IosAllIcon,
@@ -281,9 +382,29 @@ export const homeGridIcons = {
     },
     default: AndroidWebIcon,
   },
-} satisfies Record<string, IconStyleIcons<SvgIcon>>;
+} satisfies Record<string, IconStyleIcons<AppIconSource>>;
 
-export const feedIcons = {
+export const homeGridIcons = {
+  all: createIcon(homeGridIconSpecs.all, 'HomeGridAllIcon'),
+  card: createIcon(homeGridIconSpecs.card, 'HomeGridCardIcon'),
+  classroom: createIcon(homeGridIconSpecs.classroom, 'HomeGridClassroomIcon'),
+  date: createIcon(homeGridIconSpecs.date, 'HomeGridDateIcon'),
+  energy: createIcon(homeGridIconSpecs.energy, 'HomeGridEnergyIcon'),
+  eventGlide: createIcon(homeGridIconSpecs.eventGlide, 'HomeGridEventGlideIcon'),
+  grades: createIcon(homeGridIconSpecs.grades, 'HomeGridGradesIcon'),
+  information: createIcon(
+    homeGridIconSpecs.information,
+    'HomeGridInformationIcon'
+  ),
+  kestack: createIcon(homeGridIconSpecs.kestack, 'HomeGridKestackIcon'),
+  lesson: createIcon(homeGridIconSpecs.lesson, 'HomeGridLessonIcon'),
+  map: createIcon(homeGridIconSpecs.map, 'HomeGridMapIcon'),
+  more: createIcon(homeGridIconSpecs.more, 'HomeGridMoreIcon'),
+  seat: createIcon(homeGridIconSpecs.seat, 'HomeGridSeatIcon'),
+  web: createIcon(homeGridIconSpecs.web, 'HomeGridWebIcon'),
+} satisfies Record<string, AppIcon>;
+
+const feedIconSpecs = {
   energy: {
     android: AndroidAirFeedIcon as ImageSourcePropType,
     ios: IosAirFeedIcon as ImageSourcePropType,
@@ -309,7 +430,15 @@ export const feedIcons = {
     ios: IosMuxiFeedIcon as ImageSourcePropType,
     default: AndroidMuxiFeedIcon as ImageSourcePropType,
   },
-} satisfies Record<string, IconStyleIcons<ImageSourcePropType>>;
+} satisfies Record<string, IconStyleIcons<AppIconSource>>;
+
+export const feedIcons = {
+  energy: createIcon(feedIconSpecs.energy, 'FeedEnergyIcon'),
+  feedback: createIcon(feedIconSpecs.feedback, 'FeedFeedbackIcon'),
+  grade: createIcon(feedIconSpecs.grade, 'FeedGradeIcon'),
+  holiday: createIcon(feedIconSpecs.holiday, 'FeedHolidayIcon'),
+  muxi: createIcon(feedIconSpecs.muxi, 'FeedMuxiIcon'),
+} satisfies Record<string, AppIcon>;
 
 export {
   AddCourseIcon,

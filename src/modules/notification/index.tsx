@@ -1,8 +1,7 @@
 import { useFocusEffect } from 'expo-router';
-import { type FC, memo, useCallback, useMemo, useState } from 'react';
+import { type FC, memo, useCallback, useState } from 'react';
 import {
   Animated,
-  Image,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -19,7 +18,7 @@ import Toast from '@/components/toast';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
-import { getFeedIconList } from '@/constants/notificationItem';
+import { FeedIconMap } from '@/constants/notificationItem';
 
 const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
@@ -105,11 +104,7 @@ export const ListItem: FC<EventProps> = ({
   extend_fields,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const iconStyleName = useVisualScheme(state => state.iconStyleName);
-  const feedIcon = useMemo(
-    () => getFeedIconList().find(item => item.name === type),
-    [iconStyleName, type]
-  );
+  const feedIcon = FeedIconMap[type];
   const { markAsRead, deleteEvent } = useEvents();
 
   const readEvent = () => {
@@ -174,7 +169,7 @@ export const ListItem: FC<EventProps> = ({
     <Swipeable renderRightActions={renderRightActions} rightThreshold={40}>
       <TouchableOpacity onPress={readEvent} style={styles.listItem}>
         <View>
-          <Image source={feedIcon.imageUrl} style={styles.icon} />
+          <feedIcon.Icon style={styles.icon} />
         </View>
         <View style={styles.content}>
           <Text style={[styles.title, currentStyle?.schedule_text_style]}>

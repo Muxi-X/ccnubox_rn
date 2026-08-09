@@ -1,8 +1,7 @@
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { type FC, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import {
-  Image,
   Modal,
   StyleSheet,
   Text,
@@ -14,7 +13,7 @@ import Toast from '@/components/toast';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import { getFeedIconList } from '@/constants/notificationItem';
+import { FeedIconList } from '@/constants/notificationItem';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
 
@@ -33,8 +32,6 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   });
   const [loading, setLoading] = useState(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const iconStyleName = useVisualScheme(state => state.iconStyleName);
-  const feedIconList = useMemo(() => getFeedIconList(), [iconStyleName]);
 
   // 只在 modal 打开时获取数据
   useEffect(() => {
@@ -99,12 +96,12 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
             />
           </View>
 
-          {feedIconList.map(item => (
+          {FeedIconList.map(item => (
             <View
               style={[styles.listItem, currentStyle?.background_style]}
               key={item.name}
             >
-              <Image source={item.imageUrl} style={styles.icon} />
+              <item.Icon style={styles.icon} />
               <View style={styles.content}>
                 <Text style={[styles.title, currentStyle?.schedule_text_style]}>
                   {item.text}提醒
