@@ -1,12 +1,18 @@
-import { Tabs, TabsProps } from '@ant-design/react-native';
-import React from 'react';
+import { Tab, TabView } from '@rneui/themed';
+import React, { useState } from 'react';
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
 /**
  * TabBar组件
- * 对AntD Tabs的二次封装，基本使用方法与AntD Tabs一致
- * 主要添加了默认样式配置:
+ * 对RNEUI Tab + TabView 的二次封装，基本使用方法与原AntD Tabs一致
  * - 字体大小18px，字重500
  * - 激活状态文字颜色为紫色(#9379F6)
  * - 下划线样式为紫色，宽度30%，左右margin 10%
@@ -16,13 +22,32 @@ import useVisualScheme from '@/store/visualScheme';
  * @param props.children - Tab内容
  * @param props.renderTabBar - 自定义TabBar渲染函数，默认使用DefaultTabBar
  */
-export const TabBar: React.FC<TabsProps> = props => {
+export interface TabBarProps {
+  tabs?: Array<{ title: string; key?: string }>;
+  children?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  swipeable?: boolean;
+  onChange?: (index: number) => void;
+}
+
+export const TabBar: React.FC<TabBarProps> = ({
+  tabs,
+  children,
+  style,
+  swipeable = true,
+  onChange,
+}) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const themeName = useVisualScheme(state => state.themeName);
-  const tabCount =
-    props.tabs?.length || React.Children.count(props.children) || 2;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const tabCount = tabs?.length || React.Children.count(children) || 2;
 
-  const getUnderlineStyle = () => {
+  const handleChange = (index: number) => {
+    setActiveIndex(index);
+    onChange?.(index);
+  };
+
+  const getIndicatorStyle = () => {
     const singleTabWidth = 100 / tabCount;
     const underlineWidth = singleTabWidth * 0.65;
     const margin = (singleTabWidth - underlineWidth) / 2;
@@ -32,39 +57,52 @@ export const TabBar: React.FC<TabsProps> = props => {
       marginHorizontal: `${margin}%`,
       width: `${underlineWidth}%`,
       height: 3,
+      //下划线绝对定位，从第一个tab开始
+      left: 0,
     } as const;
   };
 
+  const getTitleStyle = (active: boolean): TextStyle => ({
+    fontSize: 18,
+    fontWeight: 500,
+    color: active ? '#9379F6' : themeName === 'dark' ? '#969696' : '#3D3D3D',
+  });
+
   return (
-    <Tabs
-      styles={{
-        topTabBarSplitLine: { borderBottomWidth: 0 },
-      }}
-      renderTabBar={tabProps => (
-        <Tabs.DefaultTabBar
-          {...tabProps}
-          tabBarTextStyle={{
-            fontSize: 18,
-            fontWeight: 500,
-          }}
-          tabBarInactiveTextColor={themeName === 'dark' ? '#969696' : '#3D3D3D'}
-          tabBarActiveTextColor="#9379F6"
-          tabBarUnderlineStyle={getUnderlineStyle()}
-          tabBarBackgroundColor={
-            currentStyle?.background_style?.backgroundColor as string
-          }
-          styles={{
-            tab: {
-              height: 60,
-            },
-          }}
-        ></Tabs.DefaultTabBar>
-      )}
-      {...props}
-    >
-      {props.children}
-    </Tabs>
+    <View style={[styles.container, style]}>
+      <Tab
+        value={activeIndex}
+        onChange={handleChange}
+        variant="default"
+        style={{
+          backgroundColor: currentStyle?.background_style?.backgroundColor,
+        }}
+        indicatorStyle={getIndicatorStyle()}
+        buttonStyle={{
+          height: 60,
+          backgroundColor: 'transparent',
+        }}
+        titleStyle={getTitleStyle}
+      >
+        {(tabs || []).map(tab => (
+          <Tab.Item key={tab.key ?? tab.title} title={tab.title} />
+        ))}
+      </Tab>
+      <TabView
+        value={activeIndex}
+        onChange={handleChange}
+        disableSwipe={!swipeable}
+        containerStyle={styles.tabView}
+      >
+        {children}
+      </TabView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  tabView: { flex: 1 },
+});
 
 export default TabBar;
