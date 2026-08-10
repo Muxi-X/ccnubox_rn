@@ -1,5 +1,5 @@
 import { Tab, TabView } from '@rneui/themed';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleProp,
   StyleSheet,
@@ -47,6 +47,12 @@ export const TabBar: React.FC<TabBarProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const tabCount = tabs?.length || 1;
 
+  useEffect(() => {
+    setActiveIndex(prev => Math.min(prev, tabCount - 1));
+  }, [tabCount]);
+
+  const clampedActiveIndex = Math.min(activeIndex, tabCount - 1);
+
   const handleChange = (index: number) => {
     const safeIndex = Math.min(Math.max(index, 0), tabCount - 1);
     setActiveIndex(safeIndex);
@@ -77,7 +83,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   return (
     <View style={[styles.container, style]}>
       <Tab
-        value={activeIndex}
+        value={clampedActiveIndex}
         onChange={handleChange}
         variant="default"
         style={{
@@ -95,7 +101,7 @@ export const TabBar: React.FC<TabBarProps> = ({
         ))}
       </Tab>
       <TabView
-        value={activeIndex}
+        value={clampedActiveIndex}
         onChange={handleChange}
         disableSwipe={!swipeable}
         containerStyle={styles.tabView}
