@@ -2,11 +2,9 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { useClassroomData } from '@/hooks';
-
+import { ClassroomContent } from '@/modules/mainPage/components/classroom';
 import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
-
-import { ClassroomContent } from '@/modules/mainPage/components/classroom';
 
 export default function ClassroomStar() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

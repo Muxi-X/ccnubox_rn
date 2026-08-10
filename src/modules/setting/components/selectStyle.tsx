@@ -3,7 +3,6 @@ import { Image, Text, View } from 'react-native';
 
 import Button from '@/components/button';
 import ThemeBasedView from '@/components/view';
-
 import useVisualScheme from '@/store/visualScheme';
 
 export default function SelectStyle() {

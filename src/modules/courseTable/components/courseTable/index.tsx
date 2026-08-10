@@ -21,10 +21,6 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   COURSE_COLLAPSE,
   COURSE_HEADER_HEIGHT,
@@ -35,6 +31,8 @@ import {
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
 import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 import { requestSensitivePermission } from '@/utils/requestSensitivePermission';

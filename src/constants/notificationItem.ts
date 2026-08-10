@@ -1,5 +1,4 @@
 import { feedIcons } from '@/assets/icons';
-
 import type { FeedIconTypes } from '@/types/FeedIconTypes';
 
 export const FeedIconList: FeedIconTypes[] = [

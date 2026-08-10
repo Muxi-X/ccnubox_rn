@@ -11,10 +11,8 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Toast from '@/components/toast';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { queryDepartments } from '@/request/api';
+import useVisualScheme from '@/store/visualScheme';
 import { openPhoneNumber } from '@/utils/handleOpenURL';
 
 interface DepartmentInformation {

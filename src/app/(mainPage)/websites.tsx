@@ -8,10 +8,8 @@ import {
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useInternalBroswer } from '@/hooks/useInternalBroswer';
-
 import Text from '@/components/text';
-
+import { useInternalBroswer } from '@/hooks/useInternalBroswer';
 import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
 

@@ -11,16 +11,13 @@ import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
-
+import { queryBanners } from '@/request/api';
 import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
-
-import { queryBanners } from '@/request/api';
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 import { percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
-
-import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 const IndexPage: FC = () => {
   const router = useRouter();
@@ -74,7 +71,7 @@ const IndexPage: FC = () => {
 
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
-      {/* 
+      {/*
         <Pressable
           onPress={async () => {
             if (registerId) {

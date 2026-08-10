@@ -12,12 +12,10 @@ import {
 
 import MultiPicker from '@/components/picker/multiPicker';
 import type { PickerDataType } from '@/components/picker/types';
-
-import useCourse from '@/store/course';
-import useVisualScheme from '@/store/visualScheme';
-
 import { queryGradeType } from '@/request/api/grade';
 import { querySemesterList } from '@/request/api/semester';
+import useCourse from '@/store/course';
+import useVisualScheme from '@/store/visualScheme';
 import { generateSemesterOptions } from '@/utils/generateSemesterOptions';
 
 const formatCourseType = (types: string[]) => {

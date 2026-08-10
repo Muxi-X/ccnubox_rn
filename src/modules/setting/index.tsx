@@ -1,7 +1,6 @@
 import { FlatList } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
-
 import { SETTING_ITEMS } from '@/constants/SETTING';
 
 import PushSubscriptionItem from './components/pushSubscriptionItem';

@@ -1,7 +1,9 @@
 import * as Updates from 'expo-updates';
 
 export type EasUpdateResult =
-  { status: 'disabled' } | { status: 'up-to-date' } | { status: 'downloaded' };
+  | { status: 'disabled' }
+  | { status: 'up-to-date' }
+  | { status: 'downloaded' };
 
 export type EasUpdateProgress = 'checking' | 'downloading';
 

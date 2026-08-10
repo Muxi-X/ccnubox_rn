@@ -1,7 +1,8 @@
-import { useEvents } from '@/store/events';
-import useVisualScheme from '@/store/visualScheme';
 import type { FC } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import { useEvents } from '@/store/events';
+import useVisualScheme from '@/store/visualScheme';
 
 interface ClearModalProps {
   clearVisible: boolean;

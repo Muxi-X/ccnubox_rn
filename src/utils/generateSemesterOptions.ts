@@ -1,5 +1,4 @@
 import type { PickerDataType } from '@/components/picker/types';
-
 import type { components } from '@/request/schema';
 
 type SemesterResponse = components['schemas']['content.Semester'];

@@ -9,19 +9,16 @@ import {
 } from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
-
 import View from '@/components/view';
-
-import useCourse from '@/store/course';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
+import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
 import { queryCourseTable } from '@/request/api/course';
 import {
   queryCurrentSemester,
   querySemesterList,
 } from '@/request/api/semester';
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
 import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,

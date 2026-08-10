@@ -2,16 +2,14 @@ import React, { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   COURSE_HEADER_HEIGHT,
   COURSE_ITEM_WIDTH,
   DAYS_OF_WEEK,
 } from '@/constants/SCHEDULE';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

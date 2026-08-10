@@ -4,12 +4,10 @@ import { router } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 
 import Toast from '@/components/toast';
-
 import requestBus from '@/store/currentRequests';
+import { OtherTokenConfig } from '@/types/axios';
 
 import { paths } from './schema';
-
-import { OtherTokenConfig } from '@/types/axios';
 
 // 这一块逻辑和匣子接口强耦合，不适用反馈接口，所以加了些扩展，默认为原逻辑
 const axiosInstance: AxiosInstance = axios.create({

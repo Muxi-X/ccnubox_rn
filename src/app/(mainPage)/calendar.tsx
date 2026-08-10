@@ -13,10 +13,8 @@ import { WebView } from 'react-native-webview';
 
 import Text from '@/components/text';
 import View from '@/components/view';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import queryCalendars from '@/request/api/queryCalendars';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 
 type CalendarItem = { label: string; value: number };

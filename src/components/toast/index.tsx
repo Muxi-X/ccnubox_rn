@@ -8,14 +8,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import SuccessIcon from '@/assets/images/success.png';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import { ModalBack } from '@/components/modal';
 import { ToastProps } from '@/components/toast/type';
-
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
-
-import SuccessIcon from '@/assets/images/success.png';
 import { commonColors, commonStyles } from '@/styles/common';
 
 const DURATION = 400;

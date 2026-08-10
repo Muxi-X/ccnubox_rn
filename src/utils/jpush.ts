@@ -5,7 +5,9 @@ type RegistrationIdCallback = (result: { registerID?: string }) => void;
 type NotificationListener = (result: unknown) => void;
 type ConnectListener = (result: { connectEnable?: boolean }) => void;
 type JPushListener =
-  RegistrationIdCallback | NotificationListener | ConnectListener;
+  | RegistrationIdCallback
+  | NotificationListener
+  | ConnectListener;
 
 const warnedKeys = new Set<string>();
 

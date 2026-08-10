@@ -1,8 +1,5 @@
 import * as React from 'react';
 
-import { useClassroomStarStore } from '@/store/classroom';
-import useTimeStore from '@/store/time';
-
 import {
   ClassroomColumns,
   getCurrentDayOfWeek,
@@ -15,6 +12,8 @@ import {
   getClassroomList,
   queryFreeClassroom,
 } from '@/request/api/queryClassroom';
+import { useClassroomStarStore } from '@/store/classroom';
+import useTimeStore from '@/store/time';
 
 const LOCATION_LABELS: Record<string, string> = {
   n: '南湖综合楼',

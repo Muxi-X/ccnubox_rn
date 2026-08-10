@@ -15,17 +15,14 @@ import {
   View,
 } from 'react-native';
 
-import { useKeyboardStatus } from '@/hooks';
-
+import MXLogo from '@/assets/images/mx-logo.png';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
-
+import { useKeyboardStatus } from '@/hooks';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
-
-import MXLogo from '@/assets/images/mx-logo.png';
 import { commonColors, commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 

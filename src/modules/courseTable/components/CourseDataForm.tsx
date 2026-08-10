@@ -6,13 +6,11 @@ import Image from '@/components/image';
 import Modal from '@/components/modal';
 import Picker from '@/components/picker';
 import MultiPicker from '@/components/picker/multiPicker';
-
+import { courseType } from '@/modules/courseTable/components/courseTable/type';
+import { addCourse } from '@/request/api/course';
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-
-import { courseType } from '@/modules/courseTable/components/courseTable/type';
-import { addCourse } from '@/request/api/course';
 import { percent2px } from '@/utils';
 
 interface FormItem {

@@ -2,17 +2,14 @@ import { router, useFocusEffect } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useClassroomData } from '@/hooks';
-
+import { classroomIcons } from '@/assets/icons';
 import Modal from '@/components/modal';
 import Text from '@/components/text';
-
+import { useClassroomData } from '@/hooks';
+import { ClassroomContent } from '@/modules/mainPage/components/classroom';
 import { useClassroomWarningStore } from '@/store/classroom';
 import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
-
-import { classroomIcons } from '@/assets/icons';
-import { ClassroomContent } from '@/modules/mainPage/components/classroom';
 
 const StarIcon = classroomIcons.star;
 

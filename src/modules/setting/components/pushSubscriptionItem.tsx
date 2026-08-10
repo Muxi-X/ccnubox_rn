@@ -5,10 +5,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Modal from '@/components/modal';
 import Toast from '@/components/toast';
-
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors } from '@/styles/common';
 import {
   disablePushSubscription,

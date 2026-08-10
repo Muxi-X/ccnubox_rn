@@ -4,15 +4,13 @@
 import { Action } from '@ant-design/react-native/lib/tooltip';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
-import useVisualScheme from '@/store/visualScheme';
-
 import { courseTableIcons } from '@/assets/icons';
+import useVisualScheme from '@/store/visualScheme';
+import { SinglePageType } from '@/types/tabBarTypes';
 import globalEventBus from '@/utils/eventBus';
 import { percent2px } from '@/utils/percent2px';
 
 import { commonColors } from '../styles/common';
-
-import { SinglePageType } from '@/types/tabBarTypes';
 
 const TextNode: React.FC<{ text: string }> = ({ text }) => {
   const currentScheme = useVisualScheme(state => state.currentStyle);

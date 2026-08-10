@@ -5,9 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ModalTrigger } from '@/components/modal';
 import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 

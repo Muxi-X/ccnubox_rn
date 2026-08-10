@@ -3,7 +3,6 @@ import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
 
 import useCourse from '@/store/course';
-
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 
 const Index = () => {

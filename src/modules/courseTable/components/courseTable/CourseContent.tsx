@@ -2,9 +2,6 @@ import React, { memo, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import Modal from '@/components/modal';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
@@ -12,6 +9,7 @@ import {
   COURSE_VERTICAL_PADDING,
   DAYS_OF_WEEK,
 } from '@/constants/SCHEDULE';
+import useVisualScheme from '@/store/visualScheme';
 import { componentMap } from '@/themeBasedComponents';
 
 import ModalContent from './ModalContent';

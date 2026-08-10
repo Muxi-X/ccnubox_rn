@@ -11,14 +11,11 @@ import {
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
-import { openPushUrl } from '@/hooks/useJPush';
-
 import Toast from '@/components/toast';
-
+import { FeedIconMap } from '@/constants/notificationItem';
+import { openPushUrl } from '@/hooks/useJPush';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
-
-import { FeedIconMap } from '@/constants/notificationItem';
 
 const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();

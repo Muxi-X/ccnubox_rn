@@ -10,11 +10,9 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
-
+import { queryGradeDetail } from '@/request/api/grade';
 import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
-
-import { queryGradeDetail } from '@/request/api/grade';
 import { percent2px } from '@/utils';
 
 interface GradeDetails {

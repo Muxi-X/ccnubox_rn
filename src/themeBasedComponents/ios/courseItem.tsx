@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
   ITEM_COLORS,
 } from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
+import useVisualScheme from '@/store/visualScheme';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;
   const { currentStyle } = useVisualScheme();
-  const TOP_OFFSET = timeSpan === 1 ? 0 : 15
-  const TOTAL_HEIGHT = COURSE_ITEM_HEIGHT * (timeSpan ?? 2) - COURSE_HORIZONTAL_PADDING * 2 - TOP_OFFSET
+  const TOP_OFFSET = timeSpan === 1 ? 0 : 15;
+  const TOTAL_HEIGHT =
+    COURSE_ITEM_HEIGHT * (timeSpan ?? 2) -
+    COURSE_HORIZONTAL_PADDING * 2 -
+    TOP_OFFSET;
   //console.log('CourseItems', props);
   return (
     <View
@@ -40,7 +42,9 @@ const CourseItem: React.FC<CourseTransferType> = props => {
           },
         ]}
       >
-        <Text style={styles.cellText} ellipsizeMode="tail" numberOfLines={3}>{courseName}</Text>
+        <Text style={styles.cellText} ellipsizeMode="tail" numberOfLines={3}>
+          {courseName}
+        </Text>
       </View>
       <View
         style={[
@@ -60,7 +64,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             { color: '#0D0D0D', fontSize: 11, fontWeight: 'bold' },
             currentStyle?.text_style,
           ]}
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={2}
         >
           {teacher || ''}
@@ -70,7 +74,7 @@ const CourseItem: React.FC<CourseTransferType> = props => {
             styles.cellText,
             { color: '#75757B', fontSize: 11, fontWeight: 'bold' },
           ]}
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={2}
         >
           {classroom ? `@${classroom}` : ''}
