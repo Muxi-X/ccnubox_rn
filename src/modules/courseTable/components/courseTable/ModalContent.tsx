@@ -9,20 +9,18 @@ import {
   View,
 } from 'react-native';
 
+import { courseTableIcons } from '@/assets/icons';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Modal from '@/components/modal';
 import ThemeChangeText from '@/components/text';
-
-import useCourse from '@/store/course';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
-import { courseTableIcons } from '@/assets/icons';
 import {
   addCourseNote,
   deleteCourse,
   deleteCourseNote,
 } from '@/request/api/course';
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
 
 const {
   delete: DeleteIcon,

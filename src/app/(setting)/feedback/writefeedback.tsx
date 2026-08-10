@@ -18,9 +18,6 @@ import {
 } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
@@ -28,6 +25,7 @@ import {
 } from '@/constants/FEEDBACKS';
 import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { createFeedbackRecord } from '@/request/api/feedback';
+import useVisualScheme from '@/store/visualScheme';
 import { runSensitiveAction } from '@/utils/requestSensitivePermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 

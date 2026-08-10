@@ -1,10 +1,8 @@
 import { getItemAsync } from 'expo-secure-store';
 
 import { initializeJPush } from '@/hooks/useJPush';
-
-import usePushSubscriptionStore from '@/store/pushSubscription';
-
 import { removeFeedToken, saveFeedToken } from '@/request/api/feeds';
+import usePushSubscriptionStore from '@/store/pushSubscription';
 import { getPushToken, waitForPushToken } from '@/utils/pushToken';
 
 const hasLoginSession = async () => {

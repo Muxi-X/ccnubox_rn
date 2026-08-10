@@ -3,13 +3,10 @@ import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { NativeModules, Platform } from 'react-native';
 
-import usePushSubscriptionStore from '@/store/pushSubscription';
-
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { JPushSecrets } from '@/secret/JPush';
+import usePushSubscriptionStore from '@/store/pushSubscription';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
-import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
 
 type JPushNotificationResult = {
   content?: string;

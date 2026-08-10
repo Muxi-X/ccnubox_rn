@@ -10,12 +10,10 @@ import {
 } from 'react-native';
 
 import Toast from '@/components/toast';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { FeedIconList } from '@/constants/notificationItem';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
+import useVisualScheme from '@/store/visualScheme';
 
 interface NotiPickerProps {
   visible: boolean;

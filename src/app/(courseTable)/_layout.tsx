@@ -2,9 +2,8 @@ import { Stack, useSegments } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import CustomStackHeader from '@/components/CustomStackHeader';
-import useVisualScheme from '@/store/visualScheme';
-
 import { SCHEDULE_PAGES } from '@/constants/SCHEDULE';
+import useVisualScheme from '@/store/visualScheme';
 
 function useCurrentTitle() {
   const segments = useSegments();

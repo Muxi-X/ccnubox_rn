@@ -13,13 +13,11 @@ import {
   View,
 } from 'react-native';
 
+import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
-
-import useUserStore from '@/store/user';
-
-import logo from '@/assets/images/mx-logo.png';
 import { deactivate } from '@/request/api/auth';
+import useUserStore from '@/store/user';
 import { commonColors, commonStyles } from '@/styles/common';
 
 function SignOff() {

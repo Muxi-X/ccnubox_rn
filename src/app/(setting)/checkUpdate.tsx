@@ -9,15 +9,12 @@ import Button from '@/components/button';
 import Toast from '@/components/toast';
 import { TypoText } from '@/components/typography/TypoText';
 import ThemeBasedView from '@/components/view';
-
 import useVisualScheme from '@/store/visualScheme';
-
+import { UpdateInfo } from '@/types/updateInfo';
 import {
   checkAndDownloadUpdateAsync,
   type EasUpdateProgress,
 } from '@/utils/easUpdate';
-
-import { UpdateInfo } from '@/types/updateInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mxLogo = require('../../assets/images/mx-logo.png');
@@ -25,7 +22,8 @@ const mxLogo = require('../../assets/images/mx-logo.png');
 function CheckUpdate(): React.ReactNode {
   const version = Application.nativeApplicationVersion;
   const updateInfo = Constants.default.expoConfig?.extra?.updateInfo as
-    UpdateInfo | undefined;
+    | UpdateInfo
+    | undefined;
   const [manualProgress, setManualProgress] = useState<
     EasUpdateProgress | 'restarting' | null
   >(null);

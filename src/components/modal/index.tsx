@@ -19,10 +19,8 @@ import {
   ModalProps,
   ModalTriggerProps,
 } from '@/components/modal/types';
-
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 

@@ -1,0 +1,55 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["import", "typescript", "react", "react-hooks"],
+  "jsPlugins": ["eslint-plugin-unused-imports"],
+  "env": {
+    "browser": true,
+    "es2024": true,
+    "node": true
+  },
+  "globals": {
+    "React": "readonly",
+    "JSX": "readonly"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    ".expo/**",
+    ".vscode/**",
+    ".husky/**",
+    ".idea/**",
+    "scripts/**",
+    "android/**",
+    "ios/**",
+    "modules/**/build/**",
+    "assets/**",
+    "dist/**",
+    "secret/**",
+    "metro.config.js",
+    "plugin.js",
+    "expo-env.d.ts"
+  ],
+  "rules": {
+    "no-duplicate-imports": "error",
+    "import/first": "error",
+    "import/no-duplicates": "error",
+    "react-hooks/exhaustive-deps": "off",
+    "no-unused-vars": "off",
+    "no-console": "warn",
+    "react/no-unescaped-entities": "off",
+    "react/display-name": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-require-imports": "warn",
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  }
+}

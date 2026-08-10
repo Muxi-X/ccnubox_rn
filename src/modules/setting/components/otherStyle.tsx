@@ -11,21 +11,19 @@ import * as ImagePicker from 'expo-image-picker';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
-import Button from '@/components/button';
-import Slider from '@/components/slider';
-import Toast from '@/components/toast';
-import { default as ThemeBasedView } from '@/components/view';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useVisualScheme from '@/store/visualScheme';
-
 import BaseLightImage from '@/assets/images/theme/base.png';
 import BaseDarkImage from '@/assets/images/theme/baseDark.png';
 import IosLightImage from '@/assets/images/theme/ios.png';
 import IosDarkImage from '@/assets/images/theme/iosDark.png';
+import Button from '@/components/button';
+import Slider from '@/components/slider';
+import Toast from '@/components/toast';
+import { default as ThemeBasedView } from '@/components/view';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
 import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { componentMap } from '@/themeBasedComponents';
 import { runSensitiveAction } from '@/utils/requestSensitivePermission';

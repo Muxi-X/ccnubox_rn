@@ -1,5 +1,5 @@
-import { useIsFocused } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from 'expo-router';
 import React, {
   FC,
   memo,
@@ -12,9 +12,7 @@ import { Animated, StyleSheet, View } from 'react-native';
 
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import globalEventBus from '@/utils/eventBus';
 
 /**

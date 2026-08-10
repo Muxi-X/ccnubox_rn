@@ -3,10 +3,8 @@ import { View } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { ScraperProps } from '@/components/scraper/types';
-
-import useUserStore from '@/store/user';
-
 import { LOGIN_SCRAPER } from '@/constants/SCRAPERS';
+import useUserStore from '@/store/user';
 
 /**
  * 爬虫组件，用于爬取研究生课表、成绩

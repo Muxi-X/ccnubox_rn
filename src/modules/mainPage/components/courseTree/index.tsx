@@ -11,10 +11,8 @@ import {
 } from 'react-native';
 
 import Image from '@/components/image';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { queryGradeScore } from '@/request/api/grade';
+import useVisualScheme from '@/store/visualScheme';
 
 interface BaseCourseNode {
   title: string;

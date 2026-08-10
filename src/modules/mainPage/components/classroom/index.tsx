@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import type { ClassroomStatus } from '@/hooks/useClassroomData';
-
+import { classroomIcons } from '@/assets/icons';
 import Picker from '@/components/picker';
 import Text from '@/components/text';
-
+import type { ClassroomStatus } from '@/hooks/useClassroomData';
 import useVisualScheme from '@/store/visualScheme';
-
-import { classroomIcons } from '@/assets/icons';
 
 const {
   choose: ChooseIcon,

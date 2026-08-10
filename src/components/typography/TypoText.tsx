@@ -1,10 +1,8 @@
 import React from 'react';
 import { StyleSheet, TextProps } from 'react-native';
 
-import { useThemeColor } from '@/hooks/useThemeColor';
-
 import ThemeBasedText from '@/components/text';
-
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { ConfigurableThemeNames } from '@/styles/types';
 
 export interface TypoTextProps extends TextProps {

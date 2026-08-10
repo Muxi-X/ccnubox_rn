@@ -2,11 +2,9 @@ import { View } from '@ant-design/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import Modal from '@/components/modal';
-
-import useCourse from '@/store/course';
-
 import { CourseDataForm } from '@/modules/courseTable/components/CourseDataForm';
 import { updateCourse } from '@/request/api/course';
+import useCourse from '@/store/course';
 
 export default function EditCourse() {
   const router = useRouter();

@@ -8,10 +8,9 @@ import {
   type ViewProps,
 } from 'react-native';
 
+import { TABBAR_COLOR } from '@/constants/TABBAR';
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
-
-import { TABBAR_COLOR } from '@/constants/TABBAR';
 
 import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';

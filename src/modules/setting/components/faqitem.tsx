@@ -7,11 +7,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SvgProps, SvgXml } from 'react-native-svg';
 
-import Modal from '@/components/modal';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { feedbackIcons } from '@/assets/icons';
+import Modal from '@/components/modal';
+import useVisualScheme from '@/store/visualScheme';
 
 const {
   resolved: ResolvedIcon,

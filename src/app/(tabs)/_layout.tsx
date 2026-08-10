@@ -3,22 +3,18 @@ import { useEffect, useRef } from 'react';
 import { Platform, Text } from 'react-native';
 
 import Modal from '@/components/modal';
-
-import { updateCourseData } from '@/utils/updateWidget';
 import TabBar from '@/components/navi';
 import Toast from '@/components/toast';
-
-import usePushSubscriptionStore from '@/store/pushSubscription';
-import useVisualScheme from '@/store/visualScheme';
-
 import { TABS } from '@/constants/TABBAR';
 import PushSubscriptionPromptContent from '@/modules/setting/components/PushSubscriptionPromptContent';
+import usePushSubscriptionStore from '@/store/pushSubscription';
+import useVisualScheme from '@/store/visualScheme';
+import { SinglePageType } from '@/types/tabBarTypes';
 import {
   enablePushSubscription,
   syncPushSubscription,
 } from '@/utils/pushSubscription';
-
-import { SinglePageType } from '@/types/tabBarTypes';
+import { updateCourseData } from '@/utils/updateWidget';
 
 export default function TabLayout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

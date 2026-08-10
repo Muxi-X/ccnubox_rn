@@ -19,7 +19,6 @@ import Animated, {
 import Divider from '@/components/divider';
 import Toast from '@/components/toast';
 import { COURSE_HEADER_HEIGHT, TIME_WIDTH } from '@/constants/SCHEDULE';
-
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 

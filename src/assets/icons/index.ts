@@ -8,7 +8,6 @@ import {
 import type { SvgProps } from 'react-native-svg';
 
 import useVisualScheme from '@/store/visualScheme';
-
 import type { LayoutName, ThemeName } from '@/styles/types';
 
 import TabCalendarIcon from './calendar.svg';
@@ -49,6 +48,18 @@ import AndroidMoreIcon from './platform/android/more.svg';
 import AndroidMuxiFeedIcon from './platform/android/muxi.png';
 import AndroidSeatIcon from './platform/android/seat.svg';
 import AndroidWebIcon from './platform/android/web.svg';
+import IosDarkCardIcon from './platform/ios-dark/card.svg';
+import IosDarkClassroomIcon from './platform/ios-dark/classroom.svg';
+import IosDarkDateIcon from './platform/ios-dark/date.svg';
+import IosDarkEnergyIcon from './platform/ios-dark/energy.svg';
+import IosDarkEventGlideIcon from './platform/ios-dark/event-glide.svg';
+import IosDarkGradesIcon from './platform/ios-dark/grades.svg';
+import IosDarkInformationIcon from './platform/ios-dark/information.svg';
+import IosDarkKestackIcon from './platform/ios-dark/kestack.svg';
+import IosDarkMapIcon from './platform/ios-dark/map.svg';
+import IosDarkMoreIcon from './platform/ios-dark/more.svg';
+import IosDarkSeatIcon from './platform/ios-dark/seat.svg';
+import IosDarkWebIcon from './platform/ios-dark/web.svg';
 import IosAirFeedIcon from './platform/ios/air.png';
 import IosAllIcon from './platform/ios/all.svg';
 import IosCardIcon from './platform/ios/card.svg';
@@ -68,21 +79,9 @@ import IosMoreIcon from './platform/ios/more.svg';
 import IosMuxiFeedIcon from './platform/ios/muxi.png';
 import IosSeatIcon from './platform/ios/seat.svg';
 import IosWebIcon from './platform/ios/web.svg';
-import IosDarkCardIcon from './platform/ios-dark/card.svg';
-import IosDarkClassroomIcon from './platform/ios-dark/classroom.svg';
-import IosDarkDateIcon from './platform/ios-dark/date.svg';
-import IosDarkEnergyIcon from './platform/ios-dark/energy.svg';
-import IosDarkEventGlideIcon from './platform/ios-dark/event-glide.svg';
-import IosDarkGradesIcon from './platform/ios-dark/grades.svg';
-import IosDarkInformationIcon from './platform/ios-dark/information.svg';
-import IosDarkKestackIcon from './platform/ios-dark/kestack.svg';
-import IosDarkMapIcon from './platform/ios-dark/map.svg';
-import IosDarkMoreIcon from './platform/ios-dark/more.svg';
-import IosDarkSeatIcon from './platform/ios-dark/seat.svg';
-import IosDarkWebIcon from './platform/ios-dark/web.svg';
 import TabSettingIcon from './setting.svg';
-import StarIcon from './star.svg';
 import StarGrayIcon from './star-gray.svg';
+import StarIcon from './star.svg';
 import TabCalendarSelectedIcon from './tabbar/calendar-selected.svg';
 import TabHomeSelectedIcon from './tabbar/home-selected.svg';
 import TabNotificationSelectedIcon from './tabbar/notification-selected.svg';
@@ -109,9 +108,7 @@ export type IconStyleIcons<T> = {
   default: IconStyleIconValue<T>;
 };
 
-const isThemeIcons = <T>(
-  icon: IconStyleIconValue<T>
-): icon is ThemeIcons<T> =>
+const isThemeIcons = <T>(icon: IconStyleIconValue<T>): icon is ThemeIcons<T> =>
   typeof icon === 'object' &&
   icon !== null &&
   'light' in icon &&
@@ -390,7 +387,10 @@ export const homeGridIcons = {
   classroom: createIcon(homeGridIconSpecs.classroom, 'HomeGridClassroomIcon'),
   date: createIcon(homeGridIconSpecs.date, 'HomeGridDateIcon'),
   energy: createIcon(homeGridIconSpecs.energy, 'HomeGridEnergyIcon'),
-  eventGlide: createIcon(homeGridIconSpecs.eventGlide, 'HomeGridEventGlideIcon'),
+  eventGlide: createIcon(
+    homeGridIconSpecs.eventGlide,
+    'HomeGridEventGlideIcon'
+  ),
   grades: createIcon(homeGridIconSpecs.grades, 'HomeGridGradesIcon'),
   information: createIcon(
     homeGridIconSpecs.information,

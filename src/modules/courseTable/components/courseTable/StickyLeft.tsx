@@ -2,15 +2,13 @@ import React, { memo, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   COURSE_ITEM_HEIGHT,
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useVisualScheme from '@/store/visualScheme';
 
 export const StickyLeft: React.FC = memo(function StickyLeft() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
