@@ -94,7 +94,7 @@ const useVisualScheme = create<visualSchemeType>()(
 
         throw new Error('iconStyleSelect expected at least one layout value.');
       },
-      changeTheme: themeName =>
+      changeTheme: themeName => {
         set(state => {
           setSystemUITheme(themeName);
           const { layouts, layoutName } = state;
@@ -109,7 +109,9 @@ const useVisualScheme = create<visualSchemeType>()(
             };
           }
           return state;
-        }),
+        });
+        globalEventBus.emit('themeChange', themeName);
+      },
       changeLayout: layoutName => {
         set(state => {
           const { themeName, layouts, currentStyle } = state;
@@ -132,7 +134,7 @@ const useVisualScheme = create<visualSchemeType>()(
         }));
         globalEventBus.emit('iconStyleChange', iconStyleName);
       },
-      setAutoTheme: value =>
+      setAutoTheme: value => {
         set(state => {
           const isAutoTheme = !!value;
           const currentTheme = isAutoTheme
@@ -149,7 +151,9 @@ const useVisualScheme = create<visualSchemeType>()(
             ] as SingleThemeType,
             themeName: currentTheme,
           };
-        }),
+        });
+        globalEventBus.emit('themeChange', get().themeName);
+      },
     }),
     {
       name: 'visualScheme',

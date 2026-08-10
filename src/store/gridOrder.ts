@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import globalEventBus from '@/utils/eventBus';
 import { getMainPageApplications } from '@/utils/getMainPageApps';
 
 import { MainPageGridDataType } from '@/types/mainPageGridTypes';
@@ -85,17 +84,5 @@ const useGridOrder = create<GridOrderState>()(
     }
   )
 );
-
-globalEventBus.on('layoutChange', () => {
-  const state = useGridOrder.getState();
-  const currentOrder = state.gridData.map(item => ({ key: item.key }));
-  state.updateGridOrder(buildGridDataWithOrder(currentOrder));
-});
-
-globalEventBus.on('iconStyleChange', () => {
-  const state = useGridOrder.getState();
-  const currentOrder = state.gridData.map(item => ({ key: item.key }));
-  state.updateGridOrder(buildGridDataWithOrder(currentOrder));
-});
 
 export default useGridOrder;

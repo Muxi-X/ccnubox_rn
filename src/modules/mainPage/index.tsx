@@ -61,18 +61,12 @@ const IndexPage: FC = () => {
     updateGridOrder(data);
   };
 
-  const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
-    if (typeof imageUrl === 'function') {
-      const SvgComponent = imageUrl;
-      return <SvgComponent width={50} height={50} />;
-    }
-    return <Image source={imageUrl} />;
-  };
-
-  const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
+  const render = ({ Icon, key, title }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
-        <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
+        <View style={styles.itemImage}>
+          <Icon height={50} width={50} />
+        </View>
         <Text style={styles.itemText}>{title}</Text>
       </View>
     );

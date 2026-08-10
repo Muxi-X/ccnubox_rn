@@ -6,8 +6,7 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
 
-import AddCourseIcon from '@/assets/icons/calendar/add-course.svg';
-import ScreenShotIcon from '@/assets/icons/calendar/screenshot.svg';
+import { courseTableIcons } from '@/assets/icons';
 import globalEventBus from '@/utils/eventBus';
 import { percent2px } from '@/utils/percent2px';
 
@@ -25,6 +24,9 @@ const TextNode: React.FC<{ text: string }> = ({ text }) => {
     </View>
   );
 };
+
+const AddCourseIcon = courseTableIcons.addCourse;
+const ScreenShotIcon = courseTableIcons.screenshot;
 
 const styles = StyleSheet.create({
   tooltipImage: {

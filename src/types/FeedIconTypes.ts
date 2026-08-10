@@ -1,5 +1,6 @@
 import { Href } from 'expo-router';
-import { ImageSourcePropType } from 'react-native';
+
+import type { AppIcon } from '@/assets/icons';
 
 import { SinglePageType } from './tabBarTypes';
 
@@ -8,7 +9,7 @@ export interface FeedIconTypes extends Omit<
   'iconName' | 'headerLeft'
 > {
   name: string;
-  imageUrl: ImageSourcePropType;
+  Icon: AppIcon;
   text: string;
   href?: Href;
 }
