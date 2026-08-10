@@ -22,12 +22,17 @@ import useVisualScheme from '@/store/visualScheme';
  * @param props.children - Tab内容
  * @param props.renderTabBar - 自定义TabBar渲染函数，默认使用DefaultTabBar
  */
+export interface TabData {
+  title: string;
+  key?: string;
+}
+
 export interface TabBarProps {
-  tabs?: Array<{ title: string; key?: string }>;
+  tabs?: TabData[];
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   swipeable?: boolean;
-  onChange?: (index: number) => void;
+  onChange?: (tab: TabData | undefined, index: number) => void;
 }
 
 export const TabBar: React.FC<TabBarProps> = ({
@@ -40,11 +45,12 @@ export const TabBar: React.FC<TabBarProps> = ({
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const themeName = useVisualScheme(state => state.themeName);
   const [activeIndex, setActiveIndex] = useState(0);
-  const tabCount = tabs?.length || React.Children.count(children) || 2;
+  const tabCount = tabs?.length || 1;
 
   const handleChange = (index: number) => {
-    setActiveIndex(index);
-    onChange?.(index);
+    const safeIndex = Math.min(Math.max(index, 0), tabCount - 1);
+    setActiveIndex(safeIndex);
+    onChange?.(tabs?.[safeIndex], safeIndex);
   };
 
   const getIndicatorStyle = () => {
