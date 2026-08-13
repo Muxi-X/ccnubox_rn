@@ -46,20 +46,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   const themeName = useVisualScheme(state => state.themeName);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 解包 children（如果包含 Fragment 或数组）
-  const childArray = React.useMemo(() => {
-    const rawChildren = React.Children.toArray(children);
-    if (
-      rawChildren.length === 1 &&
-      React.isValidElement(rawChildren[0]) &&
-      rawChildren[0].type === React.Fragment
-    ) {
-      return React.Children.toArray(
-        (rawChildren[0].props as { children?: React.ReactNode }).children
-      );
-    }
-    return rawChildren;
-  }, [children]);
+  const childArray = React.Children.toArray(children);
 
   const tabCount = tabs?.length || childArray.length || 1;
 
