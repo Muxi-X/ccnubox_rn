@@ -1,10 +1,7 @@
 {
   "otaVersion": "3.1.8",
   "updateTime": "2026-08-14",
-  "newFeatures": [
-    "全新图标设计",
-    "优化学期计算与查询"
-  ],
+  "newFeatures": ["全新图标设计", "优化学期计算与查询"],
   "fixedIssues": ["移除多余权限", "修复已知问题"],
   "knownIssues": ["弹窗在按钮导航模式下仍然会被遮挡"]
 }
