@@ -11,6 +11,8 @@ import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import type { SinglePageType } from '@/types/tabBarTypes';
 
+export const TABBAR_BASE_HEIGHT = 50;
+
 /**
  * @enum tabBar颜色
  * @description PRIMARY 为默认

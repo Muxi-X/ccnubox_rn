@@ -11,6 +11,7 @@ import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
+import { TABBAR_BASE_HEIGHT } from '@/constants/TABBAR';
 import { queryBanners } from '@/request/api';
 import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';
@@ -29,7 +30,7 @@ const IndexPage: FC = () => {
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const tabbarHeight = useSafeAreaInsets().bottom;
+  const tabbarHeight = TABBAR_BASE_HEIGHT + useSafeAreaInsets().bottom;
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
