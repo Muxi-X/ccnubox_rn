@@ -13,7 +13,10 @@
     "updates": {
       "url": "https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621",
       "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "requestHeaders": {
+        "expo-channel-name": "production"
+      }
     },
     "assetBundlePatterns": [
       "src/assets/images/",
