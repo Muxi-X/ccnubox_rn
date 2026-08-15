@@ -26,6 +26,8 @@ export interface ModalProps extends PortalBaseProps {
   show?: () => void;
   //背景是否透明
   isTransparent?: boolean;
+  /* 点击蒙层是否允许关闭，默认为 true */
+  maskClosable?: boolean;
 }
 
 export interface ModalTriggerProps

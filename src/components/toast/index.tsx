@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 import {
   Image,
   ImageSourcePropType,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 
 import SuccessIcon from '@/assets/images/success.png';
@@ -52,6 +52,16 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
       if (backTimer) clearTimeout(backTimer);
     };
   }, [initVisible, currentKey, duration, deleteChildren]);
+  useEffect(() => {
+    if (!visible) {
+      const timer = setTimeout(() => {
+        if (currentKey !== undefined) {
+          deleteChildren(currentKey);
+        }
+      }, DURATION * 0.8);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, currentKey, deleteChildren]);
   return (
     <>
       <ModalBack visible={visible} style={{ zIndex: currentKey }}>
@@ -59,15 +69,15 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
           pointerEvents={visible ? 'auto' : 'none'}
           style={[styles.modalOverlay, { zIndex: currentKey }]}
         >
-          <TouchableOpacity
-            activeOpacity={1}
-            style={styles.modalBackground}
+          <Pressable
+            style={[StyleSheet.absoluteFill, styles.modalBackground]}
             onPress={handleClose}
-          ></TouchableOpacity>
+          />
           <AnimatedScale
             duration={DURATION}
             outputRange={[0.2, 1]}
             trigger={visible}
+            onStartShouldSetResponder={() => true}
             style={[
               styles.toastContent,
               currentVisualScheme?.modal_background_style,
@@ -114,17 +124,19 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   modalBackground: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
   },
   toastContent: {
     borderRadius: 10,
     margin: 20,
     width: 220,
-    // height: 180,
     marginBottom: 10,
     padding: 30,
     shadowColor: '#000',

@@ -363,6 +363,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
     return (
       <View
+        onStartShouldSetResponder={() => true}
         style={[
           styles.modalContainer,
           { width: 280 },

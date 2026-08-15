@@ -1,5 +1,12 @@
 import type { FC } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
@@ -19,7 +26,11 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
   };
 
   return (
-    <Modal visible={clearVisible} transparent={true}>
+    <Modal
+      visible={clearVisible}
+      transparent={true}
+      onRequestClose={() => setClearVisible(false)}
+    >
       <View
         style={{
           flex: 1,
@@ -28,6 +39,10 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
           alignItems: 'center',
         }}
       >
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => setClearVisible(false)}
+        />
         <View style={[styles.container, currentStyle?.background_style]}>
           <View>
             <Text style={[styles.title, currentStyle?.schedule_text_style]}>

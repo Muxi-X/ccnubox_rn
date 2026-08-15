@@ -24,6 +24,10 @@ function SensitivePermissionNotice() {
       visible
     >
       <View accessibilityViewIsModal style={styles.backdrop}>
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => cancelNotice(notice.requestId)}
+        />
         <View style={[styles.dialog, currentStyle?.modal_background_style]}>
           <Text
             accessibilityRole="header"

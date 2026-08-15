@@ -3,6 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { type FC, useEffect, useState } from 'react';
 import {
   Modal,
+  Pressable,
   StyleSheet,
   Text,
   TouchableHighlight,
@@ -68,8 +69,16 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   };
 
   return (
-    <Modal visible={visible} transparent={true}>
+    <Modal
+      visible={visible}
+      transparent={true}
+      onRequestClose={() => setVisible(false)}
+    >
       <View style={styles.overlay}>
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => setVisible(false)}
+        />
         <View style={styles.container}>
           <View style={[styles.header, currentStyle?.background_style]}>
             <Text

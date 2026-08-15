@@ -4,6 +4,7 @@ import {
   BackHandler,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -40,6 +41,7 @@ const Modal: React.FC<ModalProps> & {
   confirmText,
   cancelText,
   isTransparent = false,
+  maskClosable = true,
 }) => {
   const handleConfirm = () => {
     if (onConfirm) onConfirm();
@@ -48,6 +50,11 @@ const Modal: React.FC<ModalProps> & {
   const handleCancel = () => {
     if (onCancel) onCancel();
     handleClose();
+  };
+  const handleMaskPress = () => {
+    if (maskClosable) {
+      handleClose();
+    }
   };
   const isBottomMode = useMemo(() => {
     return mode !== 'middle';
@@ -211,7 +218,7 @@ const Modal: React.FC<ModalProps> & {
             },
           ]}
         >
-          <ModalBackground onPress={handleClose} />
+          <ModalBackground onPress={handleMaskPress} />
           {/* 底部 modal 与中部动画不一致 */}
           {isBottomMode ? (
             <AnimatedSlide
@@ -225,8 +232,9 @@ const Modal: React.FC<ModalProps> & {
                   : styles.modalContent,
                 !isTransparent && currentStyle?.modal_background_style,
               ]}
+              onStartShouldSetResponder={isTransparent ? undefined : () => true}
             >
-              {isTransparent && <ModalBackground onPress={handleClose} />}
+              {isTransparent && <ModalBackground onPress={handleMaskPress} />}
               {modalContent}
             </AnimatedSlide>
           ) : (
@@ -240,8 +248,9 @@ const Modal: React.FC<ModalProps> & {
                   : styles.modalContent,
                 !isTransparent && currentStyle?.modal_background_style,
               ]}
+              onStartShouldSetResponder={isTransparent ? undefined : () => true}
             >
-              {isTransparent && <ModalBackground onPress={handleClose} />}
+              {isTransparent && <ModalBackground onPress={handleMaskPress} />}
               {modalContent}
             </AnimatedScale>
           )}
@@ -321,16 +330,8 @@ const ModalBackground: React.FC<ModalBackgroundProps> = ({
   style,
 }) => {
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      style={[
-        styles.modalBackground,
-        {
-          height: '100%',
-          zIndex: 0,
-        },
-        style,
-      ]}
+    <Pressable
+      style={[StyleSheet.absoluteFill, styles.modalBackground, style]}
       onPress={onPress}
     />
   );
@@ -429,6 +430,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    width: '100%',
+    height: '100%',
     backgroundColor: 'transparent',
   },
   bottomChoice: {
