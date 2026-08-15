@@ -4,7 +4,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
-  withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 
 import { OpacityAnimationProps } from './types';
@@ -22,34 +22,33 @@ const AnimatedOpacity = ({
   onAnimationEnd,
   ...restProps
 }: OpacityAnimationProps) => {
-  const sharedOpacity = useSharedValue(toVisible ? 0 : 1);
+  const sharedOpacity = useSharedValue(toVisible ? 1 : 0);
   useEffect(() => {
     if (trigger) {
       sharedOpacity.value = withDelay(
         delay,
-        withSpring(toVisible ? 1 : 0, {
-          mass: 0.5,
-          stiffness: 100,
-          damping: 10,
-          restDisplacementThreshold: 0.01,
-          restSpeedThreshold: 0.01,
-        })
+        withTiming(
+          toVisible ? 1 : 0,
+          {
+            duration,
+          },
+          finished => {
+            'worklet';
+            if (finished && onAnimationEnd) {
+              runOnJS(onAnimationEnd)();
+            }
+          }
+        )
       );
     }
-  }, [sharedOpacity, duration, trigger, toVisible, delay]);
-  const opacityStyle = useAnimatedStyle(() => {
-    const opacity = sharedOpacity.value;
-    if (
-      ((opacity === 1 && toVisible) || (!opacity && !toVisible)) &&
-      typeof onAnimationEnd === 'function'
-    )
-      runOnJS(onAnimationEnd)();
+  }, [sharedOpacity, duration, trigger, toVisible, delay, onAnimationEnd]);
 
+  const opacityStyle = useAnimatedStyle(() => {
     return {
-      // styles
-      opacity,
+      opacity: sharedOpacity.value,
     };
   });
+
   return (
     <Animated.View style={[opacityStyle, style]} {...restProps}>
       {children}

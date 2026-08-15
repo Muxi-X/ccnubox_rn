@@ -70,3 +70,4 @@ sentry.properties
 *.apk
 *.ipa
 sentry.properties
+.yolo.json

@@ -1,5 +1,5 @@
 const autoKey = function* () {
-  let key = 0;
+  let key = 1;
   while (true) {
     yield key++;
   }

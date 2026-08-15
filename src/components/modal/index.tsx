@@ -199,8 +199,10 @@ const Modal: React.FC<ModalProps> & {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+        pointerEvents={visible ? 'auto' : 'none'}
       >
         <View
+          pointerEvents={visible ? 'auto' : 'none'}
           style={[
             styles.modalOverlay,
             {
@@ -368,20 +370,31 @@ export const ModalBack: FC<
   {
     children?: ReactElement;
     visible: boolean;
-    onAnimationEnd?: (visible: boolean) => void;
+    onAnimationEnd?: (visible?: boolean) => void;
   } & ViewProps
 > = ({ children, style, visible, onAnimationEnd }) => {
   const [displayMode, setDisplayMode] = useState<'flex' | 'none'>(
     visible ? 'flex' : 'none'
   );
-  if (displayMode === 'none') return <></>;
+
+  useEffect(() => {
+    if (visible) {
+      setDisplayMode('flex');
+    }
+  }, [visible]);
+
+  if (displayMode === 'none' && !visible) return <></>;
+
   return (
     <>
       <AnimatedOpacity
-        duration={500}
+        duration={300}
         toVisible={visible}
+        pointerEvents={visible ? 'auto' : 'none'}
         onAnimationEnd={() => {
-          setDisplayMode(visible ? 'flex' : 'none');
+          if (!visible) {
+            setDisplayMode('none');
+          }
           if (onAnimationEnd) onAnimationEnd(visible);
         }}
         style={[

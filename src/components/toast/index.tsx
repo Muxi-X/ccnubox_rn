@@ -37,22 +37,28 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   };
   useEffect(() => {
     setVisible(initVisible);
-    // FIX_ME: 与 Modal 同样
-    // 没有动画结束监听函数
-    // 目前是定时删除
+    if (!initVisible) return;
+    let backTimer: ReturnType<typeof setTimeout> | undefined;
     const animTimer = setTimeout(() => {
       setVisible(false);
-      const backTimer = setTimeout(() => {
-        clearTimeout(animTimer);
-        clearTimeout(backTimer);
-        Promise.resolve(currentKey && deleteChildren(currentKey));
+      backTimer = setTimeout(() => {
+        if (currentKey !== undefined) {
+          deleteChildren(currentKey);
+        }
       }, DURATION * 0.8);
     }, duration);
-  }, [initVisible]);
+    return () => {
+      clearTimeout(animTimer);
+      if (backTimer) clearTimeout(backTimer);
+    };
+  }, [initVisible, currentKey, duration, deleteChildren]);
   return (
     <>
       <ModalBack visible={visible} style={{ zIndex: currentKey }}>
-        <View style={[styles.modalOverlay, { zIndex: currentKey }]}>
+        <View
+          pointerEvents={visible ? 'auto' : 'none'}
+          style={[styles.modalOverlay, { zIndex: currentKey }]}
+        >
           <TouchableOpacity
             activeOpacity={1}
             style={styles.modalBackground}
