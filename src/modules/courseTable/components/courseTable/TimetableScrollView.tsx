@@ -489,17 +489,26 @@ const TimetableScrollView = (
                   React.cloneElement(children, {
                     onLayout: handleChildLayout,
                   })}
-                <View
-                  style={{
-                    width: '100%',
-                    height: 60,
-                    justifyContent: 'center',
-                  }}
-                >
-                  {stickyBottom || <Divider>别闹, 学霸也是要睡觉的</Divider>}
-                </View>
               </Animated.View>
             </GestureDetector>
+          </Animated.View>
+          {/* stickyBottom: 只随垂直滚动移动，水平方向固定占满屏幕 */}
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              {
+                position: 'absolute',
+                top: containerSize.height,
+                left: 0,
+                right: 0,
+                width: '100%',
+                height: 60,
+                justifyContent: 'center',
+              },
+              animatedOnlyY,
+            ]}
+          >
+            {stickyBottom || <Divider>别闹, 学霸也是要睡觉的</Divider>}
           </Animated.View>
         </Animated.View>
       </Animated.View>
