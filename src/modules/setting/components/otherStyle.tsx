@@ -45,6 +45,12 @@ const LAYOUTS = [
   },
 ] as const;
 
+const BACKGROUND_MODES = [
+  { key: 'cover', label: '裁剪铺满' },
+  { key: 'contain', label: '完整显示' },
+  { key: 'stretch', label: '拉伸铺满' },
+] as const;
+
 const LayoutButton = memo(function LayoutButton({
   label,
   image,
@@ -109,6 +115,7 @@ export default function OtherStyle({
     backgroundMaskOpacity,
     backgroundBlurRadius,
     setBackgroundUri,
+    setBackgroundMode,
     setBackgroundScrollable,
     setForegroundOpacity,
     setBackgroundMaskOpacity,
@@ -225,7 +232,13 @@ export default function OtherStyle({
               y={0}
               width={COURSE_ITEM_WIDTH * 3}
               height={180}
-              fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+              fit={
+                backgroundMode === 'cover'
+                  ? 'cover'
+                  : backgroundMode === 'contain'
+                    ? 'contain'
+                    : 'fill'
+              }
               opacity={1 - localMaskOpacity / 100}
             />
             {localBlurRadius > 0 && <BackdropBlur blur={localBlurRadius} />}
@@ -237,7 +250,13 @@ export default function OtherStyle({
               styles.previewBlurCanvas,
               { opacity: 1 - localMaskOpacity / 100 },
             ]}
-            resizeMode={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            resizeMode={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'stretch'
+            }
             blurRadius={localBlurRadius}
           />
         )}
@@ -462,6 +481,55 @@ export default function OtherStyle({
         </View>
       )}
 
+      {/* 填充模式 */}
+      {backgroundUri && (
+        <View style={styles.modeSection}>
+          <Text style={[currentStyle?.text_style, styles.settingLabel]}>
+            填充模式
+          </Text>
+          <ButtonGroup
+            buttons={BACKGROUND_MODES.map(m => m.label)}
+            selectedIndex={BACKGROUND_MODES.findIndex(
+              m => m.key === backgroundMode
+            )}
+            onPress={index => {
+              const mode = BACKGROUND_MODES[index];
+              if (mode) {
+                setBackgroundMode(mode.key);
+              }
+            }}
+            containerStyle={[
+              styles.modeButtonGroup,
+              {
+                borderColor: themeName === 'dark' ? '#444' : '#ddd',
+                backgroundColor: themeName === 'dark' ? '#1c1c1e' : '#fff',
+              },
+            ]}
+            buttonStyle={{
+              backgroundColor: 'transparent',
+            }}
+            textStyle={[
+              styles.modeButtonText,
+              { color: themeName === 'dark' ? '#aaa' : '#666' },
+            ]}
+            selectedTextStyle={{
+              color: '#9379F6',
+              fontWeight: '600',
+            }}
+            selectedButtonStyle={{
+              backgroundColor:
+                themeName === 'dark'
+                  ? 'rgba(147, 121, 246, 0.15)'
+                  : 'rgba(147, 121, 246, 0.08)',
+            }}
+            innerBorderStyle={{
+              color: themeName === 'dark' ? '#444' : '#ddd',
+              width: 1,
+            }}
+          />
+        </View>
+      )}
+
       {/* 遮罩不透明度 */}
       {backgroundUri && (
         <View style={styles.sliderSection}>
@@ -654,6 +722,20 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 8,
     opacity: 0.7,
+  },
+  modeSection: {
+    gap: 8,
+  },
+  modeButtonGroup: {
+    height: 38,
+    marginHorizontal: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    overflow: 'hidden',
+  },
+  modeButtonText: {
+    fontSize: 14,
   },
   layoutButtonGroup: {
     height: 120,

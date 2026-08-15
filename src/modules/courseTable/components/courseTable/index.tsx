@@ -182,7 +182,13 @@ const Schedule: React.FC<CourseTableProps> = ({
               y={0}
               width={width}
               height={height}
-              fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+              fit={
+                backgroundMode === 'cover'
+                  ? 'cover'
+                  : backgroundMode === 'contain'
+                    ? 'contain'
+                    : 'fill'
+              }
               opacity={bgOpacity}
             />
             {/* 高斯模糊 */}
@@ -199,7 +205,13 @@ const Schedule: React.FC<CourseTableProps> = ({
               height: height || '100%',
               opacity: bgOpacity,
             }}
-            resizeMode={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            resizeMode={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'stretch'
+            }
             blurRadius={backgroundBlurRadius}
           />
         )}
@@ -504,7 +516,13 @@ const Schedule: React.FC<CourseTableProps> = ({
             y={0}
             width={fullTableWidth}
             height={fullTableHeight}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            fit={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'fill'
+            }
             opacity={1 - backgroundMaskOpacity / 100}
           />
           {/* 高斯模糊 */}
@@ -616,7 +634,13 @@ const Schedule: React.FC<CourseTableProps> = ({
             y={0}
             width={viewportSize.width}
             height={viewportSize.height}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            fit={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'fill'
+            }
             opacity={1 - backgroundMaskOpacity / 100}
           />
           {backgroundBlurRadius > 0 && (
@@ -630,7 +654,13 @@ const Schedule: React.FC<CourseTableProps> = ({
             StyleSheet.absoluteFill,
             { opacity: 1 - backgroundMaskOpacity / 100 },
           ]}
-          resizeMode={backgroundMode === 'cover' ? 'cover' : 'contain'}
+          resizeMode={
+            backgroundMode === 'cover'
+              ? 'cover'
+              : backgroundMode === 'contain'
+                ? 'contain'
+                : 'stretch'
+          }
           blurRadius={backgroundBlurRadius}
         />
       )}
