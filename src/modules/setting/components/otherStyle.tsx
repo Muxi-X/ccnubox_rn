@@ -11,7 +11,7 @@ import {
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 
 import BaseLightImage from '@/assets/images/theme/base.png';
 import BaseDarkImage from '@/assets/images/theme/baseDark.png';
@@ -270,11 +270,14 @@ export default function OtherStyle({
   const handlePickImage = async () => {
     try {
       setIsPicking(true);
+      const { width: screenWidth, height: screenHeight } =
+        Dimensions.get('window');
       const result = await runSensitiveAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
-            allowsEditing: false,
+            allowsEditing: true,
+            aspect: [Math.round(screenWidth), Math.round(screenHeight)],
             quality: 0.9,
           }),
         purpose: SENSITIVE_PERMISSION_PURPOSES.courseTableBackground,
