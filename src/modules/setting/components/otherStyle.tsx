@@ -21,14 +21,14 @@ import Button from '@/components/button';
 import Slider from '@/components/slider';
 import Toast from '@/components/toast';
 import { default as ThemeBasedView } from '@/components/view';
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { componentMap } from '@/themeBasedComponents';
-import { runSensitiveAction } from '@/utils/requestSensitivePermission';
+import { runPermissionAction } from '@/utils/requestPermission';
 
 const LAYOUTS = [
   {
@@ -272,7 +272,7 @@ export default function OtherStyle({
       setIsPicking(true);
       const { width: screenWidth, height: screenHeight } =
         Dimensions.get('window');
-      const result = await runSensitiveAction({
+      const result = await runPermissionAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
@@ -280,7 +280,7 @@ export default function OtherStyle({
             aspect: [Math.round(screenWidth), Math.round(screenHeight)],
             quality: 0.9,
           }),
-        purpose: SENSITIVE_PERMISSION_PURPOSES.courseTableBackground,
+        purpose: PERMISSION_PURPOSES.courseTableBackground,
       });
 
       if (result && !result.canceled && result.assets?.[0]?.uri) {

@@ -29,6 +29,7 @@ import {
 
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import {
   COURSE_COLLAPSE,
   COURSE_HEADER_HEIGHT,
@@ -38,12 +39,11 @@ import {
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
-import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
+import { requestPermission } from '@/utils/requestPermission';
 
 import CourseContent from './CourseContent';
 import { StickyBottom } from './StickyBottom';
@@ -222,10 +222,10 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   const onSaveImageAsync = async () => {
     try {
-      const hasPermission = await requestSensitivePermission({
+      const hasPermission = await requestPermission({
         getPermission: () => MediaLibrary.getPermissionsAsync(true),
         isGranted: permission => permission.granted,
-        purpose: SENSITIVE_PERMISSION_PURPOSES.saveCourseTable,
+        purpose: PERMISSION_PURPOSES.saveCourseTable,
         requestPermission: () => MediaLibrary.requestPermissionsAsync(true),
       });
       if (!hasPermission) {

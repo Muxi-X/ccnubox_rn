@@ -23,10 +23,10 @@ import {
   ISSUE_TYPE_MAP,
   MODULE_MAP,
 } from '@/constants/FEEDBACKS';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { createFeedbackRecord } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
-import { runSensitiveAction } from '@/utils/requestSensitivePermission';
+import { runPermissionAction } from '@/utils/requestPermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
@@ -89,7 +89,7 @@ function WriteFeedback() {
 
   const handleSelectImage = async () => {
     try {
-      const result = await runSensitiveAction({
+      const result = await runPermissionAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'images',
@@ -97,7 +97,7 @@ function WriteFeedback() {
             quality: 0.7,
             aspect: [4, 3],
           }),
-        purpose: SENSITIVE_PERMISSION_PURPOSES.feedbackImage,
+        purpose: PERMISSION_PURPOSES.feedbackImage,
       });
       if (!result || result.canceled) return;
 

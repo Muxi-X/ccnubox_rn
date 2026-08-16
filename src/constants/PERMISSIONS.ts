@@ -1,6 +1,10 @@
-import { type SensitivePermissionPurpose } from '@/store/sensitivePermission';
+export type PermissionPurpose = {
+  description: string;
+  id: string;
+  title: string;
+};
 
-export const SENSITIVE_PERMISSION_PURPOSES = {
+export const PERMISSION_PURPOSES = {
   feedbackImage: {
     id: 'feedback-image-v1',
     title: '图片访问说明',
@@ -24,4 +28,4 @@ export const SENSITIVE_PERMISSION_PURPOSES = {
     description:
       '用于向您发送已订阅的校园消息和功能提醒，您可以随时在系统设置中关闭。',
   },
-} as const satisfies Record<string, SensitivePermissionPurpose>;
+} as const satisfies Record<string, PermissionPurpose>;
