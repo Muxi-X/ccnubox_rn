@@ -26,7 +26,8 @@
     "secret/**",
     "metro.config.js",
     "plugin.js",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "targets/**"
   ],
   "rules": {
     "no-duplicate-imports": "error",

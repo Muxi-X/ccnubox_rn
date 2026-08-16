@@ -14,6 +14,7 @@
     "lint:fix": "oxlint . --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "pre-commit": "lint-staged",
     "prepare": "husky",
     "genapi": "node ./scripts/genapi.js",
     "eas-build-post-install": "find node_modules/react-native/sdks/hermesc -type f -name 'hermesc' -exec chmod +x {} \\; && cd android && ./gradlew generateCodegenArtifactsFromSchema --no-daemon || true"

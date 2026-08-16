@@ -27,5 +27,6 @@
     "android/**",
     "ios/**",
     "modules/**/build/**",
+    "targets/**",
   ],
 }
