@@ -22,7 +22,9 @@ const AnimatedOpacity = ({
   onAnimationEnd,
   ...restProps
 }: OpacityAnimationProps) => {
-  const sharedOpacity = useSharedValue(toVisible ? 1 : 0);
+  const sharedOpacity = useSharedValue(
+    trigger ? (toVisible ? 1 : 0) : toVisible ? 0 : 1
+  );
   useEffect(() => {
     if (trigger) {
       sharedOpacity.value = withDelay(
@@ -40,6 +42,8 @@ const AnimatedOpacity = ({
           }
         )
       );
+    } else {
+      sharedOpacity.value = toVisible ? 0 : 1;
     }
   }, [sharedOpacity, duration, trigger, toVisible, delay, onAnimationEnd]);
 

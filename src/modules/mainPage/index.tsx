@@ -95,7 +95,7 @@ const IndexPage: FC = () => {
         </Pressable>
       */}
       {/* carousel */}
-      <Skeleton>
+      <Skeleton loading={banners.length === 0}>
         <View style={styles.banner}>
           <Carousel
             style={{ marginHorizontal: percent2px(2.5) }}
