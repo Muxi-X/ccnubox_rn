@@ -55,18 +55,6 @@ export type scraperType = {
   ) => void;
 };
 
-/** theme based components */
-export type ThemeBasedComponentsType = {
-  /** 所有的可替换组件 */
-  themeBasedComponents: ThemeBasedComponentMap;
-  /** 目前的可替换组件 */
-  CurrentComponents: ThemeBasedComponentRecord | null;
-  /** 设置 components */
-  setComponents: (_components: ThemeBasedComponentMap) => void;
-  /** 改变布局时，更改当前选择组件 */
-  changeComponents: (_layoutName: LayoutName) => void;
-};
-
 /** portal */
 export interface PortalStore {
   /* 全局 portal 的引用 */

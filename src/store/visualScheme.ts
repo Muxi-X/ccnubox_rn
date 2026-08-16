@@ -5,7 +5,6 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
-import globalEventBus from '@/utils/eventBus';
 import { setSystemUITheme } from '@/utils/systemUI';
 
 import { LayoutSelectSpec, visualSchemeType } from './types';
@@ -41,10 +40,6 @@ const useVisualScheme = create<visualSchemeType>()(
             layouts: newLayouts,
           };
         });
-
-        const { layoutName } = get();
-        globalEventBus.emit('layoutSet');
-        globalEventBus.emit('layoutChange', layoutName);
       },
       removeLayouts: name =>
         set(state => {
@@ -110,7 +105,6 @@ const useVisualScheme = create<visualSchemeType>()(
           }
           return state;
         });
-        globalEventBus.emit('themeChange', themeName);
       },
       changeLayout: layoutName => {
         set(state => {
@@ -124,15 +118,12 @@ const useVisualScheme = create<visualSchemeType>()(
             layoutName,
           };
         });
-
-        globalEventBus.emit('layoutChange', layoutName);
       },
       changeIconStyle: iconStyleName => {
         set(state => ({
           ...state,
           iconStyleName,
         }));
-        globalEventBus.emit('iconStyleChange', iconStyleName);
       },
       setAutoTheme: value => {
         set(state => {
@@ -152,7 +143,6 @@ const useVisualScheme = create<visualSchemeType>()(
             themeName: currentTheme,
           };
         });
-        globalEventBus.emit('themeChange', get().themeName);
       },
     }),
     {
