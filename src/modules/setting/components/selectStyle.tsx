@@ -1,6 +1,10 @@
 import { Switch } from '@ant-design/react-native';
 import { Image, Text, View } from 'react-native';
 
+import AndroidDarkIcon from '@/assets/images/theme/androidIconDark.png';
+import AndroidLightIcon from '@/assets/images/theme/androidIconLight.png';
+import IosDarkIcon from '@/assets/images/theme/iosIconDark.png';
+import IosLightIcon from '@/assets/images/theme/iosIconLight.png';
 import Button from '@/components/button';
 import ThemeBasedView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
@@ -108,7 +112,7 @@ export default function SelectStyle() {
         </Button>
       </View>
       <Image
-        source={require('@/assets/images/theme/iosIcon.png')}
+        source={themeName === 'dark' ? IosDarkIcon : IosLightIcon}
         style={{
           borderRadius: 20,
           justifyContent: 'center',
@@ -151,7 +155,7 @@ export default function SelectStyle() {
         </Button>
       </View>
       <Image
-        source={require('@/assets/images/theme/baseIcon.png')}
+        source={themeName === 'dark' ? AndroidDarkIcon : AndroidLightIcon}
         style={{
           borderRadius: 20,
           justifyContent: 'center',
@@ -162,65 +166,6 @@ export default function SelectStyle() {
           resizeMode: 'contain',
         }}
       />
-      {/* <Image
-        source={require('@/assets/images/theme/darkStyle.png')}
-        style={{
-          borderRadius: 60,
-          justifyContent: 'center',
-          marginTop: 20,
-          width: 300,
-          height: 180,
-          alignSelf: 'center',
-          resizeMode: 'contain',
-        }}
-      /> */}
-      {/* <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: 40,
-        }}
-      >
-        <Text
-          style={[
-            currentStyle?.text_style,
-            {
-              fontSize: 18,
-              paddingLeft: 40,
-            },
-          ]}
-        >
-          普通模式
-        </Text>
-        <Button
-          style={[
-            { width: '40%', borderRadius: 10, marginRight: 10 },
-            isAutoTheme && { opacity: 0.4 },
-          ]}
-          enabled={!isAutoTheme}
-          onPress={() => {
-            if (!isApplied('light') && !isAutoTheme) {
-              changeTheme(themeName === 'dark' ? 'light' : 'dark');
-            }
-          }}
-        >
-          {isAutoTheme ? '应用' : isApplied('light') ? '已应用' : '应用'}
-        </Button>
-      </View> */}
-      {/* <Image
-        source={require('@/assets/images/theme/baseStyle.png')}
-        style={{
-          borderRadius: 20,
-          justifyContent: 'center',
-          marginTop: 20,
-          width: 300,
-          height: 100,
-          alignSelf: 'center',
-          resizeMode: 'contain',
-        }}
-      /> */}
     </ThemeBasedView>
   );
 }
