@@ -119,17 +119,27 @@ const LoginPage: FC = () => {
           onChangeText={text => setStudentId(text.toString())}
           placeholderTextColor={styles.textColor.color}
           textAlign="center"
+          autoComplete="username"
+          textContentType="username"
+          importantForAutofill="yes"
+          autoCapitalize="none"
+          autoCorrect={false}
         ></Input>
 
         <Input
           style={styles.input}
           placeholderTextColor={styles.textColor.color}
           textAlign="center"
-          /* 前后缀都要有，不然对不齐 */
+          /* 前后缀都要有，不然对齐 */
           prefix={<View style={styles.suffixStyle}></View>}
           value={password}
           onChangeText={text => setPassword(text.toString())}
           type={isPasswordShow ? 'text' : 'password'}
+          autoComplete="password"
+          textContentType="password"
+          importantForAutofill="yes"
+          autoCapitalize="none"
+          autoCorrect={false}
           suffix={
             <Icon
               name={isPasswordShow ? 'eye' : 'eye-invisible'}

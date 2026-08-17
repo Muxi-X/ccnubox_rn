@@ -41,16 +41,26 @@ function SignOff() {
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          deactivate(password)
-            .then(() => {
-              Promise.all([
-                AsyncStorage.multiRemove(['courses']),
-                deleteItemAsync('longToken'),
-                deleteItemAsync('shortToken'),
-                deleteItemAsync('user'),
-              ]);
-            })
-            .finally(() => router.replace('/auth/login'));
+          try {
+            await deactivate(password);
+          } catch {
+            // 忽略网络注销异常
+          }
+
+          try {
+            await Promise.all([
+              AsyncStorage.multiRemove(['courses']),
+              deleteItemAsync('longToken'),
+              deleteItemAsync('shortToken'),
+              deleteItemAsync('user'),
+            ]);
+            useUserStore.setState({ student_id: '', password: '' });
+          } catch {
+            // 忽略存储清理异常
+          }
+
+          Modal.clear();
+          router.replace('/auth/login');
         } finally {
           setIsSubmitting(false);
         }
