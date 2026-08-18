@@ -24,9 +24,6 @@
     "assets/**",
     "dist/**",
     "secret/**",
-    "metro.config.js",
-    "plugin.js",
-    "expo-env.d.ts",
     "targets/**"
   ],
   "rules": {
