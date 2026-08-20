@@ -53,7 +53,7 @@
     "expo-modules-core": "^56.0.24",
     "expo-notifications": "^56.0.24",
     "expo-router": "~56.2.19",
-    "expo-secure-store": "~56.0.4",
+    "expo-secure-store": "~57.0.1",
     "expo-splash-screen": "~56.0.14",
     "expo-symbols": "~56.0.7",
     "expo-system-ui": "~56.0.5",
