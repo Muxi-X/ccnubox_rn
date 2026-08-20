@@ -1,5 +1,4 @@
 nodeLinker: hoisted
-
 allowBuilds:
   '@shopify/react-native-skia': true
   core-js: true
