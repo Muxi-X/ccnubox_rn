@@ -1,22 +1,11 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
 node_modules/
-
-# Expo
 
 # Expo
 .expo/
 dist/
-web-build/
-expo-env.d.ts
-
-# Native
-.kotlin/
-*.orig.*
 web-build/
 expo-env.d.ts
 
@@ -29,16 +18,19 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
+# Android / Gradle
+.gradle/
+build/
+local.properties
+*.iml
+.cxx/
 
 # macOS
 .DS_Store
 
 # IDEs
 .vscode/
-# IDEs
-.vscode/
 .idea/
-
 
 # Metro
 .metro-health-check*
@@ -65,9 +57,4 @@ android/app/agconnect-services.json
 *.ipa
 sentry.properties
 .eas
-
-# output
-*.apk
-*.ipa
-sentry.properties
 .yolo.json
