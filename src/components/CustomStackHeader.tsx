@@ -36,7 +36,7 @@ const CustomStackHeader = ({ title, showBack, headerRight }: Props) => {
   const hasBack = showBack ?? true;
 
   const handleBack = () => {
-    if (pathname.endsWith('electricityBillinBalance')) {
+    if (pathname.endsWith('electricityBalance')) {
       router.replace('/');
     } else {
       router.back();
@@ -83,12 +83,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   side: {
-    width: 42,
+    minWidth: 42,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
   sideRight: {
-    width: 42,
+    minWidth: 42,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },

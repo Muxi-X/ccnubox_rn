@@ -19,8 +19,9 @@ import { log } from '@/utils/logger';
 const areaData = [
   { label: '东区', value: '东区学生宿舍' },
   { label: '西区', value: '西区学生宿舍' },
-  { label: '元宝山', value: '元宝山学生宿舍' },
   { label: '南湖', value: '南湖学生宿舍' },
+  { label: '元宝山', value: '元宝山学生宿舍' },
+  { label: '东南区', value: '东南区学生宿舍' },
   { label: '国交', value: '国际园区' },
 ];
 
@@ -32,16 +33,21 @@ interface Architecture {
 }
 
 interface Room {
-  room_id: string;
   room_name: string;
+  ac?: string;
+  light?: string;
+  union?: string;
 }
 
-const ElectricityBillinQuiry = () => {
+const ElectricityInquiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const selectedDorm = useElectricityStore(state => state.selectedDorm);
   const setSelectedDorm = useElectricityStore(state => state.setSelectedDorm);
 
-  // 状态管理
-  const [selectedArea, setSelectedArea] = useState('南湖学生宿舍');
+  // 状态管理：区域默认优先使用缓存值
+  const [selectedArea, setSelectedArea] = useState(
+    () => selectedDorm?.area || '南湖学生宿舍'
+  );
   const [architectures, setArchitectures] = useState<Architecture[]>([]);
   const [floors, setFloors] = useState<{ label: string; value: string }[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -50,77 +56,141 @@ const ElectricityBillinQuiry = () => {
   const [pickerValue2, setPickerValue2] = useState<[number]>([0]);
 
   const [loading, setLoading] = useState(false);
-  const selectedDorm = useElectricityStore(state => state.selectedDorm);
-
-  useEffect(() => {
-    if (selectedDorm) {
-      // 如果已经选择过宿舍，直接跳转到电费查询页面
-      router.push({
-        pathname: '/electricityBillinBalance',
-        params: {
-          building: selectedDorm.building,
-          room: selectedDorm.room,
-          area: selectedDorm.area,
-          room_id: selectedDorm.room_id,
-        },
-      });
-    }
-  }, [selectedDorm]);
 
   // 加载楼栋数据
   const loadArchitectures = async (area: string) => {
     try {
       setLoading(true);
       const response: any = await getArchitecture(area);
-      const architectureList = response?.data?.architecture_list;
+      const architectureList =
+        response?.data?.architecture_list || response?.msg?.architecture_list;
 
       if (architectureList && architectureList.length > 0) {
         setArchitectures(architectureList);
 
-        const firstArch = architectureList[0];
+        // 如果所选区域匹配缓存数据，优先匹配缓存的楼栋
+        const isCachedArea = area === selectedDorm?.area;
+        let matchedArchIndex = 0;
+        if (
+          isCachedArea &&
+          (selectedDorm?.architecture_id || selectedDorm?.building)
+        ) {
+          const foundIdx = architectureList.findIndex(
+            (a: any) =>
+              (selectedDorm.architecture_id &&
+                a.architecture_id === selectedDorm.architecture_id) ||
+              (selectedDorm.building &&
+                (a.architecture_name === selectedDorm.building ||
+                  selectedDorm.building.includes(a.architecture_name)))
+          );
+          if (foundIdx >= 0) {
+            matchedArchIndex = foundIdx;
+          }
+        }
 
-        generateFloors(firstArch.base_floor, firstArch.top_floor);
-        loadRooms(firstArch.architecture_id, firstArch.base_floor);
+        const targetArch = architectureList[matchedArchIndex];
+        const floorList = generateFloors(
+          targetArch.base_floor,
+          targetArch.top_floor
+        );
+
+        // 优先匹配缓存的楼层
+        let matchedFloorIndex = 0;
+        if (isCachedArea && selectedDorm?.floor) {
+          const foundFloorIdx = floorList.findIndex(
+            f => f.value === selectedDorm.floor
+          );
+          if (foundFloorIdx >= 0) {
+            matchedFloorIndex = foundFloorIdx;
+          }
+        }
+
+        setPickerValue([matchedArchIndex, matchedFloorIndex]);
+
+        const initialFloor =
+          floorList[matchedFloorIndex]?.value ?? targetArch.base_floor ?? '1';
+
+        // 加载房间并尝试匹配缓存的房间
+        await loadRooms(
+          targetArch.architecture_id,
+          initialFloor,
+          isCachedArea ? selectedDorm?.room : undefined
+        );
       } else {
-        throw new Error('没有楼栋数据');
+        setArchitectures([]);
+        setFloors([]);
+        setRooms([]);
       }
     } catch (error) {
-      console.error('加载楼栋数据失败:', error);
+      setArchitectures([]);
+      setFloors([]);
+      setRooms([]);
+      log.error('加载楼栋数据失败:', error);
     } finally {
       setLoading(false);
     }
   };
 
   // 生成楼层数据
-  const generateFloors = (baseFloor: string, topFloor: string) => {
-    const base = parseInt(baseFloor);
-    const top = parseInt(topFloor);
-    const floorList = [];
+  const generateFloors = (baseFloor?: string, topFloor?: string) => {
+    let base = parseInt(String(baseFloor ?? '1'), 10);
+    let top = parseInt(String(topFloor ?? '1'), 10);
 
-    for (let i = base; i <= top; i++) {
+    if (isNaN(base)) base = 1;
+    if (isNaN(top)) top = base > 0 ? base : 1;
+
+    const minFloor = Math.min(base, top);
+    const maxFloor = Math.max(base, top);
+
+    const floorList = [];
+    for (let i = minFloor; i <= maxFloor; i++) {
       floorList.push({
         label: `${i}楼`,
         value: i.toString(),
       });
     }
 
+    // 确保至少有 1 层
+    if (floorList.length === 0) {
+      floorList.push({ label: '1楼', value: '1' });
+    }
+
     setFloors(floorList);
+    return floorList;
   };
 
   // 加载房间数据
-  const loadRooms = async (architectureId: string, floor: string) => {
+  const loadRooms = async (
+    architectureId: string,
+    floor: string,
+    cachedRoomName?: string
+  ) => {
     try {
       const response: any = await getRoomInfo(architectureId, floor);
-      const roomList = response?.data?.room_list;
+      const roomList = response?.data?.room_list || response?.msg?.room_list;
 
       if (roomList && roomList.length > 0) {
         setRooms(roomList);
+
+        // 如果有缓存房间名，优先选中该房间
+        if (cachedRoomName) {
+          const matchedRoomIdx = roomList.findIndex(
+            (r: any) => r.room_name === cachedRoomName
+          );
+          if (matchedRoomIdx >= 0) {
+            setPickerValue2([matchedRoomIdx]);
+            return;
+          }
+        }
+        setPickerValue2([0]);
       } else {
-        throw new Error('没有房间数据');
+        setRooms([]);
+        setPickerValue2([0]);
       }
     } catch (error) {
       setRooms([]);
-      log.error(error);
+      setPickerValue2([0]);
+      log.error('加载房间数据失败:', error);
     }
   };
 
@@ -131,29 +201,42 @@ const ElectricityBillinQuiry = () => {
 
   // 处理区域选择
   const handleAreaClick = (area: string) => {
-    setSelectedArea(area);
-    setPickerValue([0, 0]);
-    setPickerValue2([0]);
+    if (area !== selectedArea) {
+      setSelectedArea(area);
+    }
   };
 
   // 处理楼栋和楼层选择
   const handleBuildingPickerChange = (value: any) => {
-    setPickerValue(value);
+    const rawArchIndex = value?.[0] ?? 0;
+    const rawFloorIndex = value?.[1] ?? 0;
 
-    const archIndex = value[0] || 0;
-    const floorIndex = value[1] || 0;
+    const archIndex = Math.min(
+      Math.max(0, rawArchIndex),
+      Math.max(0, architectures.length - 1)
+    );
 
-    if (architectures[archIndex]) {
-      const selectedArch = architectures[archIndex];
+    const selectedArch = architectures[archIndex];
+    if (!selectedArch) return;
 
-      // 更新楼层数据
-      generateFloors(selectedArch.base_floor, selectedArch.top_floor);
+    const isArchChanged = archIndex !== pickerValue[0];
 
-      // 加载对应楼层的房间数据
-      const base = parseInt(selectedArch.base_floor);
-      const selectedFloor = (base + floorIndex).toString();
-      loadRooms(selectedArch.architecture_id, selectedFloor);
-    }
+    // 如果楼栋变了，重新生成该楼栋的楼层，并将楼层索引重置为 0
+    const newFloorList = generateFloors(
+      selectedArch.base_floor,
+      selectedArch.top_floor
+    );
+    const floorIndex = isArchChanged
+      ? 0
+      : Math.min(rawFloorIndex, Math.max(0, newFloorList.length - 1));
+
+    setPickerValue([archIndex, floorIndex]);
+
+    // 计算实际选中的楼层
+    const selectedFloor =
+      newFloorList[floorIndex]?.value ?? selectedArch.base_floor ?? '1';
+
+    loadRooms(selectedArch.architecture_id, selectedFloor);
   };
 
   // 处理房间选择
@@ -188,29 +271,51 @@ const ElectricityBillinQuiry = () => {
     const roomIndex = pickerValue2[0] || 0;
 
     if (architectures.length === 0 || rooms.length === 0) {
-      console.warn('数据未加载完成');
       return;
     }
 
     const selectedArch = architectures[archIndex];
     const selectedRoom = rooms[roomIndex];
+    if (!selectedArch || !selectedRoom) return;
 
     const areaLabel =
       areaData.find(item => item.value === selectedArea)?.label || '';
 
+    const selectedFloor =
+      floors[floorIndex]?.value ?? selectedArch.base_floor ?? '1';
+
+    const archName = selectedArch.architecture_name;
+    const buildingName = archName.startsWith(areaLabel)
+      ? archName
+      : `${areaLabel}${archName}`;
+
     const dormInfo = {
-      building: `${areaLabel}${selectedArch.architecture_name}`,
-      room: selectedRoom.room_name,
       area: selectedArea,
-      room_id: selectedRoom.room_id,
+      building: buildingName,
+      architecture_id: selectedArch.architecture_id,
+      floor: selectedFloor,
+      room: selectedRoom.room_name,
+      room_id:
+        selectedRoom.light || selectedRoom.ac || selectedRoom.union || '',
+      ac: selectedRoom.ac,
+      light: selectedRoom.light,
+      union: selectedRoom.union,
     };
 
     // 保存选择的宿舍信息
     setSelectedDorm(dormInfo);
 
-    router.push({
-      pathname: '/electricityBillinBalance',
-      params: dormInfo,
+    router.replace({
+      pathname: '/electricityBalance',
+      params: {
+        building: dormInfo.building,
+        room: dormInfo.room,
+        area: dormInfo.area,
+        room_id: dormInfo.room_id,
+        ac: dormInfo.ac,
+        light: dormInfo.light,
+        union: dormInfo.union,
+      },
     });
   };
 
@@ -270,6 +375,7 @@ const ElectricityBillinQuiry = () => {
           ) : architectures.length > 0 && floors.length > 0 ? (
             <PickerView
               data={buildingColumns}
+              value={pickerValue}
               cascade={false}
               onChange={handleBuildingPickerChange}
               style={{ height: 100 }}
@@ -346,7 +452,7 @@ const ElectricityBillinQuiry = () => {
   );
 };
 
-export default ElectricityBillinQuiry;
+export default ElectricityInquiry;
 
 const styles = StyleSheet.create({
   container: {
@@ -372,8 +478,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   addressItem: {
-    width: 61,
+    minWidth: 61,
     height: 65,
+    paddingHorizontal: 8,
     backgroundColor: '#F5F5F5',
     borderRadius: 8,
     flexDirection: 'row',

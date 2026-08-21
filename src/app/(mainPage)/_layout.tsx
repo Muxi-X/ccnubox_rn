@@ -8,7 +8,9 @@ import useVisualScheme from '@/store/visualScheme';
 import { getMainPageApplications } from '@/utils/getMainPageApps';
 
 const TITLE_MAP: Record<string, string> = {
-  electricityBillinBalance: '电费查询',
+  electricity: '官方系统',
+  electricityBalance: '电费查询',
+  electricityInquiry: '选择宿舍',
   webview: '常用网站',
   scoreCalculation: '计算学分绩',
   classroom: '空闲教室',
@@ -50,7 +52,8 @@ export default function Layout() {
             <Stack.Screen key={config.name} name={config.name} />
           ))}
         <Stack.Screen name="scoreCalculation" />
-        <Stack.Screen name="electricityBillinBalance" />
+        <Stack.Screen name="electricityInquiry" />
+        <Stack.Screen name="electricityBalance" />
         <Stack.Screen name="webview" />
         <Stack.Screen name="classroomStar" />
       </Stack>
