@@ -1,5 +1,5 @@
-import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
-import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
+import Checkbox from '@/components/checkbox';
+import { Icon, Input, Toast } from '@ant-design/react-native';
 import axios, { AxiosError } from 'axios';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
@@ -84,8 +84,8 @@ const LoginPage: FC = () => {
     }
     setLoginTriggered(false);
   };
-  const onCheckPrivacy = (e: OnChangeParams) => {
-    setPrivacyChecked(e.target.checked);
+  const onCheckPrivacy = (checked: boolean) => {
+    setPrivacyChecked(checked);
   };
   return (
     <KeyboardAvoidingView
@@ -152,34 +152,38 @@ const LoginPage: FC = () => {
           placeholder="请输入教务系统密码"
         ></Input>
         <View style={styles.rules}>
-          <Checkbox checked={privacyChecked} onChange={onCheckPrivacy}>
-            <Text style={styles.rules_radio}>
-              已阅读并同意
-              <Text
-                style={{
-                  color: commonColors.purple,
-                }}
-                onPress={() => {
-                  router.push('/(setting)/agreement');
-                  Modal.clear();
-                }}
-              >
-                《用户协议》
+          <Checkbox
+            checked={privacyChecked}
+            onChange={onCheckPrivacy}
+            label={
+              <Text style={styles.rules_radio}>
+                已阅读并同意
+                <Text
+                  style={{
+                    color: commonColors.purple,
+                  }}
+                  onPress={() => {
+                    router.push('/(setting)/agreement');
+                    Modal.clear();
+                  }}
+                >
+                  《用户协议》
+                </Text>
+                和
+                <Text
+                  style={{
+                    color: commonColors.purple,
+                  }}
+                  onPress={() => {
+                    router.push('/(setting)/privacy');
+                    Modal.clear();
+                  }}
+                >
+                  《隐私政策》
+                </Text>
               </Text>
-              和
-              <Text
-                style={{
-                  color: commonColors.purple,
-                }}
-                onPress={() => {
-                  router.push('/(setting)/privacy');
-                  Modal.clear();
-                }}
-              >
-                《隐私政策》
-              </Text>
-            </Text>
-          </Checkbox>
+            }
+          />
         </View>
         <Button
           onPress={handleLogin}
