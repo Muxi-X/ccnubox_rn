@@ -1,10 +1,11 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Image,
   StyleSheet,
   Text,
   TextInput,
+  TextStyle,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -12,54 +13,150 @@ import {
 import Modal from '@/components/modal';
 import {
   cancelStandard,
+  getBillingBalance,
   getPrice,
   getStandardList,
   setStandard,
 } from '@/request/api/electricity';
 import { useElectricityStore } from '@/store/electricity';
+import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
 import { log } from '@/utils/logger';
 
-interface PriceData {
-  remain_money: string;
-  yesterday_use_money: string;
-  yesterday_use_value: string;
+interface PriceItem {
+  remain_money?: string;
+  yesterday_use_money?: string;
+  yesterday_use_value?: string;
 }
 
-const ElectricityBillinBalance = () => {
+interface PriceData {
+  ac_price?: PriceItem | null;
+  light_price?: PriceItem | null;
+  union_price?: PriceItem | null;
+  price?: PriceItem | null;
+}
+
+const ElectricityBalance = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const selectedDorm = useElectricityStore(state => state.selectedDorm);
   const clearSelectedDorm = useElectricityStore(
     state => state.clearSelectedDorm
   );
-  const { building, room, area, room_id } = useLocalSearchParams<{
+  const searchParams = useLocalSearchParams<{
     building?: string;
     room?: string;
     area?: string;
     room_id?: string;
+    ac?: string;
+    light?: string;
+    union?: string;
   }>();
+
+  // 优先使用路由参数，其次使用 store 中的持久化数据
+  const building = searchParams.building || selectedDorm?.building;
+  const room = searchParams.room || selectedDorm?.room;
+  const area = searchParams.area || selectedDorm?.area;
+  const room_id = searchParams.room_id || selectedDorm?.room_id;
+  const ac = searchParams.ac || selectedDorm?.ac;
+  const light = searchParams.light || selectedDorm?.light;
+  const union = searchParams.union || selectedDorm?.union;
 
   const [priceData, setPriceData] = useState<PriceData | null>(null);
   const [loading, setLoading] = useState(false);
   const [standardLimit, setStandardLimit] = useState<number | null>(null);
+  const setHeaderRight = useHeaderRightStore(state => state.setContent);
 
-  // 加载电费数据
+  const officialButton = useMemo(
+    () => (
+      <TouchableOpacity
+        onPress={() => router.push('/electricity')}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <Text
+          style={[
+            styles.headerRightText,
+            {
+              color:
+                (currentStyle?.text_style as TextStyle)?.color ?? '#9379F6',
+            },
+          ]}
+        >
+          官方系统
+        </Text>
+      </TouchableOpacity>
+    ),
+    [currentStyle?.text_style]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      setHeaderRight(officialButton);
+      return () => setHeaderRight(null);
+    }, [officialButton, setHeaderRight])
+  );
+
+  // 检查是否有宿舍信息，无则直接跳选择页面；有则加载电费数据与标准
   useEffect(() => {
-    if (room_id) {
-      loadPriceData(room_id);
-      loadStandardData();
+    if (!room && !room_id && !ac && !light && !union) {
+      router.replace('/electricityInquiry');
+      return;
     }
-  }, [room_id]);
 
-  const loadPriceData = async (id: string) => {
+    loadPriceData();
+    loadStandardData();
+  }, [room, room_id, ac, light, union, building]);
+
+  const loadPriceData = async () => {
     try {
       setLoading(true);
-      const response: any = await getPrice(id);
+      let foundData = false;
 
-      // API 实际返回的是 data，而不是 schema 中定义的 msg
-      const priceInfo = response?.data?.price || response?.msg?.price;
-      setPriceData(priceInfo);
+      const roomNameQuery = room || '';
+
+      // 1. 使用 room 查询 getPrice（如 "南7-321"）
+      if (roomNameQuery) {
+        try {
+          const response: any = await getPrice(roomNameQuery);
+          const resData = response?.data || response?.msg;
+          if (
+            resData &&
+            (resData.ac_price ||
+              resData.light_price ||
+              resData.union_price ||
+              resData.price)
+          ) {
+            setPriceData(resData);
+            foundData = true;
+          }
+        } catch (e) {
+          log.warn('getPrice with room failed', e);
+        }
+      }
+
+      // 2. 尝试使用设备 ID (room_id / light / ac / union) 查询 getBillingBalance 作为兜底
+      const targetRoomId = room_id || light || ac || union;
+      if (!foundData && targetRoomId) {
+        try {
+          const response: any = await getBillingBalance(targetRoomId);
+          const resData = response?.data || response?.msg;
+          if (resData?.price) {
+            setPriceData({
+              price: resData.price,
+              union_price: resData.price,
+            });
+            foundData = true;
+          }
+        } catch (e) {
+          log.warn('getBillingBalance failed', e);
+        }
+      }
+
+      if (!foundData) {
+        setPriceData(null);
+      }
     } catch (error) {
-      log.error(error);
+      log.error('加载电费数据失败:', error);
+      setPriceData(null);
     } finally {
       setLoading(false);
     }
@@ -76,7 +173,10 @@ const ElectricityBillinBalance = () => {
       if (standardList && standardList.length > 0) {
         // 查找当前房间的电费标准
         const currentRoomStandard = standardList.find(
-          (item: any) => item.room_name === `${building}    ${room}`
+          (item: any) =>
+            item.room_name === `${building}    ${room}` ||
+            item.room_name === room ||
+            item.room_name === `${building}${room}`
         );
         if (currentRoomStandard) {
           setStandardLimit(currentRoomStandard.limit);
@@ -132,13 +232,14 @@ const ElectricityBillinBalance = () => {
 
   // 确认设置电费标准
   const handleConfirmStandard = async (value: string) => {
-    if (!room_id || !building || !room) {
+    const targetRoomId = room_id || light || ac || union;
+    if (!targetRoomId || !building || !room) {
       return;
     }
 
     try {
       if (value === '' || value === null) {
-        await cancelStandard({ room_id });
+        await cancelStandard({ room_id: targetRoomId });
         setStandardLimit(null);
       } else {
         // 设置电费标准
@@ -148,7 +249,7 @@ const ElectricityBillinBalance = () => {
         }
 
         await setStandard({
-          room_id,
+          room_id: targetRoomId,
           room_name: `${building}    ${room}`,
           limit: limitValue,
         });
@@ -163,10 +264,15 @@ const ElectricityBillinBalance = () => {
   const formatDormInfo = () => {
     if (!building || !room) return '未选择宿舍';
 
-    // 处理楼栋信息：去除重复的"南湖"，去除前导零
+    // 处理楼栋信息：去除重复的区域名，去除前导零
     let buildingFormatted = building;
-    // 去除重复的"南湖"（如"南湖南湖04栋" -> "南湖04栋"）
-    buildingFormatted = buildingFormatted.replace(/南湖南湖/, '南湖');
+    buildingFormatted = buildingFormatted
+      .replace(/南湖南湖/, '南湖')
+      .replace(/东区东区/, '东区')
+      .replace(/西区西区/, '西区')
+      .replace(/元宝山元宝山/, '元宝山')
+      .replace(/东南区东南区/, '东南区')
+      .replace(/国交国交/, '国交');
     // 去除前导零（如"南湖04栋" -> "南湖4栋"）
     buildingFormatted = buildingFormatted.replace(/0(\d)栋/, '$1栋');
 
@@ -178,15 +284,24 @@ const ElectricityBillinBalance = () => {
       roomFormatted = roomMatch[1].replace(/[南北]/, ''); // 去除南北前缀
     }
     // 添加"室"后缀
-    roomFormatted = `${roomFormatted}室`;
+    if (!roomFormatted.endsWith('室')) {
+      roomFormatted = `${roomFormatted}室`;
+    }
 
     return `${buildingFormatted}    ${roomFormatted}`;
   };
 
   const handleChangeDorm = () => {
-    clearSelectedDorm();
-    router.replace('/electricityBillinQuiry');
+    router.replace('/electricityInquiry');
   };
+
+  const isUnionOnly =
+    Boolean(priceData?.union_price) &&
+    !priceData?.light_price &&
+    !priceData?.ac_price;
+  const lightingData = priceData?.light_price || priceData?.price;
+  const acData =
+    priceData?.ac_price || (!priceData?.light_price ? priceData?.price : null);
 
   return (
     <View style={[styles.container, currentStyle?.background_style]}>
@@ -214,64 +329,121 @@ const ElectricityBillinBalance = () => {
           <Text style={styles.loadingText}>加载中...</Text>
         ) : priceData ? (
           <>
-            {/* 照明卡片 */}
-            <View
-              style={[styles.card, currentStyle?.elecprice_lighting_card_style]}
-            >
-              <View style={styles.cardHeader}>
-                <View style={styles.iconContainer}>
-                  <Image
-                    source={require('@/assets/images/zhaoming.png')}
-                    style={styles.iconImage}
-                  />
+            {/* 组合电表卡片 */}
+            {isUnionOnly && priceData.union_price && (
+              <View
+                style={[
+                  styles.card,
+                  currentStyle?.elecprice_lighting_card_style,
+                ]}
+              >
+                <View style={styles.cardHeader}>
+                  <View style={styles.iconContainer}>
+                    <Image
+                      source={require('@/assets/images/zhaoming.png')}
+                      style={styles.iconImage}
+                    />
+                  </View>
+                  <Text style={[styles.cardTitle, currentStyle?.text_style]}>
+                    用电
+                  </Text>
+                  <Text style={[styles.cardPrice, currentStyle?.text_style]}>
+                    {priceData.union_price.remain_money ?? '0.00'}{' '}
+                    <Text style={styles.cardPriceUnit}>度</Text>
+                  </Text>
                 </View>
-                <Text style={[styles.cardTitle, currentStyle?.text_style]}>
-                  照明
-                </Text>
-                <Text style={[styles.cardPrice, currentStyle?.text_style]}>
-                  ¥ {priceData.remain_money}
-                </Text>
+                <View style={styles.cardFooter}>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    昨日用电: {priceData.union_price.yesterday_use_value ?? '0'}
+                    度
+                  </Text>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    昨日电费:{' '}
+                    {priceData.union_price.yesterday_use_money ?? '0.00'}元
+                  </Text>
+                </View>
               </View>
-              <View style={styles.cardFooter}>
-                <Text style={[styles.cardFooterText, currentStyle?.text_style]}>
-                  昨日用电: {priceData.yesterday_use_value}度
-                </Text>
-                <Text style={[styles.cardFooterText, currentStyle?.text_style]}>
-                  昨日电费: {priceData.yesterday_use_money}元
-                </Text>
+            )}
+
+            {/* 照明卡片 */}
+            {!isUnionOnly && lightingData && (
+              <View
+                style={[
+                  styles.card,
+                  currentStyle?.elecprice_lighting_card_style,
+                ]}
+              >
+                <View style={styles.cardHeader}>
+                  <View style={styles.iconContainer}>
+                    <Image
+                      source={require('@/assets/images/zhaoming.png')}
+                      style={styles.iconImage}
+                    />
+                  </View>
+                  <Text style={[styles.cardTitle, currentStyle?.text_style]}>
+                    照明
+                  </Text>
+                  <Text style={[styles.cardPrice, currentStyle?.text_style]}>
+                    {lightingData.remain_money ?? '0.00'}{' '}
+                    <Text style={styles.cardPriceUnit}>度</Text>
+                  </Text>
+                </View>
+                <View style={styles.cardFooter}>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    昨日用电: {lightingData.yesterday_use_value ?? '0'}度
+                  </Text>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    昨日电费: {lightingData.yesterday_use_money ?? '0.00'}元
+                  </Text>
+                </View>
               </View>
-            </View>
+            )}
 
             {/* 空调卡片 */}
-            <View
-              style={[
-                styles.card,
-                currentStyle?.elecprice_air_conditioner_card_style,
-              ]}
-            >
-              <View style={styles.cardHeader}>
-                <View style={styles.iconContainer}>
-                  <Image
-                    source={require('@/assets/images/kongtiao.png')}
-                    style={styles.iconImage}
-                  />
+            {!isUnionOnly && acData && (
+              <View
+                style={[
+                  styles.card,
+                  currentStyle?.elecprice_air_conditioner_card_style,
+                ]}
+              >
+                <View style={styles.cardHeader}>
+                  <View style={styles.iconContainer}>
+                    <Image
+                      source={require('@/assets/images/kongtiao.png')}
+                      style={styles.iconImage}
+                    />
+                  </View>
+                  <Text style={[styles.cardTitle, currentStyle?.text_style]}>
+                    空调
+                  </Text>
+                  <Text style={[styles.cardPrice, currentStyle?.text_style]}>
+                    {acData.remain_money ?? '0.00'}{' '}
+                    <Text style={styles.cardPriceUnit}>度</Text>
+                  </Text>
                 </View>
-                <Text style={[styles.cardTitle, currentStyle?.text_style]}>
-                  空调
-                </Text>
-                <Text style={[styles.cardPrice, currentStyle?.text_style]}>
-                  ¥ {priceData.remain_money}
-                </Text>
+                <View style={styles.cardFooter}>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    昨日用电: {acData.yesterday_use_value ?? '0'}度
+                  </Text>
+                  <Text
+                    style={[styles.cardFooterText, currentStyle?.text_style]}
+                  >
+                    昨日电费: {acData.yesterday_use_money ?? '0.00'}元
+                  </Text>
+                </View>
               </View>
-              <View style={styles.cardFooter}>
-                <Text style={[styles.cardFooterText, currentStyle?.text_style]}>
-                  昨日用电: {priceData.yesterday_use_value}度
-                </Text>
-                <Text style={[styles.cardFooterText, currentStyle?.text_style]}>
-                  昨日电费: {priceData.yesterday_use_money}元
-                </Text>
-              </View>
-            </View>
+            )}
 
             {/* TODO)) 这块等消息提醒一起上线 电费标准设置卡片 */}
             {/* <TouchableOpacity onPress={handleSetStandard}>
@@ -318,7 +490,7 @@ const ElectricityBillinBalance = () => {
   );
 };
 
-export default ElectricityBillinBalance;
+export default ElectricityBalance;
 
 const styles = StyleSheet.create({
   container: {
@@ -405,10 +577,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardPrice: {
-    fontSize: 40,
+    fontSize: 36,
     fontWeight: '700',
     color: '#000000',
     marginRight: 15,
+  },
+  cardPriceUnit: {
+    fontSize: 16,
+    fontWeight: '500',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -487,5 +663,9 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 10,
     textAlign: 'center',
+  },
+  headerRightText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
 });

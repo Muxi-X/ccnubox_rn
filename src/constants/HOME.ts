@@ -14,7 +14,7 @@ export const HOME_ITEMS = [
   {
     title: '电费查询',
     name: 'electricity',
-    href: '/electricity',
+    href: '/electricityBalance' as Href,
     Icon: homeGridIcons.energy,
     key: 'grid-2',
   },

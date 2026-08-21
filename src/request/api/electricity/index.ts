@@ -1,5 +1,6 @@
 export { default as cancelStandard } from './cancelStandard';
 export { default as getArchitecture } from './getArchitecture';
+export { default as getBillingBalance } from './getBillingBalance';
 export { default as getPrice } from './getPrice';
 export { default as getRoomInfo } from './getRoomInfo';
 export { default as getStandardList } from './getStandardList';
