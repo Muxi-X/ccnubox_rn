@@ -1,65 +1,27 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  type ReactElement,
-} from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import type WebView from 'react-native-webview';
+import type { WebViewProps } from 'react-native-webview';
 
 const NativeWebView = (
   require('react-native-webview') as typeof import('react-native-webview')
 ).default;
 
-export type SafeWebViewHandle = {
-  goBack: () => void;
-  injectJavaScript: (_script: string) => void;
-  reload: () => void;
-};
+export type SafeWebViewHandle = Pick<
+  WebView,
+  'goBack' | 'injectJavaScript' | 'reload'
+>;
 
-export type WebViewNavigation = {
-  canGoBack?: boolean;
-  url: string;
-};
-
-type WebViewMessageEvent = {
-  nativeEvent: {
-    data: string;
-  };
-};
-
-type WebViewProgressEvent = {
-  nativeEvent: {
-    canGoBack: boolean;
-  };
-};
-
-export type SafeWebViewProps = {
-  allowsBackForwardNavigationGestures?: boolean;
+export type SafeWebViewProps = WebViewProps & {
   allowBackForwardNavigationGestures?: boolean;
-  domStorageEnabled?: boolean;
   fallbackMessage?: string;
   fallbackTitle?: string;
-  geolocationEnabled?: boolean;
-  injectedJavaScript?: string;
-  injectedJavaScriptForMainFrameOnly?: boolean;
-  javaScriptEnabled?: boolean;
-  onLoadProgress?: (_event: WebViewProgressEvent) => void;
-  onMessage?: (_event: WebViewMessageEvent) => void;
-  onNavigationStateChange?: (_event: WebViewNavigation) => void;
-  onShouldStartLoadWithRequest?: (_request: unknown) => boolean;
-  originWhitelist?: string[];
-  renderLoading?: () => ReactElement;
-  scalesPageToFit?: boolean;
-  setSupportMultipleWindows?: boolean;
   showOpenExternally?: boolean;
-  source?: any;
-  startInLoadingState?: boolean;
-  style?: StyleProp<ViewStyle>;
 };
 
 const SafeWebView = forwardRef<SafeWebViewHandle, SafeWebViewProps>(
   (
     {
+      allowBackForwardNavigationGestures,
       allowsBackForwardNavigationGestures,
       fallbackMessage: _fallbackMessage,
       fallbackTitle: _fallbackTitle,
@@ -68,7 +30,7 @@ const SafeWebView = forwardRef<SafeWebViewHandle, SafeWebViewProps>(
     },
     ref
   ) => {
-    const nativeWebViewRef = useRef<SafeWebViewHandle | null>(null);
+    const nativeWebViewRef = useRef<WebView | null>(null);
 
     useImperativeHandle(
       ref,
@@ -86,7 +48,7 @@ const SafeWebView = forwardRef<SafeWebViewHandle, SafeWebViewProps>(
         ref={nativeWebViewRef}
         allowsBackForwardNavigationGestures={
           allowsBackForwardNavigationGestures ??
-          props.allowBackForwardNavigationGestures
+          allowBackForwardNavigationGestures
         }
         {...props}
       />

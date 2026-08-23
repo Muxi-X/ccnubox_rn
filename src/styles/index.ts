@@ -3,6 +3,5 @@ import { LayoutName, LayoutType } from './types';
 
 export const layoutMap: Record<LayoutName, LayoutType> = {
   android: defaultStyles,
-  harmony: defaultStyles,
   ios: defaultStyles,
 };

@@ -1,12 +1,19 @@
 import { ActivityIndicator } from '@ant-design/react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 import { BackHandler, Platform, StyleSheet, View } from 'react-native';
+import WebView, { WebViewNavigation } from 'react-native-webview';
 
 import SafeWebView, {
   SafeWebViewHandle,
-  WebViewNavigation,
 } from '@/components/webview/SafeWebView';
+import { isHarmony } from '@/platform/runtime';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
@@ -16,16 +23,15 @@ export default function Webview() {
   const [loading, setLoading] = useState(true);
   const { link } = useLocalSearchParams();
   const student_id = useUserStore(state => state.student_id);
-  const storedCredential = useUserStore(state => state.password);
+  const password = useUserStore(state => state.password);
 
-  const webview = useRef<SafeWebViewHandle | null>(null);
+  const webview = useRef<SafeWebViewHandle | WebView | null>(null);
   const loginCount = useRef(0);
+  const studentIdLiteral = JSON.stringify(student_id ?? '');
+  const storedCredentialLiteral = JSON.stringify(password ?? '');
 
   const autoLogin = useCallback(
     (event: WebViewNavigation) => {
-      const studentIdLiteral = JSON.stringify(student_id ?? '');
-      const storedCredentialLiteral = JSON.stringify(storedCredential ?? '');
-
       if (event.url.includes('kickout')) {
         webview.current?.injectJavaScript(`
               window.location.href = 'https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fsso%2Fpziotlogin';
@@ -51,7 +57,7 @@ export default function Webview() {
       }
       setLoading(false);
     },
-    [student_id, storedCredential]
+    [studentIdLiteral, storedCredentialLiteral]
   );
 
   // 接管系统返回手势
@@ -78,46 +84,85 @@ export default function Webview() {
 
   return (
     <>
-      <SafeWebView
-        ref={webview}
-        javaScriptEnabled
-        // injectedJavaScript={login}
-        injectedJavaScriptForMainFrameOnly={false}
-        originWhitelist={['*']}
-        setSupportMultipleWindows={false} // Android 必须
-        onShouldStartLoadWithRequest={_request => true}
-        onNavigationStateChange={autoLogin}
-        style={styles.container}
-        onMessage={event => {
-          if (event.nativeEvent.data === '_triedLogin') {
-            loginCount.current++;
-          }
-        }}
-        // 响应系统返回手势
-        allowsBackForwardNavigationGestures
-        onLoadProgress={event => {
-          setCanGoBack(event.nativeEvent.canGoBack);
-        }}
-        source={{ uri: atob(link as string) }}
-        startInLoadingState
-        fallbackTitle="当前页面暂不支持内嵌打开"
-        fallbackMessage="鸿蒙适配阶段仅保留外部打开能力，请使用系统浏览器继续访问。"
-        renderLoading={() => (
-          <View
-            style={[
-              styles.loadingView,
-              {
-                backgroundColor:
-                  currentTheme === 'dark'
-                    ? 'rgba(0,0,0,0.9)'
-                    : 'rgba(0,0,0,0.1)',
-              },
-            ]}
-          >
-            <ActivityIndicator color={commonColors.purple} size="large" />
-          </View>
-        )}
-      />
+      {isHarmony ? (
+        <SafeWebView
+          ref={webview as RefObject<SafeWebViewHandle | null>}
+          javaScriptEnabled
+          injectedJavaScriptForMainFrameOnly={false}
+          originWhitelist={['*']}
+          setSupportMultipleWindows={false}
+          onShouldStartLoadWithRequest={_request => true}
+          onNavigationStateChange={autoLogin}
+          style={styles.container}
+          onMessage={event => {
+            if (event.nativeEvent.data === '_triedLogin') {
+              loginCount.current++;
+            }
+          }}
+          allowsBackForwardNavigationGestures
+          onLoadProgress={event => {
+            setCanGoBack(event.nativeEvent.canGoBack);
+          }}
+          source={{ uri: atob(link as string) }}
+          startInLoadingState
+          fallbackTitle="当前页面暂不支持内嵌打开"
+          fallbackMessage="鸿蒙适配阶段仅保留外部打开能力，请使用系统浏览器继续访问。"
+          renderLoading={() => (
+            <View
+              style={[
+                styles.loadingView,
+                {
+                  backgroundColor:
+                    currentTheme === 'dark'
+                      ? 'rgba(0,0,0,0.9)'
+                      : 'rgba(0,0,0,0.1)',
+                },
+              ]}
+            >
+              <ActivityIndicator color={commonColors.purple} size="large" />
+            </View>
+          )}
+        />
+      ) : (
+        <WebView
+          ref={webview as RefObject<WebView | null>}
+          javaScriptEnabled
+          // injectedJavaScript={login}
+          injectedJavaScriptForMainFrameOnly={false}
+          originWhitelist={['*']}
+          setSupportMultipleWindows={false} // Android 必须
+          onShouldStartLoadWithRequest={_request => true}
+          onNavigationStateChange={autoLogin}
+          style={styles.container}
+          onMessage={event => {
+            if (event.nativeEvent.data === '_triedLogin') {
+              loginCount.current++;
+            }
+          }}
+          // 响应系统返回手势
+          allowsBackForwardNavigationGestures
+          onLoadProgress={event => {
+            setCanGoBack(event.nativeEvent.canGoBack);
+          }}
+          source={{ uri: atob(link as string) }}
+          startInLoadingState
+          renderLoading={() => (
+            <View
+              style={[
+                styles.loadingView,
+                {
+                  backgroundColor:
+                    currentTheme === 'dark'
+                      ? 'rgba(0,0,0,0.9)'
+                      : 'rgba(0,0,0,0.1)',
+                },
+              ]}
+            >
+              <ActivityIndicator color={commonColors.purple} size="large" />
+            </View>
+          )}
+        />
+      )}
       {loading && (
         <View
           style={[

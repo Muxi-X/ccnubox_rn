@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Divider from '@/components/divider';
 import { useKeyboardStatus } from '@/hooks';
+import { isHarmony } from '@/platform/runtime';
 import { commonStyles } from '@/styles/common';
 
 const Login: React.FC = () => {
@@ -58,6 +59,7 @@ export const styles = StyleSheet.create({
     height: '100%',
     top: 0,
     left: 0,
+    zIndex: isHarmony ? undefined : -1,
   },
   text1: {
     position: 'absolute',

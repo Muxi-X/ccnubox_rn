@@ -8,6 +8,7 @@ import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
 import Modal from '@/components/modal';
 import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
 import { deleteItemAsync } from '@/platform/storage';
 import { logout } from '@/request/api/auth';
 import { removeFeedToken } from '@/request/api/feeds';
@@ -93,12 +94,15 @@ export const SETTING_ITEMS: SettingItem[] = [
           }
 
           try {
-            await Promise.all([
+            const localCleanupTasks = [
               AsyncStorage.multiRemove(['courses']),
               deleteItemAsync('longToken'),
               deleteItemAsync('shortToken'),
-              clearHarmonyDebugSession(),
-            ]);
+            ];
+            if (isHarmony) {
+              localCleanupTasks.push(clearHarmonyDebugSession());
+            }
+            await Promise.all(localCleanupTasks);
             useUserStore.setState({ password: '' });
           } catch {
             // 忽略本地清理异常

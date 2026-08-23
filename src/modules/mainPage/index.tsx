@@ -43,20 +43,16 @@ const IndexPage: FC = () => {
         setRegisterId(result.registerID);
       }
     });
-    queryBanners()
-      .then((res: any) => {
-        setBanners(
-          res.data.banners.map(
-            (banner: { picture_link: string; web_link: string }) => ({
-              bannerUrl: banner.picture_link,
-              navUrl: banner.web_link,
-            })
-          )
-        );
-      })
-      .catch(() => {
-        setBanners([]);
-      });
+    queryBanners().then((res: any) => {
+      setBanners(
+        res.data.banners.map(
+          (banner: { picture_link: string; web_link: string }) => ({
+            bannerUrl: banner.picture_link,
+            navUrl: banner.web_link,
+          })
+        )
+      );
+    });
   }, []);
   const onDragRelease = async (data: MainPageGridDataType[]) => {
     setIsDragging(false);

@@ -1,13 +1,15 @@
-# Dependencies
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
 node_modules/
 
-# Expo and web output
+# Expo
 .expo/
 dist/
 web-build/
 expo-env.d.ts
 
-# Expo Harmony reproducible metadata is kept, transient output is ignored.
+# Expo Harmony reproducible metadata is kept; only transient Harmony output is ignored.
 .expo-harmony/*-report.json
 .expo-harmony/signing.local.json
 .expo-harmony/shims/
@@ -15,6 +17,7 @@ expo-env.d.ts
 # Harmony build intermediates
 harmony/.hvigor/
 harmony/.idea/
+harmony/signing/
 harmony/**/.cxx/
 harmony/**/.preview/
 harmony/**/build/
@@ -25,61 +28,65 @@ harmony/**/hvigorw.bat
 harmony/entry/src/main/resources/rawfile/bundle.harmony.js
 harmony/entry/src/main/resources/rawfile/assets/
 harmony/expo-harmony-local-deps/
-*.hap
-*.hsp
-*.app
-*.har
-*.abc
-*.ap
-*.res
-*.so
-*.dSYM/
-*.log
-hvigor-*.log
+harmony/**/*.hap
+harmony/**/*.hsp
+harmony/**/*.app
+harmony/**/*.har
+harmony/**/*.abc
+harmony/**/*.ap
+harmony/**/*.res
+harmony/**/*.so
+harmony/**/*.log
+harmony/**/hvigor-*.log
+harmony/**/*.p7b
+harmony/**/*.cer
 
-# Native build output and signing material
-signing/
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Android / Gradle
 .gradle/
 build/
 local.properties
 *.iml
 .cxx/
-android/.gradle/
-android/.idea/
-android/app/build/
-android/build/
-ios/build/
-.kotlin/
-*.orig.*
-*.apk
-*.ipa
-*.jks
-*.p8
-*.p12
-*.p7b
-*.cer
-*.key
-*.mobileprovision
-*.pem
 
-# Local environment and service secrets
-.env
-.env*.local
-secret/google-services.json
-android/app/agconnect-services.json
-sentry.properties
-.eas/
+# macOS
+.DS_Store
 
-# Tooling caches
+# IDEs
+.vscode/
+.idea/
+
+# Metro
 .metro-health-check*
-*.tsbuildinfo
+
+# debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
-pnpm-debug.log*
 
-# Editors and OS files
-.DS_Store
-.vscode/
-.idea/
+*.pem
+
+# local env files
+.env
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+secret/google-services.json
+android/app/agconnect-services.json
+
+# output
+*.apk
+*.ipa
+sentry.properties
+.eas
 .yolo.json

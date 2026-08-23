@@ -1,6 +1,7 @@
 import { router, SplashScreen } from 'expo-router';
 import * as React from 'react';
 
+import { isHarmony } from '@/platform/runtime';
 import { getItem, setItem } from '@/platform/storage';
 import useCourse from '@/store/course';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
@@ -23,7 +24,11 @@ const Index = () => {
 
         if (!token) {
           if (firstLaunch === null) {
-            await setItem('firstLaunch', 'false');
+            if (isHarmony) {
+              await setItem('firstLaunch', 'false');
+            } else {
+              setItem('firstLaunch', 'false');
+            }
             console.log('首次启动，跳转到引导页');
             router.replace('/auth/guide');
           } else {

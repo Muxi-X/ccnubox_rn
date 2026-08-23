@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
+import { isHarmony } from '@/platform/runtime';
 import { request } from '@/request';
 import {
   FeishuUploadTokenConfig,
@@ -41,7 +42,7 @@ async function getFileInfo(
     }
 
     const fileContent = await FileSystem.readAsStringAsync(fileUri, {
-      encoding: 'base64',
+      encoding: isHarmony ? 'base64' : FileSystem.EncodingType.Base64,
     });
 
     const bytes = base64ToUint8Array(fileContent);

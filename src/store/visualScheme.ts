@@ -59,7 +59,7 @@ const useVisualScheme = create<visualSchemeType>()(
           return spec.default;
         }
 
-        const fallbackLayouts: LayoutName[] = ['harmony', 'android', 'ios'];
+        const fallbackLayouts: LayoutName[] = ['ios', 'android'];
         for (const fallback of fallbackLayouts) {
           const candidate = spec[fallback];
           if (candidate !== undefined) {
@@ -80,7 +80,7 @@ const useVisualScheme = create<visualSchemeType>()(
           return spec.default;
         }
 
-        const fallbackLayouts: LayoutName[] = ['harmony', 'android', 'ios'];
+        const fallbackLayouts: LayoutName[] = ['ios', 'android'];
         for (const fallback of fallbackLayouts) {
           const candidate = spec[fallback];
           if (candidate !== undefined) {

@@ -16,6 +16,7 @@ import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
 import { deleteItemAsync } from '@/platform/storage';
 import { deactivate } from '@/request/api/auth';
 import useUserStore from '@/store/user';
@@ -49,13 +50,16 @@ function SignOff() {
           }
 
           try {
-            await Promise.all([
+            const localCleanupTasks = [
               AsyncStorage.multiRemove(['courses']),
               deleteItemAsync('longToken'),
               deleteItemAsync('shortToken'),
-              clearHarmonyDebugSession(),
               deleteItemAsync('user'),
-            ]);
+            ];
+            if (isHarmony) {
+              localCleanupTasks.push(clearHarmonyDebugSession());
+            }
+            await Promise.all(localCleanupTasks);
             useUserStore.setState({ student_id: '', password: '' });
           } catch {
             // 忽略存储清理异常

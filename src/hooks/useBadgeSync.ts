@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
-import { platformCapabilities } from '@/platform/capabilities';
 import { useEvents } from '@/store/events';
 import { jpushClient } from '@/utils/jpush';
 
@@ -10,10 +9,6 @@ const useBadgeSync = () => {
 
   // Fetch events on mount and app resume
   useEffect(() => {
-    if (!platformCapabilities.badgeSync) {
-      return;
-    }
-
     const fetchEvents = () => {
       getFeedEvents();
     };
@@ -33,10 +28,6 @@ const useBadgeSync = () => {
 
   // Sync badge count with unread events (使用极光推送)
   useEffect(() => {
-    if (!platformCapabilities.badgeSync) {
-      return;
-    }
-
     const unreadCount = feedEvents.filter(e => !e.read).length;
     jpushClient.setBadge({ badge: unreadCount, appBadge: unreadCount });
   }, [feedEvents]);

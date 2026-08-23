@@ -20,11 +20,11 @@ import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import { useKeyboardStatus } from '@/hooks';
-import { authStorageKeys } from '@/platform/authStorageKeys';
 import {
   canUseHarmonyDebugSession,
   startHarmonyDebugSession,
 } from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
 import { setItem } from '@/platform/storage';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
@@ -72,24 +72,23 @@ const LoginPage: FC = () => {
         isToken: false,
       });
       if (response.status === 200 || response.status === 201) {
-        const shortToken = response.headers['x-jwt-token'];
-        const longToken = response.headers['x-refresh-token'];
-
-        if (typeof shortToken !== 'string' || !shortToken) {
-          throw new Error('响应头中缺少 x-jwt-token');
+        if (isHarmony) {
+          await Promise.all([
+            setItem('shortToken', response.headers['x-jwt-token']),
+            setItem('longToken', response.headers['x-refresh-token']),
+          ]);
+          useUserStore.setState({
+            student_id: studentId,
+            password: password,
+          });
+        } else {
+          useUserStore.setState({
+            student_id: studentId,
+            password: password,
+          });
+          setItem('shortToken', response.headers['x-jwt-token']);
+          setItem('longToken', response.headers['x-refresh-token']);
         }
-
-        if (typeof longToken !== 'string' || !longToken) {
-          throw new Error('响应头中缺少 x-refresh-token');
-        }
-
-        await setItem(authStorageKeys.short, shortToken);
-        await setItem(authStorageKeys.long, longToken);
-
-        useUserStore.setState({
-          student_id: studentId,
-          password: password,
-        });
         router.navigate('/(tabs)');
       }
     } catch (error) {

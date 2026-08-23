@@ -116,7 +116,7 @@ const GuidePage: FC = () => {
 
   const handleStart = () => {
     router.navigate('/auth/login');
-    void setItem('firstLaunch', 'true');
+    setItem('firstLaunch', 'true');
   };
 
   // 跳转第几条内容

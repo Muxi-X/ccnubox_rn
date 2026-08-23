@@ -1,7 +1,7 @@
 import { defaultLayoutName, isAndroid, isHarmony, isIOS } from './runtime';
 
 export const platformCapabilities = {
-  attachmentUpload: true,
+  attachmentUpload: !isHarmony,
   badgeSync: true,
   courseExport: true,
   edgeToEdge: !isHarmony,

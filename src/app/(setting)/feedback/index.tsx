@@ -20,9 +20,9 @@ import SearchBar from '@/components/searchBar';
 import ThemeBasedView from '@/components/view';
 import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from '@/constants/FEEDBACKS';
 import FAQItem from '@/modules/setting/components/faqitem';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { feedbackFAQ, getFAQ } from '@/request/api/feedback';
 import useFAQStore from '@/store/FAQs';
-import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 import { SheetItem } from '@/types/feedback';
 import handleCopy from '@/utils/handleCopy';
@@ -31,7 +31,8 @@ import { log } from '@/utils/logger';
 function FeedbackPage() {
   const router = useRouter();
   const number = '791185783';
-  const userId = useUserStore(state => state.student_id);
+  const user = getFeedbackUser();
+  const userId = user ? JSON.parse(user)?.state?.student_id : '';
 
   const [value, setValue] = useState('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -81,12 +82,8 @@ function FeedbackPage() {
   };
 
   useEffect(() => {
-    if (!userId) {
-      return;
-    }
-
-    void getFeedbackFAQs();
-  }, [userId]);
+    getFeedbackFAQs();
+  }, []);
 
   const handleToggle = (index: number) => {
     const isExpanding = expandedIndex !== index;

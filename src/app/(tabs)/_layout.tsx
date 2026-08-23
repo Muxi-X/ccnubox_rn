@@ -7,7 +7,6 @@ import TabBar from '@/components/navi';
 import Toast from '@/components/toast';
 import { TABS } from '@/constants/TABBAR';
 import PushSubscriptionPromptContent from '@/modules/setting/components/PushSubscriptionPromptContent';
-import { platformCapabilities } from '@/platform/capabilities';
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import useVisualScheme from '@/store/visualScheme';
 import { SinglePageType } from '@/types/tabBarTypes';
@@ -36,19 +35,11 @@ export default function TabLayout() {
   }, []);
 
   useEffect(() => {
-    if (!platformCapabilities.push) {
-      return;
-    }
-
     if (!enabled) return;
     syncPushSubscription().catch(() => {});
   }, [enabled]);
 
   useEffect(() => {
-    if (!platformCapabilities.push) {
-      return;
-    }
-
     if (!hydrated || enabled || promptShown || promptTriggeredRef.current) {
       return;
     }

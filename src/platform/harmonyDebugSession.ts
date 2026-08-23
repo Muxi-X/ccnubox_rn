@@ -34,5 +34,9 @@ export const startHarmonyDebugSession = async () => {
 };
 
 export const clearHarmonyDebugSession = async () => {
+  if (!isHarmony) {
+    return;
+  }
+
   await deleteItemAsync(HARMONY_DEBUG_SESSION_KEY);
 };

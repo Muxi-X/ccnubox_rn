@@ -21,8 +21,8 @@ import {
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_STYLE_KEY,
 } from '@/constants/FEEDBACKS';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
-import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 
 export interface FeedbackItem {
@@ -216,21 +216,19 @@ export default function FeedbackHistory() {
   const [pageToken, setPageToken] = useState<string>('');
   const [feedbackHistory, setFeedbackHistory] = useState<FeedbackItem[]>([]);
   const loadingRef = useRef<boolean>(false);
-  const userId = useUserStore(state => state.student_id);
+  const user = getFeedbackUser();
 
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const getUserFeedbackSheet = async (isInit: boolean) => {
-    if (!userId) {
-      return;
-    }
-
     if (!isInit && (loadingRef.current || !hasMore)) return;
 
     loadingRef.current = true;
     setIsLoading(true);
 
     try {
+      const userId = JSON.parse(user!)?.state?.student_id;
+
       const query = {
         page_token: pageToken,
         record_names: FEEDBACK_RECORD_NAMES,
@@ -257,18 +255,8 @@ export default function FeedbackHistory() {
   };
 
   useEffect(() => {
-    if (!userId) {
-      setFeedbackHistory([]);
-      setHasMore(false);
-      setPageToken('');
-      return;
-    }
-
-    setFeedbackHistory([]);
-    setHasMore(false);
-    setPageToken('');
-    void getUserFeedbackSheet(true);
-  }, [userId]);
+    getUserFeedbackSheet(true);
+  }, []);
 
   const handleEndReached = () => {
     getUserFeedbackSheet(false);

@@ -1,6 +1,5 @@
+import { isRunningInExpoGo } from 'expo';
 import { StatusBar } from 'react-native';
-
-import { setPlatformSystemBarStyle } from '@/platform/systemBars';
 
 /**
  * 设置系统UI主题
@@ -10,5 +9,14 @@ export const setSystemUITheme = (themeName: 'dark' | 'light') => {
   const isDark = themeName === 'dark';
 
   StatusBar.setBarStyle(isDark ? 'light-content' : 'dark-content', true);
-  setPlatformSystemBarStyle(isDark ? 'light' : 'dark');
+
+  if (isRunningInExpoGo()) return;
+
+  void import('react-native-edge-to-edge')
+    .then(({ SystemBars }) => {
+      SystemBars.setStyle(isDark ? 'light' : 'dark');
+    })
+    .catch(() => {
+      // Expo Go and older native clients do not include this module.
+    });
 };

@@ -24,8 +24,8 @@ import {
 } from '@/constants/FEEDBACKS';
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { platformCapabilities } from '@/platform/capabilities';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { createFeedbackRecord } from '@/request/api/feedback';
-import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 import { runPermissionAction } from '@/utils/requestPermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
@@ -47,7 +47,6 @@ function WriteFeedback() {
   const [images, setImages] = useState<ImageItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const userId = useUserStore(state => state.student_id);
 
   const currentModules = useMemo(() => {
     return MODULE_MAP[selectedIssueType];
@@ -148,19 +147,15 @@ function WriteFeedback() {
   const handleSubmit = async () => {
     if (!isSubmitEnabled || isSubmitting) return;
 
-    const normalizedUserId = (userId ?? '').trim();
-    if (!normalizedUserId) {
-      Toast.fail('请先登录后再提交反馈');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
+      const user = getFeedbackUser();
+      const userId = user ? JSON.parse(user)?.state?.student_id : undefined;
       const fileTokens = images.map(img => img.token).filter(Boolean);
 
       const requestData = {
         table_identify: FEEDBACK_TABLE_IDENTIFY,
-        student_id: normalizedUserId,
+        student_id: userId,
         content: description,
         contact_info: contact,
         images: fileTokens,

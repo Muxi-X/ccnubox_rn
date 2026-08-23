@@ -3,16 +3,15 @@ import Constants from 'expo-constants';
 import { router } from 'expo-router';
 
 import Toast from '@/components/toast';
-import { authStorageKeys } from '@/platform/authStorageKeys';
 import {
   HARMONY_DEBUG_SHORT_VALUE,
   isHarmonyDebugCredential,
   isHarmonyDebugSessionEnabled,
 } from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
 import { getItem, setItem } from '@/platform/storage';
 import requestBus from '@/store/currentRequests';
 import { OtherTokenConfig } from '@/types/axios';
-import { logger } from '@/utils';
 
 import { paths } from './schema';
 
@@ -53,19 +52,18 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
 
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
-    if (await isHarmonyDebugSessionEnabled()) {
-      await setItem(authStorageKeys.short, HARMONY_DEBUG_SHORT_VALUE);
+    if (isHarmony && (await isHarmonyDebugSessionEnabled())) {
+      await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
       return HARMONY_DEBUG_SHORT_VALUE;
     }
 
     const longToken = await getItem('longToken');
     if (!longToken) {
-      logger.log.debug('长 token 不存在');
-      throw new Error('长 token 不存在');
+      throw new Error('长 token 不存在，跳转登录');
     }
 
-    if (isHarmonyDebugCredential(longToken)) {
-      await setItem(authStorageKeys.short, HARMONY_DEBUG_SHORT_VALUE);
+    if (isHarmony && isHarmonyDebugCredential(longToken)) {
+      await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
       return HARMONY_DEBUG_SHORT_VALUE;
     }
 
@@ -78,12 +76,13 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
     );
 
     if (response.status === 200 || response.status === 201) {
-      const refreshedCredential = response.headers['x-jwt-token'];
-      if (typeof refreshedCredential !== 'string' || !refreshedCredential) {
-        throw new Error('响应头中缺少 x-jwt-token');
+      const newShortToken = response.headers['x-jwt-token'];
+      if (isHarmony) {
+        await setItem('shortToken', newShortToken);
+      } else {
+        setItem('shortToken', newShortToken);
       }
-      await setItem(authStorageKeys.short, refreshedCredential);
-      return refreshedCredential;
+      return newShortToken;
     }
 
     throw new Error('刷新短 token 失败');
