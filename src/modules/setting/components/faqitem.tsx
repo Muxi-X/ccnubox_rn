@@ -7,14 +7,16 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SvgProps, SvgXml } from 'react-native-svg';
 
+import { feedbackIcons } from '@/assets/icons';
 import Modal from '@/components/modal';
-
 import useVisualScheme from '@/store/visualScheme';
 
-import ResolvedIcon from '@/assets/icons/feedback/resolved.svg';
-import ResolvedSelectedIcon from '@/assets/icons/feedback/resolved_selected.svg';
-import UnresolvedIcon from '@/assets/icons/feedback/unresolved.svg';
-import UnresolvedSelectedIcon from '@/assets/icons/feedback/unresolved_selected.svg';
+const {
+  resolved: ResolvedIcon,
+  resolvedSelected: ResolvedSelectedIcon,
+  unresolved: UnresolvedIcon,
+  unresolvedSelected: UnresolvedSelectedIcon,
+} = feedbackIcons;
 
 type status = 'notSelected' | 'resolved' | 'unresolved';
 

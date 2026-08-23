@@ -12,15 +12,13 @@ import {
   View,
 } from 'react-native';
 
+import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
-
-import useUserStore from '@/store/user';
-
-import logo from '@/assets/images/mx-logo.png';
 import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
 import { deleteItemAsync } from '@/platform/storage';
 import { deactivate } from '@/request/api/auth';
+import useUserStore from '@/store/user';
 import { commonColors, commonStyles } from '@/styles/common';
 
 function SignOff() {
@@ -44,17 +42,27 @@ function SignOff() {
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          deactivate(password)
-            .then(() => {
-              return Promise.all([
-                AsyncStorage.multiRemove(['courses']),
-                deleteItemAsync('longToken'),
-                deleteItemAsync('shortToken'),
-                clearHarmonyDebugSession(),
-                deleteItemAsync('user'),
-              ]);
-            })
-            .finally(() => router.replace('/auth/login'));
+          try {
+            await deactivate(password);
+          } catch {
+            // 忽略网络注销异常
+          }
+
+          try {
+            await Promise.all([
+              AsyncStorage.multiRemove(['courses']),
+              deleteItemAsync('longToken'),
+              deleteItemAsync('shortToken'),
+              clearHarmonyDebugSession(),
+              deleteItemAsync('user'),
+            ]);
+            useUserStore.setState({ student_id: '', password: '' });
+          } catch {
+            // 忽略存储清理异常
+          }
+
+          Modal.clear();
+          router.replace('/auth/login');
         } finally {
           setIsSubmitting(false);
         }

@@ -2,7 +2,7 @@
 
 ## 统一申请规则
 
-运行时敏感权限必须通过 `src/utils/requestSensitivePermission.ts`
+运行时权限必须通过 `src/utils/requestPermission.ts`
 申请。调用方只提供：
 
 - 当前权限查询函数；

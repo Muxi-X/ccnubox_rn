@@ -1,9 +1,7 @@
 import { initializeJPush } from '@/hooks/useJPush';
-
-import usePushSubscriptionStore from '@/store/pushSubscription';
-
 import { getItemAsync } from '@/platform/storage';
 import { removeFeedToken, saveFeedToken } from '@/request/api/feeds';
+import usePushSubscriptionStore from '@/store/pushSubscription';
 import { getPushToken, waitForPushToken } from '@/utils/pushToken';
 
 const hasLoginSession = async () => {

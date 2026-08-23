@@ -3,9 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 import { ButtonProps } from '@/components/button/type';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors } from '@/styles/common';
 
 const Button: FC<ButtonProps> = ({

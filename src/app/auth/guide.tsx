@@ -21,18 +21,16 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import NextIcon from '@/assets/images/next.png';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
-
-import usePrivacy from '@/store/privacy';
-import useVisualScheme from '@/store/visualScheme';
-
-import NextIcon from '@/assets/images/next.png';
 import { GUIDE_CONTENTS } from '@/constants/GUIDE';
 import { setItem } from '@/platform/storage';
+import usePrivacy from '@/store/privacy';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 

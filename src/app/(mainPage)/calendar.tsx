@@ -12,10 +12,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Text from '@/components/text';
 import View from '@/components/view';
 import SafeWebView from '@/components/webview/SafeWebView';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import queryCalendars from '@/request/api/queryCalendars';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 
 type CalendarItem = { label: string; value: number };

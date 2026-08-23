@@ -1,19 +1,20 @@
-import Toast from '@/components/toast';
-import { FeedIconList } from '@/constants/notificationItem';
-import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
-import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
-import useVisualScheme from '@/store/visualScheme';
 import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { type FC, useEffect, useState } from 'react';
 import {
-  Image,
   Modal,
+  Pressable,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
 } from 'react-native';
+
+import Toast from '@/components/toast';
+import { FeedIconList } from '@/constants/notificationItem';
+import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
+import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
+import useVisualScheme from '@/store/visualScheme';
 
 interface NotiPickerProps {
   visible: boolean;
@@ -68,8 +69,16 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   };
 
   return (
-    <Modal visible={visible} transparent={true}>
+    <Modal
+      visible={visible}
+      transparent={true}
+      onRequestClose={() => setVisible(false)}
+    >
       <View style={styles.overlay}>
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => setVisible(false)}
+        />
         <View style={styles.container}>
           <View style={[styles.header, currentStyle?.background_style]}>
             <Text
@@ -99,7 +108,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
               style={[styles.listItem, currentStyle?.background_style]}
               key={item.name}
             >
-              <Image source={item.imageUrl} style={styles.icon} />
+              <item.Icon style={styles.icon} />
               <View style={styles.content}>
                 <Text style={[styles.title, currentStyle?.schedule_text_style]}>
                   {item.text}提醒

@@ -19,7 +19,6 @@ import Animated, {
 import Divider from '@/components/divider';
 import Toast from '@/components/toast';
 import { COURSE_HEADER_HEIGHT, TIME_WIDTH } from '@/constants/SCHEDULE';
-
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -51,6 +50,7 @@ const TimetableScrollView = (
   const {
     stickyTop,
     stickyLeft,
+    stickyBottom,
     children,
     style,
     cornerStyle,
@@ -286,21 +286,29 @@ const TimetableScrollView = (
       // 处理下拉刷新
       handlePullToRefresh(event);
       // 永远处理滚动, 包括下拉刷新时
+      const maxScrollX = Math.max(0, containerSize.width - wrapperSize.width);
       const newTranslateX = Math.min(
         0,
-        Math.max(
-          startX.value + Math.floor(event.translationX),
-          wrapperSize.width - containerSize.width
-        )
+        Math.max(startX.value + Math.floor(event.translationX), -maxScrollX)
       );
 
-      const newTranslateY = Math.min(
+      const maxNormalScrollY = Math.max(
         0,
-        Math.max(
-          startY.value + Math.floor(event.translationY),
-          wrapperSize.height - containerSize.height
-        )
+        containerSize.height - wrapperSize.height
       );
+      const EXTRA_BOTTOM_SPACE = 70;
+      const maxOverscrollY = maxNormalScrollY + EXTRA_BOTTOM_SPACE;
+
+      const rawY = startY.value + Math.floor(event.translationY);
+      let newTranslateY = rawY;
+      // 超过正常底部（上拉到底露出提示时）增加阻尼感
+      if (rawY < -maxNormalScrollY) {
+        const overscroll = -maxNormalScrollY - rawY;
+        newTranslateY =
+          -maxNormalScrollY - Math.min(EXTRA_BOTTOM_SPACE, overscroll * 0.6);
+      }
+      newTranslateY = Math.min(0, Math.max(newTranslateY, -maxOverscrollY));
+
       translateX.value = newTranslateX;
       translateY.value = newTranslateY;
     })
@@ -310,8 +318,15 @@ const TimetableScrollView = (
       if (!shouldRefresh.value || isRefreshing.value) {
         return;
       }
-      if (wrapperSize.height - translateY.value - containerSize.height >= -60) {
-        translateY.value = withTiming(translateY.value + 60);
+
+      const maxNormalScrollY = Math.max(
+        0,
+        containerSize.height - wrapperSize.height
+      );
+
+      // 上拉到底部超出了正常课表范围时，松手自动回弹到第 12 节课
+      if (translateY.value < -maxNormalScrollY) {
+        translateY.value = withTiming(-maxNormalScrollY, { duration: 300 });
       }
 
       handleRefreshComplete(event);
@@ -361,6 +376,10 @@ const TimetableScrollView = (
   const refreshHeight = useAnimatedStyle(() => ({
     transform: [{ translateY: backHeight.value }],
   }));
+  const refreshHeaderStyle = useAnimatedStyle(() => ({
+    height: backHeight.value,
+    opacity: interpolate(backHeight.value, [0, MIN_THRESHOLD], [0, 1], 'clamp'),
+  }));
   const handleChildLayout = (event: LayoutChangeEvent) => {
     const { layout } = event.nativeEvent;
     setContainerSize(layout);
@@ -381,20 +400,22 @@ const TimetableScrollView = (
       pointerEvents="box-none"
     >
       <Animated.View
+        pointerEvents="none"
         style={[
           {
             width: '100%',
             zIndex: -1,
-            height: REFRESH_THRESHOLD,
-            opacity: 1,
             display: 'flex',
             flexDirection: 'column',
             backgroundColor: refreshBackgroundColor,
             overflow: 'hidden',
             alignItems: 'center',
+            justifyContent: 'center',
             position: 'absolute',
-            elevation: 5,
+            top: 0,
+            left: 0,
           },
+          refreshHeaderStyle,
         ]}
       >
         <LottieView
@@ -471,10 +492,24 @@ const TimetableScrollView = (
               </Animated.View>
             </GestureDetector>
           </Animated.View>
-          {/* sticky bottom */}
-          <View style={{ width: '100%', height: 60 }}>
-            <Divider>别闹, 学霸也是要睡觉的</Divider>
-          </View>
+          {/* stickyBottom: 只随垂直滚动移动，水平方向固定占满屏幕 */}
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              {
+                position: 'absolute',
+                top: containerSize.height,
+                left: 0,
+                right: 0,
+                width: '100%',
+                height: 60,
+                justifyContent: 'center',
+              },
+              animatedOnlyY,
+            ]}
+          >
+            {stickyBottom || <Divider>别闹, 学霸也是要睡觉的</Divider>}
+          </Animated.View>
         </Animated.View>
       </Animated.View>
     </View>

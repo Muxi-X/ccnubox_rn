@@ -37,12 +37,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run Prettier
-        run: pnpm format --check .
+      - name: Run Oxfmt
+        run: pnpm format:check
         continue-on-error: false
 
-      - name: Run ESLint
-        run: npx eslint .
+      - name: Run Oxlint
+        run: pnpm lint
         continue-on-error: false
 
       - name: Check if PR should be blocked

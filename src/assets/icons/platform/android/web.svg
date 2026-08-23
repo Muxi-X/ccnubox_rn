@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_图层_2" data-name="图层 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 650">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ffe200;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        fill: #6f66ef;
+      }
+
+      .cls-5 {
+        fill: #565599;
+      }
+
+      .cls-3 {
+        stroke: #ffe200;
+        stroke-miterlimit: 10;
+        stroke-width: 8.44px;
+      }
+    </style>
+  </defs>
+  <g id="_图层_2-2" data-name="图层 2">
+    <g>
+      <g>
+        <g>
+          <circle class="cls-5" cx="330.4" cy="331.56" r="195.13"/>
+          <circle class="cls-5" cx="331.98" cy="331.68" r="138.04"/>
+          <rect class="cls-5" x="203.3" y="271.73" width="257.34" height="15.72"/>
+          <rect class="cls-5" x="204.51" y="378.33" width="255" height="15.72"/>
+          <ellipse class="cls-5" cx="331.98" cy="331.68" rx="54.97" ry="138.04"/>
+        </g>
+        <g>
+          <circle class="cls-4" cx="319.6" cy="318.44" r="195.13"/>
+          <circle class="cls-3" cx="321.17" cy="318.56" r="138.04"/>
+          <rect class="cls-1" x="192.49" y="258.61" width="257.34" height="15.72"/>
+          <rect class="cls-1" x="193.7" y="365.21" width="255" height="15.72"/>
+          <ellipse class="cls-3" cx="321.17" cy="318.56" rx="54.97" ry="138.04"/>
+        </g>
+      </g>
+      <rect id="_切片_" data-name="&amp;lt;切片&amp;gt;" class="cls-2" width="650" height="650"/>
+    </g>
+  </g>
+</svg>

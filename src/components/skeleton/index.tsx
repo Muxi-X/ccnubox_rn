@@ -1,5 +1,5 @@
-import { useIsFocused } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from 'expo-router';
 import React, {
   FC,
   memo,
@@ -12,9 +12,7 @@ import { Animated, StyleSheet, View } from 'react-native';
 
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import { SkeletonType, SkeletonViewType } from '@/components/skeleton/type';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import globalEventBus from '@/utils/eventBus';
 
 /**
@@ -29,26 +27,39 @@ const SkeletonLoader: FC<SkeletonType> = ({
   children,
   width: propWidth,
   height: propHeight,
+  loading: propLoading,
 }) => {
   const [layout, setLayout] = useState<{
     width: number;
     height: number;
   } | null>(null);
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [internalLoading, setInternalLoading] = useState<boolean>(true);
+  const loading = propLoading !== undefined ? propLoading : internalLoading;
+
   const translateX = useMemo(() => {
     return new Animated.Value(layout ? -layout.width * 1.5 : 0);
   }, [layout?.width]);
   const isFocused = useIsFocused();
   // 监听请求完成事件
   useEffect(() => {
-    globalEventBus.on('request_complete', () => {
-      if (isFocused) setLoading(false);
-    });
-    setTimeout(() => {
-      setLoading(false);
+    const handleRequestComplete = () => {
+      if (isFocused) setInternalLoading(false);
+    };
+    globalEventBus.on('request_complete', handleRequestComplete);
+    const timer = setTimeout(() => {
+      setInternalLoading(false);
     }, 5000);
-  }, []);
+
+    return () => {
+      try {
+        globalEventBus.off('request_complete', handleRequestComplete);
+      } catch {
+        // ignore if not registered
+      }
+      clearTimeout(timer);
+    };
+  }, [isFocused]);
   React.useEffect(() => {
     if (layout)
       Animated.loop(
@@ -68,7 +79,7 @@ const SkeletonLoader: FC<SkeletonType> = ({
   const skeleton = useMemo(() => {
     if (loading && layout) {
       if (React.isValidElement(children)) {
-        const childStyle = (children as ReactElement).props?.style || {};
+        const childStyle = (children as ReactElement<any>).props?.style || {};
         return (
           <View
             style={[
@@ -111,14 +122,15 @@ const SkeletonLoader: FC<SkeletonType> = ({
       <AnimatedOpacity
         trigger={!loading}
         duration={1200}
+        pointerEvents={loading ? 'none' : 'auto'}
         style={{
           position: loading ? 'absolute' : 'relative',
           overflow: 'hidden',
         }}
       >
         {children &&
-          React.cloneElement(children as ReactElement, {
-            ...children.props,
+          React.cloneElement(children as ReactElement<any>, {
+            ...(children as ReactElement<any>).props,
             onLayout: handleLayout,
           })}
       </AnimatedOpacity>

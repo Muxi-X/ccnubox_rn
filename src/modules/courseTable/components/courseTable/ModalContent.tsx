@@ -9,28 +9,30 @@ import {
   View,
 } from 'react-native';
 
+import { courseTableIcons } from '@/assets/icons';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Modal from '@/components/modal';
 import ThemeChangeText from '@/components/text';
-
-import useCourse from '@/store/course';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
-import DeleteIcon from '@/assets/icons/calendar/delete.svg';
-import EditIcon from '@/assets/icons/calendar/edit.svg';
-import FailIcon from '@/assets/icons/calendar/fail.svg';
-import LocationIcon from '@/assets/icons/calendar/location.svg';
-import NoteIcon from '@/assets/icons/calendar/note.svg';
-import SuccessIcon from '@/assets/icons/calendar/success.svg';
-import TeacherIcon from '@/assets/icons/calendar/teacher.svg';
-import TimeIcon from '@/assets/icons/calendar/time.svg';
-import WeekIcon from '@/assets/icons/calendar/week.svg';
 import {
   addCourseNote,
   deleteCourse,
   deleteCourseNote,
 } from '@/request/api/course';
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
+
+const {
+  delete: DeleteIcon,
+  edit: EditIcon,
+  fail: FailIcon,
+  location: LocationIcon,
+  note: NoteIcon,
+  success: SuccessIcon,
+  teacher: TeacherIcon,
+  time: TimeIcon,
+  week: WeekIcon,
+} = courseTableIcons;
 
 interface ModalContentProps {
   id: string;
@@ -361,6 +363,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
     return (
       <View
+        onStartShouldSetResponder={() => true}
         style={[
           styles.modalContainer,
           { width: 280 },

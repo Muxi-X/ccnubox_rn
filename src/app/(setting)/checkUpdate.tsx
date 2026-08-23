@@ -9,15 +9,12 @@ import Button from '@/components/button';
 import Toast from '@/components/toast';
 import { TypoText } from '@/components/typography/TypoText';
 import ThemeBasedView from '@/components/view';
-
 import useVisualScheme from '@/store/visualScheme';
-
+import { UpdateInfo } from '@/types/updateInfo';
 import {
   checkAndDownloadUpdateAsync,
   type EasUpdateProgress,
 } from '@/utils/easUpdate';
-
-import { UpdateInfo } from '@/types/updateInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mxLogo = require('../../assets/images/mx-logo.png');
@@ -25,13 +22,15 @@ const mxLogo = require('../../assets/images/mx-logo.png');
 function CheckUpdate(): React.ReactNode {
   const version = Application.nativeApplicationVersion;
   const updateInfo = Constants.default.expoConfig?.extra?.updateInfo as
-    UpdateInfo | undefined;
+    | UpdateInfo
+    | undefined;
   const [manualProgress, setManualProgress] = useState<
     EasUpdateProgress | 'restarting' | null
   >(null);
   const [hasDownloadedUpdate, setHasDownloadedUpdate] = useState(false);
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const {
+    currentlyRunning,
     downloadProgress,
     isChecking,
     isDownloading,
@@ -40,6 +39,9 @@ function CheckUpdate(): React.ReactNode {
     isUpdateAvailable,
     isUpdatePending,
   } = Updates.useUpdates();
+
+  const currentUpdateId = Updates.updateId ?? currentlyRunning?.updateId;
+  const shortUpdateId = currentUpdateId ? currentUpdateId.slice(-8) : null;
 
   const canRestart = isUpdatePending || hasDownloadedUpdate;
   const isBusy =
@@ -157,7 +159,14 @@ function CheckUpdate(): React.ReactNode {
               热更新版本 {updateInfo?.otaVersion ?? Updates.runtimeVersion}
             </TypoText>
             <TypoText level="body">应用版本 {version}</TypoText>
-            <TypoText level="body">{updateInfo?.updateTime ?? ''}</TypoText>
+            {updateInfo?.updateTime ? (
+              <TypoText level="body">{updateInfo.updateTime}</TypoText>
+            ) : null}
+            {shortUpdateId ? (
+              <TypoText level="body" style={styles.updateIdText}>
+                Update ID: {shortUpdateId}
+              </TypoText>
+            ) : null}
           </View>
           <View style={styles.divider} />
           <View style={styles.sectionBlock}>
@@ -225,6 +234,12 @@ const styles = StyleSheet.create({
   },
   versionTitle: {
     marginBottom: 2,
+  },
+  updateIdText: {
+    fontSize: 12,
+    lineHeight: 16,
+    opacity: 0.6,
+    marginBottom: 4,
   },
   divider: {
     height: 1,

@@ -3,19 +3,17 @@ import { FC, useEffect, useState } from 'react';
 import {
   Image,
   ImageSourcePropType,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 
+import SuccessIcon from '@/assets/images/success.png';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import { ModalBack } from '@/components/modal';
 import { ToastProps } from '@/components/toast/type';
-
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
-
-import SuccessIcon from '@/assets/images/success.png';
 import { commonColors, commonStyles } from '@/styles/common';
 
 const DURATION = 400;
@@ -39,31 +37,47 @@ const Toast: FC<ToastProps> & { show: (_props: ToastProps) => void } = ({
   };
   useEffect(() => {
     setVisible(initVisible);
-    // FIX_ME: 与 Modal 同样
-    // 没有动画结束监听函数
-    // 目前是定时删除
+    if (!initVisible) return;
+    let backTimer: ReturnType<typeof setTimeout> | undefined;
     const animTimer = setTimeout(() => {
       setVisible(false);
-      const backTimer = setTimeout(() => {
-        clearTimeout(animTimer);
-        clearTimeout(backTimer);
-        Promise.resolve(currentKey && deleteChildren(currentKey));
+      backTimer = setTimeout(() => {
+        if (currentKey !== undefined) {
+          deleteChildren(currentKey);
+        }
       }, DURATION * 0.8);
     }, duration);
-  }, [initVisible]);
+    return () => {
+      clearTimeout(animTimer);
+      if (backTimer) clearTimeout(backTimer);
+    };
+  }, [initVisible, currentKey, duration, deleteChildren]);
+  useEffect(() => {
+    if (!visible) {
+      const timer = setTimeout(() => {
+        if (currentKey !== undefined) {
+          deleteChildren(currentKey);
+        }
+      }, DURATION * 0.8);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, currentKey, deleteChildren]);
   return (
     <>
       <ModalBack visible={visible} style={{ zIndex: currentKey }}>
-        <View style={[styles.modalOverlay, { zIndex: currentKey }]}>
-          <TouchableOpacity
-            activeOpacity={1}
-            style={styles.modalBackground}
+        <View
+          pointerEvents={visible ? 'auto' : 'none'}
+          style={[styles.modalOverlay, { zIndex: currentKey }]}
+        >
+          <Pressable
+            style={[StyleSheet.absoluteFill, styles.modalBackground]}
             onPress={handleClose}
-          ></TouchableOpacity>
+          />
           <AnimatedScale
             duration={DURATION}
             outputRange={[0.2, 1]}
             trigger={visible}
+            onStartShouldSetResponder={() => true}
             style={[
               styles.toastContent,
               currentVisualScheme?.modal_background_style,
@@ -110,17 +124,19 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   modalBackground: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
   },
   toastContent: {
     borderRadius: 10,
     margin: 20,
     width: 220,
-    // height: 180,
     marginBottom: 10,
     padding: 30,
     shadowColor: '#000',

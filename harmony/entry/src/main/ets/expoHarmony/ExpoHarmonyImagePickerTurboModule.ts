@@ -55,12 +55,19 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return {};
   }
 
-  async getMediaLibraryPermissionStatus(_writeOnly?: boolean): Promise<PermissionResponse> {
+  async getMediaLibraryPermissionStatus(
+    _writeOnly?: boolean
+  ): Promise<PermissionResponse> {
     return this.getPermissionResponse('ohos.permission.READ_IMAGEVIDEO', true);
   }
 
-  async requestMediaLibraryPermission(_writeOnly?: boolean): Promise<PermissionResponse> {
-    return this.requestPermissionResponse('ohos.permission.READ_IMAGEVIDEO', true);
+  async requestMediaLibraryPermission(
+    _writeOnly?: boolean
+  ): Promise<PermissionResponse> {
+    return this.requestPermissionResponse(
+      'ohos.permission.READ_IMAGEVIDEO',
+      true
+    );
   }
 
   async getCameraPermissionStatus(): Promise<PermissionResponse> {
@@ -71,11 +78,15 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return this.requestPermissionResponse('ohos.permission.CAMERA', false);
   }
 
-  async launchImageLibrary(options?: LaunchImageLibraryOptions): Promise<ImagePickerResult> {
+  async launchImageLibrary(
+    options?: LaunchImageLibraryOptions
+  ): Promise<ImagePickerResult> {
     await this.ensurePermissionGranted('ohos.permission.READ_IMAGEVIDEO', true);
 
     const photoPicker = new photoAccessHelper.PhotoViewPicker();
-    const selection = await photoPicker.select(this.createPhotoSelectOptions(options));
+    const selection = await photoPicker.select(
+      this.createPhotoSelectOptions(options)
+    );
     let selectedUris = this.normalizeSelectedUris(selection?.photoUris);
 
     if (selectedUris.length === 0) {
@@ -89,8 +100,12 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     const authorizedUris = await this.requestAuthorizedUris(selectedUris);
     const assets = await Promise.all(
       authorizedUris.map((uri, index) =>
-        this.createImagePickerAsset(uri, selectedUris[index] ?? uri, this.inferAssetTypeFromMediaTypes(options?.mediaTypes)),
-      ),
+        this.createImagePickerAsset(
+          uri,
+          selectedUris[index] ?? uri,
+          this.inferAssetTypeFromMediaTypes(options?.mediaTypes)
+        )
+      )
     );
 
     const result = {
@@ -101,9 +116,13 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return result;
   }
 
-  async launchCamera(options?: LaunchCameraOptions): Promise<ImagePickerResult> {
+  async launchCamera(
+    options?: LaunchCameraOptions
+  ): Promise<ImagePickerResult> {
     const normalizedMediaTypes = this.normalizeMediaTypes(options?.mediaTypes);
-    const requestedAssetType = this.inferAssetTypeFromMediaTypes(options?.mediaTypes);
+    const requestedAssetType = this.inferAssetTypeFromMediaTypes(
+      options?.mediaTypes
+    );
 
     await this.ensurePermissionGranted('ohos.permission.CAMERA', false);
     await this.ensurePermissionGranted('ohos.permission.READ_IMAGEVIDEO', true);
@@ -119,7 +138,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     const capturedResult = await cameraPicker.pick(
       this.ctx.uiAbilityContext,
       this.createCameraPickerMediaTypes(normalizedMediaTypes),
-      profile,
+      profile
     );
 
     if (
@@ -136,7 +155,13 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
     const result = {
       canceled: false,
-      assets: [await this.createImagePickerAsset(assetUri, selectedUris[0], requestedAssetType ?? 'image')],
+      assets: [
+        await this.createImagePickerAsset(
+          assetUri,
+          selectedUris[0],
+          requestedAssetType ?? 'image'
+        ),
+      ],
     };
     this.pendingResult = result;
     return result;
@@ -150,15 +175,21 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private async ensurePermissionGranted(
     permissionName: Permissions,
-    isMediaLibraryPermission: boolean,
+    isMediaLibraryPermission: boolean
   ): Promise<void> {
-    const permissionResponse = await this.getPermissionResponse(permissionName, isMediaLibraryPermission);
+    const permissionResponse = await this.getPermissionResponse(
+      permissionName,
+      isMediaLibraryPermission
+    );
 
     if (permissionResponse.granted) {
       return;
     }
 
-    const requestedResponse = await this.requestPermissionResponse(permissionName, isMediaLibraryPermission);
+    const requestedResponse = await this.requestPermissionResponse(
+      permissionName,
+      isMediaLibraryPermission
+    );
 
     if (!requestedResponse.granted) {
       throw new Error(`Permission denied for ${permissionName}.`);
@@ -167,47 +198,59 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private async getPermissionResponse(
     permissionName: Permissions,
-    isMediaLibraryPermission: boolean,
+    isMediaLibraryPermission: boolean
   ): Promise<PermissionResponse> {
     return this.permissionResponseFromStatus(
       this.resolvePermissionStatus(permissionName),
-      isMediaLibraryPermission,
+      isMediaLibraryPermission
     );
   }
 
   private async requestPermissionResponse(
     permissionName: Permissions,
-    isMediaLibraryPermission: boolean,
+    isMediaLibraryPermission: boolean
   ): Promise<PermissionResponse> {
     const requestResult = await this.atManager.requestPermissionsFromUser(
       this.ctx.uiAbilityContext,
-      [permissionName],
+      [permissionName]
     );
     const authResult = Array.isArray(requestResult.authResults)
-      ? Number(requestResult.authResults[0] ?? abilityAccessCtrl.GrantStatus.PERMISSION_DENIED)
+      ? Number(
+          requestResult.authResults[0] ??
+            abilityAccessCtrl.GrantStatus.PERMISSION_DENIED
+        )
       : abilityAccessCtrl.GrantStatus.PERMISSION_DENIED;
 
     if (authResult === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
       return this.permissionResponseFromStatus(
         abilityAccessCtrl.PermissionStatus.GRANTED,
-        isMediaLibraryPermission,
+        isMediaLibraryPermission
       );
     }
 
     return this.getPermissionResponse(permissionName, isMediaLibraryPermission);
   }
 
-  private resolvePermissionStatus(permissionName: Permissions): abilityAccessCtrl.PermissionStatus {
-    const atManagerWithSelfStatus = this.atManager as abilityAccessCtrl.AtManager & {
-      getSelfPermissionStatus?: (permission: Permissions) => abilityAccessCtrl.PermissionStatus;
+  private resolvePermissionStatus(
+    permissionName: Permissions
+  ): abilityAccessCtrl.PermissionStatus {
+    const atManagerWithSelfStatus = this
+      .atManager as abilityAccessCtrl.AtManager & {
+      getSelfPermissionStatus?: (
+        permission: Permissions
+      ) => abilityAccessCtrl.PermissionStatus;
     };
 
     if (typeof atManagerWithSelfStatus.getSelfPermissionStatus === 'function') {
       return atManagerWithSelfStatus.getSelfPermissionStatus(permissionName);
     }
 
-    const accessTokenId = this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId;
-    const grantStatus = this.atManager.checkAccessTokenSync(accessTokenId, permissionName);
+    const accessTokenId =
+      this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId;
+    const grantStatus = this.atManager.checkAccessTokenSync(
+      accessTokenId,
+      permissionName
+    );
 
     return grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
       ? abilityAccessCtrl.PermissionStatus.GRANTED
@@ -216,9 +259,10 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private permissionResponseFromStatus(
     permissionStatus: abilityAccessCtrl.PermissionStatus,
-    isMediaLibraryPermission: boolean,
+    isMediaLibraryPermission: boolean
   ): PermissionResponse {
-    const granted = permissionStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
+    const granted =
+      permissionStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
     const denied =
       permissionStatus === abilityAccessCtrl.PermissionStatus.DENIED ||
       permissionStatus === abilityAccessCtrl.PermissionStatus.RESTRICTED ||
@@ -239,7 +283,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private createPhotoSelectOptions(
     options?: LaunchImageLibraryOptions,
-    isPhotoTakingSupported: boolean = false,
+    isPhotoTakingSupported: boolean = false
   ): photoAccessHelper.PhotoSelectOptions {
     const selectOptions = new photoAccessHelper.PhotoSelectOptions();
     selectOptions.MIMEType = this.resolvePhotoViewMimeType(options?.mediaTypes);
@@ -252,10 +296,14 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return selectOptions;
   }
 
-  private async launchLegacyPhotoPicker(options?: LaunchImageLibraryOptions): Promise<string[]> {
+  private async launchLegacyPhotoPicker(
+    options?: LaunchImageLibraryOptions
+  ): Promise<string[]> {
     const legacyPicker = new picker.PhotoViewPicker(this.ctx.uiAbilityContext);
     const legacyOptions = new picker.PhotoSelectOptions();
-    legacyOptions.MIMEType = this.resolveLegacyPhotoViewMimeType(options?.mediaTypes);
+    legacyOptions.MIMEType = this.resolveLegacyPhotoViewMimeType(
+      options?.mediaTypes
+    );
     legacyOptions.maxSelectNumber =
       options?.allowsMultipleSelection === true
         ? this.resolveSelectionLimit(options?.selectionLimit)
@@ -266,7 +314,11 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
   }
 
   private resolveSelectionLimit(selectionLimit?: number): number {
-    if (typeof selectionLimit === 'number' && Number.isFinite(selectionLimit) && selectionLimit > 0) {
+    if (
+      typeof selectionLimit === 'number' &&
+      Number.isFinite(selectionLimit) &&
+      selectionLimit > 0
+    ) {
       return Math.floor(selectionLimit);
     }
 
@@ -274,7 +326,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
   }
 
   private resolvePhotoViewMimeType(
-    rawMediaTypes?: string | string[],
+    rawMediaTypes?: string | string[]
   ): photoAccessHelper.PhotoViewMIMETypes {
     const normalized = this.normalizeMediaTypes(rawMediaTypes);
 
@@ -290,7 +342,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
   }
 
   private resolveLegacyPhotoViewMimeType(
-    rawMediaTypes?: string | string[],
+    rawMediaTypes?: string | string[]
   ): picker.PhotoViewMIMETypes {
     const normalized = this.normalizeMediaTypes(rawMediaTypes);
 
@@ -305,20 +357,31 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return picker.PhotoViewMIMETypes.IMAGE_TYPE;
   }
 
-  private createCameraPickerMediaTypes(normalizedMediaTypes: string[]): cameraPicker.PickerMediaType[] {
-    if (normalizedMediaTypes.includes('video') && !normalizedMediaTypes.includes('image')) {
+  private createCameraPickerMediaTypes(
+    normalizedMediaTypes: string[]
+  ): cameraPicker.PickerMediaType[] {
+    if (
+      normalizedMediaTypes.includes('video') &&
+      !normalizedMediaTypes.includes('image')
+    ) {
       return [cameraPicker.PickerMediaType.VIDEO];
     }
 
-    if (normalizedMediaTypes.includes('video') && normalizedMediaTypes.includes('image')) {
-      return [cameraPicker.PickerMediaType.PHOTO, cameraPicker.PickerMediaType.VIDEO];
+    if (
+      normalizedMediaTypes.includes('video') &&
+      normalizedMediaTypes.includes('image')
+    ) {
+      return [
+        cameraPicker.PickerMediaType.PHOTO,
+        cameraPicker.PickerMediaType.VIDEO,
+      ];
     }
 
     return [cameraPicker.PickerMediaType.PHOTO];
   }
 
   private inferAssetTypeFromMediaTypes(
-    rawMediaTypes?: string | string[],
+    rawMediaTypes?: string | string[]
   ): 'image' | 'video' | null {
     const normalized = this.normalizeMediaTypes(rawMediaTypes);
 
@@ -338,9 +401,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       return Array.from(
         new Set(
           rawMediaTypes
-            .map((value) => this.normalizeMediaTypeValue(value))
-            .filter((value): value is string => value !== null),
-        ),
+            .map(value => this.normalizeMediaTypeValue(value))
+            .filter((value): value is string => value !== null)
+        )
       );
     }
 
@@ -365,27 +428,39 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       case 'video':
         return 'video';
       default:
-        return rawValue.includes('video') ? 'video' : rawValue.includes('image') ? 'image' : null;
+        return rawValue.includes('video')
+          ? 'video'
+          : rawValue.includes('image')
+            ? 'image'
+            : null;
     }
   }
 
-  private normalizeSelectedUris(photoUris: Array<string> | undefined | null): string[] {
+  private normalizeSelectedUris(
+    photoUris: Array<string> | undefined | null
+  ): string[] {
     if (!Array.isArray(photoUris)) {
       return [];
     }
 
     return photoUris.filter(
-      (value): value is string => typeof value === 'string' && value.length > 0,
+      (value): value is string => typeof value === 'string' && value.length > 0
     );
   }
 
   private async requestAuthorizedUris(photoUris: string[]): Promise<string[]> {
-    const helper = photoAccessHelper.getPhotoAccessHelper(this.ctx.uiAbilityContext);
+    const helper = photoAccessHelper.getPhotoAccessHelper(
+      this.ctx.uiAbilityContext
+    );
 
     try {
-      const authorizedUris = await helper.requestPhotoUrisReadPermission(photoUris);
-      const normalizedAuthorizedUris = this.normalizeSelectedUris(authorizedUris);
-      return normalizedAuthorizedUris.length > 0 ? normalizedAuthorizedUris : photoUris;
+      const authorizedUris =
+        await helper.requestPhotoUrisReadPermission(photoUris);
+      const normalizedAuthorizedUris =
+        this.normalizeSelectedUris(authorizedUris);
+      return normalizedAuthorizedUris.length > 0
+        ? normalizedAuthorizedUris
+        : photoUris;
     } catch (_error) {
       return photoUris;
     }
@@ -394,13 +469,16 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
   private async createImagePickerAsset(
     assetUri: string,
     originalUri: string,
-    fallbackType: 'image' | 'video' | null,
+    fallbackType: 'image' | 'video' | null
   ): Promise<ImagePickerAsset> {
     const inferredType = this.inferAssetTypeFromUri(assetUri, fallbackType);
     const imageSize =
-      inferredType === 'image' ? await this.getImageSize(assetUri) : { width: 0, height: 0 };
+      inferredType === 'image'
+        ? await this.getImageSize(assetUri)
+        : { width: 0, height: 0 };
     const fileSize = await this.getFileSize(assetUri);
-    const fileName = this.extractFileName(assetUri) ?? this.extractFileName(originalUri);
+    const fileName =
+      this.extractFileName(assetUri) ?? this.extractFileName(originalUri);
 
     return {
       uri: assetUri,
@@ -411,7 +489,8 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       fileName,
       fileSize,
       mimeType: this.inferMimeType(assetUri, inferredType),
-      duration: inferredType === 'video' ? await this.getVideoDuration(assetUri) : null,
+      duration:
+        inferredType === 'video' ? await this.getVideoDuration(assetUri) : null,
       exif: null,
       base64: null,
     };
@@ -419,7 +498,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private inferAssetTypeFromUri(
     assetUri: string,
-    fallbackType: 'image' | 'video' | null,
+    fallbackType: 'image' | 'video' | null
   ): 'image' | 'video' | null {
     const normalizedUri = assetUri.toLowerCase();
 
@@ -436,7 +515,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
   private inferMimeType(
     assetUri: string,
-    assetType: 'image' | 'video' | null,
+    assetType: 'image' | 'video' | null
   ): string | null {
     const normalizedUri = assetUri.toLowerCase();
 
@@ -471,7 +550,11 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       return 'video/webm';
     }
 
-    return assetType === 'video' ? 'video/*' : assetType === 'image' ? 'image/*' : null;
+    return assetType === 'video'
+      ? 'video/*'
+      : assetType === 'image'
+        ? 'image/*'
+        : null;
   }
 
   private extractFileName(assetUri: string): string | null {
@@ -482,7 +565,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     const sanitizedUri = assetUri.split('?')[0]?.split('#')[0] ?? assetUri;
     const lastSlashIndex = sanitizedUri.lastIndexOf('/');
     const rawFileName =
-      lastSlashIndex >= 0 ? sanitizedUri.slice(lastSlashIndex + 1) : sanitizedUri;
+      lastSlashIndex >= 0
+        ? sanitizedUri.slice(lastSlashIndex + 1)
+        : sanitizedUri;
 
     if (rawFileName.length === 0) {
       return null;
@@ -495,7 +580,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     }
   }
 
-  private async getImageSize(assetUri: string): Promise<{ width: number; height: number }> {
+  private async getImageSize(
+    assetUri: string
+  ): Promise<{ width: number; height: number }> {
     let imageSource: image.ImageSource | null = null;
 
     try {

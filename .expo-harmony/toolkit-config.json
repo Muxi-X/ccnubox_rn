@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-14T11:24:46.025Z",
-  "toolkitVersion": "1.8.3",
+  "generatedAt": "2026-08-23T12:35:01.352Z",
+  "toolkitVersion": "2.0.0-next.0",
   "templateVersion": "rnoh-0.82.29",
   "matrixId": "expo55-rnoh082-ui-stack",
   "rnohVersion": "0.82.29",
@@ -23,10 +23,82 @@
   },
   "capabilities": [
     {
+      "id": "async-storage",
+      "packageName": "@react-native-async-storage/async-storage",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "react-native-skia",
+      "packageName": "@shopify/react-native-skia",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "expo-clipboard",
+      "packageName": "expo-clipboard",
+      "supportTier": "preview",
+      "runtimeMode": "shim",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
       "id": "expo-file-system",
       "packageName": "expo-file-system",
       "supportTier": "preview",
       "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": true,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "manual-doc",
+        "release": "none"
+      }
+    },
+    {
+      "id": "expo-haptics",
+      "packageName": "expo-haptics",
+      "supportTier": "preview",
+      "runtimeMode": "shim",
       "evidence": {
         "bundle": true,
         "debugBuild": true,
@@ -48,6 +120,24 @@
       "evidence": {
         "bundle": true,
         "debugBuild": true,
+        "device": true,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "manual-doc",
+        "release": "none"
+      }
+    },
+    {
+      "id": "expo-media-library",
+      "packageName": "expo-media-library",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
         "device": false,
         "release": false
       },
@@ -64,14 +154,140 @@
       "supportTier": "experimental",
       "runtimeMode": "shim",
       "evidence": {
-        "bundle": false,
-        "debugBuild": false,
+        "bundle": true,
+        "debugBuild": true,
         "device": false,
         "release": false
       },
       "evidenceSource": {
-        "bundle": "none",
-        "debugBuild": "none",
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "expo-secure-store",
+      "packageName": "expo-secure-store",
+      "supportTier": "preview",
+      "runtimeMode": "shim",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "jpush-react-native",
+      "packageName": "jpush-react-native",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "lottie-react-native",
+      "packageName": "lottie-react-native",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "react-native-gesture-handler",
+      "packageName": "react-native-gesture-handler",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "react-native-safe-area-context",
+      "packageName": "react-native-safe-area-context",
+      "supportTier": "experimental",
+      "runtimeMode": "shim",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "react-native-screens",
+      "packageName": "react-native-screens",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
+        "device": "none",
+        "release": "none"
+      }
+    },
+    {
+      "id": "react-native-webview",
+      "packageName": "react-native-webview",
+      "supportTier": "experimental",
+      "runtimeMode": "adapter",
+      "evidence": {
+        "bundle": true,
+        "debugBuild": true,
+        "device": false,
+        "release": false
+      },
+      "evidenceSource": {
+        "bundle": "automated",
+        "debugBuild": "automated",
         "device": "none",
         "release": "none"
       }
@@ -80,20 +296,23 @@
   "requestedHarmonyPermissions": [
     "ohos.permission.CAMERA",
     "ohos.permission.MICROPHONE",
-    "ohos.permission.READ_IMAGEVIDEO"
+    "ohos.permission.NOTIFICATION_CONTROLLER",
+    "ohos.permission.READ_IMAGEVIDEO",
+    "ohos.permission.WRITE_IMAGEVIDEO"
   ],
   "nextActions": [
+    "Align Expo SDK, React Native, RNOH, and validated adapter versions to expo55-rnoh082-ui-stack, then rerun `expo-harmony doctor --project-root . --strict`.",
     "Use `expo-harmony doctor --project-root . --target-tier preview` to measure the current preview-capability baseline while keeping `latest` pinned to verified-only releases.",
     "Keep combined sample smoke for regression coverage, but track bundle/debug/device/release evidence separately for each preview capability before promotion.",
-    "After every native-capability change, rerun `expo-harmony sync-template --project-root .`, `expo-harmony bundle --project-root .`, and `expo-harmony build-hap --project-root . --mode debug` to keep the managed sidecar and preview evidence aligned.",
-    "Keep `react-native-gesture-handler` out of the verified lane until its Harmony adapter path has stable doctor, sample, and build coverage.",
+    "Keep `react-native-gesture-handler` on the formal experimental slice until its Harmony adapter path closes device and release evidence.",
     "Inspect unknown native-looking dependencies and either replace them, gate them behind preview work, or onboard them explicitly before promising Harmony portability.",
-    "Unknown JavaScript-only packages still sit outside the public matrix; verify bundling manually, but prioritize native gaps first."
+    "Unknown JavaScript-only packages still sit outside the public matrix; verify bundling manually, but prioritize native gaps first.",
+    "After every native-capability change, rerun `expo-harmony sync-template --project-root .`, `expo-harmony bundle --project-root .`, and `expo-harmony build-hap --project-root . --mode debug` to keep the managed sidecar and preview evidence aligned."
   ],
   "project": {
     "name": "华师匣子",
     "slug": "ccnubox",
-    "version": "3.1.6",
+    "version": "3.1.8",
     "hvigorPluginFilename": "rnoh-hvigor-plugin-0.82.29.tgz"
   }
 }

@@ -1,10 +1,9 @@
 import { ExtensionStorage } from '@bacons/apple-targets';
 import { Platform } from 'react-native';
 
+import type { courseType } from '@/modules/courseTable/components/courseTable/type';
 import useCourseStore from '@/store/course';
 import useTimeStore from '@/store/time';
-
-import type { courseType } from '@/modules/courseTable/components/courseTable/type';
 import {
   buildAndroidWidgetCourseData,
   serializeCoursesForAppleWidget,

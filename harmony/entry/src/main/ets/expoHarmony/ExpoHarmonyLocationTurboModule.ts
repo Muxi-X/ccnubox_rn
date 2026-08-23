@@ -1,6 +1,6 @@
+import { sensor } from '@kit.SensorServiceKit';
 import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
 import geoLocationManager from '@ohos.geoLocationManager';
-import { sensor } from '@kit.SensorServiceKit';
 import { AnyThreadTurboModule } from '@rnoh/react-native-openharmony/ts';
 
 type PermissionResponse = {
@@ -82,7 +82,9 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
   }
 
   async getBackgroundPermissionStatus(): Promise<PermissionResponse> {
-    const backgroundStatus = this.resolvePermissionStatus('ohos.permission.LOCATION_IN_BACKGROUND');
+    const backgroundStatus = this.resolvePermissionStatus(
+      'ohos.permission.LOCATION_IN_BACKGROUND'
+    );
     return this.buildBackgroundPermissionResponse(backgroundStatus);
   }
 
@@ -103,25 +105,32 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     return {
       locationServicesEnabled,
       backgroundModeEnabled:
-        this.resolvePermissionStatus('ohos.permission.LOCATION_IN_BACKGROUND') ===
-        abilityAccessCtrl.PermissionStatus.GRANTED,
+        this.resolvePermissionStatus(
+          'ohos.permission.LOCATION_IN_BACKGROUND'
+        ) === abilityAccessCtrl.PermissionStatus.GRANTED,
       gpsAvailable: locationServicesEnabled,
       networkAvailable: locationServicesEnabled,
       passiveAvailable: locationServicesEnabled,
     };
   }
 
-  async getCurrentPosition(options?: { accuracy?: number }): Promise<ExpoLocationObject> {
+  async getCurrentPosition(options?: {
+    accuracy?: number;
+  }): Promise<ExpoLocationObject> {
     const location = await geoLocationManager.getCurrentLocation(
-      this.createCurrentLocationRequest(options?.accuracy),
+      this.createCurrentLocationRequest(options?.accuracy)
     );
     return this.normalizeLocation(location);
   }
 
-  async getLastKnownPosition(_options?: Record<string, unknown>): Promise<ExpoLocationObject | null> {
+  async getLastKnownPosition(
+    _options?: Record<string, unknown>
+  ): Promise<ExpoLocationObject | null> {
     try {
       const location = geoLocationManager.getLastLocation();
-      return this.hasCoordinates(location) ? this.normalizeLocation(location) : null;
+      return this.hasCoordinates(location)
+        ? this.normalizeLocation(location)
+        : null;
     } catch (_error) {
       return null;
     }
@@ -134,13 +143,16 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
       maxItems: 5,
     });
 
-    return addresses.map((addressEntry) => ({
+    return addresses.map(addressEntry => ({
       latitude: Number(addressEntry.latitude ?? 0),
       longitude: Number(addressEntry.longitude ?? 0),
     }));
   }
 
-  async reverseGeocode(location: { latitude: number; longitude: number }): Promise<ReverseGeocodeResult[]> {
+  async reverseGeocode(location: {
+    latitude: number;
+    longitude: number;
+  }): Promise<ReverseGeocodeResult[]> {
     const addresses = await geoLocationManager.getAddressesFromLocation({
       latitude: Number(location.latitude),
       longitude: Number(location.longitude),
@@ -148,25 +160,39 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
       maxItems: 5,
     });
 
-    return addresses.map((addressEntry) => ({
+    return addresses.map(addressEntry => ({
       city: this.readAddressString(addressEntry, ['locality']),
       district: this.readAddressString(addressEntry, ['subLocality']),
-      streetNumber: this.readAddressString(addressEntry, ['subThoroughfare', 'streetNumber']),
+      streetNumber: this.readAddressString(addressEntry, [
+        'subThoroughfare',
+        'streetNumber',
+      ]),
       street: this.readAddressString(addressEntry, ['thoroughfare', 'street']),
-      region: this.readAddressString(addressEntry, ['administrativeArea', 'region']),
-      subregion: this.readAddressString(addressEntry, ['subAdministrativeArea', 'subregion']),
+      region: this.readAddressString(addressEntry, [
+        'administrativeArea',
+        'region',
+      ]),
+      subregion: this.readAddressString(addressEntry, [
+        'subAdministrativeArea',
+        'subregion',
+      ]),
       country: this.readAddressString(addressEntry, ['countryName', 'country']),
       postalCode: this.readAddressString(addressEntry, ['postalCode']),
       name: this.readAddressString(addressEntry, ['placeName', 'name']),
-      isoCountryCode: this.readAddressString(addressEntry, ['countryCode', 'isoCountryCode']),
+      isoCountryCode: this.readAddressString(addressEntry, [
+        'countryCode',
+        'isoCountryCode',
+      ]),
       timezone: null,
-      formattedAddress: this.readAddressString(addressEntry, ['addressUrl']) ?? this.joinAddressDescriptions(addressEntry),
+      formattedAddress:
+        this.readAddressString(addressEntry, ['addressUrl']) ??
+        this.joinAddressDescriptions(addressEntry),
     }));
   }
 
   async startWatchPosition(
     options?: { accuracy?: number },
-    _listenerConfig?: Record<string, unknown>,
+    _listenerConfig?: Record<string, unknown>
   ): Promise<{ watchId: number; initialLocation: ExpoLocationObject | null }> {
     const watchId = this.nextWatchId++;
     return {
@@ -184,7 +210,7 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
   }
 
   async startWatchHeading(
-    _listenerConfig?: Record<string, unknown>,
+    _listenerConfig?: Record<string, unknown>
   ): Promise<{ watchId: number; initialHeading: HeadingObject }> {
     const watchId = this.nextWatchId++;
     return {
@@ -198,17 +224,22 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
   }
 
   private async getLocationPermissionResponse(): Promise<PermissionResponse> {
-    const approximateStatus = this.resolvePermissionStatus('ohos.permission.APPROXIMATELY_LOCATION');
-    const preciseStatus = this.resolvePermissionStatus('ohos.permission.LOCATION');
+    const approximateStatus = this.resolvePermissionStatus(
+      'ohos.permission.APPROXIMATELY_LOCATION'
+    );
+    const preciseStatus = this.resolvePermissionStatus(
+      'ohos.permission.LOCATION'
+    );
 
     return this.buildPermissionResponse(approximateStatus, preciseStatus);
   }
 
   private async buildBackgroundPermissionResponse(
-    backgroundStatus: abilityAccessCtrl.PermissionStatus,
+    backgroundStatus: abilityAccessCtrl.PermissionStatus
   ): Promise<PermissionResponse> {
     const foregroundPermission = await this.getLocationPermissionResponse();
-    const granted = backgroundStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
+    const granted =
+      backgroundStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
     const denied =
       backgroundStatus === abilityAccessCtrl.PermissionStatus.DENIED ||
       backgroundStatus === abilityAccessCtrl.PermissionStatus.RESTRICTED ||
@@ -231,17 +262,26 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     return this.getLocationPermissionResponse();
   }
 
-  private resolvePermissionStatus(permissionName: Permissions): abilityAccessCtrl.PermissionStatus {
-    const atManagerWithSelfStatus = this.atManager as abilityAccessCtrl.AtManager & {
-      getSelfPermissionStatus?: (permission: Permissions) => abilityAccessCtrl.PermissionStatus;
+  private resolvePermissionStatus(
+    permissionName: Permissions
+  ): abilityAccessCtrl.PermissionStatus {
+    const atManagerWithSelfStatus = this
+      .atManager as abilityAccessCtrl.AtManager & {
+      getSelfPermissionStatus?: (
+        permission: Permissions
+      ) => abilityAccessCtrl.PermissionStatus;
     };
 
     if (typeof atManagerWithSelfStatus.getSelfPermissionStatus === 'function') {
       return atManagerWithSelfStatus.getSelfPermissionStatus(permissionName);
     }
 
-    const accessTokenId = this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId;
-    const grantStatus = this.atManager.checkAccessTokenSync(accessTokenId, permissionName);
+    const accessTokenId =
+      this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId;
+    const grantStatus = this.atManager.checkAccessTokenSync(
+      accessTokenId,
+      permissionName
+    );
 
     return grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
       ? abilityAccessCtrl.PermissionStatus.GRANTED
@@ -250,10 +290,12 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
 
   private buildPermissionResponse(
     approximateStatus: abilityAccessCtrl.PermissionStatus,
-    preciseStatus: abilityAccessCtrl.PermissionStatus,
+    preciseStatus: abilityAccessCtrl.PermissionStatus
   ): PermissionResponse {
-    const coarseGranted = approximateStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
-    const fineGranted = preciseStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
+    const coarseGranted =
+      approximateStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
+    const fineGranted =
+      preciseStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
     const granted = coarseGranted || fineGranted;
     const denied =
       (approximateStatus === abilityAccessCtrl.PermissionStatus.DENIED ||
@@ -274,7 +316,9 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     };
   }
 
-  private createCurrentLocationRequest(accuracy?: number): geoLocationManager.CurrentLocationRequest {
+  private createCurrentLocationRequest(
+    accuracy?: number
+  ): geoLocationManager.CurrentLocationRequest {
     if (typeof accuracy === 'number' && accuracy >= 4) {
       return {
         priority: geoLocationManager.LocationRequestPriority.ACCURACY,
@@ -292,7 +336,9 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     };
   }
 
-  private hasCoordinates(location: geoLocationManager.Location | null | undefined): location is geoLocationManager.Location {
+  private hasCoordinates(
+    location: geoLocationManager.Location | null | undefined
+  ): location is geoLocationManager.Location {
     return (
       !!location &&
       typeof location.latitude === 'number' &&
@@ -300,15 +346,20 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     );
   }
 
-  private normalizeLocation(location: geoLocationManager.Location): ExpoLocationObject {
+  private normalizeLocation(
+    location: geoLocationManager.Location
+  ): ExpoLocationObject {
     return {
       coords: {
         latitude: Number(location.latitude),
         longitude: Number(location.longitude),
-        altitude: typeof location.altitude === 'number' ? location.altitude : null,
-        accuracy: typeof location.accuracy === 'number' ? location.accuracy : null,
+        altitude:
+          typeof location.altitude === 'number' ? location.altitude : null,
+        accuracy:
+          typeof location.accuracy === 'number' ? location.accuracy : null,
         altitudeAccuracy: null,
-        heading: typeof location.direction === 'number' ? location.direction : null,
+        heading:
+          typeof location.direction === 'number' ? location.direction : null,
         speed: typeof location.speed === 'number' ? location.speed : null,
       },
       timestamp: Number(location.timeStamp ?? Date.now()),
@@ -317,7 +368,7 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
   }
 
   private async readHeadingSnapshot(): Promise<HeadingObject> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let settled = false;
       const fallbackHeading = {
         magHeading: 0,
@@ -336,7 +387,10 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
 
       try {
         const sensorApi = sensor as unknown as {
-          once?: (sensorId: number, callback: (data: Record<string, number>) => void) => void;
+          once?: (
+            sensorId: number,
+            callback: (data: Record<string, number>) => void
+          ) => void;
           SensorId?: {
             ROTATION_VECTOR?: number;
           };
@@ -344,7 +398,10 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
         const onceFn = sensorApi.once;
         const rotationVectorId = sensorApi.SensorId?.ROTATION_VECTOR;
 
-        if (typeof onceFn !== 'function' || typeof rotationVectorId !== 'number') {
+        if (
+          typeof onceFn !== 'function' ||
+          typeof rotationVectorId !== 'number'
+        ) {
           resolveOnce(fallbackHeading);
           return;
         }
@@ -356,7 +413,8 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
           const w = Number(data?.w ?? 1);
           const sinyCosp = 2 * (w * z + x * y);
           const cosyCosp = 1 - 2 * (y * y + z * z);
-          const magHeading = (Math.atan2(sinyCosp, cosyCosp) * 180 / Math.PI + 360) % 360;
+          const magHeading =
+            ((Math.atan2(sinyCosp, cosyCosp) * 180) / Math.PI + 360) % 360;
           resolveOnce({
             magHeading,
             trueHeading: magHeading,
@@ -371,7 +429,7 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
 
   private readAddressString(
     addressEntry: geoLocationManager.GeoAddress,
-    candidateKeys: string[],
+    candidateKeys: string[]
   ): string | null {
     const addressRecord = addressEntry as Record<string, unknown>;
 
@@ -386,7 +444,9 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     return null;
   }
 
-  private joinAddressDescriptions(addressEntry: geoLocationManager.GeoAddress): string | null {
+  private joinAddressDescriptions(
+    addressEntry: geoLocationManager.GeoAddress
+  ): string | null {
     const descriptions = (addressEntry as Record<string, unknown>).descriptions;
 
     if (!Array.isArray(descriptions) || descriptions.length === 0) {
@@ -394,7 +454,7 @@ export class ExpoHarmonyLocationTurboModule extends AnyThreadTurboModule {
     }
 
     const normalized = descriptions.filter(
-      (value): value is string => typeof value === 'string' && value.length > 0,
+      (value): value is string => typeof value === 'string' && value.length > 0
     );
 
     return normalized.length > 0 ? normalized.join(', ') : null;

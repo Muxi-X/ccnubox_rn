@@ -1,22 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 
-import Modal from '@/components/modal';
-
-import usePushSubscriptionStore from '@/store/pushSubscription';
-
 import aboutPng from '@/assets/images/about.png';
 import checkUpdatePng from '@/assets/images/check-update.png';
 import exitPng from '@/assets/images/exit.png';
 import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
+import Modal from '@/components/modal';
 import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
 import { deleteItemAsync } from '@/platform/storage';
 import { logout } from '@/request/api/auth';
 import { removeFeedToken } from '@/request/api/feeds';
-import { getPushToken } from '@/utils/pushToken';
-
+import usePushSubscriptionStore from '@/store/pushSubscription';
+import useUserStore from '@/store/user';
 import type { SettingItem } from '@/types/settingItem';
+import { getPushToken } from '@/utils/pushToken';
 
 export const SETTING_ITEMS: SettingItem[] = [
   {
@@ -75,25 +73,39 @@ export const SETTING_ITEMS: SettingItem[] = [
         confirmText: '确定',
         cancelText: '取消',
         onConfirm: async () => {
-          // 退出前移除 feed token
-          const pushToken =
-            (await getPushToken()) ||
-            usePushSubscriptionStore.getState().registeredToken;
-          if (pushToken) {
-            removeFeedToken(pushToken).catch(() => {});
+          try {
+            // 退出前移除 feed token
+            const pushToken =
+              usePushSubscriptionStore.getState().registeredToken ||
+              (await getPushToken(500));
+            if (pushToken) {
+              removeFeedToken(pushToken).catch(() => {});
+            }
+            usePushSubscriptionStore.getState().setRegisteredToken(null);
+          } catch {
+            // 忽略推送相关异常
           }
-          usePushSubscriptionStore.getState().setRegisteredToken(null);
 
-          logout()
-            .then(() => {
-              AsyncStorage.multiRemove(['courses']);
-              return Promise.all([
-                deleteItemAsync('longToken'),
-                deleteItemAsync('shortToken'),
-                clearHarmonyDebugSession(),
-              ]);
-            })
-            .finally(() => router.replace('/auth/login'));
+          try {
+            await logout();
+          } catch {
+            // 忽略网络请求异常，确保本地登出成功
+          }
+
+          try {
+            await Promise.all([
+              AsyncStorage.multiRemove(['courses']),
+              deleteItemAsync('longToken'),
+              deleteItemAsync('shortToken'),
+              clearHarmonyDebugSession(),
+            ]);
+            useUserStore.setState({ password: '' });
+          } catch {
+            // 忽略本地清理异常
+          }
+
+          Modal.clear();
+          router.replace('/auth/login');
         },
       });
     },

@@ -4,16 +4,13 @@
 import { Action } from '@ant-design/react-native/lib/tooltip';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
+import { courseTableIcons } from '@/assets/icons';
 import useVisualScheme from '@/store/visualScheme';
-
-import AddCourseIcon from '@/assets/icons/calendar/add-course.svg';
-import ScreenShotIcon from '@/assets/icons/calendar/screenshot.svg';
+import { SinglePageType } from '@/types/tabBarTypes';
 import globalEventBus from '@/utils/eventBus';
 import { percent2px } from '@/utils/percent2px';
 
 import { commonColors } from '../styles/common';
-
-import { SinglePageType } from '@/types/tabBarTypes';
 
 const TextNode: React.FC<{ text: string }> = ({ text }) => {
   const currentScheme = useVisualScheme(state => state.currentStyle);
@@ -25,6 +22,9 @@ const TextNode: React.FC<{ text: string }> = ({ text }) => {
     </View>
   );
 };
+
+const AddCourseIcon = courseTableIcons.addCourse;
+const ScreenShotIcon = courseTableIcons.screenshot;
 
 const styles = StyleSheet.create({
   tooltipImage: {

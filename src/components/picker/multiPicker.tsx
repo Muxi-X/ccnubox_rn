@@ -4,7 +4,6 @@ import { ScrollView, Text } from 'react-native';
 
 import { ModalTrigger } from '@/components/modal';
 import { DatePickerProps, PickerDataType } from '@/components/picker/types';
-
 import useVisualScheme from '@/store/visualScheme';
 
 const CheckboxItem = Checkbox.CheckboxItem;

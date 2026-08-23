@@ -10,11 +10,9 @@ import {
 } from 'react-native';
 
 import PickerView from '@/components/pickerView/index';
-
+import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
 import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
-
-import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
 import { log } from '@/utils/logger';
 
 // 区域数据

@@ -8,10 +8,9 @@ import {
   type ViewProps,
 } from 'react-native';
 
+import { TABBAR_COLOR } from '@/constants/TABBAR';
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
-
-import { TABBAR_COLOR } from '@/constants/TABBAR';
 
 import AnimatedScale from '../animatedView/AnimatedScale';
 import { TabBarIcon } from './TabBarIcon';
@@ -41,6 +40,7 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
           size={24}
           name={iconName}
           color={color}
+          focused={isFocused}
           style={styles.icon}
         />
         {unreadCount > 0 && (
@@ -52,7 +52,7 @@ const TabBarItem: FC<TabBarItemProps & ViewProps> = props => {
         )}
       </View>
     ),
-    [iconName, color, unreadCount]
+    [iconName, color, isFocused, unreadCount]
   );
 
   return (

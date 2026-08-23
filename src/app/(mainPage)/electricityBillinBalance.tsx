@@ -10,16 +10,14 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
-
-import { useElectricityStore } from '@/store/electricity';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   cancelStandard,
   getPrice,
   getStandardList,
   setStandard,
 } from '@/request/api/electricity';
+import { useElectricityStore } from '@/store/electricity';
+import useVisualScheme from '@/store/visualScheme';
 import { log } from '@/utils/logger';
 
 interface PriceData {

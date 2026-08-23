@@ -5,10 +5,8 @@ import { ScraperProps } from '@/components/scraper/types';
 import SafeWebView, {
   SafeWebViewHandle,
 } from '@/components/webview/SafeWebView';
-
-import useUserStore from '@/store/user';
-
 import { LOGIN_SCRAPER } from '@/constants/SCRAPERS';
+import useUserStore from '@/store/user';
 
 /**
  * 爬虫组件，用于爬取研究生课表、成绩

@@ -1,9 +1,8 @@
 import { router, SplashScreen } from 'expo-router';
 import * as React from 'react';
 
-import useCourse from '@/store/course';
-
 import { getItem, setItem } from '@/platform/storage';
+import useCourse from '@/store/course';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 
 const Index = () => {

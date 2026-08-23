@@ -16,16 +16,14 @@ import {
 } from 'react-native';
 
 import Loading from '@/components/loading';
-
-import useUserStore from '@/store/user';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_STYLE_KEY,
 } from '@/constants/FEEDBACKS';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
+import useUserStore from '@/store/user';
+import useVisualScheme from '@/store/visualScheme';
 
 export interface FeedbackItem {
   record_id: string;

@@ -6,9 +6,7 @@ import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import SensitivePermissionNotice from '@/components/sensitivePermissionNotice';
 import { SafeWebViewHandle } from '@/components/webview/SafeWebView';
-
 import { isHarmony, platformCapabilities } from '@/platform/capabilities';
 import * as Haptics from '@/platform/haptics';
 import { PlatformSystemBars } from '@/platform/systemBars';
@@ -127,7 +125,6 @@ export default function RootLayout() {
           )}
           {/* portal */}
           <PortalRoot ref={portalRef} />
-          <SensitivePermissionNotice />
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </Provider>

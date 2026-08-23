@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import type { ClassroomStatus } from '@/hooks/useClassroomData';
-
+import { classroomIcons } from '@/assets/icons';
 import Picker from '@/components/picker';
 import Text from '@/components/text';
-
+import type { ClassroomStatus } from '@/hooks/useClassroomData';
 import useVisualScheme from '@/store/visualScheme';
 
-import ChooseIcon from '@/assets/icons/choose.svg';
-import StarIcon from '@/assets/icons/star.svg';
-import StarGrayIcon from '@/assets/icons/star-gray.svg';
+const {
+  choose: ChooseIcon,
+  star: StarIcon,
+  starGray: StarGrayIcon,
+} = classroomIcons;
 
 // 共享常量
 export const prefix = ['自习地点', '楼层', '时间'];

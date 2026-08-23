@@ -27,15 +27,22 @@ const AnimatedScale = ({
   useEffect(() => {
     scale.value = withDelay(
       delay,
-      withSpring(trigger ? outputRange[1] : outputRange[0], {
-        mass: 0.5,
-        stiffness: 120,
-        damping: 12,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
-      })
+      withSpring(
+        trigger ? outputRange[1] : outputRange[0],
+        {
+          mass: 0.5,
+          stiffness: 120,
+          damping: 12,
+        },
+        finished => {
+          'worklet';
+          if (finished && onAnimationEnd) {
+            runOnJS(onAnimationEnd)();
+          }
+        }
+      )
     );
-  }, [scale, duration, trigger, delay]);
+  }, [scale, duration, trigger, delay, onAnimationEnd, outputRange]);
   const ScaleAnimation = useAnimatedStyle(() => {
     return {
       transform: [
@@ -45,14 +52,6 @@ const AnimatedScale = ({
       ],
     };
   });
-  useEffect(() => {
-    if (
-      scale.value === outputRange[1] &&
-      typeof onAnimationEnd === 'function'
-    ) {
-      runOnJS(onAnimationEnd)();
-    }
-  }, [scale, onAnimationEnd]);
   return (
     <Animated.View style={[ScaleAnimation, style]} {...restProps}>
       {children}

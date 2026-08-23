@@ -3,9 +3,8 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CustomStackHeader from '@/components/CustomStackHeader';
-import useVisualScheme from '@/store/visualScheme';
-
 import { SETTING_ITEMS } from '@/constants/SETTING';
+import useVisualScheme from '@/store/visualScheme';
 
 const EXTRA_TITLES: Record<string, string> = {
   privacy: '隐私条例',

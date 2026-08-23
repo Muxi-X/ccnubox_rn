@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 
 import Divider from '@/components/divider';
-
 import { commonColors } from '@/styles/common';
 
 export const StickyBottom = memo(function StickyBottom() {

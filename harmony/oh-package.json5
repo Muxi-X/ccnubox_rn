@@ -1,7 +1,7 @@
 {
   modelVersion: '5.0.0',
   name: 'com.muxixyz.ccnubox',
-  version: '3.1.6',
+  version: '3.1.8',
   description: '华师匣子 official minimal Harmony sample',
   dependencies: {
     '@react-native-oh-tpl/async-storage': 'file:../node_modules/@react-native-oh-tpl/async-storage/harmony/async_storage.har',

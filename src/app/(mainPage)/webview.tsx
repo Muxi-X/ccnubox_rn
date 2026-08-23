@@ -7,10 +7,8 @@ import SafeWebView, {
   SafeWebViewHandle,
   WebViewNavigation,
 } from '@/components/webview/SafeWebView';
-
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors } from '@/styles/common';
 
 export default function Webview() {

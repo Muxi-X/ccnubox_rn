@@ -8,6 +8,7 @@ import {
   useCanvasRef,
   useImage,
 } from '@shopify/react-native-skia';
+import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library/legacy';
 import React, {
@@ -17,14 +18,18 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useVisualScheme from '@/store/visualScheme';
-
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import {
   COURSE_COLLAPSE,
   COURSE_HEADER_HEIGHT,
@@ -34,10 +39,11 @@ import {
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
-import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
+import { requestPermission } from '@/utils/requestPermission';
 
 import CourseContent from './CourseContent';
 import { StickyBottom } from './StickyBottom';
@@ -59,10 +65,18 @@ const Schedule: React.FC<CourseTableProps> = ({
   const {
     backgroundUri,
     backgroundMode,
+    backgroundScrollable = true,
     foregroundOpacity,
     backgroundMaskOpacity,
     backgroundBlurRadius,
   } = useCourseTableAppearance();
+  const [viewportSize, setViewportSize] = useState<{
+    width: number;
+    height: number;
+  }>(() => {
+    const { width, height } = Dimensions.get('window');
+    return { width, height };
+  });
   const imageRef = useRef<View>(null);
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
@@ -83,22 +97,38 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   // 当backgroundUri变化时，手动加载图片
   useEffect(() => {
+    let aborted = false;
     const loadImage = async () => {
       if (!backgroundUri) {
-        setLoadedBackgroundImage(null);
+        if (!aborted) setLoadedBackgroundImage(null);
         return;
       }
       try {
-        const data = await Skia.Data.fromURI(backgroundUri);
-        if (data) {
-          const image = Skia.Image.MakeImageFromEncoded(data);
-          setLoadedBackgroundImage(image);
+        let data = await Skia.Data.fromURI(backgroundUri);
+        if (!data) {
+          try {
+            const base64 = await FileSystem.readAsStringAsync(backgroundUri, {
+              encoding: 'base64',
+            });
+            if (base64) {
+              data = Skia.Data.fromBase64(base64);
+            }
+          } catch {
+            // ignore
+          }
         }
-      } catch (error) {
-        setLoadedBackgroundImage(null);
+        if (!aborted && data) {
+          const image = Skia.Image.MakeImageFromEncoded(data);
+          if (!aborted) setLoadedBackgroundImage(image);
+        }
+      } catch {
+        if (!aborted) setLoadedBackgroundImage(null);
       }
     };
     loadImage();
+    return () => {
+      aborted = true;
+    };
   }, [backgroundUri]);
 
   // 优先使用手动加载的图片，否则使用hook加载的
@@ -116,7 +146,7 @@ const Schedule: React.FC<CourseTableProps> = ({
       baseStyle.flex = 1;
     }
 
-    if (!backgroundUri || !backgroundImage) {
+    if (!backgroundUri) {
       return (
         <View
           style={[
@@ -137,26 +167,54 @@ const Schedule: React.FC<CourseTableProps> = ({
 
     return (
       <View style={[baseStyle, { backgroundColor: 'transparent' }]}>
-        <Canvas
-          style={{
-            position: 'absolute',
-            width: width || '100%',
-            height: height || '100%',
-          }}
-        >
-          {/* 背景图片 */}
-          <SkImage
-            image={backgroundImage}
-            x={0}
-            y={0}
-            width={width}
-            height={height}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
-            opacity={bgOpacity}
+        {backgroundImage ? (
+          <Canvas
+            style={{
+              position: 'absolute',
+              width: width || '100%',
+              height: height || '100%',
+            }}
+          >
+            {/* 背景图片 */}
+            <SkImage
+              image={backgroundImage}
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              fit={
+                backgroundMode === 'cover'
+                  ? 'cover'
+                  : backgroundMode === 'contain'
+                    ? 'contain'
+                    : 'fill'
+              }
+              opacity={bgOpacity}
+            />
+            {/* 高斯模糊 */}
+            {backgroundBlurRadius > 0 && (
+              <BackdropBlur blur={backgroundBlurRadius} />
+            )}
+          </Canvas>
+        ) : (
+          <Image
+            source={{ uri: backgroundUri }}
+            style={{
+              position: 'absolute',
+              width: width || '100%',
+              height: height || '100%',
+              opacity: bgOpacity,
+            }}
+            resizeMode={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'stretch'
+            }
+            blurRadius={backgroundBlurRadius}
           />
-          {/* 高斯模糊 */}
-          <BackdropBlur blur={backgroundBlurRadius} />
-        </Canvas>
+        )}
         {children}
       </View>
     );
@@ -164,10 +222,10 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   const onSaveImageAsync = async () => {
     try {
-      const hasPermission = await requestSensitivePermission({
+      const hasPermission = await requestPermission({
         getPermission: () => MediaLibrary.getPermissionsAsync(true),
         isGranted: permission => permission.granted,
-        purpose: SENSITIVE_PERMISSION_PURPOSES.saveCourseTable,
+        purpose: PERMISSION_PURPOSES.saveCourseTable,
         requestPermission: () => MediaLibrary.requestPermissionsAsync(true),
       });
       if (!hasPermission) {
@@ -458,7 +516,13 @@ const Schedule: React.FC<CourseTableProps> = ({
             y={0}
             width={fullTableWidth}
             height={fullTableHeight}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
+            fit={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'fill'
+            }
             opacity={1 - backgroundMaskOpacity / 100}
           />
           {/* 高斯模糊 */}
@@ -545,14 +609,61 @@ const Schedule: React.FC<CourseTableProps> = ({
         // 左侧时间栏
         stickyLeft={<StickyLeft />}
         style={{ flex: 1 }}
-        backgroundLayer={renderBackgroundContent(
-          <View style={styles.scrollBackgroundFill} />,
-          styles.scrollBackground
-        )}
+        backgroundLayer={
+          backgroundScrollable
+            ? renderBackgroundContent(
+                <View style={styles.scrollBackgroundFill} />,
+                styles.scrollBackground
+              )
+            : undefined
+        }
       >
         {/* 内容部分 (课程表) */}
         {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
       </TimetableScrollView>
+    </View>
+  );
+
+  const fixedBackground = backgroundUri && !backgroundScrollable && (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      {backgroundImage ? (
+        <Canvas style={StyleSheet.absoluteFill}>
+          <SkImage
+            image={backgroundImage}
+            x={0}
+            y={0}
+            width={viewportSize.width}
+            height={viewportSize.height}
+            fit={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'fill'
+            }
+            opacity={1 - backgroundMaskOpacity / 100}
+          />
+          {backgroundBlurRadius > 0 && (
+            <BackdropBlur blur={backgroundBlurRadius} />
+          )}
+        </Canvas>
+      ) : (
+        <Image
+          source={{ uri: backgroundUri }}
+          style={[
+            StyleSheet.absoluteFill,
+            { opacity: 1 - backgroundMaskOpacity / 100 },
+          ]}
+          resizeMode={
+            backgroundMode === 'cover'
+              ? 'cover'
+              : backgroundMode === 'contain'
+                ? 'contain'
+                : 'stretch'
+          }
+          blurRadius={backgroundBlurRadius}
+        />
+      )}
     </View>
   );
 
@@ -563,7 +674,18 @@ const Schedule: React.FC<CourseTableProps> = ({
     },
   ];
 
-  return <View style={rootStyle}>{timetableForeground}</View>;
+  return (
+    <View
+      style={rootStyle}
+      onLayout={e => {
+        const { width, height } = e.nativeEvent.layout;
+        setViewportSize({ width, height });
+      }}
+    >
+      {fixedBackground}
+      {timetableForeground}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -594,7 +716,7 @@ const styles = StyleSheet.create({
     top: -COURSE_HEADER_HEIGHT,
     left: -TIME_WIDTH,
     width: TIME_WIDTH + COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length,
-    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length,
+    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length + 80,
     zIndex: -2,
   },
   scrollBackgroundFill: {

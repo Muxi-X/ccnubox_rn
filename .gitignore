@@ -39,6 +39,11 @@ hvigor-*.log
 
 # Native build output and signing material
 signing/
+.gradle/
+build/
+local.properties
+*.iml
+.cxx/
 android/.gradle/
 android/.idea/
 android/app/build/
@@ -77,3 +82,4 @@ pnpm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+.yolo.json

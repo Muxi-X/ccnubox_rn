@@ -17,19 +17,17 @@ import {
 } from 'react-native';
 
 import ThemeBasedView from '@/components/view';
-
-import useUserStore from '@/store/user';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
   MODULE_MAP,
 } from '@/constants/FEEDBACKS';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { platformCapabilities } from '@/platform/capabilities';
 import { createFeedbackRecord } from '@/request/api/feedback';
-import { runSensitiveAction } from '@/utils/requestSensitivePermission';
+import useUserStore from '@/store/user';
+import useVisualScheme from '@/store/visualScheme';
+import { runPermissionAction } from '@/utils/requestPermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
@@ -97,7 +95,7 @@ function WriteFeedback() {
       return;
     }
     try {
-      const result = await runSensitiveAction({
+      const result = await runPermissionAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'images',
@@ -105,7 +103,7 @@ function WriteFeedback() {
             quality: 0.7,
             aspect: [4, 3],
           }),
-        purpose: SENSITIVE_PERMISSION_PURPOSES.feedbackImage,
+        purpose: PERMISSION_PURPOSES.feedbackImage,
       });
       if (!result || result.canceled) return;
 

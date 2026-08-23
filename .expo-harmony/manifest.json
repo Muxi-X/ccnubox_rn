@@ -1,25 +1,17 @@
 {
-  "generatedAt": "2026-05-15T05:53:33.212Z",
-  "toolkitVersion": "1.8.3",
+  "generatedAt": "2026-08-23T12:45:22.305Z",
+  "toolkitVersion": "2.0.0-next.0",
   "templateVersion": "rnoh-0.82.29",
   "matrixId": "expo55-rnoh082-ui-stack",
-  "projectRoot": "/Users/blackishgreen03/workspace/ccnubox_rn-feat-harmony-add-adapter-support",
+  "projectRoot": "/Users/blackishgreen03/workspace/ccnubox-pr278-v2-next-refresh",
   "files": [
     {
       "relativePath": "harmony/codelinter.json",
       "sha1": "595e81715159f7f43427351387b281b4826b834c"
     },
     {
-      "relativePath": "harmony/hvigor/hvigor-config.json5",
-      "sha1": "8ac67e7eece4818088804a108179ba823341f8e8"
-    },
-    {
       "relativePath": "harmony/hvigorfile.ts",
       "sha1": "4bb1c7dcfcafab685275b05cac781181e32dedc6"
-    },
-    {
-      "relativePath": "harmony/AppScope/app.json5",
-      "sha1": "81bd0e9d368c97238acc40ff1b79388a98b13462"
     },
     {
       "relativePath": "harmony/AppScope/resources/base/element/string.json",
@@ -30,16 +22,8 @@
       "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
     },
     {
-      "relativePath": "harmony/entry/build-profile.json5",
-      "sha1": "26a22a1c93aad1e1260b9fcbca8f9190e152efa7"
-    },
-    {
       "relativePath": "harmony/entry/hvigorfile.ts",
       "sha1": "ed282fe65ede892474df299bd8919309fd3d48f7"
-    },
-    {
-      "relativePath": "harmony/entry/oh-package.json5",
-      "sha1": "59a24b2cbcaf96c5941495b32277da4245a9aef6"
     },
     {
       "relativePath": "harmony/entry/src/main/cpp/PackageProvider.cpp",
@@ -82,16 +66,12 @@
       "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
     },
     {
-      "relativePath": "harmony/entry/src/main/resources/base/profile/main_pages.json",
-      "sha1": "b978fe9c7ca06084b3ad75604e55d937ce8cea3d"
-    },
-    {
       "relativePath": "harmony/entry/src/main/resources/rawfile/.gitkeep",
       "sha1": "adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
     },
     {
       "relativePath": "harmony/oh-package.json5",
-      "sha1": "0032b34e5609bddbd3d3345d0347e6341c52ad05"
+      "sha1": "45d578743959bd42aed36773aefcb955056876a6"
     },
     {
       "relativePath": "harmony/entry/src/main/ets/RNOHPackagesFactory.ets",
@@ -115,7 +95,7 @@
     },
     {
       "relativePath": ".expo-harmony/shims/expo-modules-core/index.js",
-      "sha1": "7da8b75078467620f69042c1cfa391837cd6ba78"
+      "sha1": "c0068e85329dc62d3777535b74239093b70a9666"
     },
     {
       "relativePath": ".expo-harmony/shims/expo-file-system/index.js",
@@ -134,8 +114,64 @@
       "sha1": "6c34ade10fc2b4a9e8f64d2f78eaad735d9d8966"
     },
     {
+      "relativePath": ".expo-harmony/shims/expo-secure-store/index.js",
+      "sha1": "e8c0e9517702e1a092af2b3a2c434307b8a6870b"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-asset/index.js",
+      "sha1": "da5e584d92c1b36534ca00b3bf3d2020d6e3c4db"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-device/index.js",
+      "sha1": "0f7fa24336b744be48b79c61a4e71b5ef99ea564"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-clipboard/index.js",
+      "sha1": "c6eb26a398263dcf8402b26021cbc356af2def77"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-haptics/index.js",
+      "sha1": "990180c3b31bcc6e01c07e5a4b4f2399efd6caad"
+    },
+    {
       "relativePath": ".expo-harmony/shims/expo-notifications/index.js",
       "sha1": "c01703f75b5eed911dd08e6afbeb11ea93e5e2b0"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/react-native-gesture-handler/index.js",
+      "sha1": "b14f48d21ccdefb18b42f7cedbd580cac38da9fa"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/@react-native-async-storage/async-storage/index.js",
+      "sha1": "1b1f5a7223609c9ff897fa6f9bc0b24c777db739"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/react-native-screens/index.js",
+      "sha1": "d5409760239884c05ad9fd480728489d1be6b4e2"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/react-native-safe-area-context/index.js",
+      "sha1": "fdd943926f5279e76395255cf6abe77965c2d82e"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/react-native-webview/index.js",
+      "sha1": "5e9439650035ff7848f0c748d47e6ad95a06db56"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/jpush-react-native/index.js",
+      "sha1": "084b9761efb40fcdb7e4215c3d2dda3fc7ac3764"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/expo-media-library/index.js",
+      "sha1": "1a2e492f0fd0ecb7cfa1f67683e8f8c442bd2007"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/lottie-react-native/index.js",
+      "sha1": "52db522d15a05965c0899ff8342b02c4d4e598a3"
+    },
+    {
+      "relativePath": ".expo-harmony/shims/@shopify/react-native-skia/index.js",
+      "sha1": "6cb9b8ceed9ebcc9edd4bc344e171b841ff2b559"
     },
     {
       "relativePath": ".expo-harmony/shims/runtime-prelude.js",
@@ -144,6 +180,10 @@
     {
       "relativePath": "harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyPackage.ets",
       "sha1": "9849a5f7a8f8b1ce7cf1773dd7d9e2b466827c4b"
+    },
+    {
+      "relativePath": ".expo-harmony/toolkit-config.json",
+      "sha1": "45bd2c6240872149d75c235ac947aab103b949b9"
     },
     {
       "relativePath": ".expo-harmony/signing.local.example.json",

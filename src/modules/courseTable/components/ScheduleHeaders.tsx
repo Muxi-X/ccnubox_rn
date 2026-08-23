@@ -5,11 +5,10 @@ import { Href, useRouter } from 'expo-router';
 // import { Href, router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
+import { SCHEDULE_ACTIONS } from '@/constants/SCHEDULE';
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-
-import { SCHEDULE_ACTIONS } from '@/constants/SCHEDULE';
 import { commonStyles } from '@/styles/common';
 
 export const ScheduleHeaderTitle: React.FC = () => {

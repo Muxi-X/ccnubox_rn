@@ -53,10 +53,13 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     return this.requestPermissionResponse('ohos.permission.MICROPHONE');
   }
 
-  async createPreview(options?: { viewId?: string }): Promise<{ viewId: string; state: 'running' }> {
-    const viewId = typeof options?.viewId === 'string' && options.viewId.length > 0
-      ? options.viewId
-      : 'expo-harmony-camera-preview';
+  async createPreview(options?: {
+    viewId?: string;
+  }): Promise<{ viewId: string; state: 'running' }> {
+    const viewId =
+      typeof options?.viewId === 'string' && options.viewId.length > 0
+        ? options.viewId
+        : 'expo-harmony-camera-preview';
     this.previewStates.set(viewId, 'running');
     return {
       viewId,
@@ -70,7 +73,9 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     }
   }
 
-  async pausePreview(options?: { viewId?: string }): Promise<{ paused: boolean }> {
+  async pausePreview(options?: {
+    viewId?: string;
+  }): Promise<{ paused: boolean }> {
     if (typeof options?.viewId === 'string') {
       this.previewStates.set(options.viewId, 'paused');
     }
@@ -79,7 +84,9 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     };
   }
 
-  async resumePreview(options?: { viewId?: string }): Promise<{ paused: boolean }> {
+  async resumePreview(options?: {
+    viewId?: string;
+  }): Promise<{ paused: boolean }> {
     if (typeof options?.viewId === 'string') {
       this.previewStates.set(options.viewId, 'running');
     }
@@ -88,7 +95,10 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     };
   }
 
-  async takePicture(options?: { cameraType?: string; viewId?: string }): Promise<CameraCaptureResult> {
+  async takePicture(options?: {
+    cameraType?: string;
+    viewId?: string;
+  }): Promise<CameraCaptureResult> {
     const profile = new cameraPicker.PickerProfile();
     profile.cameraPosition =
       options?.cameraType === 'front'
@@ -98,10 +108,14 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     const result = await cameraPicker.pick(
       this.ctx.uiAbilityContext,
       [cameraPicker.PickerMediaType.PHOTO],
-      profile,
+      profile
     );
 
-    if (!result || typeof result.resultUri !== 'string' || result.resultUri.length === 0) {
+    if (
+      !result ||
+      typeof result.resultUri !== 'string' ||
+      result.resultUri.length === 0
+    ) {
       throw new Error('Camera capture was canceled.');
     }
 
@@ -115,10 +129,17 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     };
   }
 
-  async startRecording(options?: { viewId?: string; cameraType?: string }): Promise<CameraRecordingResult> {
-    const microphonePermission = await this.requestPermissionResponse('ohos.permission.MICROPHONE');
+  async startRecording(options?: {
+    viewId?: string;
+    cameraType?: string;
+  }): Promise<CameraRecordingResult> {
+    const microphonePermission = await this.requestPermissionResponse(
+      'ohos.permission.MICROPHONE'
+    );
     if (!microphonePermission.granted) {
-      throw new Error('Microphone permission is required for camera recording.');
+      throw new Error(
+        'Microphone permission is required for camera recording.'
+      );
     }
     const profile = new cameraPicker.PickerProfile();
     profile.cameraPosition =
@@ -129,10 +150,14 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     const result = await cameraPicker.pick(
       this.ctx.uiAbilityContext,
       [cameraPicker.PickerMediaType.VIDEO],
-      profile,
+      profile
     );
 
-    if (!result || typeof result.resultUri !== 'string' || result.resultUri.length === 0) {
+    if (
+      !result ||
+      typeof result.resultUri !== 'string' ||
+      result.resultUri.length === 0
+    ) {
       throw new Error('Camera recording was canceled.');
     }
 
@@ -146,21 +171,39 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     return recording;
   }
 
-  async stopRecording(_options?: { viewId?: string }): Promise<CameraRecordingResult | null> {
-    throw new Error('stopRecording is not supported by the Harmony camera picker adapter.');
+  async stopRecording(_options?: {
+    viewId?: string;
+  }): Promise<CameraRecordingResult | null> {
+    throw new Error(
+      'stopRecording is not supported by the Harmony camera picker adapter.'
+    );
   }
 
-  async toggleRecording(_options?: { viewId?: string; cameraType?: string }): Promise<CameraRecordingResult | null> {
-    throw new Error('toggleRecording is not supported by the Harmony camera picker adapter.');
+  async toggleRecording(_options?: {
+    viewId?: string;
+    cameraType?: string;
+  }): Promise<CameraRecordingResult | null> {
+    throw new Error(
+      'toggleRecording is not supported by the Harmony camera picker adapter.'
+    );
   }
 
-  private async getPermissionResponse(permissionName: Permissions): Promise<PermissionResponse> {
-    return this.createPermissionResponse(this.resolvePermissionStatus(permissionName));
+  private async getPermissionResponse(
+    permissionName: Permissions
+  ): Promise<PermissionResponse> {
+    return this.createPermissionResponse(
+      this.resolvePermissionStatus(permissionName)
+    );
   }
 
-  private resolvePermissionStatus(permissionName: Permissions): abilityAccessCtrl.PermissionStatus {
-    const atManagerWithSelfStatus = this.atManager as abilityAccessCtrl.AtManager & {
-      getSelfPermissionStatus?: (permission: Permissions) => abilityAccessCtrl.PermissionStatus;
+  private resolvePermissionStatus(
+    permissionName: Permissions
+  ): abilityAccessCtrl.PermissionStatus {
+    const atManagerWithSelfStatus = this
+      .atManager as abilityAccessCtrl.AtManager & {
+      getSelfPermissionStatus?: (
+        permission: Permissions
+      ) => abilityAccessCtrl.PermissionStatus;
     };
 
     if (typeof atManagerWithSelfStatus.getSelfPermissionStatus === 'function') {
@@ -169,7 +212,7 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
 
     const grantStatus = this.atManager.checkAccessTokenSync(
       this.ctx.uiAbilityContext.abilityInfo.applicationInfo.accessTokenId,
-      permissionName,
+      permissionName
     );
 
     return grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
@@ -177,15 +220,20 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
       : abilityAccessCtrl.PermissionStatus.DENIED;
   }
 
-  private async requestPermissionResponse(permissionName: Permissions): Promise<PermissionResponse> {
-    await this.atManager.requestPermissionsFromUser(this.ctx.uiAbilityContext, [permissionName]);
+  private async requestPermissionResponse(
+    permissionName: Permissions
+  ): Promise<PermissionResponse> {
+    await this.atManager.requestPermissionsFromUser(this.ctx.uiAbilityContext, [
+      permissionName,
+    ]);
     return this.getPermissionResponse(permissionName);
   }
 
   private createPermissionResponse(
-    permissionStatus: abilityAccessCtrl.PermissionStatus,
+    permissionStatus: abilityAccessCtrl.PermissionStatus
   ): PermissionResponse {
-    const granted = permissionStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
+    const granted =
+      permissionStatus === abilityAccessCtrl.PermissionStatus.GRANTED;
     const denied =
       permissionStatus === abilityAccessCtrl.PermissionStatus.DENIED ||
       permissionStatus === abilityAccessCtrl.PermissionStatus.RESTRICTED ||
@@ -199,7 +247,9 @@ export class ExpoHarmonyCameraTurboModule extends UITurboModule {
     };
   }
 
-  private async getImageSize(assetUri: string): Promise<{ width: number; height: number }> {
+  private async getImageSize(
+    assetUri: string
+  ): Promise<{ width: number; height: number }> {
     let imageSource: image.ImageSource | null = null;
 
     try {

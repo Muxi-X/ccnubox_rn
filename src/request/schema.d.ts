@@ -2699,59 +2699,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/library/get_credit_points': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 获取信誉分
-     * @description 获取信誉分及扣分记录
-     */
-    get: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功返回信誉分 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['library.GetCreditPointResponse'];
-            };
-          };
-        };
-        /** @description 系统异常，获取失败 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/library/get_discussion': {
     parameters: {
       query?: never;
@@ -2926,62 +2873,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/library/reserve_discussion': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * 预约研讨间
-     * @description 传入学生ID,时间,主题等预约研讨间
-     */
-    post: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      /** @description 预约研讨间所需要的参数 */
-      requestBody: {
-        content: {
-          'application/json': components['schemas']['library.ReserveDiscussionRequest'];
-        };
-      };
-      responses: {
-        /** @description 成功返回预约研讨间成功 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-        /** @description 系统异常，获取失败 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/library/reserve_randomly': {
     parameters: {
       query?: never;
@@ -3090,61 +2981,6 @@ export interface paths {
         };
       };
     };
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/library/search_user': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 搜索学生ID
-     * @description 传入学生学号获取对应的学生ID
-     */
-    get: {
-      parameters: {
-        query: {
-          student_id: string;
-        };
-        header: {
-          /** @description Bearer Token */
-          Authorization: string;
-        };
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 成功返回学生的ID */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'] & {
-              data?: components['schemas']['library.SearchUserResponse'];
-            };
-          };
-        };
-        /** @description 系统异常，获取失败 */
-        500: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['web.Response'];
-          };
-        };
-      };
-    };
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -3260,7 +3096,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'] & {
+            '*/*': components['schemas']['web.Response'] & {
               data?: components['schemas']['content.GetSemesterResponse'];
             };
           };
@@ -3301,7 +3137,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['web.Response'] & {
+            '*/*': components['schemas']['web.Response'] & {
               data?: components['schemas']['content.GetSemesterListResponse'];
             };
           };
@@ -4265,11 +4101,11 @@ export interface components {
     'content.GetInfoSumsResponse': {
       info_sums?: components['schemas']['content.InfoSum'][];
     };
-    'content.GetSemesterListResponse': components['schemas']['content.Semester'][];
+    'content.GetSemesterListResponse': {
+      semesters?: components['schemas']['content.Semester'][];
+    };
     'content.GetSemesterResponse': {
-      end_date?: string;
-      semester?: string;
-      start_date?: string;
+      semester?: components['schemas']['content.Semester'];
     };
     'content.GetUpdateVersionResponse': {
       version?: string;
@@ -4607,7 +4443,8 @@ export interface components {
       discussions?: components['schemas']['library.Discussion'][];
     };
     'library.GetSeatRecordRequest': {
-      date?: string[];
+      /** @description YYYY-M-D 或 YYYY-MM-DD */
+      date: string[];
     };
     'library.GetSeatRecordResponse': {
       records?: components['schemas']['library.Record'][];

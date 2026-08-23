@@ -10,17 +10,15 @@ import Image from '@/components/image';
 import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
-
-import useGridOrder from '@/store/gridOrder';
-import useVisualScheme from '@/store/visualScheme';
-
+import { TABBAR_BASE_HEIGHT } from '@/constants/TABBAR';
 import * as Haptics from '@/platform/haptics';
 import { queryBanners } from '@/request/api';
+import useGridOrder from '@/store/gridOrder';
+import useVisualScheme from '@/store/visualScheme';
+import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 import { percent2px } from '@/utils';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
-
-import { MainPageGridDataType } from '@/types/mainPageGridTypes';
 
 const IndexPage: FC = () => {
   const router = useRouter();
@@ -32,7 +30,7 @@ const IndexPage: FC = () => {
   >([]);
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
-  const tabbarHeight = useSafeAreaInsets().bottom;
+  const tabbarHeight = TABBAR_BASE_HEIGHT + useSafeAreaInsets().bottom;
 
   const gridData = useGridOrder(state => state.gridData);
   const updateGridOrder = useGridOrder(state => state.updateGridOrder);
@@ -65,18 +63,12 @@ const IndexPage: FC = () => {
     updateGridOrder(data);
   };
 
-  const renderGridImage = (imageUrl: MainPageGridDataType['imageUrl']) => {
-    if (typeof imageUrl === 'function') {
-      const SvgComponent = imageUrl;
-      return <SvgComponent width={50} height={50} />;
-    }
-    return <Image source={imageUrl} />;
-  };
-
-  const render = ({ key, title, imageUrl }: MainPageGridDataType) => {
+  const render = ({ Icon, key, title }: MainPageGridDataType) => {
     return (
       <View style={styles.item} key={key}>
-        <View style={styles.itemImage}>{renderGridImage(imageUrl)}</View>
+        <View style={styles.itemImage}>
+          <Icon height={50} width={50} />
+        </View>
         <Text style={styles.itemText}>{title}</Text>
       </View>
     );
@@ -84,7 +76,7 @@ const IndexPage: FC = () => {
 
   return (
     <ThemeChangeView style={[styles.wrapper, currentStyle?.background_style]}>
-      {/* 
+      {/*
         <Pressable
           onPress={async () => {
             if (registerId) {
@@ -107,7 +99,7 @@ const IndexPage: FC = () => {
         </Pressable>
       */}
       {/* carousel */}
-      <Skeleton>
+      <Skeleton loading={banners.length === 0}>
         <View style={styles.banner}>
           <Carousel
             style={{ marginHorizontal: percent2px(2.5) }}

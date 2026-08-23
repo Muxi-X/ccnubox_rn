@@ -75,6 +75,10 @@ const uiStackRootModuleAliases = {
     __dirname,
     'node_modules/react-native-reanimated'
   ),
+  'react-native-screens/experimental': path.resolve(
+    __dirname,
+    'src/platform/harmonyScreens/index.tsx'
+  ),
   'react-native-screens': path.resolve(
     __dirname,
     'src/platform/harmonyScreens/index.tsx'

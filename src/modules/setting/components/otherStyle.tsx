@@ -1,34 +1,34 @@
+import { Switch } from '@ant-design/react-native';
 import { ButtonGroup } from '@rneui/themed';
 import {
   BackdropBlur,
   Canvas,
-  Image as SkImage,
   Skia,
+  Image as SkImage,
   SkImage as SkImageType,
   useImage,
 } from '@shopify/react-native-skia';
+import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-
-import Button from '@/components/button';
-import Slider from '@/components/slider';
-import Toast from '@/components/toast';
-import { default as ThemeBasedView } from '@/components/view';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useVisualScheme from '@/store/visualScheme';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 
 import BaseLightImage from '@/assets/images/theme/base.png';
 import BaseDarkImage from '@/assets/images/theme/baseDark.png';
 import IosLightImage from '@/assets/images/theme/ios.png';
 import IosDarkImage from '@/assets/images/theme/iosDark.png';
+import Button from '@/components/button';
+import Slider from '@/components/slider';
+import Toast from '@/components/toast';
+import { default as ThemeBasedView } from '@/components/view';
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { componentMap } from '@/themeBasedComponents';
-import { runSensitiveAction } from '@/utils/requestSensitivePermission';
+import { runPermissionAction } from '@/utils/requestPermission';
 
 const LAYOUTS = [
   {
@@ -43,6 +43,12 @@ const LAYOUTS = [
     imageDark: IosDarkImage,
     imageLight: IosLightImage,
   },
+] as const;
+
+const BACKGROUND_MODES = [
+  { key: 'cover', label: '裁剪铺满' },
+  { key: 'contain', label: '完整显示' },
+  { key: 'stretch', label: '拉伸铺满' },
 ] as const;
 
 const LayoutButton = memo(function LayoutButton({
@@ -104,10 +110,13 @@ export default function OtherStyle({
   const {
     backgroundUri,
     backgroundMode,
+    backgroundScrollable,
     foregroundOpacity,
     backgroundMaskOpacity,
     backgroundBlurRadius,
     setBackgroundUri,
+    setBackgroundMode,
+    setBackgroundScrollable,
     setForegroundOpacity,
     setBackgroundMaskOpacity,
     setBackgroundBlurRadius,
@@ -139,7 +148,19 @@ export default function OtherStyle({
         return;
       }
       try {
-        const data = await Skia.Data.fromURI(backgroundUri);
+        let data = await Skia.Data.fromURI(backgroundUri);
+        if (!data) {
+          try {
+            const base64 = await FileSystem.readAsStringAsync(backgroundUri, {
+              encoding: 'base64',
+            });
+            if (base64) {
+              data = Skia.Data.fromBase64(base64);
+            }
+          } catch {
+            // ignore
+          }
+        }
         if (!aborted && data) {
           const image = Skia.Image.MakeImageFromEncoded(data);
           if (!aborted) setLoadedBackgroundImage(image);
@@ -192,7 +213,7 @@ export default function OtherStyle({
   const renderPreview = () => {
     const normalizedOpacity = (100 - localOpacity) / 100;
 
-    if (!backgroundUri || !backgroundImage) {
+    if (!backgroundUri) {
       return (
         <View style={styles.previewContent}>
           {renderCoursePreview(normalizedOpacity)}
@@ -203,18 +224,42 @@ export default function OtherStyle({
     return (
       <View style={styles.previewBackground}>
         {/* 与课表实际渲染完全一致：Canvas 绘制背景图 + 模糊 */}
-        <Canvas style={styles.previewBlurCanvas}>
-          <SkImage
-            image={backgroundImage}
-            x={0}
-            y={0}
-            width={COURSE_ITEM_WIDTH * 3}
-            height={180}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
-            opacity={1 - localMaskOpacity / 100}
+        {backgroundImage ? (
+          <Canvas style={styles.previewBlurCanvas}>
+            <SkImage
+              image={backgroundImage}
+              x={0}
+              y={0}
+              width={COURSE_ITEM_WIDTH * 3}
+              height={180}
+              fit={
+                backgroundMode === 'cover'
+                  ? 'cover'
+                  : backgroundMode === 'contain'
+                    ? 'contain'
+                    : 'fill'
+              }
+              opacity={1 - localMaskOpacity / 100}
+            />
+            {localBlurRadius > 0 && <BackdropBlur blur={localBlurRadius} />}
+          </Canvas>
+        ) : (
+          <Image
+            source={{ uri: backgroundUri }}
+            style={[
+              styles.previewBlurCanvas,
+              { opacity: 1 - localMaskOpacity / 100 },
+            ]}
+            resizeMode={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'stretch'
+            }
+            blurRadius={localBlurRadius}
           />
-          <BackdropBlur blur={localBlurRadius} />
-        </Canvas>
+        )}
         <View style={styles.previewContent}>
           {renderCoursePreview(normalizedOpacity)}
         </View>
@@ -225,14 +270,17 @@ export default function OtherStyle({
   const handlePickImage = async () => {
     try {
       setIsPicking(true);
-      const result = await runSensitiveAction({
+      const { width: screenWidth, height: screenHeight } =
+        Dimensions.get('window');
+      const result = await runPermissionAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
-            allowsEditing: false,
+            allowsEditing: true,
+            aspect: [Math.round(screenWidth), Math.round(screenHeight)],
             quality: 0.9,
           }),
-        purpose: SENSITIVE_PERMISSION_PURPOSES.courseTableBackground,
+        purpose: PERMISSION_PURPOSES.courseTableBackground,
       });
 
       if (result && !result.canceled && result.assets?.[0]?.uri) {
@@ -421,6 +469,70 @@ export default function OtherStyle({
         </View>
       </View>
 
+      {/* 背景随课表移动开关 */}
+      {backgroundUri && (
+        <View style={[styles.settingRow]}>
+          <Text style={[currentStyle?.text_style, styles.settingLabel]}>
+            背景随课表移动
+          </Text>
+          <Switch
+            checked={backgroundScrollable}
+            onChange={checked => setBackgroundScrollable(checked)}
+            style={{ marginRight: 40 }}
+            trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
+          />
+        </View>
+      )}
+
+      {/* 填充模式 */}
+      {backgroundUri && (
+        <View style={styles.modeSection}>
+          <Text style={[currentStyle?.text_style, styles.settingLabel]}>
+            填充模式
+          </Text>
+          <ButtonGroup
+            buttons={BACKGROUND_MODES.map(m => m.label)}
+            selectedIndex={BACKGROUND_MODES.findIndex(
+              m => m.key === backgroundMode
+            )}
+            onPress={index => {
+              const mode = BACKGROUND_MODES[index];
+              if (mode) {
+                setBackgroundMode(mode.key);
+              }
+            }}
+            containerStyle={[
+              styles.modeButtonGroup,
+              {
+                borderColor: themeName === 'dark' ? '#444' : '#ddd',
+                backgroundColor: themeName === 'dark' ? '#1c1c1e' : '#fff',
+              },
+            ]}
+            buttonStyle={{
+              backgroundColor: 'transparent',
+            }}
+            textStyle={[
+              styles.modeButtonText,
+              { color: themeName === 'dark' ? '#aaa' : '#666' },
+            ]}
+            selectedTextStyle={{
+              color: '#9379F6',
+              fontWeight: '600',
+            }}
+            selectedButtonStyle={{
+              backgroundColor:
+                themeName === 'dark'
+                  ? 'rgba(147, 121, 246, 0.15)'
+                  : 'rgba(147, 121, 246, 0.08)',
+            }}
+            innerBorderStyle={{
+              color: themeName === 'dark' ? '#444' : '#ddd',
+              width: 1,
+            }}
+          />
+        </View>
+      )}
+
       {/* 遮罩不透明度 */}
       {backgroundUri && (
         <View style={styles.sliderSection}>
@@ -511,6 +623,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 20,
+    gap: 8,
   },
   settingRow: {
     flexDirection: 'row',
@@ -520,9 +633,6 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 18,
     paddingLeft: 40,
-  },
-  settingRowSpacing: {
-    marginTop: 40,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -537,12 +647,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   previewSection: {
-    marginBottom: 20,
     marginHorizontal: 40,
+    gap: 8,
   },
   previewTitle: {
     fontSize: 16,
-    marginBottom: 12,
+    paddingTop: 8,
     opacity: 0.7,
   },
   previewWrapper: {
@@ -594,12 +704,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   sliderSection: {
-    marginTop: 20,
     paddingHorizontal: 40,
+    gap: 4,
   },
   sliderTitle: {
     fontSize: 18,
-    marginBottom: 10,
   },
   sliderThumb: {
     backgroundColor: commonColors.purple,
@@ -607,7 +716,6 @@ const styles = StyleSheet.create({
   sliderLabelRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 5,
   },
   sliderLabel: {
     fontSize: 14,
@@ -615,12 +723,25 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 16,
     paddingLeft: 40,
-    marginBottom: 12,
+    paddingTop: 8,
     opacity: 0.7,
+  },
+  modeSection: {
+    gap: 8,
+  },
+  modeButtonGroup: {
+    height: 38,
+    marginHorizontal: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    overflow: 'hidden',
+  },
+  modeButtonText: {
+    fontSize: 14,
   },
   layoutButtonGroup: {
     height: 120,
-    marginBottom: 20,
     marginHorizontal: 40,
     borderRadius: 12,
     borderWidth: 1,

@@ -4,7 +4,6 @@ import { PickerViewStyle } from '@ant-design/react-native/es/picker-view/style';
 import { FC } from 'react';
 
 import useVisualScheme from '@/store/visualScheme';
-import { red } from 'react-native-reanimated/lib/typescript/Colors';
 /**
  * 封装的 PickerView 组件，适配项目主题配色
  */

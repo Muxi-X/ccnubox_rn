@@ -14,9 +14,6 @@ import {
 
 import Loading from '@/components/loading';
 import ThemeBasedView from '@/components/view';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_LABELS,
@@ -26,6 +23,7 @@ import {
   getFeedbackImg,
   getSingleFeedbackRecord,
 } from '@/request/api/feedback';
+import useVisualScheme from '@/store/visualScheme';
 import { log } from '@/utils/logger';
 
 import {

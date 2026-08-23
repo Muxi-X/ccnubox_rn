@@ -25,19 +25,13 @@ const HeaderRight: React.FC<HeaderRightProps> = ({
   const handleNavigate = () => {
     if (target) {
       router.push(target as any);
-    } 
+    }
   };
 
   return (
     <View>
       <TouchableOpacity onPress={handleNavigate}>
-        <Text
-          style={[
-            currentStyle?.text_style
-          ]}
-        >
-          {title}
-        </Text>
+        <Text style={[currentStyle?.text_style]}>{title}</Text>
       </TouchableOpacity>
     </View>
   );

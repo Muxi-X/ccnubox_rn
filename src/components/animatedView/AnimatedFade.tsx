@@ -39,13 +39,22 @@ const AnimatedFade = ({
     if (trigger) {
       opacity.value = withDelay(
         delay,
-        withTiming(toVisible ? 1 : 0, {
-          duration,
-          easing: Easing.inOut(Easing.ease),
-        })
+        withTiming(
+          toVisible ? 1 : 0,
+          {
+            duration,
+            easing: Easing.inOut(Easing.ease),
+          },
+          finished => {
+            'worklet';
+            if (finished && onAnimationEnd) {
+              runOnJS(onAnimationEnd)();
+            }
+          }
+        )
       );
     }
-  }, [duration, trigger, distance, toVisible, delay]);
+  }, [duration, trigger, distance, toVisible, delay, onAnimationEnd]);
   const FadeAnimation = useAnimatedStyle(() => {
     const shiftValue = interpolate(
       posShift.value,
@@ -72,12 +81,6 @@ const AnimatedFade = ({
       opacity: opacityValue,
     };
   });
-  useEffect(() => {
-    if (typeof onAnimationEnd === 'function') {
-      // 使用 runOnJS 来确保 onAnimationEnd 回调在正确的线程上执行
-      runOnJS(onAnimationEnd)();
-    }
-  }, [opacity, onAnimationEnd]);
   return (
     <Animated.View style={[FadeAnimation, style]} {...restProps}>
       {children}

@@ -70,6 +70,19 @@ const ScreenStackHost = createViewWrapper('HarmonyScreenStackHost');
 const StackScreen = createViewWrapper('HarmonyStackScreen');
 const SplitViewHost = createViewWrapper('HarmonySplitViewHost');
 const SplitViewScreen = createViewWrapper('HarmonySplitViewScreen');
+const ExperimentalStackHost = createViewWrapper('HarmonyExperimentalStackHost');
+const ExperimentalStackScreen = createViewWrapper(
+  'HarmonyExperimentalStackScreen'
+);
+const ExperimentalStackHeaderConfig = createViewWrapper(
+  'HarmonyExperimentalStackHeaderConfig'
+);
+
+export const Stack = Object.freeze({
+  Host: ExperimentalStackHost,
+  Screen: ExperimentalStackScreen,
+  HeaderConfig: ExperimentalStackHeaderConfig,
+});
 
 const SearchBar = React.forwardRef<View, ScreenComponentProps>(() => null);
 SearchBar.displayName = 'HarmonySearchBar';
@@ -142,6 +155,7 @@ const reactNativeScreensModule = {
   StackScreenLifecycleState,
   SplitViewHost,
   SplitViewScreen,
+  Stack,
 };
 
 export {

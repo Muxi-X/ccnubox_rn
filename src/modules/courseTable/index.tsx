@@ -8,20 +8,19 @@ import {
   useState,
 } from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
-
-import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import View from '@/components/view';
-
-import useCourse from '@/store/course';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
+import { TABBAR_BASE_HEIGHT } from '@/constants/TABBAR';
+import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
 import { queryCourseTable } from '@/request/api/course';
 import {
   queryCurrentSemester,
   querySemesterList,
 } from '@/request/api/semester';
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
 import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
@@ -261,9 +260,15 @@ const CourseTablePage: FC = () => {
     alert('Live Activity 启动失败，请查看控制台日志');
   }, []);
 
+  const insets = useSafeAreaInsets();
+  const tabbarHeight = TABBAR_BASE_HEIGHT + insets.bottom;
+
   return (
     <View
-      style={[{ height: '95%', width: '100%' }, currentStyle?.background_style]}
+      style={[
+        { flex: 1, paddingBottom: tabbarHeight, width: '100%' },
+        currentStyle?.background_style,
+      ]}
     >
       <CourseTable
         data={courses}

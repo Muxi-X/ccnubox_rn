@@ -82,26 +82,27 @@
 ## 开发环境版本
 
 - **Node.js**: >=22.13.0
-- **pnpm**: 11.1.1
-- **React**: 19.1.1
-- **React Native**: 0.82.1
-- **Expo**: 55.0.24
+- **pnpm**: 11.6.0
+- **React**: 19.2.3
+- **React Native**: 0.85.3
+- **Expo**: 56.0.20
 - **Gradle**: 8.6
 - **Android SDK**: 34 (compileSdkVersion)
 - **Android Build Tools**: 34.0.0
 - **JDK**: 17
-- **TypeScript**: ~5.9.3
+- **TypeScript**: ~6.0.3
 
 ## Harmony 适配构建
 
-当前 Harmony 适配依赖 `expo-harmony-toolkit@1.8.3`，矩阵边界如下：
+当前 Harmony 适配使用预发布版 `expo-harmony-toolkit@2.0.0-next.0`，矩阵边界如下：
 
-- Expo 保持远端 `main` 的 SDK 55 patch 线。
-- `react` / `react-dom` 锁定为 `19.1.1`，`react-native` 锁定为 `0.82.1`。
+- 应用主线已升级到 Expo SDK 56、React Native `0.85.3`，但 toolkit
+  当前已验证矩阵仍是 `expo55-rnoh082-ui-stack`。因此 doctor 会报告
+  `ineligible`，不能把安装或脚手架成功当成 Harmony 发布就绪证据。
 - `@react-native-oh/react-native-harmony` 和
   `@react-native-oh/react-native-harmony-cli` 锁定为 `0.82.29`。
-- 公开矩阵仍是 `expo55-rnoh082-ui-stack`，当前不声明 RN `0.83.x`
-  已支持 Harmony。
+- Harmony adapter 继续按 experimental lane 管理，bundle、debug HAP、模拟器和
+  真机证据必须分别记录。
 - `react-native-svg` Harmony adapter 使用 toolkit 矩阵允许的 npm fallback
   `15.0.1-rc.11`，避免 GitHub tarball 在安装阶段执行 prepack 失败。
 
@@ -109,6 +110,7 @@
 
 ```bash
 pnpm install --frozen-lockfile
+pnpm exec expo-harmony --version
 pnpm harmony:doctor --target-tier experimental --json
 pnpm harmony:sync-template
 pnpm harmony:bundle
@@ -133,10 +135,10 @@ harmony/signing/release.cer
 ```
 
 真实密码、p12、profile、cert、HAP/HAR、`oh_modules`、raw
-bundle/assets都不应提交。可以复制 `.expo-harmony/signing.local.example.json`
+bundle/assets 都不应提交。可以复制 `.expo-harmony/signing.local.example.json`
 为本地 `signing.local.json` 后填写真实路径和密码。
 
-本 PR 的构建或模拟器证据只说明本地 build-chain
+当前构建或模拟器证据只说明本地 build-chain
 / 模拟器启动链路通过，不等同于真机 verified、AppGallery 生产签名或所有业务能力的运行时验收。
 
 ## 推荐开发调试方法
@@ -174,7 +176,7 @@ message 中，以便后续追查与回溯。
 
 ## 项目基建以及代码规范
 
-本仓库并未严格限制 `eslint`，请先熟悉现有基建，再着手开发 **_保证代码质量_**
+本仓库使用 `oxlint` 和 `oxfmt` 约束代码风格，请先熟悉现有基建，再着手开发 **_保证代码质量_**
 
 ### 接口
 

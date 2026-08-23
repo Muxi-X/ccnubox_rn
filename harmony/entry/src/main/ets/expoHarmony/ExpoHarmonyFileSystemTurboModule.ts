@@ -1,5 +1,8 @@
 import fs from '@ohos.file.fs';
-import { AnyThreadTurboModule, AnyThreadTurboModuleContext } from '@rnoh/react-native-openharmony/ts';
+import {
+  AnyThreadTurboModule,
+  AnyThreadTurboModuleContext,
+} from '@rnoh/react-native-openharmony/ts';
 
 const MAX_IN_MEMORY_DOWNLOAD_BYTES = 25 * 1024 * 1024;
 
@@ -68,13 +71,17 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       documentDirectoryPath: this.documentDirectoryPath,
       cacheDirectoryPath: this.cacheDirectoryPath,
       bundleDirectoryPath:
-        typeof abilityContext.bundleCodeDir === 'string' && abilityContext.bundleCodeDir.length > 0
+        typeof abilityContext.bundleCodeDir === 'string' &&
+        abilityContext.bundleCodeDir.length > 0
           ? abilityContext.bundleCodeDir
           : null,
     };
   }
 
-  async getInfo(path: string, options?: FileInfoOptions): Promise<FileInfoResult> {
+  async getInfo(
+    path: string,
+    options?: FileInfoOptions
+  ): Promise<FileInfoResult> {
     this.assertMd5Unsupported(options);
 
     const normalizedPath = this.normalizeSandboxPath(path, true);
@@ -102,12 +109,14 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     const normalizedPath = this.normalizeSandboxPath(path, true);
     const encoding = options?.encoding ?? 'utf8';
     const bytes = await this.readFileBytes(normalizedPath);
-    const position = typeof options?.position === 'number' && options.position > 0
-      ? Math.floor(options.position)
-      : 0;
-    const length = typeof options?.length === 'number' && options.length >= 0
-      ? Math.floor(options.length)
-      : bytes.length - position;
+    const position =
+      typeof options?.position === 'number' && options.position > 0
+        ? Math.floor(options.position)
+        : 0;
+    const length =
+      typeof options?.length === 'number' && options.length >= 0
+        ? Math.floor(options.length)
+        : bytes.length - position;
     const slicedBytes = bytes.slice(position, position + length);
 
     if (encoding === 'base64') {
@@ -117,7 +126,11 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     return this.decodeUtf8(slicedBytes);
   }
 
-  async writeAsString(path: string, contents: string, options?: WriteOptions): Promise<void> {
+  async writeAsString(
+    path: string,
+    contents: string,
+    options?: WriteOptions
+  ): Promise<void> {
     const normalizedPath = this.normalizeSandboxPath(path);
     const encoding = options?.encoding ?? 'utf8';
 
@@ -127,7 +140,7 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       normalizedPath,
       fs.OpenMode.READ_WRITE |
         fs.OpenMode.CREATE |
-        (options?.append === true ? fs.OpenMode.APPEND : fs.OpenMode.TRUNC),
+        (options?.append === true ? fs.OpenMode.APPEND : fs.OpenMode.TRUNC)
     );
 
     try {
@@ -147,7 +160,10 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     await this.deleteInternal(normalizedPath, options?.idempotent === true);
   }
 
-  async makeDirectory(path: string, options?: MakeDirectoryOptions): Promise<void> {
+  async makeDirectory(
+    path: string,
+    options?: MakeDirectoryOptions
+  ): Promise<void> {
     const normalizedPath = this.normalizeSandboxPath(path);
     await fs.mkdir(normalizedPath, options?.intermediates === true);
   }
@@ -187,23 +203,35 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     await fs.moveFile(fromPath, toPath);
   }
 
-  async download(url: string, destinationPath: string, options?: DownloadOptions): Promise<DownloadResult> {
+  async download(
+    url: string,
+    destinationPath: string,
+    options?: DownloadOptions
+  ): Promise<DownloadResult> {
     this.assertMd5Unsupported(options);
 
-    const normalizedDestinationPath = this.normalizeSandboxPath(destinationPath);
+    const normalizedDestinationPath =
+      this.normalizeSandboxPath(destinationPath);
     await this.ensureParentDirectory(normalizedDestinationPath);
-    const fetchFn = (globalThis as {
-      fetch?: (input: string, init?: { headers?: Record<string, string> }) => Promise<{
-        arrayBuffer: () => Promise<ArrayBuffer>;
-        headers?: {
-          get?: (name: string) => string | null;
-        };
-        status?: number;
-      }>;
-    }).fetch;
+    const fetchFn = (
+      globalThis as {
+        fetch?: (
+          input: string,
+          init?: { headers?: Record<string, string> }
+        ) => Promise<{
+          arrayBuffer: () => Promise<ArrayBuffer>;
+          headers?: {
+            get?: (name: string) => string | null;
+          };
+          status?: number;
+        }>;
+      }
+    ).fetch;
 
     if (typeof fetchFn !== 'function') {
-      throw new Error('ExpoHarmonyFileSystem requires global fetch support for downloadAsync.');
+      throw new Error(
+        'ExpoHarmonyFileSystem requires global fetch support for downloadAsync.'
+      );
     }
 
     const response = await fetchFn(url, {
@@ -211,19 +239,26 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     });
     const contentLength = this.getContentLength(response.headers);
 
-    if (contentLength !== null && contentLength > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
-      throw new Error('ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.');
+    if (
+      contentLength !== null &&
+      contentLength > MAX_IN_MEMORY_DOWNLOAD_BYTES
+    ) {
+      throw new Error(
+        'ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.'
+      );
     }
 
     const responseBuffer = new Uint8Array(await response.arrayBuffer());
 
     if (responseBuffer.byteLength > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
-      throw new Error('ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.');
+      throw new Error(
+        'ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.'
+      );
     }
 
     const file = await fs.open(
       normalizedDestinationPath,
-      fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC,
+      fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC
     );
 
     try {
@@ -270,7 +305,9 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
 
     if (parentStat) {
       if (!parentStat.isDirectory()) {
-        throw new Error(`Expected parent path to be a directory: ${parentPath}`);
+        throw new Error(
+          `Expected parent path to be a directory: ${parentPath}`
+        );
       }
 
       return;
@@ -279,13 +316,21 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     await fs.mkdir(parentPath, true);
   }
 
-  private assertMd5Unsupported(options?: FileInfoOptions | DownloadOptions): void {
+  private assertMd5Unsupported(
+    options?: FileInfoOptions | DownloadOptions
+  ): void {
     if (options?.md5 === true) {
-      throw new Error('ExpoHarmonyFileSystem does not support md5 calculation yet.');
+      throw new Error(
+        'ExpoHarmonyFileSystem does not support md5 calculation yet.'
+      );
     }
   }
 
-  private assertNotSelfOrDescendant(fromPath: string, toPath: string, operation: string): void {
+  private assertNotSelfOrDescendant(
+    fromPath: string,
+    toPath: string,
+    operation: string
+  ): void {
     const normalizedFromPath = this.normalizeComparablePath(fromPath);
     const normalizedToPath = this.normalizeComparablePath(toPath);
 
@@ -293,7 +338,9 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       normalizedToPath === normalizedFromPath ||
       normalizedToPath.startsWith(`${normalizedFromPath}/`)
     ) {
-      throw new Error(`ExpoHarmonyFileSystem cannot ${operation} a directory into itself.`);
+      throw new Error(
+        `ExpoHarmonyFileSystem cannot ${operation} a directory into itself.`
+      );
     }
   }
 
@@ -307,8 +354,11 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     return normalizedPath;
   }
 
-  private getContentLength(headers?: { get?: (name: string) => string | null }): number | null {
-    const rawContentLength = headers?.get?.('content-length') ?? headers?.get?.('Content-Length');
+  private getContentLength(headers?: {
+    get?: (name: string) => string | null;
+  }): number | null {
+    const rawContentLength =
+      headers?.get?.('content-length') ?? headers?.get?.('Content-Length');
 
     if (typeof rawContentLength !== 'string' || rawContentLength.length === 0) {
       return null;
@@ -335,7 +385,10 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     return normalizedPath.slice(0, slashIndex);
   }
 
-  private async deleteInternal(targetPath: string, idempotent: boolean): Promise<void> {
+  private async deleteInternal(
+    targetPath: string,
+    idempotent: boolean
+  ): Promise<void> {
     const stat = await this.getStatOrNull(targetPath);
 
     if (!stat) {
@@ -370,7 +423,10 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       const entries = await fs.listFile(fromPath);
 
       for (const entryName of entries) {
-        await this.copyInternal(`${fromPath}/${entryName}`, `${toPath}/${entryName}`);
+        await this.copyInternal(
+          `${fromPath}/${entryName}`,
+          `${toPath}/${entryName}`
+        );
       }
 
       return;
@@ -410,8 +466,15 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       const bytesRead =
         typeof readResult === 'number'
           ? readResult
-          : Number((readResult as { bytesRead?: number })?.bytesRead ?? buffer.byteLength);
-      return new Uint8Array(buffer, 0, Math.max(0, Math.min(buffer.byteLength, bytesRead)));
+          : Number(
+              (readResult as { bytesRead?: number })?.bytesRead ??
+                buffer.byteLength
+            );
+      return new Uint8Array(
+        buffer,
+        0,
+        Math.max(0, Math.min(buffer.byteLength, bytesRead))
+      );
     } finally {
       await fs.close(file);
     }
@@ -427,12 +490,13 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     try {
       return decodeURIComponent(encoded);
     } catch (_error) {
-      return Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+      return Array.from(bytes, byte => String.fromCharCode(byte)).join('');
     }
   }
 
   private encodeBase64(bytes: Uint8Array): string {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const alphabet =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     let encoded = '';
 
     for (let index = 0; index < bytes.length; index += 3) {
@@ -443,15 +507,20 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
 
       encoded += alphabet[(combined >> 18) & 63] ?? 'A';
       encoded += alphabet[(combined >> 12) & 63] ?? 'A';
-      encoded += index + 1 < bytes.length ? alphabet[(combined >> 6) & 63] ?? 'A' : '=';
-      encoded += index + 2 < bytes.length ? alphabet[combined & 63] ?? 'A' : '=';
+      encoded +=
+        index + 1 < bytes.length
+          ? (alphabet[(combined >> 6) & 63] ?? 'A')
+          : '=';
+      encoded +=
+        index + 2 < bytes.length ? (alphabet[combined & 63] ?? 'A') : '=';
     }
 
     return encoded;
   }
 
   private decodeBase64(contents: string): Uint8Array {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const alphabet =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     const sanitizedContents = contents.replace(/\s+/g, '');
     const bytes: number[] = [];
 
@@ -489,34 +558,53 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     const sanitizedContents = contents.replace(/\s+/g, '');
     const isValid =
       sanitizedContents.length % 4 === 0 &&
-      /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(sanitizedContents);
+      /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(
+        sanitizedContents
+      );
 
     if (!isValid) {
       throw new Error('ExpoHarmonyFileSystem expected a valid base64 string.');
     }
   }
 
-  private normalizeSandboxPath(inputPath: string, allowBundleDirectory = false): string {
+  private normalizeSandboxPath(
+    inputPath: string,
+    allowBundleDirectory = false
+  ): string {
     if (typeof inputPath !== 'string' || inputPath.length === 0) {
-      throw new Error('ExpoHarmonyFileSystem expected a non-empty sandbox path.');
+      throw new Error(
+        'ExpoHarmonyFileSystem expected a non-empty sandbox path.'
+      );
     }
 
     if (!inputPath.startsWith('/')) {
-      throw new Error('ExpoHarmonyFileSystem accepts only absolute sandbox paths.');
+      throw new Error(
+        'ExpoHarmonyFileSystem accepts only absolute sandbox paths.'
+      );
     }
 
-    if (inputPath.includes('/../') || inputPath.endsWith('/..') || inputPath.includes('/./')) {
-      throw new Error('ExpoHarmonyFileSystem does not accept relative path segments.');
+    if (
+      inputPath.includes('/../') ||
+      inputPath.endsWith('/..') ||
+      inputPath.includes('/./')
+    ) {
+      throw new Error(
+        'ExpoHarmonyFileSystem does not accept relative path segments.'
+      );
     }
 
     const allowedRoots = [
       this.ctx.uiAbilityContext.filesDir,
       this.ctx.uiAbilityContext.cacheDir,
-      ...(allowBundleDirectory ? [this.getConstants().bundleDirectoryPath] : []),
-    ].filter((value): value is string => typeof value === 'string' && value.length > 0);
+      ...(allowBundleDirectory
+        ? [this.getConstants().bundleDirectoryPath]
+        : []),
+    ].filter(
+      (value): value is string => typeof value === 'string' && value.length > 0
+    );
 
     const isAllowed = allowedRoots.some(
-      (rootPath) => inputPath === rootPath || inputPath.startsWith(`${rootPath}/`),
+      rootPath => inputPath === rootPath || inputPath.startsWith(`${rootPath}/`)
     );
 
     if (!isAllowed) {

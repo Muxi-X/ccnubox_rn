@@ -1,5 +1,4 @@
 import { ThemeBasedComponentRecord } from '@/store/types';
-
 import CourseItem from '@/themeBasedComponents/android/courseItem';
 import HeaderCenter from '@/themeBasedComponents/android/headerCenter';
 import HeaderLeft from '@/themeBasedComponents/android/headerLeft';

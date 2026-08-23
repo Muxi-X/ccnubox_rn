@@ -1,7 +1,6 @@
 import React, { MutableRefObject, ReactElement } from 'react';
 
 import { SafeWebViewHandle } from '@/components/webview/SafeWebView';
-
 import {
   LayoutName,
   LayoutType,
@@ -52,18 +51,6 @@ export type scraperType = {
   injectJavaScript: (_injected: string) => void;
   /* 设置 ref */
   setRef: (_newRef: MutableRefObject<SafeWebViewHandle | null> | null) => void;
-};
-
-/** theme based components */
-export type ThemeBasedComponentsType = {
-  /** 所有的可替换组件 */
-  themeBasedComponents: ThemeBasedComponentMap;
-  /** 目前的可替换组件 */
-  CurrentComponents: ThemeBasedComponentRecord | null;
-  /** 设置 components */
-  setComponents: (_components: ThemeBasedComponentMap) => void;
-  /** 改变布局时，更改当前选择组件 */
-  changeComponents: (_layoutName: LayoutName) => void;
 };
 
 /** portal */

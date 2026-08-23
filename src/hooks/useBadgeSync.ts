@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
-import { useEvents } from '@/store/events';
-
 import { platformCapabilities } from '@/platform/capabilities';
+import { useEvents } from '@/store/events';
 import { jpushClient } from '@/utils/jpush';
 
 const useBadgeSync = () => {

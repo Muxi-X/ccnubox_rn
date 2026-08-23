@@ -9,9 +9,7 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonStyles } from '@/styles/common';
 import { log } from '@/utils/logger';
 import { calculateSemesterWeekCount } from '@/utils/semesterWeeks';
