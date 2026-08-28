@@ -2,11 +2,11 @@ import { request } from '@/request';
 
 /**
  * 获取电费信息
- * @param room_id 房间ID
+ * @param room_name 房间名称
  */
-export default async function getPrice(room_id: string) {
+export default async function getPrice(room_name: string) {
   const response = await request.get('/elecprice/getPrice', {
-    query: { room_id },
+    query: { room_name },
     header: { Authorization: '' },
   });
 

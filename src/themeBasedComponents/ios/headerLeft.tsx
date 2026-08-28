@@ -11,7 +11,7 @@ const HeaderLeft: React.FC<{ config?: MainPageGridDataType }> = () => {
   const pathname = usePathname();
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const handleBack = () => {
-    if (pathname.endsWith('electricityBillinBalance')) {
+    if (pathname.endsWith('electricityBalance')) {
       router.replace('/');
     } else {
       router.back();
