@@ -1,7 +1,7 @@
 {
   modelVersion: '5.0.0',
   name: 'com.muxixyz.ccnubox',
-  version: '3.1.8',
+  version: '3.1.10',
   description: '华师匣子 official minimal Harmony sample',
   dependencies: {
     '@react-native-oh-tpl/async-storage': 'file:../node_modules/@react-native-oh-tpl/async-storage/harmony/async_storage.har',
@@ -18,6 +18,10 @@
     '@react-native-oh-tpl/react-native-svg': 'file:../node_modules/@react-native-oh-tpl/react-native-svg/harmony/svg.har',
     '@react-native-oh-tpl/react-native-webview': 'file:../node_modules/@react-native-oh-tpl/react-native-webview/harmony/rn_webview.har',
     '@react-native-ohos/jpush-react-native': 'file:../node_modules/@react-native-ohos/jpush-react-native/harmony/jpush_react_native',
+    '@react-native-ohos/react-native-blob-util': 'file:../node_modules/@react-native-ohos/react-native-blob-util/harmony/blobUtil.har',
+    '@react-native-ohos/react-native-inappbrowser-reborn': 'file:../node_modules/@react-native-ohos/react-native-inappbrowser-reborn/harmony/inappbrowser.har',
+    '@react-native-ohos/react-native-linear-gradient': 'file:../node_modules/@react-native-ohos/react-native-linear-gradient/harmony/linear_gradient.har',
+    '@react-native-ohos/react-native-pdf': 'file:../node_modules/@react-native-ohos/react-native-pdf/harmony/pdfview.har',
   },
   devDependencies: {
     '@ohos/hypium': '1.0.6',

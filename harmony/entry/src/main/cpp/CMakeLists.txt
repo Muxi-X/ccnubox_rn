@@ -83,6 +83,22 @@ add_subdirectory(
   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../node_modules/@react-native-ohos/jpush-react-native/harmony/jpush_react_native/src/main/cpp"
   ./rnoh_jpush
 )
+add_subdirectory(
+  "${OH_MODULES_DIR}/@react-native-ohos/react-native-blob-util/src/main/cpp"
+  ./rnoh_blob_util
+)
+add_subdirectory(
+  "${OH_MODULES_DIR}/@react-native-ohos/react-native-inappbrowser-reborn/src/main/cpp"
+  ./rnoh_inappbrowser_reborn
+)
+add_subdirectory(
+  "${OH_MODULES_DIR}/@react-native-ohos/react-native-linear-gradient/src/main/cpp"
+  ./rnoh_linear_gradient
+)
+add_subdirectory(
+  "${OH_MODULES_DIR}/@react-native-ohos/react-native-pdf/src/main/cpp"
+  ./rnoh_pdf_view
+)
 
 if(DEFINED CMAKE_SYSROOT)
   set(RNOH_FORCE_ASSERT_INCLUDE "-include${CMAKE_SYSROOT}/usr/include/assert.h")
@@ -112,6 +128,10 @@ endif()
 target_link_libraries(rnoh_app PUBLIC rnoh)
 target_link_libraries(rnoh_app PUBLIC rnoh_skia)
 target_link_libraries(rnoh_app PUBLIC rnoh_jPushModule)
+target_link_libraries(rnoh_app PUBLIC rnoh_blob_util)
+target_link_libraries(rnoh_app PUBLIC rnoh_inappbrowser_reborn)
+target_link_libraries(rnoh_app PUBLIC rnoh_linear_gradient)
+target_link_libraries(rnoh_app PUBLIC rnoh_pdf_view)
 target_link_options(rnoh_app PRIVATE
   "-Wl,-z,relro,-z,now,-z,noexecstack"
   "$<$<CONFIG:Release>:-s>"

@@ -41,26 +41,29 @@ test('keeps the existing iOS and Android calendar renderers', () => {
   );
 });
 
-test('adds SafeWebView only as the Harmony calendar branch', () => {
+test('adds the native PDF renderer only as the Harmony calendar branch', () => {
   assert.match(
     calendarSource,
     /^import \{ isHarmony \} from '@\/platform\/runtime';$/m
   );
 
   const harmonyStart = compactSource.indexOf('isHarmony ? (');
-  const safeWebViewStart = compactSource.indexOf('<SafeWebView', harmonyStart);
+  const harmonyPdfStart = compactSource.indexOf(
+    '<AndroidCalendarView',
+    harmonyStart
+  );
   const nativeRoutingStart = compactSource.indexOf(
     'Platform.select({',
-    safeWebViewStart
+    harmonyPdfStart
   );
 
   assert.notEqual(harmonyStart, -1, 'Harmony must have an explicit branch');
   assert.ok(
-    safeWebViewStart > harmonyStart,
-    'Harmony must render through SafeWebView'
+    harmonyPdfStart > harmonyStart,
+    'Harmony must render through the native PDF adapter'
   );
   assert.ok(
-    nativeRoutingStart > safeWebViewStart,
+    nativeRoutingStart > harmonyPdfStart,
     'the original native routing must remain the non-Harmony branch'
   );
 });

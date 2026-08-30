@@ -19,6 +19,22 @@
     {
       "name": "microphone_reason",
       "value": "Microphone access is required for Harmony preview video recording flows."
+    },
+    {
+      "name": "image_library_reason",
+      "value": "用于读取您主动选择的图片，以提交反馈或设置课表背景。"
+    },
+    {
+      "name": "image_library_write_reason",
+      "value": "用于将您主动生成的课表图片保存到系统相册。"
+    },
+    {
+      "name": "course_widget_name",
+      "value": "今日课表"
+    },
+    {
+      "name": "course_widget_description",
+      "value": "显示今天的课程安排"
     }
   ]
 }

@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+export const isEnabled = false;
+export const runtimeVersion = null;
+export const updateId = null;
+
 const emptyUpdateCheckResult = {
   isAvailable: false,
   manifest: undefined,
@@ -34,10 +38,12 @@ export const useUpdates = () => {
       },
       availableUpdate: null,
       checkError: null,
+      downloadProgress: undefined,
       downloadError: null,
       isChecking: false,
       isDownloading: false,
       isRestarting: false,
+      isStartupProcedureRunning: false,
       isUpdateAvailable: false,
       isUpdatePending: false,
       lastCheckForUpdateTimeSinceRestart: null,

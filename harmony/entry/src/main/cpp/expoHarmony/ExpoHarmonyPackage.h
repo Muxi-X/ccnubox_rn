@@ -52,6 +52,15 @@ static jsi::Value __hostFunction_ExpoHarmonyCameraTurboModule_getConstants(
       .call(rt, "getConstants", args, count);
 }
 
+static jsi::Value __hostFunction_ExpoHarmonySystemTurboModule_getConstants(
+    jsi::Runtime& rt,
+    react::TurboModule& turboModule,
+    const jsi::Value* args,
+    size_t count) {
+  return static_cast<ArkTSTurboModule&>(turboModule)
+      .call(rt, "getConstants", args, count);
+}
+
 class JSI_EXPORT ExpoHarmonyFileSystemTurboModule : public ArkTSTurboModule {
  public:
   ExpoHarmonyFileSystemTurboModule(
@@ -194,6 +203,21 @@ class JSI_EXPORT ExpoHarmonySecureStorageTurboModule
   }
 };
 
+class JSI_EXPORT ExpoHarmonySystemTurboModule : public ArkTSTurboModule {
+ public:
+  ExpoHarmonySystemTurboModule(
+      const ArkTSTurboModule::Context ctx,
+      const std::string name)
+      : ArkTSTurboModule(ctx, name) {
+    methodMap_["getConstants"] = MethodMetadata{
+        0, __hostFunction_ExpoHarmonySystemTurboModule_getConstants};
+    methodMap_["triggerHaptic"] = MethodMetadata{
+        1, ARK_ASYNC_METHOD_CALLER(triggerHaptic)};
+    methodMap_["updateCourseWidget"] = MethodMetadata{
+        1, ARK_ASYNC_METHOD_CALLER(updateCourseWidget)};
+  }
+};
+
 class ExpoHarmonyTurboModuleFactoryDelegate : public TurboModuleFactoryDelegate {
  public:
   SharedTurboModule createTurboModule(Context ctx, const std::string& name)
@@ -212,6 +236,9 @@ class ExpoHarmonyTurboModuleFactoryDelegate : public TurboModuleFactoryDelegate 
     }
     if (name == "ExpoHarmonySecureStorage") {
       return std::make_shared<ExpoHarmonySecureStorageTurboModule>(ctx, name);
+    }
+    if (name == "ExpoHarmonySystem") {
+      return std::make_shared<ExpoHarmonySystemTurboModule>(ctx, name);
     }
 
     return nullptr;

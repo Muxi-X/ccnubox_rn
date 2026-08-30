@@ -1,5 +1,7 @@
+// @ts-expect-error The Harmony fork declares its API under the upstream module name.
+import NativeLinearGradient from '@react-native-ohos/react-native-linear-gradient';
 import * as React from 'react';
-import { View, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
 
 type LinearGradientProps = ViewProps & {
   colors: readonly string[];
@@ -8,20 +10,8 @@ type LinearGradientProps = ViewProps & {
   start?: { x: number; y: number };
 };
 
-export function LinearGradient({
-  colors,
-  style,
-  children,
-  ...props
-}: LinearGradientProps) {
-  return (
-    <View
-      {...props}
-      style={[style, { backgroundColor: colors[0] ?? 'transparent' }]}
-    >
-      {children}
-    </View>
-  );
+export function LinearGradient({ ...props }: LinearGradientProps) {
+  return <NativeLinearGradient {...props} colors={[...props.colors]} />;
 }
 
 export default LinearGradient;

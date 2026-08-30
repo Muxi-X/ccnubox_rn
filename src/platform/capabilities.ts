@@ -1,18 +1,18 @@
 import { defaultLayoutName, isAndroid, isHarmony, isIOS } from './runtime';
 
 export const platformCapabilities = {
-  attachmentUpload: !isHarmony,
+  attachmentUpload: true,
   badgeSync: true,
   courseExport: true,
-  edgeToEdge: !isHarmony,
-  haptics: !isHarmony,
-  inAppBrowser: !isHarmony,
+  edgeToEdge: true,
+  haptics: true,
+  inAppBrowser: true,
   liveActivity: isIOS && !isHarmony,
   nativePdf: true,
   push: true,
   secureStorageBackend: isHarmony ? 'asset-store' : 'secure-store',
   webView: true,
-  widgetSync: isAndroid && !isHarmony,
+  widgetSync: isAndroid || isHarmony,
 } as const;
 
 export const isCapabilityEnabled = <

@@ -12,6 +12,7 @@ import { ExpoHarmonyImagePickerTurboModule } from './ExpoHarmonyImagePickerTurbo
 import { ExpoHarmonyLocationTurboModule } from './ExpoHarmonyLocationTurboModule';
 import { ExpoHarmonyCameraTurboModule } from './ExpoHarmonyCameraTurboModule';
 import { ExpoHarmonySecureStorageTurboModule } from './ExpoHarmonySecureStorageTurboModule';
+import { ExpoHarmonySystemTurboModule } from './ExpoHarmonySystemTurboModule';
 
 export class ExpoHarmonyPackage extends RNOHPackage {
   override getAnyThreadTurboModuleFactoryByNameMap(): Map<
@@ -45,6 +46,10 @@ export class ExpoHarmonyPackage extends RNOHPackage {
       .set(
         ExpoHarmonyCameraTurboModule.NAME,
         (ctx) => new ExpoHarmonyCameraTurboModule(ctx),
+      )
+      .set(
+        ExpoHarmonySystemTurboModule.NAME,
+        (ctx) => new ExpoHarmonySystemTurboModule(ctx),
       );
   }
 

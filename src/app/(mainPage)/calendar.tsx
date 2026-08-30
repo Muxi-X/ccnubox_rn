@@ -12,7 +12,6 @@ import { WebView } from 'react-native-webview';
 
 import Text from '@/components/text';
 import View from '@/components/view';
-import SafeWebView from '@/components/webview/SafeWebView';
 import PdfRendererView from '@/platform/pdfRenderer';
 import { isHarmony } from '@/platform/runtime';
 import queryCalendars from '@/request/api/queryCalendars';
@@ -164,15 +163,7 @@ export default function Calendar() {
       </View>
       {selectedYear && links[selectedYear] ? (
         isHarmony ? (
-          <SafeWebView
-            style={[styles.webview, { width }]}
-            source={{ uri: links[selectedYear], cache: true }}
-            scalesPageToFit
-            javaScriptEnabled
-            domStorageEnabled
-            fallbackTitle="当前平台暂不支持校历内嵌查看"
-            fallbackMessage="鸿蒙适配阶段请改用系统浏览器打开校历页面。"
-          />
+          <AndroidCalendarView url={links[selectedYear]} year={selectedYear} />
         ) : (
           Platform.select({
             ios: (
@@ -201,7 +192,7 @@ export default function Calendar() {
   );
 }
 
-// Android: 下载 PDF 到本地后用 PdfRendererView 渲染
+// Android / Harmony: 下载 PDF 到本地后用平台原生 renderer 渲染
 const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
   url,
   year,

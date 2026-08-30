@@ -22,6 +22,14 @@ const expoHarmonyShims = {
     __dirname,
     '.expo-harmony/shims/expo-modules-core'
   ),
+  'expo-application': path.resolve(
+    __dirname,
+    'src/platform/harmonyExpoApplication.ts'
+  ),
+  'expo-clipboard': path.resolve(
+    __dirname,
+    '.expo-harmony/shims/expo-clipboard'
+  ),
   'expo-font': path.resolve(__dirname, 'src/platform/harmonyExpoFont.ts'),
   'expo-image-picker': path.resolve(
     __dirname,

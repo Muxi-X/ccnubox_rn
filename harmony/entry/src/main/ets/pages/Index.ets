@@ -23,7 +23,11 @@ struct Index {
           rnInstanceConfig: {
             name: 'ccnubox',
             createRNPackages: getRNOHPackages,
-            fontResourceByFontFamily: {},
+            fontResourceByFontFamily: {
+              antoutline: $rawfile('assets/node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf'),
+              MaterialIcons: $rawfile('assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
+              Ionicons: $rawfile('assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+            },
             enableDebugger: this.rnohCoreContext?.isDebugModeEnabled,
           },
           appKey: 'ccnubox',
@@ -38,5 +42,6 @@ struct Index {
     }
     .height('100%')
     .width('100%')
+    .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
   }
 }
