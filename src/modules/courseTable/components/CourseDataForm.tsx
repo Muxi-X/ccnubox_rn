@@ -273,19 +273,29 @@ export const CourseDataForm = (props: CourseFormProps) => {
                         label: `第${i + 1}周`,
                       })),
                     ]}
-                    defaultValue={[
-                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-                      18,
-                    ]}
+                    defaultValue={
+                      formData.weeks.length > 0
+                        ? formData.weeks
+                        : [
+                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                            16, 17, 18,
+                          ]
+                    }
                     onConfirm={values => {
                       const selectedWeeks = values.map(v => parseInt(v));
                       setFormData(prev => ({ ...prev, weeks: selectedWeeks }));
                     }}
-                    titleDisplayLogic={() =>
-                      formData.weeks.length > 0
-                        ? `${Math.min(...formData.weeks)}-${Math.max(...formData.weeks)}周`
-                        : '1-18周'
-                    }
+                    titleDisplayLogic={selectedWeeks => {
+                      if (!selectedWeeks || selectedWeeks.length === 0) {
+                        return '请选择周次';
+                      }
+                      const numWeeks = selectedWeeks
+                        .map(v => Number(v))
+                        .sort((a, b) => a - b);
+                      return numWeeks.length === 1
+                        ? `第${numWeeks[0]}周`
+                        : `${numWeeks[0]}-${numWeeks[numWeeks.length - 1]}周`;
+                    }}
                   >
                     <View style={{ width: percent2px(70) }}>
                       <View>
@@ -307,9 +317,27 @@ export const CourseDataForm = (props: CourseFormProps) => {
                   </MultiPicker>
                 ) : (
                   <Picker
-                    titleDisplayLogic={() =>
-                      `周${['一', '二', '三', '四', '五', '六', '日'][formData.day - 1]}${formData.dur_class}节`
-                    }
+                    defaultValue={[
+                      formData.day,
+                      parseInt(formData.dur_class.split('-')[0], 10) || 1,
+                      parseInt(formData.dur_class.split('-')[1], 10) || 2,
+                    ]}
+                    titleDisplayLogic={pickerVal => {
+                      const day = pickerVal[0] ?? formData.day;
+                      const start =
+                        pickerVal[1] ??
+                        parseInt(formData.dur_class.split('-')[0], 10) ??
+                        1;
+                      const end =
+                        pickerVal[2] ??
+                        parseInt(formData.dur_class.split('-')[1], 10) ??
+                        2;
+                      const dayLabel =
+                        ['一', '二', '三', '四', '五', '六', '日'][
+                          Number(day) - 1
+                        ] ?? '一';
+                      return `周${dayLabel}第${start}-${end}节`;
+                    }}
                     connectors={[
                       {
                         content: '到',

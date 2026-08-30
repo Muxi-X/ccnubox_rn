@@ -235,7 +235,6 @@ const Modal: React.FC<ModalProps> & {
                   : styles.modalContent,
                 !isTransparent && currentStyle?.modal_background_style,
               ]}
-              onStartShouldSetResponder={isTransparent ? undefined : () => true}
             >
               {isTransparent && <ModalBackground onPress={handleMaskPress} />}
               {modalContent}
@@ -251,7 +250,6 @@ const Modal: React.FC<ModalProps> & {
                   : styles.modalContent,
                 !isTransparent && currentStyle?.modal_background_style,
               ]}
-              onStartShouldSetResponder={isTransparent ? undefined : () => true}
             >
               {isTransparent && <ModalBackground onPress={handleMaskPress} />}
               {modalContent}
