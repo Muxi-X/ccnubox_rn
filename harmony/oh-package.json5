@@ -17,6 +17,7 @@
     '@react-native-oh-tpl/react-native-skia': 'file:../node_modules/@react-native-oh-tpl/react-native-skia/harmony/skia.har',
     '@react-native-oh-tpl/react-native-svg': 'file:../node_modules/@react-native-oh-tpl/react-native-svg/harmony/svg.har',
     '@react-native-oh-tpl/react-native-webview': 'file:../node_modules/@react-native-oh-tpl/react-native-webview/harmony/rn_webview.har',
+    '@react-native-ohos/jpush-react-native': 'file:../node_modules/@react-native-ohos/jpush-react-native/harmony/jpush_react_native',
   },
   devDependencies: {
     '@ohos/hypium': '1.0.6',

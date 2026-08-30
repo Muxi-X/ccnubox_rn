@@ -1,47 +1,18 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TurboModule, TurboModuleRegistry } from 'react-native';
 
-const fallbackAuthKeys = new Set(['shortToken', 'longToken']);
-const fallbackUserKey = 'user';
-const isHarmonyDebugCredential = (value: string) => value.startsWith('hdbg-');
+interface SecureStorageModule extends TurboModule {
+  deleteItem(_key: string): Promise<void>;
+  getItem(_key: string): Promise<string | null>;
+  setItem(_key: string, _value: string): Promise<void>;
+}
 
-const parseStoredUserPassword = (value: string) => {
-  try {
-    const parsed = JSON.parse(value) as { state?: { password?: unknown } };
-    return parsed.state?.password;
-  } catch {
-    return undefined;
-  }
-};
+const nativeStorage = TurboModuleRegistry.getEnforcing<SecureStorageModule>(
+  'ExpoHarmonySecureStorage'
+);
 
-const assertCanUseFallbackStorage = (key: string, value: string) => {
-  if (fallbackAuthKeys.has(key) && !isHarmonyDebugCredential(value)) {
-    throw new Error(
-      'Harmony secure storage fallback only accepts debug tokens'
-    );
-  }
-
-  if (key === fallbackUserKey) {
-    const password = parseStoredUserPassword(value);
-    if (
-      typeof password === 'string' &&
-      password &&
-      !isHarmonyDebugCredential(password)
-    ) {
-      throw new Error(
-        'Harmony secure storage fallback will not persist real passwords'
-      );
-    }
-  }
-};
-
-export const getItemAsync = AsyncStorage.getItem;
-
-export const setItemAsync = async (key: string, value: string) => {
-  assertCanUseFallbackStorage(key, value);
-  await AsyncStorage.setItem(key, value);
-};
-
-export const deleteItemAsync = AsyncStorage.removeItem;
+export const deleteItemAsync = nativeStorage.deleteItem.bind(nativeStorage);
+export const getItemAsync = nativeStorage.getItem.bind(nativeStorage);
+export const setItemAsync = nativeStorage.setItem.bind(nativeStorage);
 export const getItem = getItemAsync;
 export const setItem = setItemAsync;
 
@@ -54,4 +25,4 @@ export const secureStorage = {
   setItemAsync,
 };
 
-export const isUsingSecureStorageFallback = true;
+export const isUsingSecureStorageFallback = false;

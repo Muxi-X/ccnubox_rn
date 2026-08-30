@@ -11,6 +11,7 @@ import { ExpoHarmonyFileSystemTurboModule } from './ExpoHarmonyFileSystemTurboMo
 import { ExpoHarmonyImagePickerTurboModule } from './ExpoHarmonyImagePickerTurboModule';
 import { ExpoHarmonyLocationTurboModule } from './ExpoHarmonyLocationTurboModule';
 import { ExpoHarmonyCameraTurboModule } from './ExpoHarmonyCameraTurboModule';
+import { ExpoHarmonySecureStorageTurboModule } from './ExpoHarmonySecureStorageTurboModule';
 
 export class ExpoHarmonyPackage extends RNOHPackage {
   override getAnyThreadTurboModuleFactoryByNameMap(): Map<
@@ -25,6 +26,10 @@ export class ExpoHarmonyPackage extends RNOHPackage {
       .set(
         ExpoHarmonyLocationTurboModule.NAME,
         (ctx) => new ExpoHarmonyLocationTurboModule(ctx),
+      )
+      .set(
+        ExpoHarmonySecureStorageTurboModule.NAME,
+        (ctx) => new ExpoHarmonySecureStorageTurboModule(ctx),
       );
   }
 

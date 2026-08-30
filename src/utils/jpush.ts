@@ -4,6 +4,7 @@ import { NativeModules } from 'react-native';
 type RegistrationIdCallback = (result: { registerID?: string }) => void;
 type NotificationListener = (result: unknown) => void;
 type ConnectListener = (result: { connectEnable?: boolean }) => void;
+type NotificationEnabledCallback = (_enabled: boolean) => void;
 type JPushListener =
   | RegistrationIdCallback
   | NotificationListener
@@ -110,6 +111,11 @@ export const jpushClient = {
       },
       { requireInit: true }
     );
+  },
+  isNotificationEnabled(callback: NotificationEnabledCallback) {
+    return invokeJPush('isNotificationEnabled', () => {
+      JPush.isNotificationEnabled(callback);
+    });
   },
   removeListener(callback: JPushListener) {
     return invokeJPush('removeListener', () => {

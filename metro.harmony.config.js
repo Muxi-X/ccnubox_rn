@@ -14,6 +14,10 @@ const harmonyConfig = createHarmonyMetroConfig({
   reactNativeHarmonyPackageName: '@react-native-oh/react-native-harmony',
 });
 const expoHarmonyShims = {
+  '@shopify/react-native-skia': path.resolve(
+    __dirname,
+    'node_modules/@react-native-oh-tpl/react-native-skia/src/index.ts'
+  ),
   'expo-modules-core': path.resolve(
     __dirname,
     '.expo-harmony/shims/expo-modules-core'
@@ -23,11 +27,27 @@ const expoHarmonyShims = {
     __dirname,
     '.expo-harmony/shims/expo-image-picker'
   ),
+  'expo-image-manipulator': path.resolve(
+    __dirname,
+    'src/platform/harmonyExpoImageManipulator.ts'
+  ),
+  'expo-file-system/legacy': path.resolve(
+    __dirname,
+    '.expo-harmony/shims/expo-file-system/index.js'
+  ),
   'expo-linear-gradient': path.resolve(
     __dirname,
     'src/platform/harmonyExpoLinearGradient.tsx'
   ),
+  'jpush-react-native': path.resolve(
+    __dirname,
+    'node_modules/@react-native-ohos/jpush-react-native/index.js'
+  ),
   'expo-updates': path.resolve(__dirname, 'src/platform/harmonyExpoUpdates.ts'),
+  'expo-media-library/legacy': path.resolve(
+    __dirname,
+    '.expo-harmony/shims/expo-media-library/index.js'
+  ),
 };
 const projectRootModuleAliases = {
   '@': path.resolve(__dirname, 'src'),

@@ -86,6 +86,9 @@ importers:
       '@react-native-oh/react-native-harmony-cli':
         specifier: 0.82.29
         version: 0.82.29(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(@types/node@26.1.0)(metro@0.83.8)
+      '@react-native-ohos/jpush-react-native':
+        specifier: 3.2.1-1
+        version: 3.2.1-1(jcore-react-native@2.3.6(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))
       '@react-navigation/core':
         specifier: 7.21.13
         version: 7.21.13(react@19.2.3)
@@ -2446,6 +2449,11 @@ packages:
     peerDependencies:
       react-native: 0.82.1
 
+  '@react-native-ohos/jpush-react-native@3.2.1-1':
+    resolution: {integrity: sha512-fLfMZpIkembrd5cVsH1nM7w26R1ER/4wJaTQiGNi1BJfxxvb6RYKQvKAUWWm5ll9QcIvP0PjFNUkufaQST96ow==}
+    peerDependencies:
+      react-native: '>= 0.50'
+
   '@react-native/assets-registry@0.82.1':
     resolution: {integrity: sha512-B1SRwpntaAcckiatxbjzylvNK562Ayza05gdJCjDQHTiDafa1OABmyB5LHt7qWDOpNkaluD+w11vHF7pBmTpzQ==}
     engines: {node: '>= 20.19.4'}
@@ -4605,6 +4613,12 @@ packages:
 
   joi@17.13.6:
     resolution: {integrity: sha512-ImNZaq/LSysofih+xIGYfR0WUXMA9GLUNB//YTCSrZptoRmVgaNAdJyi6K1kXi9pkLEoSkoI8I4UwtNiu/D7nw==}
+
+  jpush-react-native@3.1.8:
+    resolution: {integrity: sha512-ht/gVfUEvzkhiWtKLeBaWTPZUCoZqaOc2Rxen61t1PvUJAfktwKqd9+3krF2oTmBFstU+3D7iHqeickb2fGv8g==}
+    peerDependencies:
+      jcore-react-native: '>= 1.9.3'
+      react-native: '>= 0.50'
 
   jpush-react-native@3.2.7:
     resolution: {integrity: sha512-oKZXNXnXMeyNBDmFEh70yVBsAhCyOgMmAT5VBiR3pfnk0cRgS/KQrDjng2flG9MPH8W9SKjov4gjQ5k/kCvHkA==}
@@ -9253,6 +9267,13 @@ snapshots:
       - react
       - utf-8-validate
 
+  '@react-native-ohos/jpush-react-native@3.2.1-1(jcore-react-native@2.3.6(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))':
+    dependencies:
+      jpush-react-native: 3.1.8(jcore-react-native@2.3.6(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))
+      react-native: 0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
+    transitivePeerDependencies:
+      - jcore-react-native
+
   '@react-native/assets-registry@0.82.1': {}
 
   '@react-native/assets-registry@0.85.3': {}
@@ -11666,6 +11687,11 @@ snapshots:
       '@sideway/address': 4.1.5
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+
+  jpush-react-native@3.1.8(jcore-react-native@2.3.6(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)):
+    dependencies:
+      jcore-react-native: 2.3.6(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))
+      react-native: 0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
 
   jpush-react-native@3.2.7(jcore-react-native@2.3.6(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)):
     dependencies:

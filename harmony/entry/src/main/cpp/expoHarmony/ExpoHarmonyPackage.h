@@ -178,6 +178,22 @@ class JSI_EXPORT ExpoHarmonyCameraTurboModule : public ArkTSTurboModule {
   }
 };
 
+class JSI_EXPORT ExpoHarmonySecureStorageTurboModule
+    : public ArkTSTurboModule {
+ public:
+  ExpoHarmonySecureStorageTurboModule(
+      const ArkTSTurboModule::Context ctx,
+      const std::string name)
+      : ArkTSTurboModule(ctx, name) {
+    methodMap_["getItem"] = MethodMetadata{
+        1, ARK_ASYNC_METHOD_CALLER(getItem)};
+    methodMap_["setItem"] = MethodMetadata{
+        2, ARK_ASYNC_METHOD_CALLER(setItem)};
+    methodMap_["deleteItem"] = MethodMetadata{
+        1, ARK_ASYNC_METHOD_CALLER(deleteItem)};
+  }
+};
+
 class ExpoHarmonyTurboModuleFactoryDelegate : public TurboModuleFactoryDelegate {
  public:
   SharedTurboModule createTurboModule(Context ctx, const std::string& name)
@@ -193,6 +209,9 @@ class ExpoHarmonyTurboModuleFactoryDelegate : public TurboModuleFactoryDelegate 
     }
     if (name == "ExpoHarmonyCamera") {
       return std::make_shared<ExpoHarmonyCameraTurboModule>(ctx, name);
+    }
+    if (name == "ExpoHarmonySecureStorage") {
+      return std::make_shared<ExpoHarmonySecureStorageTurboModule>(ctx, name);
     }
 
     return nullptr;

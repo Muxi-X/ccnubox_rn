@@ -16,8 +16,8 @@ test('keeps the existing iOS and Android native configuration', () => {
   );
   assert.match(
     config,
-    /const isHarmonyBundle = process\.argv\.includes\('bundle-harmony'\);/,
-    'only the Harmony CLI compatibility path may omit unsupported project fields'
+    /argument === 'bundle-harmony' \|\| argument === 'codegen-harmony'/,
+    'only Harmony CLI compatibility paths may omit unsupported project fields'
   );
   assert.match(
     config,
@@ -54,7 +54,8 @@ test('uses original native modules by default and Harmony replacements only on H
   assert.match(storage, /export const getItem = SecureStore\.getItem;/);
   assert.match(storage, /export const setItem = SecureStore\.setItem;/);
   assert.doesNotMatch(storage, /AsyncStorage/);
-  assert.match(harmonyStorage, /AsyncStorage/);
+  assert.match(harmonyStorage, /ExpoHarmonySecureStorage/);
+  assert.doesNotMatch(harmonyStorage, /AsyncStorage/);
 });
 
 test('keeps native WebView and system UI paths intact', () => {

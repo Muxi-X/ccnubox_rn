@@ -10,7 +10,7 @@ export const platformCapabilities = {
   liveActivity: isIOS && !isHarmony,
   nativePdf: true,
   push: true,
-  secureStorageBackend: isHarmony ? 'async-storage' : 'secure-store',
+  secureStorageBackend: isHarmony ? 'asset-store' : 'secure-store',
   webView: true,
   widgetSync: isAndroid && !isHarmony,
 } as const;

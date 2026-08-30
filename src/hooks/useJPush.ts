@@ -266,8 +266,18 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
     return false;
   }
 
+  if (isHarmony) {
+    if (!requestIfNeeded) return true;
+
+    return new Promise<boolean>(resolve => {
+      if (!jpushClient.isNotificationEnabled(resolve)) {
+        resolve(false);
+      }
+    });
+  }
+
   const Notifications = await getNotificationsModule();
-  if (!Notifications) return isHarmony;
+  if (!Notifications) return false;
 
   const currentSettings = await Notifications.getPermissionsAsync();
   if (hasGrantedPushPermission(currentSettings, Notifications)) {
@@ -322,6 +332,10 @@ export const initializeJPush = async ({
         console.warn('[JPush] 原生模块不存在，跳过初始化');
         return false;
       }
+      if (isHarmony && !JPushSecrets.appKey) {
+        console.warn('[JPush] Harmony 缺少 JPUSH_APP_KEY，跳过初始化');
+        return false;
+      }
 
       const Notifications = await getNotificationsModule();
       if (!Notifications && !isHarmony) return false;
@@ -347,7 +361,7 @@ export const initializeJPush = async ({
         jpushClient.setLoggerEnable(__DEV__);
         const initSucceeded = jpushClient.init({
           appKey: JPushSecrets.appKey,
-          channel: JPushSecrets.channel,
+          channel: JPushSecrets.channel || (isHarmony ? 'harmony' : ''),
           production: Boolean(__DEV__ ? 0 : 1),
         });
         if (!initSucceeded) {

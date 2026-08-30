@@ -53,6 +53,7 @@
     "@react-native-oh-tpl/react-native-webview": "13.10.3",
     "@react-native-oh/react-native-harmony": "0.82.29",
     "@react-native-oh/react-native-harmony-cli": "0.82.29",
+    "@react-native-ohos/jpush-react-native": "3.2.1-1",
     "@react-navigation/core": "7.21.13",
     "@react-navigation/native": "7.3.17",
     "@rneui/base": "5.0.0",

@@ -42,6 +42,48 @@ add_compile_options(
 add_subdirectory("${RNOH_CPP_DIR}" ./rn)
 include("${CMAKE_CURRENT_SOURCE_DIR}/autolinking.cmake")
 
+# The Harmony Skia adapter still references APIs removed from RN/RNOH 0.82.
+# Patch the generated ohpm sources before CMake compiles them.
+set(RNOH_SKIA_COMPAT_HEADERS
+  "${OH_MODULES_DIR}/@react-native-oh-tpl/react-native-skia/src/main/cpp/rnskia/HarmonyPlatformContext.h"
+  "${OH_MODULES_DIR}/@react-native-oh-tpl/react-native-skia/src/main/cpp/SkiaDomViewComponentDescriptor.h"
+  "${OH_MODULES_DIR}/@react-native-oh-tpl/react-native-skia/src/main/cpp/SkiaPictureViewComponentDescriptor.h"
+)
+foreach(RNOH_SKIA_COMPAT_HEADER ${RNOH_SKIA_COMPAT_HEADERS})
+  file(READ "${RNOH_SKIA_COMPAT_HEADER}" RNOH_SKIA_COMPAT_SOURCE)
+  set(RNOH_SKIA_COMPAT_ORIGINAL "${RNOH_SKIA_COMPAT_SOURCE}")
+  string(REPLACE
+    "    friend rnoh::ArkTSTurboModule::Context rnoh::ArkTSTurboModule::getContext();\n"
+    ""
+    RNOH_SKIA_COMPAT_SOURCE
+    "${RNOH_SKIA_COMPAT_SOURCE}"
+  )
+  string(REPLACE
+    "mode(CoreFeatures::enablePropIteratorSetter\n                   ? sourceProps.mode\n                   : convertRawProp(context, rawProps, \"mode\", sourceProps.mode, {}))"
+    "mode(convertRawProp(context, rawProps, \"mode\", sourceProps.mode, {}))"
+    RNOH_SKIA_COMPAT_SOURCE
+    "${RNOH_SKIA_COMPAT_SOURCE}"
+  )
+  string(REPLACE
+    "debug(CoreFeatures::enablePropIteratorSetter\n                    ? sourceProps.debug\n                    : convertRawProp(context, rawProps, \"debug\", sourceProps.debug, {true}))"
+    "debug(convertRawProp(context, rawProps, \"debug\", sourceProps.debug, {true}))"
+    RNOH_SKIA_COMPAT_SOURCE
+    "${RNOH_SKIA_COMPAT_SOURCE}"
+  )
+  if(NOT RNOH_SKIA_COMPAT_SOURCE STREQUAL RNOH_SKIA_COMPAT_ORIGINAL)
+    file(WRITE "${RNOH_SKIA_COMPAT_HEADER}" "${RNOH_SKIA_COMPAT_SOURCE}")
+  endif()
+endforeach()
+
+add_subdirectory(
+  "${OH_MODULES_DIR}/@react-native-oh-tpl/react-native-skia/src/main/cpp"
+  ./rnoh_skia
+)
+add_subdirectory(
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../node_modules/@react-native-ohos/jpush-react-native/harmony/jpush_react_native/src/main/cpp"
+  ./rnoh_jpush
+)
+
 if(DEFINED CMAKE_SYSROOT)
   set(RNOH_FORCE_ASSERT_INCLUDE "-include${CMAKE_SYSROOT}/usr/include/assert.h")
   add_compile_options("${RNOH_FORCE_ASSERT_INCLUDE}")
@@ -68,6 +110,8 @@ if(DEFINED CMAKE_SYSROOT)
 endif()
 
 target_link_libraries(rnoh_app PUBLIC rnoh)
+target_link_libraries(rnoh_app PUBLIC rnoh_skia)
+target_link_libraries(rnoh_app PUBLIC rnoh_jPushModule)
 target_link_options(rnoh_app PRIVATE
   "-Wl,-z,relro,-z,now,-z,noexecstack"
   "$<$<CONFIG:Release>:-s>"

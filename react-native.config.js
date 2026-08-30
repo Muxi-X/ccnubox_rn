@@ -1,4 +1,6 @@
-const isHarmonyBundle = process.argv.includes('bundle-harmony');
+const isHarmonyCommand = process.argv.some(
+  argument => argument === 'bundle-harmony' || argument === 'codegen-harmony'
+);
 
 module.exports = {
   assets: ['node_modules/@ant-design/icons-react-native/fonts'],
@@ -10,7 +12,7 @@ module.exports = {
       },
     },
   },
-  ...(isHarmonyBundle
+  ...(isHarmonyCommand
     ? {}
     : {
         project: {
