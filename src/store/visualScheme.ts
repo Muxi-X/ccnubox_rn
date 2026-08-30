@@ -9,16 +9,26 @@ import { setSystemUITheme } from '@/utils/systemUI';
 
 import { LayoutSelectSpec, visualSchemeType } from './types';
 
+const initialTheme = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
+const initialLayout: LayoutName = Platform.OS === 'ios' ? 'ios' : 'android';
+const initialLayouts = new Map(Object.entries(layoutMap)) as Map<
+  LayoutName,
+  LayoutType
+>;
+const initialCurrentStyle = layoutMap[initialLayout][
+  initialTheme
+] as SingleThemeType;
+
 /** 配色、布局整体store类型 */
 const useVisualScheme = create<visualSchemeType>()(
   persist(
     (set, get) => ({
       isAutoTheme: true,
-      themeName: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
-      layoutName: Platform.OS === 'ios' ? 'ios' : 'android',
-      iconStyleName: Platform.OS === 'ios' ? 'ios' : 'android',
-      currentStyle: null,
-      layouts: new Map(),
+      themeName: initialTheme,
+      layoutName: initialLayout,
+      iconStyleName: initialLayout,
+      currentStyle: initialCurrentStyle,
+      layouts: initialLayouts,
       init: () => {
         set(state => {
           const newLayouts = new Map(Object.entries(layoutMap)) as Map<
@@ -148,6 +158,31 @@ const useVisualScheme = create<visualSchemeType>()(
     {
       name: 'visualScheme',
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: state => ({
+        isAutoTheme: state.isAutoTheme,
+        themeName: state.themeName,
+        layoutName: state.layoutName,
+        iconStyleName: state.iconStyleName,
+      }),
+      onRehydrateStorage: () => state => {
+        if (state) {
+          const layouts = new Map(Object.entries(layoutMap)) as Map<
+            LayoutName,
+            LayoutType
+          >;
+          const currentTheme = state.isAutoTheme
+            ? Appearance.getColorScheme() === 'dark'
+              ? 'dark'
+              : 'light'
+            : state.themeName;
+          state.layouts = layouts;
+          state.themeName = currentTheme;
+          state.currentStyle =
+            (layoutMap[state.layoutName]?.[currentTheme] as SingleThemeType) ??
+            initialCurrentStyle;
+          setSystemUITheme(currentTheme);
+        }
+      },
     }
   )
 );

@@ -188,6 +188,9 @@ const Modal: React.FC<ModalProps> & {
     onCancel,
     confirmText,
     onConfirm,
+    isBottomMode,
+    themeName,
+    currentStyle,
   ]);
   useEffect(() => {
     if (!visible) {
