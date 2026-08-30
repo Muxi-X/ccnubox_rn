@@ -3,7 +3,7 @@
     "name": "华师匣子",
     "slug": "ccnubox",
     "owner": "muxi_fe",
-    "version": "3.1.8",
+    "version": "3.1.10",
     "runtimeVersion": "3.1.8",
     "platforms": ["ios", "android"],
     "orientation": "portrait",
@@ -57,7 +57,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "release-20240916",
-      "buildNumber": "24",
+      "buildNumber": "25",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "用于地图功能获取您的当前位置并提供定位服务。",
         "NSPhotoLibraryUsageDescription": "用于选择您主动添加的图片，以完成反馈或设置课表背景。",
@@ -88,7 +88,7 @@
         "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
       "package": "com.muxixyz.ccnubox",
-      "versionCode": 24
+      "versionCode": 25
     },
     "plugins": [
       "./plugins/remove-unused-ios-permissions",
