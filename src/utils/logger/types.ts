@@ -26,13 +26,20 @@ export interface LogMetric {
   tags?: Record<string, string | number | boolean>;
 }
 
+export interface RedactedError {
+  name?: string;
+  message?: string;
+  stack?: string;
+  [key: string]: unknown;
+}
+
 export interface LogEvent {
   level: LogLevel;
   message: string;
   timestamp: number;
   context: LoggerContext;
   data?: unknown;
-  error?: Error;
+  error?: Error | RedactedError;
   metric?: LogMetric;
 }
 

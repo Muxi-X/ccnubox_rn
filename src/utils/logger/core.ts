@@ -63,11 +63,14 @@ export class LoggerCore {
 
       let redactedData = data;
       let redactedContext = mergedContext;
+      let redactedError: LogEvent['error'] = error;
       try {
         redactedData =
           data !== undefined ? this.redactor.redact(data) : undefined;
         redactedContext = (this.redactor.redact(mergedContext) ||
           mergedContext) as LoggerContext;
+        redactedError =
+          error !== undefined ? this.redactor.redact(error) : undefined;
       } catch {
         // 降级保护
       }
@@ -78,7 +81,7 @@ export class LoggerCore {
         timestamp: Date.now(),
         context: redactedContext,
         data: redactedData,
-        error,
+        error: redactedError,
       };
 
       for (const adapter of this.adapters) {

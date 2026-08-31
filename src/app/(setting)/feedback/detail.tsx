@@ -24,7 +24,7 @@ import {
   getSingleFeedbackRecord,
 } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 import {
   FeedbackItem as FeedbackDetailItem,
@@ -95,7 +95,7 @@ export default function FeedbackDetail() {
             setFeedbackItem(null);
           }
         } catch (error) {
-          log.error('获取反馈详情异常:', error);
+          logger.error('获取反馈详情异常', error);
           Toast.fail('网络请求失败');
           setFeedbackItem(null);
         } finally {
@@ -154,7 +154,7 @@ export default function FeedbackDetail() {
         }
       } catch (err) {
         setImageUrls(tokens.map(() => ''));
-        log.error('获取图片异常:', err);
+        logger.error('获取图片异常', err);
       } finally {
         setIsLoadingImages(false);
       }

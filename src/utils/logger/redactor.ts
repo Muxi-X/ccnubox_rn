@@ -64,7 +64,7 @@ export class Redactor {
       return target;
     }
 
-    const seen = new WeakSet<object>();
+    const seen = new Set<object>();
 
     const internalRedact = (val: unknown, depth: number): unknown => {
       if (val === null || val === undefined) {
@@ -84,38 +84,42 @@ export class Redactor {
       }
       seen.add(val);
 
-      if (Array.isArray(val)) {
-        return val.map(item => internalRedact(item, depth + 1));
-      }
-
-      if (val instanceof Error) {
-        const errorCopy: Record<string, unknown> = {
-          name: val.name,
-          message: val.message,
-          stack: val.stack,
-        };
-        for (const [k, v] of Object.entries(val)) {
-          if (this.isSensitiveKey(k)) {
-            errorCopy[k] = this.mask;
-          } else {
-            errorCopy[k] = internalRedact(v, depth + 1);
-          }
-        }
-        return errorCopy;
-      }
-
       try {
-        const result: Record<string, unknown> = {};
-        for (const [key, value] of Object.entries(val)) {
-          if (this.isSensitiveKey(key)) {
-            result[key] = this.mask;
-          } else {
-            result[key] = internalRedact(value, depth + 1);
-          }
+        if (Array.isArray(val)) {
+          return val.map(item => internalRedact(item, depth + 1));
         }
-        return result;
-      } catch {
-        return String(val);
+
+        if (val instanceof Error) {
+          const errorCopy: Record<string, unknown> = {
+            name: val.name,
+            message: val.message,
+            stack: val.stack,
+          };
+          for (const [k, v] of Object.entries(val)) {
+            if (this.isSensitiveKey(k)) {
+              errorCopy[k] = this.mask;
+            } else {
+              errorCopy[k] = internalRedact(v, depth + 1);
+            }
+          }
+          return errorCopy;
+        }
+
+        try {
+          const result: Record<string, unknown> = {};
+          for (const [key, value] of Object.entries(val)) {
+            if (this.isSensitiveKey(key)) {
+              result[key] = this.mask;
+            } else {
+              result[key] = internalRedact(value, depth + 1);
+            }
+          }
+          return result;
+        } catch {
+          return String(val);
+        }
+      } finally {
+        seen.delete(val);
       }
     };
 

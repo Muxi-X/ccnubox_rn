@@ -14,7 +14,7 @@ import Toast from '@/components/toast';
 import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
 import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 // 区域数据
 const areaData = [
@@ -122,7 +122,7 @@ const ElectricityBillinQuiry = () => {
       }
     } catch (error) {
       setRooms([]);
-      log.error(error);
+      logger.error('获取宿舍房间数据异常', error);
       Toast.show({ icon: 'fail', text: '加载房间数据失败' });
     }
   };

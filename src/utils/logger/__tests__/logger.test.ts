@@ -60,7 +60,27 @@ function runTests() {
   const redactedCircular = redactor.redact(circular);
   assert(redactedCircular.tag === 'loop', '循环对象正常字段保留');
   assert(redactedCircular.self === '[Circular]', '循环引用转为 [Circular]');
-  console.log('✔ 2. 敏感数据深层递归脱敏与 WeakSet 循环引用保护测试通过');
+
+  // 同级兄弟节点共享同一对象引用测试（非循环引用）
+  const sharedChild = { key: 'shared', secret: 'abc' };
+  const siblingContainer = { first: sharedChild, second: sharedChild };
+  const redactedSibling = redactor.redact(siblingContainer) as any;
+  assert(redactedSibling.first.key === 'shared', '兄弟共享对象 first 正常解析');
+  assert(
+    redactedSibling.first.secret === '[REDACTED]',
+    '兄弟共享对象 first 字段脱敏'
+  );
+  assert(
+    redactedSibling.second.key === 'shared',
+    '兄弟共享对象 second 不被误判为 Circular'
+  );
+  assert(
+    redactedSibling.second.secret === '[REDACTED]',
+    '兄弟共享对象 second 字段脱敏'
+  );
+  console.log(
+    '✔ 2. 敏感数据深层递归脱敏、WeakSet 循环引用保护及兄弟节点引用测试通过'
+  );
 
   // 3. 核心管道与级别过滤测试 (level >= minLevel)
   const events: LogEvent[] = [];

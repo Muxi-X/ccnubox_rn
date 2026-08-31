@@ -129,6 +129,14 @@ export const setLogLevel = (level: LogLevel | number = 'info'): void => {
 
 type LegacyLogFn = (..._args: unknown[]) => void;
 
+const safeStringify = (val: unknown): string => {
+  try {
+    return JSON.stringify(val);
+  } catch {
+    return String(val);
+  }
+};
+
 const formatLegacyArgs = (
   args: unknown[]
 ): { message: string; data?: unknown; error?: Error } => {
@@ -148,7 +156,7 @@ const formatLegacyArgs = (
   }
 
   const [first, second, ...rest] = args;
-  const message = typeof first === 'string' ? first : JSON.stringify(first);
+  const message = typeof first === 'string' ? first : safeStringify(first);
 
   if (second instanceof Error) {
     return {
