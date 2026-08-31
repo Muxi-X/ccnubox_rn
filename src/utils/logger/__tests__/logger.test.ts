@@ -151,7 +151,15 @@ function runTests() {
   assert(events[0].context.token === '[REDACTED]', '上下文敏感字段被脱敏');
   console.log('✔ 5. 上下文合并与上下文敏感字段脱敏测试通过');
 
-  // 6. 门面 logger 与向后兼容 log.* / setLogLevel 测试
+  // 6. 异常对象与错误边界脱敏测试
+  const customError: any = new Error('Custom failure');
+  customError.password = 'super_secret_in_error';
+  const redactedErr = redactor.redact(customError) as any;
+  assert(redactedErr.message === 'Custom failure', 'Error message 保留');
+  assert(redactedErr.password === '[REDACTED]', 'Error 附加敏感属性被成功脱敏');
+  console.log('✔ 6. Error 对象与异常边界脱敏测试通过');
+
+  // 7. 门面 logger 与向后兼容 log.* / setLogLevel 测试
   const facadeEvents: LogEvent[] = [];
   const facadeAdapter: LoggerAdapter = {
     name: 'facade_test_adapter',

@@ -95,12 +95,16 @@ export class Redactor {
             message: val.message,
             stack: val.stack,
           };
-          for (const [k, v] of Object.entries(val)) {
-            if (this.isSensitiveKey(k)) {
-              errorCopy[k] = this.mask;
-            } else {
-              errorCopy[k] = internalRedact(v, depth + 1);
+          try {
+            for (const [k, v] of Object.entries(val)) {
+              if (this.isSensitiveKey(k)) {
+                errorCopy[k] = this.mask;
+              } else {
+                errorCopy[k] = internalRedact(v, depth + 1);
+              }
             }
+          } catch {
+            // Error 自定义属性遍历异常时，安全返回基础结构
           }
           return errorCopy;
         }
@@ -116,7 +120,7 @@ export class Redactor {
           }
           return result;
         } catch {
-          return String(val);
+          return '[Unredactable]';
         }
       } finally {
         seen.delete(val);
@@ -126,7 +130,7 @@ export class Redactor {
     try {
       return internalRedact(target, 0) as T;
     } catch {
-      return target;
+      return '[Unredactable]' as unknown as T;
     }
   }
 }

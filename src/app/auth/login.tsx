@@ -84,7 +84,15 @@ const LoginPage: FC = () => {
       } else {
         Toast.fail('网络连接异常，请稍后重试', 2);
       }
-      logger.error('登录请求失败', error);
+      if (error instanceof AxiosError) {
+        logger.error('登录请求失败', {
+          message: error.message,
+          status: error.response?.status,
+          code: error.code,
+        });
+      } else {
+        logger.error('登录请求未知异常', error);
+      }
     }
     setLoginTriggered(false);
   };
