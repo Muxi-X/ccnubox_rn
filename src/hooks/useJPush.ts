@@ -265,7 +265,13 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
   if (!Notifications) return false;
 
   const currentSettings = await Notifications.getPermissionsAsync();
-  if (hasGrantedPushPermission(currentSettings, Notifications)) {
+  const isProvisionallyAuthorized =
+    currentSettings.ios?.status ===
+    Notifications.IosAuthorizationStatus.PROVISIONAL;
+  if (
+    hasGrantedPushPermission(currentSettings, Notifications) &&
+    (!requestIfNeeded || !isProvisionallyAuthorized)
+  ) {
     return true;
   }
 
@@ -273,8 +279,19 @@ export const ensurePushPermission = async (requestIfNeeded = false) => {
     return false;
   }
 
-  const requestedSettings = await Notifications.requestPermissionsAsync();
-  return hasGrantedPushPermission(requestedSettings, Notifications);
+  const requestedSettings = await Notifications.requestPermissionsAsync({
+    ios: {
+      allowAlert: true,
+      allowBadge: true,
+      allowProvisional: false,
+      allowSound: true,
+    },
+  });
+  return (
+    hasGrantedPushPermission(requestedSettings, Notifications) &&
+    requestedSettings.ios?.status !==
+      Notifications.IosAuthorizationStatus.PROVISIONAL
+  );
 };
 
 const registerJPushListeners = async () => {
@@ -339,7 +356,7 @@ export const initializeJPush = async ({
         const initSucceeded = jpushClient.init({
           appKey: JPushSecrets.appKey,
           channel: JPushSecrets.channel,
-          production: Boolean(__DEV__ ? 0 : 1),
+          production: process.env.EXPO_PUBLIC_ENV === 'production',
         });
         if (!initSucceeded) {
           return false;
