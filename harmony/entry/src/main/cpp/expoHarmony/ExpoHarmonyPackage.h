@@ -213,6 +213,8 @@ class JSI_EXPORT ExpoHarmonySystemTurboModule : public ArkTSTurboModule {
         0, __hostFunction_ExpoHarmonySystemTurboModule_getConstants};
     methodMap_["triggerHaptic"] = MethodMetadata{
         1, ARK_ASYNC_METHOD_CALLER(triggerHaptic)};
+    methodMap_["consumeInitialNotificationOpened"] = MethodMetadata{
+        0, ARK_ASYNC_METHOD_CALLER(consumeInitialNotificationOpened)};
     methodMap_["updateCourseWidget"] = MethodMetadata{
         1, ARK_ASYNC_METHOD_CALLER(updateCourseWidget)};
   }

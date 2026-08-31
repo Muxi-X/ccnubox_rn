@@ -34,15 +34,27 @@ test('reports the current native version and keeps unsupported Harmony OTA expli
   assert.match(updates, /export const isEnabled = false/);
   assert.match(updates, /export const runtimeVersion = null/);
   assert.match(updates, /export const updateId = null/);
+  assert.match(
+    read('src/app/(setting)/checkUpdate.tsx'),
+    /鸿蒙版通过应用市场或安装包更新/
+  );
 });
 
 test('enables Harmony feedback attachments through the existing native picker and filesystem', () => {
   const capabilities = read('src/platform/capabilities.ts');
   const feedback = read('src/app/(setting)/feedback/writefeedback.tsx');
+  const nativePicker = read(
+    'harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyImagePickerTurboModule.ts'
+  );
 
   assert.match(capabilities, /attachmentUpload: true/);
   assert.match(feedback, /launchImageLibraryAsync/);
   assert.match(feedback, /uploadFileToFeishuBitable/);
+  assert.match(
+    nativePicker,
+    /isEditSupported = options\?\.allowsEditing === true/
+  );
+  assert.match(nativePicker, /imagePacker\.packToFile/);
 });
 
 test('renders Harmony PDFs and in-app browser content with maintained native adapters', () => {
@@ -82,6 +94,12 @@ test('syncs a native Harmony course widget and triggers real haptics', () => {
   const widgetStore = read(
     'harmony/entry/src/main/ets/widget/CourseWidgetStore.ts'
   );
+  const widgetAbility = read(
+    'harmony/entry/src/main/ets/widget/CourseWidgetAbility.ets'
+  );
+  const widgetConfig = read(
+    'harmony/entry/src/main/resources/base/profile/form_config.json'
+  );
   const moduleConfig = read('harmony/entry/src/main/module.json5');
 
   assert.match(capabilities, /haptics: true/);
@@ -94,6 +112,10 @@ test('syncs a native Harmony course widget and triggers real haptics', () => {
     /course\.day === day && course\.weeks\.includes\(currentWeek\)/
   );
   assert.match(widgetStore, /todayCourses\.sort/);
+  assert.match(widgetStore, /course6: formatCourse/);
+  assert.match(widgetStore, /WIDE_FORM_IDS_KEY/);
+  assert.match(widgetAbility, /FormDimension\.Dimension_2_4/);
+  assert.match(widgetConfig, /"2\*4"/);
   assert.match(moduleConfig, /CourseWidgetAbility/);
   assert.match(moduleConfig, /\$profile:form_config/);
 });

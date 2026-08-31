@@ -1,6 +1,7 @@
 import bundleManager from '@ohos.bundle.bundleManager';
 import vibrator from '@ohos.vibrator';
 import { UITurboModule } from '@rnoh/react-native-openharmony/ts';
+import { consumeInitialJPushOpened } from './JPushColdStartStore';
 import { saveAndRefreshCourseWidgets } from '../widget/CourseWidgetStore';
 
 export class ExpoHarmonySystemTurboModule extends UITurboModule {
@@ -26,6 +27,10 @@ export class ExpoHarmonySystemTurboModule extends UITurboModule {
       { type: 'time', duration: style === 'selection' ? 8 : 15 },
       { usage: 'touch' }
     );
+  }
+
+  async consumeInitialNotificationOpened(): Promise<string | null> {
+    return consumeInitialJPushOpened();
   }
 
   async updateCourseWidget(payload: string): Promise<void> {

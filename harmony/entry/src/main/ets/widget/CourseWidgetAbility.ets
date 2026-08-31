@@ -10,10 +10,13 @@ import {
 export default class CourseWidgetAbility extends FormExtensionAbility {
   onAddForm(want: Want): formBindingData.FormBindingData {
     const formId = want.parameters?.[formInfo.FormParam.IDENTITY_KEY];
+    const isWide =
+      want.parameters?.[formInfo.FormParam.DIMENSION_KEY] ===
+      formInfo.FormDimension.Dimension_2_4;
     if (typeof formId === 'string') {
-      void registerCourseWidget(this.context, formId);
+      void registerCourseWidget(this.context, formId, isWide);
     }
-    return createEmptyCourseWidgetBindingData();
+    return createEmptyCourseWidgetBindingData(isWide);
   }
 
   onUpdateForm(formId: string): void {

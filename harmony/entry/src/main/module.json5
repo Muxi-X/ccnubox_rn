@@ -16,16 +16,16 @@
         name: 'ohos.permission.VIBRATE',
       },
       {
-        name: 'ohos.permission.CAMERA',
-        reason: '$string:camera_reason',
+        name: 'ohos.permission.APPROXIMATELY_LOCATION',
+        reason: '$string:location_reason',
         usedScene: {
           abilities: ['EntryAbility'],
           when: 'inuse',
         },
       },
       {
-        name: 'ohos.permission.MICROPHONE',
-        reason: '$string:microphone_reason',
+        name: 'ohos.permission.LOCATION',
+        reason: '$string:location_reason',
         usedScene: {
           abilities: ['EntryAbility'],
           when: 'inuse',
@@ -58,6 +58,17 @@
         startWindowIcon: '$media:startIcon',
         startWindowBackground: '$color:start_window_background',
         visible: true,
+        skills: [
+          {
+            entities: ['entity.system.browsable'],
+            actions: ['ohos.want.action.viewData'],
+            uris: [
+              {
+                scheme: 'ccnubox',
+              },
+            ],
+          },
+        ],
       },
       {
         name: 'BrowserManagerAbility',

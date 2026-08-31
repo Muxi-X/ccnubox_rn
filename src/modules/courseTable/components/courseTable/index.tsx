@@ -8,7 +8,7 @@ import {
   useCanvasRef,
   useImage,
 } from '@shopify/react-native-skia';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library/legacy';
 import React, {

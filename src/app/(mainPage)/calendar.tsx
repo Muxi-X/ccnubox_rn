@@ -1,5 +1,5 @@
 import { Icon } from '@ant-design/react-native';
-import { File as ExpoFile, Paths } from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as React from 'react';
 import {
   ActivityIndicator,
@@ -201,16 +201,15 @@ const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
   const [source, setSource] = React.useState<string>();
 
   React.useEffect(() => {
-    const localFile = new ExpoFile(Paths.document, `calendar_${year}.pdf`);
+    const localUri = `${FileSystem.documentDirectory}calendar_${year}.pdf`;
 
-    if (localFile.exists) {
-      setSource(localFile.uri);
-      setDownloading(false);
-      return;
-    }
-
-    ExpoFile.downloadFileAsync(url, localFile)
-      .then(file => setSource(file.uri))
+    FileSystem.getInfoAsync(localUri)
+      .then(info =>
+        info.exists
+          ? localUri
+          : FileSystem.downloadAsync(url, localUri).then(file => file.uri)
+      )
+      .then(setSource)
       .finally(() => setDownloading(false));
   }, [url, year]);
 

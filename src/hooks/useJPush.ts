@@ -1,7 +1,12 @@
 import { isRunningInExpoGo } from 'expo';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import {
+  NativeModules,
+  Platform,
+  TurboModule,
+  TurboModuleRegistry,
+} from 'react-native';
 
 import { isHarmony, platformCapabilities } from '@/platform/capabilities';
 import { JPushSecrets } from '@/secret/JPush';
@@ -86,18 +91,25 @@ const extractUrlFromResult = (
 type PushUrlResolver = (pathOrUrl: string) => void;
 
 type NativeJPushColdStartBridgeModule = {
-  consumeInitialNotificationOpened?: () => Promise<Record<
-    string,
-    unknown
-  > | null>;
+  consumeInitialNotificationOpened?: () => Promise<
+    Record<string, unknown> | string | null
+  >;
 };
+
+interface ExpoHarmonySystemModule extends TurboModule {
+  consumeInitialNotificationOpened(): Promise<string | null>;
+}
 
 const consumeNativeInitialJPushOpened = async (stage: string) => {
   if (Platform.OS !== 'ios' && !isHarmony) return null;
 
-  const nativeBridge = (
-    NativeModules as { JPushColdStartBridge?: NativeJPushColdStartBridgeModule }
-  ).JPushColdStartBridge;
+  const nativeBridge: NativeJPushColdStartBridgeModule | null = isHarmony
+    ? TurboModuleRegistry.get<ExpoHarmonySystemModule>('ExpoHarmonySystem')
+    : ((
+        NativeModules as {
+          JPushColdStartBridge?: NativeJPushColdStartBridgeModule;
+        }
+      ).JPushColdStartBridge ?? null);
 
   if (typeof nativeBridge?.consumeInitialNotificationOpened !== 'function') {
     console.warn('[JPush] JPushColdStartBridge 不存在，无法读取冷启动点击消息');
@@ -105,7 +117,11 @@ const consumeNativeInitialJPushOpened = async (stage: string) => {
   }
 
   try {
-    const payload = await nativeBridge.consumeInitialNotificationOpened();
+    const rawPayload = await nativeBridge.consumeInitialNotificationOpened();
+    const payload =
+      typeof rawPayload === 'string'
+        ? (JSON.parse(rawPayload) as Record<string, unknown>)
+        : rawPayload;
     console.log(
       `[JPush] 读取桥接冷启动点击消息 (${stage}):`,
       payload ? JSON.stringify(payload) : 'null'
@@ -121,6 +137,7 @@ let pendingPushPath: string | null = null;
 let pushNavigationReady = false;
 let listenersRegistered = false;
 let initializationPromise: Promise<boolean> | null = null;
+let lastOpenedMessageId: string | null = null;
 
 export const setPushNavigationReady = (ready: boolean) => {
   pushNavigationReady = ready;
@@ -217,6 +234,28 @@ const convertRawApnsUserInfoToJPushOpenedResult = (
   };
 };
 
+const convertRawHarmonyJPushOpenedResult = (
+  message: Record<string, unknown>
+): JPushNotificationResult => ({
+  content: typeof message.content === 'string' ? message.content : undefined,
+  extras: message.extras,
+  messageID:
+    typeof message.msgId === 'string' || typeof message.msgId === 'number'
+      ? String(message.msgId)
+      : typeof message.messageID === 'string'
+        ? message.messageID
+        : undefined,
+  notificationEventType: 'notificationOpened',
+  title: typeof message.title === 'string' ? message.title : undefined,
+});
+
+const convertNativeInitialJPushOpenedResult = (
+  payload: Record<string, unknown>
+) =>
+  isHarmony
+    ? convertRawHarmonyJPushOpenedResult(payload)
+    : convertRawApnsUserInfoToJPushOpenedResult(payload);
+
 const handleConnectEvent = (result: { connectEnable?: boolean }) => {
   console.log(`[${Platform.OS}] JPush 连接状态变化:`, result);
   const isConnected = result.connectEnable ?? false;
@@ -237,6 +276,8 @@ const handleNotificationEvent = (result: unknown) => {
   );
 
   if (payload.notificationEventType !== 'notificationOpened') return;
+  if (payload.messageID && payload.messageID === lastOpenedMessageId) return;
+  lastOpenedMessageId = payload.messageID ?? null;
 
   console.log('[JPush] 用户点击了通知');
   const url = extractUrlFromResult(payload);
@@ -245,6 +286,10 @@ const handleNotificationEvent = (result: unknown) => {
   } else {
     console.log('[JPush] 通知被打开，但未找到跳转 URL');
   }
+};
+
+const handleLocalNotificationEvent = (result: unknown) => {
+  handleNotificationEvent(result);
 };
 
 const handleCustomMessage = (result: unknown) => {
@@ -297,16 +342,20 @@ const registerJPushListeners = async () => {
 
   jpushClient.removeListener(handleConnectEvent);
   jpushClient.removeListener(handleNotificationEvent);
+  jpushClient.removeListener(handleLocalNotificationEvent);
   jpushClient.removeListener(handleCustomMessage);
   jpushClient.addConnectEventListener(handleConnectEvent);
   jpushClient.addNotificationListener(handleNotificationEvent);
+  if (isHarmony) {
+    jpushClient.addLocalNotificationListener(handleLocalNotificationEvent);
+  }
   jpushClient.addCustomMessageListener(handleCustomMessage);
 
   const bridgedBeforeInit =
     await consumeNativeInitialJPushOpened('before-init');
   if (bridgedBeforeInit) {
     handleNotificationEvent(
-      convertRawApnsUserInfoToJPushOpenedResult(bridgedBeforeInit)
+      convertNativeInitialJPushOpenedResult(bridgedBeforeInit)
     );
   }
 
@@ -373,7 +422,7 @@ export const initializeJPush = async ({
           await consumeNativeInitialJPushOpened('after-init');
         if (bridgedAfterInit) {
           handleNotificationEvent(
-            convertRawApnsUserInfoToJPushOpenedResult(bridgedAfterInit)
+            convertNativeInitialJPushOpenedResult(bridgedAfterInit)
           );
         }
 

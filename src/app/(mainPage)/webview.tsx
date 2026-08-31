@@ -62,7 +62,7 @@ export default function Webview() {
 
   // 接管系统返回手势
   const [canGoBack, setCanGoBack] = useState(false);
-  const onAndroidBackPress = useCallback(() => {
+  const onBackPress = useCallback(() => {
     if (canGoBack) {
       webview.current?.goBack();
       return true; // prevent default behavior (exit app)
@@ -71,16 +71,16 @@ export default function Webview() {
   }, [canGoBack]);
 
   useEffect(() => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' || isHarmony) {
       const subscription = BackHandler.addEventListener(
         'hardwareBackPress',
-        onAndroidBackPress
+        onBackPress
       );
       return () => {
         subscription.remove();
       };
     }
-  }, [onAndroidBackPress]);
+  }, [onBackPress]);
 
   return (
     <>

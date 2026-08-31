@@ -63,7 +63,7 @@ const projectRootModuleAliases = {
 const uiStackRootModuleAliases = {
   '@react-native-async-storage/async-storage': path.resolve(
     __dirname,
-    'src/platform/harmonyAsyncStorage.js'
+    'node_modules/@react-native-oh-tpl/async-storage/src/index.ts'
   ),
   '@react-navigation/native': path.resolve(
     __dirname,
@@ -81,19 +81,19 @@ const uiStackRootModuleAliases = {
   ),
   'react-native-gesture-handler/DrawerLayout': path.resolve(
     __dirname,
-    'src/platform/harmonyGestureHandler/DrawerLayout.tsx'
+    'node_modules/react-native-gesture-handler/src/components/DrawerLayout.tsx'
   ),
   'react-native-gesture-handler/GestureDetector': path.resolve(
     __dirname,
-    'src/platform/harmonyGestureHandler/GestureDetector.tsx'
+    'node_modules/react-native-gesture-handler/src/handlers/gestures/GestureDetector/index.tsx'
   ),
   'react-native-gesture-handler/GestureHandlerRootView': path.resolve(
     __dirname,
-    'src/platform/harmonyGestureHandler/GestureHandlerRootView.tsx'
+    'node_modules/@react-native-oh-tpl/react-native-gesture-handler/src/components/GestureHandlerRootView.tsx'
   ),
   'react-native-gesture-handler/Swipeable': path.resolve(
     __dirname,
-    'src/platform/harmonyGestureHandler/Swipeable.tsx'
+    'node_modules/react-native-gesture-handler/src/components/Swipeable.tsx'
   ),
   'react-native-gesture-handler': path.resolve(
     __dirname,
@@ -103,13 +103,17 @@ const uiStackRootModuleAliases = {
     __dirname,
     'node_modules/react-native-reanimated'
   ),
+  'react-native-safe-area-context': path.resolve(
+    __dirname,
+    'node_modules/@react-native-oh-tpl/react-native-safe-area-context/src/index.tsx'
+  ),
   'react-native-screens/experimental': path.resolve(
     __dirname,
     'src/platform/harmonyScreens/index.tsx'
   ),
   'react-native-screens': path.resolve(
     __dirname,
-    'src/platform/harmonyScreens/index.tsx'
+    'node_modules/@react-native-oh-tpl/react-native-screens/src/index.ts'
   ),
   'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
   'react-native-webview': path.resolve(

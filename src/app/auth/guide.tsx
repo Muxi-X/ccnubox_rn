@@ -28,6 +28,7 @@ import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
 import { GUIDE_CONTENTS } from '@/constants/GUIDE';
+import { isHarmony } from '@/platform/runtime';
 import { setItem } from '@/platform/storage';
 import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
@@ -67,7 +68,7 @@ const GuidePage: FC = () => {
             setAgreement(true);
           },
           onCancel() {
-            if (Platform.OS === 'android') {
+            if (Platform.OS === 'android' || isHarmony) {
               router.replace('/auth/guide');
               BackHandler.exitApp();
             } else if (Platform.OS === 'ios') {
@@ -75,7 +76,7 @@ const GuidePage: FC = () => {
             }
           },
           onClose() {
-            if (Platform.OS === 'android') {
+            if (Platform.OS === 'android' || isHarmony) {
               router.replace('/auth/guide');
             } else if (Platform.OS === 'ios') {
               router.replace('/auth/guide');

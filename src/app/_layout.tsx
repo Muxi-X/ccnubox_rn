@@ -1,6 +1,6 @@
 import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
-import { Slot, Stack, useRootNavigationState } from 'expo-router';
+import { Stack, useRootNavigationState } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,7 +8,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 
 import * as Haptics from '@/platform/haptics';
-import { isHarmony } from '@/platform/runtime';
 
 import PortalRoot from '../components/portal';
 import Scraper from '../components/scraper';
@@ -96,24 +95,20 @@ export default function RootLayout() {
           onMessage={handleMessage}
         ></Scraper>
         <SafeAreaProvider>
-          {isHarmony ? (
-            <Slot />
-          ) : (
-            <Stack
-              screenOptions={{
-                headerBackVisible: false,
-                headerShown: false,
-              }}
-            >
-              {['index'].map(name => (
-                <Stack.Screen
-                  key={name}
-                  name={name}
-                  options={{ headerShown: false }}
-                />
-              ))}
-            </Stack>
-          )}
+          <Stack
+            screenOptions={{
+              headerBackVisible: false,
+              headerShown: false,
+            }}
+          >
+            {['index'].map(name => (
+              <Stack.Screen
+                key={name}
+                name={name}
+                options={{ headerShown: false }}
+              />
+            ))}
+          </Stack>
           {/* portal */}
           <PortalRoot ref={portalRef} />
         </SafeAreaProvider>

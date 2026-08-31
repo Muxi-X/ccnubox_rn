@@ -132,6 +132,11 @@ export const jpushClient = {
       JPush.addNotificationListener(callback);
     });
   },
+  addLocalNotificationListener(callback: NotificationListener) {
+    return invokeJPush('addLocalNotificationListener', () => {
+      JPush.addLocalNotificationListener(callback);
+    });
+  },
   addCustomMessageListener(callback: NotificationListener) {
     return invokeJPush('addCustomMessageListener', () => {
       JPush.addCustomMessageListener(callback);

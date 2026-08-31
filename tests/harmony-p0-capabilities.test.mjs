@@ -73,3 +73,37 @@ test('registers the maintained Harmony JPush adapter without replacing native cl
     /JPushSecrets\.channel \|\| \(isHarmony \? 'harmony' : ''\)/
   );
 });
+
+test('uses native Harmony storage, safe-area, gesture, screen, and cold-start push paths', () => {
+  const metro = read('metro.harmony.config.js');
+  const layout = read('src/app/_layout.tsx');
+  const hook = read('src/hooks/useJPush.ts');
+  const coldStartStore = read(
+    'harmony/entry/src/main/ets/expoHarmony/JPushColdStartStore.ts'
+  );
+  const entryAbility = read(
+    'harmony/entry/src/main/ets/entryability/EntryAbility.ets'
+  );
+  const moduleConfig = read('harmony/entry/src/main/module.json5');
+
+  assert.match(metro, /@react-native-oh-tpl\/async-storage\/src\/index\.ts/);
+  assert.match(
+    metro,
+    /@react-native-oh-tpl\/react-native-safe-area-context\/src\/index\.tsx/
+  );
+  assert.match(
+    metro,
+    /@react-native-oh-tpl\/react-native-screens\/src\/index\.ts/
+  );
+  assert.match(layout, /<Stack/);
+  assert.doesNotMatch(layout, /<Slot/);
+  assert.match(hook, /addLocalNotificationListener/);
+  assert.match(hook, /consumeInitialNotificationOpened/);
+  assert.match(hook, /message\.msgId/);
+  assert.match(hook, /payload\.messageID === lastOpenedMessageId/);
+  assert.match(coldStartStore, /onClickMessage:/);
+  assert.match(entryAbility, /installJPushColdStartCapture/);
+  assert.match(moduleConfig, /entity\.system\.browsable/);
+  assert.match(moduleConfig, /ohos\.want\.action\.viewData/);
+  assert.match(moduleConfig, /scheme: 'ccnubox'/);
+});

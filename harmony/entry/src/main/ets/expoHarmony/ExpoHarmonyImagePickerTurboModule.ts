@@ -18,6 +18,8 @@ type PermissionResponse = {
 type LaunchImageLibraryOptions = {
   mediaTypes?: string | string[];
   allowsMultipleSelection?: boolean;
+  allowsEditing?: boolean;
+  quality?: number;
   selectionLimit?: number;
 };
 
@@ -99,9 +101,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
     const authorizedUris = await this.requestAuthorizedUris(selectedUris);
     const assets = await Promise.all(
-      authorizedUris.map((uri, index) =>
+      authorizedUris.map(async (uri, index) =>
         this.createImagePickerAsset(
-          uri,
+          await this.compressImageIfNeeded(uri, options?.quality, index),
           selectedUris[index] ?? uri,
           this.inferAssetTypeFromMediaTypes(options?.mediaTypes)
         )
@@ -293,6 +295,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
         : 1;
     selectOptions.isSearchSupported = true;
     selectOptions.isPhotoTakingSupported = isPhotoTakingSupported;
+    selectOptions.isEditSupported = options?.allowsEditing === true;
     return selectOptions;
   }
 
@@ -494,6 +497,72 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
       exif: null,
       base64: null,
     };
+  }
+
+  private async compressImageIfNeeded(
+    assetUri: string,
+    quality: number | undefined,
+    index: number
+  ): Promise<string> {
+    if (
+      typeof quality !== 'number' ||
+      !Number.isFinite(quality) ||
+      quality >= 1
+    ) {
+      return assetUri;
+    }
+
+    let imageSource: image.ImageSource | null = null;
+    let imagePacker: image.ImagePacker | null = null;
+    let outputFile: fs.File | null = null;
+
+    try {
+      imageSource = image.createImageSource(assetUri);
+      const imageInfo = await imageSource.getImageInfo();
+      const isHeif =
+        imageInfo.mimeType === 'image/heif' ||
+        imageInfo.mimeType === 'image/heic';
+      if (imageInfo.mimeType !== 'image/jpeg' && !isHeif) {
+        return assetUri;
+      }
+
+      const extension = isHeif ? 'heif' : 'jpg';
+      const outputPath = `${this.ctx.uiAbilityContext.cacheDir}/image-picker-${Date.now()}-${index}.${extension}`;
+      outputFile = fs.openSync(
+        outputPath,
+        fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC
+      );
+      imagePacker = image.createImagePacker();
+      await imagePacker.packToFile(imageSource, outputFile.fd, {
+        format: isHeif ? 'image/heif' : 'image/jpeg',
+        quality: Math.max(0, Math.round(quality * 100)),
+      });
+      return `file://${outputPath}`;
+    } catch {
+      return assetUri;
+    } finally {
+      if (outputFile) {
+        try {
+          fs.closeSync(outputFile);
+        } catch {
+          // Ignore cleanup errors after the picker result is ready.
+        }
+      }
+      if (imagePacker) {
+        try {
+          await imagePacker.release();
+        } catch {
+          // Ignore cleanup errors after the picker result is ready.
+        }
+      }
+      if (imageSource) {
+        try {
+          await imageSource.release();
+        } catch {
+          // Ignore cleanup errors after the picker result is ready.
+        }
+      }
+    }
   }
 
   private inferAssetTypeFromUri(

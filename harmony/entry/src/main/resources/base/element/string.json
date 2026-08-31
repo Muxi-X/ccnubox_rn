@@ -13,12 +13,8 @@
       "value": "华师匣子"
     },
     {
-      "name": "camera_reason",
-      "value": "Camera access is required for Harmony preview image capture flows."
-    },
-    {
-      "name": "microphone_reason",
-      "value": "Microphone access is required for Harmony preview video recording flows."
+      "name": "location_reason",
+      "value": "用于在校园地图中获取您的当前位置。"
     },
     {
       "name": "image_library_reason",
