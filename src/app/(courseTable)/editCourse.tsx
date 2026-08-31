@@ -40,7 +40,7 @@ export default function EditCourse() {
           };
           updateCourse(payload)
             .then(res => {
-              if (res.code === 0) {
+              if (res?.code === 0) {
                 updateCourses(
                   useCourse.getState().courses.map(c =>
                     c.id === course.id
@@ -70,13 +70,27 @@ export default function EditCourse() {
                   mode: 'middle',
                   showCancel: false,
                 });
+              } else {
+                Modal.show({
+                  title: '编辑失败',
+                  children: '保存失败，请稍后重试',
+                  mode: 'middle',
+                  showCancel: false,
+                });
               }
             })
             .catch(err => {
-              if (err.response.data.code === 50001) {
+              if (err?.response?.data?.code === 50001) {
                 Modal.show({
                   title: '编辑失败',
                   children: '从教务系统导入的课程不支持编辑',
+                  mode: 'middle',
+                  showCancel: false,
+                });
+              } else {
+                Modal.show({
+                  title: '编辑失败',
+                  children: '网络异常，请稍后重试',
                   mode: 'middle',
                   showCancel: false,
                 });

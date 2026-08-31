@@ -188,6 +188,9 @@ const Modal: React.FC<ModalProps> & {
     onCancel,
     confirmText,
     onConfirm,
+    isBottomMode,
+    themeName,
+    currentStyle,
   ]);
   useEffect(() => {
     if (!visible) {
@@ -232,7 +235,6 @@ const Modal: React.FC<ModalProps> & {
                   : styles.modalContent,
                 !isTransparent && currentStyle?.modal_background_style,
               ]}
-              onStartShouldSetResponder={isTransparent ? undefined : () => true}
             >
               {isTransparent && <ModalBackground onPress={handleMaskPress} />}
               {modalContent}
@@ -248,7 +250,6 @@ const Modal: React.FC<ModalProps> & {
                   : styles.modalContent,
                 !isTransparent && currentStyle?.modal_background_style,
               ]}
-              onStartShouldSetResponder={isTransparent ? undefined : () => true}
             >
               {isTransparent && <ModalBackground onPress={handleMaskPress} />}
               {modalContent}

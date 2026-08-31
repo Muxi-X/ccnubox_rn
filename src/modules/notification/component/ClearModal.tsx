@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 
+import Toast from '@/components/toast';
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -20,9 +21,14 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { clearAllEvents } = useEvents();
 
-  const handleClear = () => {
-    clearAllEvents();
-    setClearVisible(false);
+  const handleClear = async () => {
+    try {
+      await clearAllEvents();
+      Toast.show({ icon: 'success', text: '已清空所有消息' });
+      setClearVisible(false);
+    } catch {
+      Toast.show({ icon: 'fail', text: '清空失败，请稍后重试' });
+    }
   };
 
   return (

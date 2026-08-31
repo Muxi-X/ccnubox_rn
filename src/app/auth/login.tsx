@@ -94,8 +94,12 @@ const LoginPage: FC = () => {
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401) {
         Toast.fail('账号密码有误', 2);
+      } else if (error instanceof AxiosError && error.response?.status) {
+        Toast.fail(`登录失败 (${error.response.status})`, 2);
+      } else {
+        Toast.fail('网络连接异常，请稍后重试', 2);
       }
-      log.error('注册请求失败:', error);
+      log.error('登录请求失败:', error);
     }
     setLoginTriggered(false);
   };

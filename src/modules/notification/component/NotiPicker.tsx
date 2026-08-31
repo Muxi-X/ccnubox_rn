@@ -35,18 +35,22 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   // 只在 modal 打开时获取数据
   useEffect(() => {
     if (visible) {
-      queryFeedAllowList().then(res => {
-        const data = res?.data;
-        if (data) {
-          setCheckList({
-            energy: data?.energy ?? true,
-            grade: data?.grade ?? true,
-            holiday: data?.holiday ?? true,
-            muxi: data?.muxi ?? true,
-            feedback: data?.feed_back ?? true,
-          });
-        }
-      });
+      queryFeedAllowList()
+        .then((res: any) => {
+          const data = res?.data;
+          if (data) {
+            setCheckList({
+              energy: data?.energy ?? true,
+              grade: data?.grade ?? true,
+              holiday: data?.holiday ?? true,
+              muxi: data?.muxi ?? true,
+              feedback: data?.feed_back ?? data?.feedback ?? true,
+            });
+          }
+        })
+        .catch(() => {
+          Toast.show({ icon: 'fail', text: '获取推送设置失败' });
+        });
     }
   }, [visible]);
 
@@ -55,9 +59,11 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
     try {
       await changeFeedAllowList(checkList);
       Toast.show({ icon: 'success', text: '修改成功' });
+      setVisible(false);
+    } catch {
+      Toast.show({ icon: 'fail', text: '修改失败，请检查网络' });
     } finally {
       setLoading(false);
-      setVisible(false);
     }
   };
 

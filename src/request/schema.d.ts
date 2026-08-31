@@ -3070,6 +3070,99 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/metrics/client': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 批量接收移动端 Prometheus 指标
+     * @description 使用独立 App Client Key 的 Bearer Token 鉴权；事件名、Label 名称和值均执行白名单校验
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      /** @description 客户端指标批次 */
+      requestBody: {
+        content: {
+          'application/json': components['schemas']['metrics.ClientMetricsReq'];
+        };
+      };
+      responses: {
+        /** @description 接收成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'] & {
+              data?: {
+                [key: string]: number;
+              };
+            };
+          };
+        };
+        /** @description JSON 非法 */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description Client Key 无效 */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 请求体过大 */
+        413: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 事件或 Label 不符合白名单 */
+        422: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description Collector 未配置 */
+        503: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/semester/getSemester': {
     parameters: {
       query?: never;
@@ -4512,6 +4605,17 @@ export interface components {
       label?: string;
       name?: string;
       status?: string;
+    };
+    'metrics.ClientMetricEvent': {
+      labels?: {
+        [key: string]: string;
+      };
+      name?: string;
+      timestamp?: number;
+      value?: number;
+    };
+    'metrics.ClientMetricsReq': {
+      events?: components['schemas']['metrics.ClientMetricEvent'][];
     };
     'metrics.MetricsReq': {
       /** @description 错误等级,分为info,error,warn,debug四个等级 */

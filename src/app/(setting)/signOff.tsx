@@ -15,6 +15,7 @@ import {
 import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
+import Toast from '@/components/toast';
 import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
 import { isHarmony } from '@/platform/runtime';
 import { deleteItemAsync } from '@/platform/storage';
@@ -43,11 +44,7 @@ function SignOff() {
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          try {
-            await deactivate(password);
-          } catch {
-            // 忽略网络注销异常
-          }
+          await deactivate(password);
 
           try {
             const localCleanupTasks = [
@@ -66,7 +63,15 @@ function SignOff() {
           }
 
           Modal.clear();
+          Toast.show({ icon: 'success', text: '账号已注销' });
           router.replace('/auth/login');
+        } catch (error: any) {
+          const errMsg =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            error?.message ||
+            '注销失败，请检查密码或网络连接';
+          Toast.show({ icon: 'fail', text: errMsg });
         } finally {
           setIsSubmitting(false);
         }

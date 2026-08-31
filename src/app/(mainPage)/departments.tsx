@@ -76,10 +76,12 @@ function Departments() {
   useEffect(() => {
     queryDepartments()
       .then((res: any) => {
-        setDepartments(res.data.departments);
+        if (res?.data?.departments) {
+          setDepartments(res.data.departments);
+        }
       })
-      .catch(err => {
-        Toast.show({ text: '获取部门信息失败' + err.toString() });
+      .catch(_err => {
+        Toast.show({ icon: 'fail', text: '获取部门信息失败，请稍后重试' });
       });
   }, []);
 

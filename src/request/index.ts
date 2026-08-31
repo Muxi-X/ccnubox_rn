@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 
-import Toast from '@/components/toast';
 import {
   HARMONY_DEBUG_SHORT_VALUE,
   isHarmonyDebugCredential,
@@ -50,42 +49,56 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
   }
 }
 
+let refreshingPromise: Promise<string> | null = null;
+
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
-    if (isHarmony && (await isHarmonyDebugSessionEnabled())) {
-      await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
-      return HARMONY_DEBUG_SHORT_VALUE;
+    if (refreshingPromise) {
+      return refreshingPromise;
     }
 
-    const longToken = await getItem('longToken');
-    if (!longToken) {
-      throw new Error('长 token 不存在，跳转登录');
-    }
+    refreshingPromise = (async () => {
+      try {
+        if (isHarmony && (await isHarmonyDebugSessionEnabled())) {
+          await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
+          return HARMONY_DEBUG_SHORT_VALUE;
+        }
 
-    if (isHarmony && isHarmonyDebugCredential(longToken)) {
-      await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
-      return HARMONY_DEBUG_SHORT_VALUE;
-    }
+        const longToken = await getItem('longToken');
+        if (!longToken) {
+          throw new Error('长 token 不存在，跳转登录');
+        }
 
-    // 刷新短 token
-    const response = await axios.get(
-      `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
-      {
-        headers: { Authorization: `Bearer ${longToken}` },
+        if (isHarmony && isHarmonyDebugCredential(longToken)) {
+          await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
+          return HARMONY_DEBUG_SHORT_VALUE;
+        }
+
+        // 刷新短 token
+        const response = await axios.get(
+          `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
+          {
+            headers: { Authorization: `Bearer ${longToken}` },
+          }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+          const newShortToken = response.headers['x-jwt-token'];
+          if (isHarmony) {
+            await setItem('shortToken', newShortToken);
+          } else {
+            setItem('shortToken', newShortToken);
+          }
+          return newShortToken;
+        }
+
+        throw new Error('刷新短 token 失败');
+      } finally {
+        refreshingPromise = null;
       }
-    );
+    })();
 
-    if (response.status === 200 || response.status === 201) {
-      const newShortToken = response.headers['x-jwt-token'];
-      if (isHarmony) {
-        await setItem('shortToken', newShortToken);
-      } else {
-        setItem('shortToken', newShortToken);
-      }
-      return newShortToken;
-    }
-
-    throw new Error('刷新短 token 失败');
+    return refreshingPromise;
   }
 
   if (config.refresh) {
@@ -121,17 +134,8 @@ axiosInstance.interceptors.response.use(
   response => {
     requestBus.requestComplete();
 
-    switch (response.status) {
-      case 200:
-        return response;
-      case 401:
-        throw new Error('token过期');
-      //  break;
-      case 403:
-        Toast.show({ text: '无权限' });
-        break;
-      default:
-        Toast.show({ text: '服务器错误' });
+    if (response.status >= 200 && response.status < 300) {
+      return response;
     }
     return Promise.reject(new Error(`Error status code: ${response.status}`));
   },
@@ -139,7 +143,11 @@ axiosInstance.interceptors.response.use(
     requestBus.requestComplete();
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true; // 防止无限循环
 
       const tokenConfig = originalRequest?.otherToken;

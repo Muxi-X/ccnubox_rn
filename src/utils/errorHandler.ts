@@ -23,8 +23,8 @@ export const setupGlobalErrorHandler = () => {
     if (__DEV__) {
       log.error(errorInfo);
     } else {
-      // 上报错误
-      errorLogger('frontend', 'js_error', errorInfo);
+      // 上报错误，捕获可能出现的网络异常以避免二次报错
+      errorLogger('frontend', 'js_error', errorInfo).catch(() => {});
     }
 
     // 调用原始处理器

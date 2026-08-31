@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import PickerView from '@/components/pickerView/index';
+import Toast from '@/components/toast';
 import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
 import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
@@ -86,6 +87,7 @@ const ElectricityBillinQuiry = () => {
       }
     } catch (error) {
       console.error('加载楼栋数据失败:', error);
+      Toast.show({ icon: 'fail', text: '加载楼栋数据失败' });
     } finally {
       setLoading(false);
     }
@@ -121,6 +123,7 @@ const ElectricityBillinQuiry = () => {
     } catch (error) {
       setRooms([]);
       log.error(error);
+      Toast.show({ icon: 'fail', text: '加载房间数据失败' });
     }
   };
 

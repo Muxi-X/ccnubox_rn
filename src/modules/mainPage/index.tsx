@@ -43,16 +43,22 @@ const IndexPage: FC = () => {
         setRegisterId(result.registerID);
       }
     });
-    queryBanners().then((res: any) => {
-      setBanners(
-        res.data.banners.map(
-          (banner: { picture_link: string; web_link: string }) => ({
-            bannerUrl: banner.picture_link,
-            navUrl: banner.web_link,
-          })
-        )
-      );
-    });
+    queryBanners()
+      .then((res: any) => {
+        if (res?.data?.banners) {
+          setBanners(
+            res.data.banners.map(
+              (banner: { picture_link: string; web_link: string }) => ({
+                bannerUrl: banner.picture_link,
+                navUrl: banner.web_link,
+              })
+            )
+          );
+        }
+      })
+      .catch(() => {
+        // 静默降级，横幅未获取时不影响主页功能
+      });
   }, []);
   const onDragRelease = async (data: MainPageGridDataType[]) => {
     setIsDragging(false);

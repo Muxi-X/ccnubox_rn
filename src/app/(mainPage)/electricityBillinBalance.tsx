@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
+import Toast from '@/components/toast';
 import {
   cancelStandard,
   getPrice,
@@ -60,6 +61,7 @@ const ElectricityBillinBalance = () => {
       setPriceData(priceInfo);
     } catch (error) {
       log.error(error);
+      Toast.show({ icon: 'fail', text: '获取电费数据失败' });
     } finally {
       setLoading(false);
     }
@@ -140,10 +142,12 @@ const ElectricityBillinBalance = () => {
       if (value === '' || value === null) {
         await cancelStandard({ room_id });
         setStandardLimit(null);
+        Toast.show({ icon: 'success', text: '已取消电费提醒' });
       } else {
         // 设置电费标准
         const limitValue = parseInt(value, 10);
         if (isNaN(limitValue) || limitValue <= 0) {
+          Toast.show({ icon: 'fail', text: '请输入有效金额' });
           return;
         }
 
@@ -153,9 +157,11 @@ const ElectricityBillinBalance = () => {
           limit: limitValue,
         });
         setStandardLimit(limitValue);
+        Toast.show({ icon: 'success', text: '电费标准设置成功' });
       }
     } catch (error) {
       log.error(error);
+      Toast.show({ icon: 'fail', text: '设置失败，请稍后重试' });
     }
   };
 
