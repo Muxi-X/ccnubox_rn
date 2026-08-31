@@ -11,6 +11,7 @@ import {
 } from '@/constants/SCHEDULE';
 import useVisualScheme from '@/store/visualScheme';
 import { componentMap } from '@/themeBasedComponents';
+import { parseClassWhen } from '@/utils/courseRuntime';
 
 import ModalContent from './ModalContent';
 import { CourseTransferType, courseType } from './type';
@@ -27,25 +28,24 @@ const CourseContent: React.FC<CourseContentProps> = memo(
     const { class_when, originalData, currentWeek } = props;
 
     const layoutName = useVisualScheme(state => state.layoutName);
-    const CourseItem = componentMap?.[layoutName].CourseItem;
-
-    // 解析课程范围
-    function parseRange(str: string) {
-      const [start, end] = str.split('-').map(Number);
-      return { start, end };
-    }
+    const CourseItem = componentMap?.[layoutName]?.CourseItem;
 
     // 缓存当前的范围
-    const currRange = useMemo(() => parseRange(class_when), [class_when]);
+    const currRange = useMemo(() => parseClassWhen(class_when), [class_when]);
 
     // 现在slotCourses在课表重叠的时候会全包含
     // (比如之前在课程重叠时，点击1-4只包含1-4的信息，现在1-4会额外包含1-2和3-4的信息)
     const slotCourses = useMemo(() => {
       return originalData.filter(c => {
+        if (!currRange) return false;
         if (c.day - 1 !== props.colIndex) return false;
 
-        const { start, end } = parseRange(c.class_when);
-        return !(end < currRange.start || start > currRange.end);
+        const range = parseClassWhen(c.class_when);
+        if (!range) return false;
+        return !(
+          range.endSection < currRange.startSection ||
+          range.startSection > currRange.endSection
+        );
       });
     }, [originalData, props.colIndex, currRange]);
 
@@ -58,13 +58,16 @@ const CourseContent: React.FC<CourseContentProps> = memo(
     );
     const isCoveredAndNotInCurrWeek = useMemo(() => {
       return slotCourses.some(c => {
+        if (!currRange) return false;
         if (c.id === props.id) return false;
 
-        const { start, end } = parseRange(c.class_when);
+        const range = parseClassWhen(c.class_when);
+        if (!range) return false;
         const isFullCovers =
-          start <= currRange.start &&
-          end >= currRange.end &&
-          (start < currRange.start || end > currRange.end);
+          range.startSection <= currRange.startSection &&
+          range.endSection >= currRange.endSection &&
+          (range.startSection < currRange.startSection ||
+            range.endSection > currRange.endSection);
 
         const isCoveringRendered = visibleIdSet.has(c.id); // 覆盖当前课程的课程也必须被显示
         return !props.isThisWeek && isFullCovers && isCoveringRendered;
@@ -83,7 +86,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
         <ModalContent
           id={c.id}
           class_when={c.class_when}
-          isThisWeek={c.weeks.includes(currentWeek)}
+          isThisWeek={Array.isArray(c.weeks) && c.weeks.includes(currentWeek)}
           courseName={c.classname}
           teacher={c.teacher}
           classroom={c.where}
@@ -94,6 +97,8 @@ const CourseContent: React.FC<CourseContentProps> = memo(
         />
       </View>
     );
+
+    if (!currRange) return null;
 
     return (
       <>

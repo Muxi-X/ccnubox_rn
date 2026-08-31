@@ -552,7 +552,11 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   backgroundLayer: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     zIndex: -1,
   },
   text: {

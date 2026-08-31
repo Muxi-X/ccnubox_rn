@@ -69,15 +69,17 @@ export const ScheduleHeaderTitle: React.FC = () => {
         ]}
       >
         上次更新时间：
-        {new Date(lastUpdate * 1000).toLocaleString('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false,
-        })}
+        {lastUpdate > 0
+          ? new Date(lastUpdate * 1000).toLocaleString('zh-CN', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: false,
+            })
+          : '暂无'}
       </Text>
     </View>
   );
@@ -85,7 +87,6 @@ export const ScheduleHeaderTitle: React.FC = () => {
 
 export const ScheduleHeaderRight: React.FC = () => {
   const router = useRouter();
-  const currentStyle = useVisualScheme(state => state.currentStyle);
   return (
     <View
       style={{
