@@ -1819,6 +1819,63 @@ paths:
       summary: 用于打点的路由
       tags:
         - metrics
+  /metrics/client:
+    post:
+      description: 使用独立 App Client Key 的 Bearer Token 鉴权；事件名、Label 名称和值均执行白名单校验
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metrics.ClientMetricsReq'
+        description: 客户端指标批次
+        required: true
+      responses:
+        '200':
+          description: 接收成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/web.Response'
+                  - properties:
+                      data:
+                        additionalProperties:
+                          type: integer
+                        type: object
+                    type: object
+        '400':
+          description: JSON 非法
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '401':
+          description: Client Key 无效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '413':
+          description: 请求体过大
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '422':
+          description: 事件或 Label 不符合白名单
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '503':
+          description: Collector 未配置
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+      summary: 批量接收移动端 Prometheus 指标
+      tags:
+        - metrics
   /semester/getSemester:
     get:
       description: 获取当前所属学期
@@ -3417,6 +3474,26 @@ components:
           type: string
         status:
           type: string
+      type: object
+    metrics.ClientMetricEvent:
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          type: object
+        name:
+          type: string
+        timestamp:
+          type: integer
+        value:
+          type: number
+      type: object
+    metrics.ClientMetricsReq:
+      properties:
+        events:
+          items:
+            $ref: '#/components/schemas/metrics.ClientMetricEvent'
+          type: array
       type: object
     metrics.MetricsReq:
       properties:
