@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 import errorLogger from '@/request/api/errorLogger';
 
-import { log } from './logger';
+import { log } from './logger/index';
 
 /**
  * 全局错误处理器
