@@ -8,15 +8,14 @@ interface QueryParams {
 
 // 查询课表
 const queryCourseTable = async (queryParams: QueryParams) => {
-  try {
-    return await request.get('/class/get', {
-      query: queryParams,
-      header: { Authorization: '' },
-    });
-  } catch (error) {
-    console.error('查询课表接口出错:', error);
-    // throw error;
+  if (!queryParams.year || !/^[123]$/.test(queryParams.semester)) {
+    throw new Error('学期信息尚未加载');
   }
+
+  return request.get('/class/get', {
+    query: queryParams,
+    header: { Authorization: '' },
+  });
 };
 
 export default queryCourseTable;
