@@ -61,14 +61,18 @@ function handleDeleteCourseConfirm(id: string) {
     useTimeStore.getState().year
   )
     .then(res => {
-      if (res.code === 0) {
+      if (res?.code === 0) {
         useCourse.getState().deleteCourse(id);
         showModal('删除成功', '课程已删除', true);
+      } else {
+        showModal('删除失败', '请稍后重试', false);
       }
     })
     .catch(err => {
-      if (err.response.data.code === 50001) {
+      if (err?.response?.data?.code === 50001) {
         showModal('删除失败', '从教务系统导入的课程不支持删除', false);
+      } else {
+        showModal('删除失败', '网络异常，请稍后重试', false);
       }
     });
 }

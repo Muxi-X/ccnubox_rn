@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
+import Toast from '@/components/toast';
 import { queryGradeDetail } from '@/request/api/grade';
 import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
@@ -171,13 +172,27 @@ const ScoreCalculation: React.FC = () => {
   };
 
   useEffect(() => {
+    let parsedCourseType: string[] = [];
+    let parsedSemester: string[] = [];
+    try {
+      if (typeof courseType === 'string') {
+        parsedCourseType = JSON.parse(courseType);
+      }
+      if (typeof semester === 'string') {
+        parsedSemester = JSON.parse(semester);
+      }
+    } catch {
+      Toast.show({ icon: 'fail', text: '参数解析错误' });
+      return;
+    }
+
     setLoading(true);
     queryGradeDetail({
-      kcxzmcs: JSON.parse(courseType as string),
-      terms: JSON.parse(semester as string),
+      kcxzmcs: parsedCourseType,
+      terms: parsedSemester,
     })
       .then(res => {
-        if (res.data?.grades) {
+        if (res?.data?.grades) {
           const transformedData = res.data.grades.map(
             (grade, index: number) => ({
               title: grade.kcmc,
@@ -203,10 +218,11 @@ const ScoreCalculation: React.FC = () => {
           );
           setIsAllSelected(true);
         }
-        setLoading(false);
       })
       .catch(_error => {
-        //console.error('获取成绩失败:', error);
+        Toast.show({ icon: 'fail', text: '获取成绩失败，请稍后重试' });
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [semester, courseType]);

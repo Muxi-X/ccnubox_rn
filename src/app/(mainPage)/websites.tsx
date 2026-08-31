@@ -9,6 +9,7 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Text from '@/components/text';
+import Toast from '@/components/toast';
 import { useInternalBroswer } from '@/hooks/useInternalBroswer';
 import { queryWebsites } from '@/request/api';
 import { commonColors } from '@/styles/common';
@@ -40,10 +41,12 @@ const Websites = () => {
   useEffect(() => {
     queryWebsites()
       .then((res: any) => {
-        setWebsites(res.data.websites);
+        if (res?.data?.websites) {
+          setWebsites(res.data.websites);
+        }
       })
       .catch(_error => {
-        //console.error(error);
+        Toast.show({ icon: 'fail', text: '获取常用网站失败' });
       });
   }, []);
 

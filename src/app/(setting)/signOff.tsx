@@ -16,6 +16,7 @@ import {
 import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
+import Toast from '@/components/toast';
 import { deactivate } from '@/request/api/auth';
 import useUserStore from '@/store/user';
 import { commonColors, commonStyles } from '@/styles/common';
@@ -41,11 +42,7 @@ function SignOff() {
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          try {
-            await deactivate(password);
-          } catch {
-            // 忽略网络注销异常
-          }
+          await deactivate(password);
 
           try {
             await Promise.all([
@@ -60,7 +57,15 @@ function SignOff() {
           }
 
           Modal.clear();
+          Toast.show({ icon: 'success', text: '账号已注销' });
           router.replace('/auth/login');
+        } catch (error: any) {
+          const errMsg =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            error?.message ||
+            '注销失败，请检查密码或网络连接';
+          Toast.show({ icon: 'fail', text: errMsg });
         } finally {
           setIsSubmitting(false);
         }

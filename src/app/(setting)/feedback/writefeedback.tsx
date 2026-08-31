@@ -168,6 +168,7 @@ function WriteFeedback() {
         setDescription('');
         setContact('');
         setImages([]);
+        router.back();
       } else {
         Toast.fail('提交失败, 请稍后重试');
       }
@@ -176,7 +177,6 @@ function WriteFeedback() {
       Toast.fail('提交失败,无法连接到服务器，请检查网络');
     } finally {
       setIsSubmitting(false);
-      router.back();
     }
   };
 
