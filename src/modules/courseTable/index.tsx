@@ -8,7 +8,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  View as NativeView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CourseTableErrorBoundary from '@/components/CourseTableErrorBoundary';
@@ -400,29 +406,38 @@ const CourseTablePage: FC = () => {
         />
       </CourseTableErrorBoundary>
       {timetableStatus === 'loading' && courses.length === 0 && (
-        <View style={styles.statusBanner}>
+        <NativeView style={[styles.statusBanner, styles.topStatusBanner]}>
           <Text style={styles.statusText}>正在获取课表…</Text>
-        </View>
+        </NativeView>
       )}
-      {timetableStatus === 'stale' && (
-        <View style={styles.statusBanner}>
-          <Text style={styles.statusText}>刷新失败，当前展示本地缓存</Text>
-        </View>
-      )}
-      {timetableStatus === 'error' && courses.length === 0 && (
+      {(timetableStatus === 'stale' ||
+        (timetableStatus === 'error' && courses.length === 0)) && (
         <TouchableOpacity
-          style={styles.statusBanner}
+          accessibilityHint="重新请求当前学期课表"
+          accessibilityLabel="重新加载课表"
+          accessibilityRole="button"
+          activeOpacity={0.8}
+          style={[
+            styles.statusBanner,
+            styles.retryBanner,
+            { bottom: tabbarHeight + 20 },
+          ]}
           onPress={() => {
             void onTimetableRefresh(true).catch(() => undefined);
           }}
         >
-          <Text style={styles.statusText}>课表加载失败，点击重试</Text>
+          <Text style={styles.statusText}>
+            {timetableStatus === 'stale'
+              ? '刷新失败，当前展示本地缓存 · '
+              : '课表加载失败 · '}
+            <Text style={styles.retryText}>点击重试</Text>
+          </Text>
         </TouchableOpacity>
       )}
       {timetableStatus === 'ready' && courses.length === 0 && (
-        <View style={styles.statusBanner}>
+        <NativeView style={[styles.statusBanner, styles.topStatusBanner]}>
           <Text style={styles.statusText}>本学期暂无课程</Text>
-        </View>
+        </NativeView>
       )}
       {showWeekPicker && (
         <WeekSelector
@@ -455,18 +470,29 @@ const CourseTablePage: FC = () => {
 const styles = StyleSheet.create({
   statusBanner: {
     position: 'absolute',
-    top: 12,
     left: 20,
     right: 20,
     zIndex: 200,
     borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: 'rgba(40, 40, 40, 0.82)',
+    minHeight: 48,
+    justifyContent: 'center',
+  },
+  topStatusBanner: {
+    top: 12,
+  },
+  retryBanner: {
+    left: 16,
+    right: 16,
   },
   statusText: {
     color: '#FFFFFF',
     textAlign: 'center',
+  },
+  retryText: {
+    fontWeight: '700',
   },
   testButton: {
     position: 'absolute',
