@@ -30,7 +30,11 @@ import {
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
-import { CourseDataError, parseCourseTableResponse } from '@/utils/courseData';
+import {
+  CourseDataError,
+  isValidCourseScope,
+  parseCourseTableResponse,
+} from '@/utils/courseData';
 import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
@@ -239,6 +243,37 @@ const CourseTablePage: FC = () => {
     [fetchTimetable, semester, year]
   );
 
+  const handleTimetableRetry = useCallback(async () => {
+    setTimetableStatus('refreshing');
+
+    try {
+      const { year: storedYear, semester: storedSemester } =
+        useTimeStore.getState();
+
+      if (!isValidCourseScope(storedYear, storedSemester)) {
+        const currentSemesterInfo = await fetchSemesterInfo();
+        await fetchTimetable(
+          currentSemesterInfo.year,
+          currentSemesterInfo.semester,
+          true
+        );
+        setTimetableStatus('ready');
+        return;
+      }
+
+      await onTimetableRefresh(true);
+    } catch (error) {
+      setTimetableStatus(
+        useCourse.getState().courses.length > 0 ? 'stale' : 'error'
+      );
+      log.error('Failed to retry timetable:', error);
+      Toast.show({
+        text: getTimetableErrorMessage(error),
+        icon: 'fail',
+      });
+    }
+  }, [fetchSemesterInfo, fetchTimetable, onTimetableRefresh]);
+
   const handleApply = useCallback(
     async ({
       year: newYear,
@@ -423,7 +458,7 @@ const CourseTablePage: FC = () => {
             { bottom: tabbarHeight + 20 },
           ]}
           onPress={() => {
-            void onTimetableRefresh(true).catch(() => undefined);
+            void handleTimetableRetry();
           }}
         >
           <Text style={styles.statusText}>
