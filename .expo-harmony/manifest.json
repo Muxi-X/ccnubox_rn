@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-30T18:39:41.426Z",
-  "toolkitVersion": "2.0.0-next.0",
+  "generatedAt": "2026-09-01T18:02:59.385Z",
+  "toolkitVersion": "2.0.0-next.1",
   "templateVersion": "rnoh-0.82.29",
-  "matrixId": "expo55-rnoh082-ui-stack",
+  "matrixId": "expo56-rn085-rnoh082-preview",
   "projectRoot": "/Users/blackishgreen03/workspace/ccnubox-pr278-v2-next-refresh",
   "files": [
     {
@@ -24,10 +24,6 @@
     {
       "relativePath": "harmony/entry/hvigorfile.ts",
       "sha1": "ed282fe65ede892474df299bd8919309fd3d48f7"
-    },
-    {
-      "relativePath": "harmony/entry/src/main/ets/entryability/EntryAbility.ets",
-      "sha1": "43ee40b9118585d5018a308ee1d78b11b3a4f378"
     },
     {
       "relativePath": "harmony/entry/src/main/ets/workers/RNOHWorker.ets",
@@ -83,7 +79,7 @@
     },
     {
       "relativePath": ".expo-harmony/shims/expo-modules-core/index.js",
-      "sha1": "9d4ba36688ae926c049727d7eb5423d9577a7e40"
+      "sha1": "8e7ab2ae6947f68f54d6bdd78a05f581a0f3e671"
     },
     {
       "relativePath": ".expo-harmony/shims/expo-file-system/index.js",
@@ -163,7 +159,7 @@
     },
     {
       "relativePath": ".expo-harmony/toolkit-config.json",
-      "sha1": "e73eac419408c8e0771454e707ea08e86badfa0d"
+      "sha1": "30dac19cd856a1473f305e69e730d7e1a9194176"
     },
     {
       "relativePath": ".expo-harmony/signing.local.example.json",

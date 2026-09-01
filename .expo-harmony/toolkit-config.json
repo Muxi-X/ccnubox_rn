@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-30T18:26:24.254Z",
-  "toolkitVersion": "2.0.0-next.0",
+  "generatedAt": "2026-09-01T16:43:02.418Z",
+  "toolkitVersion": "2.0.0-next.1",
   "templateVersion": "rnoh-0.82.29",
-  "matrixId": "expo55-rnoh082-ui-stack",
+  "matrixId": "expo56-rn085-rnoh082-preview",
   "rnohVersion": "0.82.29",
   "rnohCliVersion": "0.82.29",
   "bundleName": "com.muxixyz.ccnubox",
@@ -301,7 +301,7 @@
     "ohos.permission.WRITE_IMAGEVIDEO"
   ],
   "nextActions": [
-    "Align Expo SDK, React Native, RNOH, and validated adapter versions to expo55-rnoh082-ui-stack, then rerun `expo-harmony doctor --project-root . --strict`.",
+    "Use `expo-harmony doctor --project-root . --target-tier preview` for expo56-rn085-rnoh082-preview; this project-shape lane does not expand the verified runtime promise.",
     "Use `expo-harmony doctor --project-root . --target-tier preview` to measure the current preview-capability baseline while keeping `latest` pinned to verified-only releases.",
     "Keep combined sample smoke for regression coverage, but track bundle/debug/device/release evidence separately for each preview capability before promotion.",
     "Keep `react-native-gesture-handler` on the formal experimental slice until its Harmony adapter path closes device and release evidence.",
