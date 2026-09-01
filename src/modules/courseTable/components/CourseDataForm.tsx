@@ -49,7 +49,8 @@ export const CourseDataForm = (props: CourseFormProps) => {
   const calendarWeekCount = useTimeStore(state => state.getSemesterWeekCount());
   const maxCachedWeek = useCourse(state =>
     state.courses.reduce(
-      (maximum, course) => Math.max(maximum, ...course.weeks),
+      (maximum, course) =>
+        Math.max(maximum, ...(Array.isArray(course.weeks) ? course.weeks : [])),
       0
     )
   );
