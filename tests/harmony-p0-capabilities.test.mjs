@@ -47,6 +47,7 @@ test('loads the Harmony course table and saves snapshots through native adapters
 });
 
 test('registers the maintained Harmony JPush adapter without replacing native clients', () => {
+  const appConfig = read('app.config.ts');
   const packageJson = JSON.parse(read('package.json'));
   const metro = read('metro.harmony.config.js');
   const ohPackage = read('harmony/oh-package.json5');
@@ -61,6 +62,8 @@ test('registers the maintained Harmony JPush adapter without replacing native cl
     '3.2.1-1'
   );
   assert.equal(packageJson.dependencies['jpush-react-native'], '3.2.7');
+  assert.equal(packageJson.dependencies['mx-jpush-expo'], '^1.4.0');
+  assert.match(appConfig, /autoRegisterOnLaunch: false/);
   assert.match(metro, /@react-native-ohos\/jpush-react-native\/index\.js/);
   assert.match(ohPackage, /@react-native-ohos\/jpush-react-native/);
   assert.match(etsPackages, /RNJPushPackage/);
@@ -71,6 +74,10 @@ test('registers the maintained Harmony JPush adapter without replacing native cl
   assert.match(
     jpushHook,
     /JPushSecrets\.channel \|\| \(isHarmony \? 'harmony' : ''\)/
+  );
+  assert.match(
+    jpushHook,
+    /production: process\.env\.EXPO_PUBLIC_ENV === 'production'/
   );
 });
 
