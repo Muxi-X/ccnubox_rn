@@ -42,7 +42,8 @@ const sectionScheduleByNumber = new Map(
 export const parseClassWhen = (classWhen: unknown): ParsedClassWhen | null => {
   if (typeof classWhen !== 'string') return null;
 
-  const match = /^(\d{1,2})(?:-(\d{1,2}))?$/.exec(classWhen.trim());
+  const normalizedClassWhen = classWhen.trim().replace(/\s*-\s*/g, '-');
+  const match = /^(\d{1,2})(?:-(\d{1,2}))?$/.exec(normalizedClassWhen);
   if (!match) return null;
 
   const startSection = Number(match[1]);
