@@ -213,8 +213,8 @@ importers:
         specifier: 7.3.8
         version: 7.3.8(@lottiefiles/dotlottie-react@0.19.7(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       mx-jpush-expo:
-        specifier: ^1.2.7
-        version: 1.3.0(expo@56.0.20)
+        specifier: ^1.4.0
+        version: 1.4.0(expo@56.0.20)
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -5215,8 +5215,8 @@ packages:
     resolution: {integrity: sha512-dkEJPVvun4FryqBmZ5KhDo0K9iDXAwn08tMLDinNdRBNPcYEDiWYysLcc6k3mjTMlbP9KyylvRpd4wFtwrT9rw==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  mx-jpush-expo@1.3.0:
-    resolution: {integrity: sha512-2A7Boet3sWP+s3gh7jI/+Ywbs9+eilMfYWhM6Tnfjw8UfEEYngO2zFwidXjhOk1o1T1DvYt7GGlwLnwQGrvlLg==}
+  mx-jpush-expo@1.4.0:
+    resolution: {integrity: sha512-3V6Gt8n4N8Fl3ByMroGd4kaA290Oe1xMjA1BpZIFPHRDcGKYMWNdhS8ls7CVkDeW9LBMTxfsAS3D4GLlr5ocwQ==}
     engines: {node: '>=20.19.4'}
     peerDependencies:
       expo: '>=55.0.0'
@@ -12612,7 +12612,7 @@ snapshots:
 
   mute-stream@3.0.0: {}
 
-  mx-jpush-expo@1.3.0(expo@56.0.20):
+  mx-jpush-expo@1.4.0(expo@56.0.20):
     dependencies:
       expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(expo-router@56.2.19)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-webview@13.16.1(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
 

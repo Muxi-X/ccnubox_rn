@@ -21,6 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         {
           ...configurations,
           apsForProduction: isProduction,
+          autoRegisterOnLaunch: false,
           appKey: process.env.JPUSH_APP_KEY,
           channel: process.env.JPUSH_CHANNEL ?? configurations?.channel ?? '',
           packageName:
