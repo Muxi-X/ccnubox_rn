@@ -30,13 +30,26 @@ export interface CourseFormData {
   credit?: number;
 }
 
+const MAX_CLASS_PERIOD = 12;
+
+const getTimePickerValue = (
+  day: number,
+  duration: string
+): [number, number, number] => {
+  const [rawStart, rawEnd] = duration.split('-').map(Number);
+  const start = Math.min(Math.max(rawStart || 1, 1), MAX_CLASS_PERIOD);
+  const end = Math.min(Math.max(rawEnd || start, start), MAX_CLASS_PERIOD);
+
+  return [day || 1, start, end];
+};
+
 interface CourseFormProps {
   buttonText?: string; // backward-compat
   submitText?: string; // preferred
   pageText: string;
   mode?: 'create' | 'edit';
   onSuccess?: () => void;
-  onSubmit?: (data: CourseFormData) => Promise<void>;
+  onSubmit?: (_data: CourseFormData) => Promise<void>;
   courseData?: courseType;
 }
 
@@ -73,6 +86,9 @@ export const CourseDataForm = (props: CourseFormProps) => {
       credit: 3,
     };
   });
+  const [timePickerValue, setTimePickerValue] = React.useState<
+    [number, number, number]
+  >(() => getTimePickerValue(formData.day, formData.dur_class));
 
   React.useEffect(() => {
     if (props.courseData) {
@@ -89,9 +105,25 @@ export const CourseDataForm = (props: CourseFormProps) => {
         teacher: cd.teacher || '',
         credit: cd.credit ?? 3,
       });
+      setTimePickerValue(
+        getTimePickerValue(cd.day || 1, cd.class_when || '1-2')
+      );
     }
   }, [props.courseData]);
   const [loading, setLoading] = React.useState(false);
+
+  const selectedStartClass = timePickerValue[1];
+  const endClassOptions = React.useMemo(
+    () =>
+      Array.from(
+        { length: MAX_CLASS_PERIOD - selectedStartClass + 1 },
+        (_, index) => {
+          const value = selectedStartClass + index;
+          return { value, label: `第${value}节` };
+        }
+      ),
+    [selectedStartClass]
+  );
 
   const items: FormItem[] = [
     {
@@ -229,6 +261,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
               teacher: '',
               credit: 3,
             });
+            setTimePickerValue([1, 1, 2]);
           }
           props.onSuccess?.();
         },
@@ -322,6 +355,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
                       parseInt(formData.dur_class.split('-')[0], 10) || 1,
                       parseInt(formData.dur_class.split('-')[1], 10) || 2,
                     ]}
+                    controlledValue={timePickerValue}
                     titleDisplayLogic={pickerVal => {
                       const day = pickerVal[0] ?? formData.day;
                       const start =
@@ -355,11 +389,24 @@ export const CourseDataForm = (props: CourseFormProps) => {
                         label: `第${i + 1}节`,
                       })),
                       // 课程结束时间
-                      [...Array(12).keys()].map(i => ({
-                        value: i + 1,
-                        label: `第${i + 1}节`,
-                      })),
+                      endClassOptions,
                     ]}
+                    onColumnChange={(values, changedIndex) => {
+                      const day = Number(values[0]);
+                      const startClass = Number(values[1]);
+                      const currentEndClass = Number(values[2]);
+                      const endClass =
+                        changedIndex === 1 && currentEndClass < startClass
+                          ? startClass
+                          : currentEndClass;
+
+                      setTimePickerValue([day, startClass, endClass]);
+                    }}
+                    onCancel={() => {
+                      setTimePickerValue(
+                        getTimePickerValue(formData.day, formData.dur_class)
+                      );
+                    }}
                     onConfirm={values => {
                       const [day, startClass, endClass] = values;
                       const startClassNum = parseInt(startClass, 10);
@@ -378,6 +425,11 @@ export const CourseDataForm = (props: CourseFormProps) => {
                       }
 
                       const dur_class = `${startClass}-${endClass}`;
+                      setTimePickerValue([
+                        parseInt(day, 10),
+                        startClassNum,
+                        endClassNum,
+                      ]);
                       setFormData(prev => ({
                         ...prev,
                         day: parseInt(day),
