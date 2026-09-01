@@ -87,6 +87,7 @@ test('renders Harmony PDFs and in-app browser content with maintained native ada
 
 test('syncs a native Harmony course widget and triggers real haptics', () => {
   const capabilities = read('src/platform/capabilities.ts');
+  const tabLayout = read('src/app/(tabs)/_layout.tsx');
   const widget = read('src/utils/updateWidget.harmony.ts');
   const nativeModule = read(
     'harmony/entry/src/main/ets/expoHarmony/ExpoHarmonySystemTurboModule.ts'
@@ -104,6 +105,7 @@ test('syncs a native Harmony course widget and triggers real haptics', () => {
 
   assert.match(capabilities, /haptics: true/);
   assert.match(capabilities, /widgetSync: isAndroid \|\| isHarmony/);
+  assert.match(tabLayout, /if \(platformCapabilities\.widgetSync\)/);
   assert.match(widget, /updateCourseWidget/);
   assert.match(nativeModule, /startVibration/);
   assert.match(widgetStore, /formProvider\.updateForm/);
