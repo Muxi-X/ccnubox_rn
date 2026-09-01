@@ -1,4 +1,5 @@
 import { request } from '@/request';
+import { logger } from '@/utils/logger';
 
 interface QueryParams {
   semester: string;
@@ -15,7 +16,10 @@ const queryCourseTable = async (queryParams: QueryParams) => {
   return request.get('/class/get', {
     query: queryParams,
     header: { Authorization: '' },
-  });
+	}).catch(error => {
+		logger.error('查询课表接口出错', error);
+		throw error;
+	});
 };
 
 export default queryCourseTable;

@@ -26,6 +26,7 @@ import {
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { createFeedbackRecord } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
+import { logger } from '@/utils/logger';
 import { runPermissionAction } from '@/utils/requestPermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
@@ -78,11 +79,11 @@ function WriteFeedback() {
       if (uploadResult && uploadResult.data && uploadResult.data.file_token) {
         return uploadResult.data.file_token;
       } else {
-        console.warn('上传缺少token', uploadResult);
+        logger.warn('上传缺少token', uploadResult);
         return null;
       }
     } catch (error: any) {
-      console.error('上传图片出错:', error);
+      logger.error('上传图片出错', error);
       return null;
     }
   };
@@ -130,7 +131,7 @@ function WriteFeedback() {
         })();
       }
     } catch (err: any) {
-      console.error('选择图片出错:', err);
+      logger.error('选择图片出错', err);
       Toast.fail('选择图片失败,请重试');
     }
   };
@@ -173,7 +174,7 @@ function WriteFeedback() {
         Toast.fail('提交失败, 请稍后重试');
       }
     } catch (error: any) {
-      console.error('提交错误:', error.response || error);
+      logger.error('提交反馈错误', error.response || error);
       Toast.fail('提交失败,无法连接到服务器，请检查网络');
     } finally {
       setIsSubmitting(false);

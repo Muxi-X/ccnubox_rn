@@ -11,6 +11,7 @@ import useCourse from '@/store/course';
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import useVisualScheme from '@/store/visualScheme';
 import { SinglePageType } from '@/types/tabBarTypes';
+import { logger } from '@/utils/logger';
 import {
   enablePushSubscription,
   syncPushSubscription,
@@ -29,9 +30,7 @@ export default function TabLayout() {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      updateCourseData(useCourse.getState().courses).catch(error =>
-        console.error('更新小组件失败:', error)
-      );
+      updateCourseData(useCourse.getState().courses).catch(error => logger.error('更新小组件失败', error));
     }
   }, []);
 

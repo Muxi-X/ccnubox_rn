@@ -231,7 +231,7 @@ function FeedbackPage() {
               setSheetData(filtered);
             }
           } catch (error) {
-            console.error('Search error:', error);
+            logger.error('Search error', error);
           } finally {
             setIsLoading(false);
           }

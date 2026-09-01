@@ -7,6 +7,7 @@ import { JPushSecrets } from '@/secret/JPush';
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import { openBrowser } from '@/utils/handleOpenURL';
 import { jpushClient } from '@/utils/jpush';
+import { logger } from '@/utils/logger';
 
 type JPushNotificationResult = {
   content?: string;
@@ -49,13 +50,13 @@ const normalizeExtras = (extras: unknown): Record<string, string> | null => {
 const extractUrlFromResult = (
   result: JPushNotificationResult
 ): string | null => {
-  console.log('[JPush] 开始解析通知数据:', JSON.stringify(result, null, 2));
+  logger.debug('[JPush] 开始解析通知数据', result);
   const extras = normalizeExtras(result.extras);
-  console.log('[JPush] 解析后的 extras:', extras);
+  logger.debug('[JPush] 解析后的 extras', extras);
 
   const directUrl = extras?.url;
   if (directUrl) {
-    console.log('[JPush] 从 extras.url 中获取到跳转地址:', directUrl);
+    logger.info('[JPush] 从 extras.url 中获取到跳转地址', { directUrl });
     return directUrl;
   }
 
@@ -68,17 +69,17 @@ const extractUrlFromResult = (
   for (const { name, value } of candidates) {
     if (!value || typeof value !== 'string') continue;
     try {
-      console.log(`[JPush] 尝试解析候选字段 ${name}:`, value);
+      logger.debug(`[JPush] 尝试解析候选字段 ${name}`, { value });
       const parsed = JSON.parse(value) as { url?: string };
       if (parsed?.url) {
-        console.log(`[JPush] 从 ${name} 解析成功，跳转地址:`, parsed.url);
+        logger.info(`[JPush] 从 ${name} 解析成功，跳转地址:`, parsed.url);
         return parsed.url;
       }
     } catch {
       // ignore parse errors
     }
   }
-  console.warn('[JPush] 未能从通知中提取到有效的跳转地址');
+  logger.warn('[JPush] 未能从通知中提取到有效的跳转地址');
   return null;
 };
 
@@ -99,19 +100,16 @@ const consumeNativeInitialJPushOpened = async (stage: string) => {
   ).JPushColdStartBridge;
 
   if (typeof nativeBridge?.consumeInitialNotificationOpened !== 'function') {
-    console.warn('[JPush] JPushColdStartBridge 不存在，无法读取冷启动点击消息');
+    logger.warn('[JPush] JPushColdStartBridge 不存在，无法读取冷启动点击消息');
     return null;
   }
 
   try {
     const payload = await nativeBridge.consumeInitialNotificationOpened();
-    console.log(
-      `[JPush] 读取桥接冷启动点击消息 (${stage}):`,
-      payload ? JSON.stringify(payload) : 'null'
-    );
+    logger.debug(`[JPush] 读取桥接冷启动点击消息 (${stage})`, payload);
     return payload;
   } catch (error) {
-    console.error('[JPush] 读取桥接冷启动点击消息失败:', error);
+    logger.error('[JPush] 读取桥接冷启动点击消息失败', error);
     return null;
   }
 };
@@ -132,18 +130,16 @@ export const flushPendingPushNavigation = () => {
   if (!pushNavigationReady || !pendingPushPath) return;
   const path = pendingPushPath;
   pendingPushPath = null;
-  console.log('[JPush] 执行延迟推送跳转:', path);
+  logger.info('[JPush] 执行延迟推送跳转', { path });
   router.push(path as any);
 };
 
 const queuePushNavigation = (path: string) => {
   pendingPushPath = path;
-  console.log(
-    '[JPush] 缓存推送跳转路径:',
+  logger.info('[JPush] 缓存推送跳转路径', {
     path,
-    '导航就绪:',
-    pushNavigationReady
-  );
+    pushNavigationReady,
+  });
   if (pushNavigationReady) {
     flushPendingPushNavigation();
   }
@@ -217,37 +213,36 @@ const convertRawApnsUserInfoToJPushOpenedResult = (
 };
 
 const handleConnectEvent = (result: { connectEnable?: boolean }) => {
-  console.log(`[${Platform.OS}] JPush 连接状态变化:`, result);
+  logger.info(`[${Platform.OS}] JPush 连接状态变化`, result);
   const isConnected = result.connectEnable ?? false;
 
   if (isConnected) {
-    console.log('✅ JPush 连接成功', result);
+    logger.info('JPush 连接成功', result);
   } else {
-    console.warn('⚠️ JPush 连接失败');
+    logger.warn('JPush 连接失败');
   }
 };
 
 const handleNotificationEvent = (result: unknown) => {
   const payload = result as JPushNotificationResult;
-  console.log(
-    '[JPush] 监听到通知事件:',
-    payload.notificationEventType,
-    payload
-  );
+  logger.debug('[JPush] 监听到通知事件', {
+    type: payload.notificationEventType,
+    payload,
+  });
 
   if (payload.notificationEventType !== 'notificationOpened') return;
 
-  console.log('[JPush] 用户点击了通知');
+  logger.info('[JPush] 用户点击了通知');
   const url = extractUrlFromResult(payload);
   if (url) {
     openPushUrl(url);
   } else {
-    console.log('[JPush] 通知被打开，但未找到跳转 URL');
+    logger.info('[JPush] 通知被打开，但未找到跳转 URL');
   }
 };
 
 const handleCustomMessage = (result: unknown) => {
-  console.log('收到自定义消息:', result);
+  logger.debug('收到自定义消息', result);
 };
 
 const hasGrantedPushPermission = (
@@ -327,7 +322,7 @@ export const initializeJPush = async ({
   initializationPromise = (async () => {
     try {
       if (!jpushClient.isAvailable()) {
-        console.warn('[JPush] 原生模块不存在，跳过初始化');
+        logger.warn('[JPush] 原生模块不存在，跳过初始化');
         return false;
       }
 
@@ -345,7 +340,7 @@ export const initializeJPush = async ({
 
       const permissionGranted = await ensurePushPermission(requestPermission);
       if (!permissionGranted) {
-        console.warn('[JPush] 未获得通知权限，跳过初始化');
+        logger.warn('[JPush] 未获得通知权限，跳过初始化');
         return false;
       }
 
@@ -373,15 +368,17 @@ export const initializeJPush = async ({
 
         jpushClient.getRegistrationID((result: { registerID?: string }) => {
           if (result.registerID) {
-            console.log('✅ JPush Registration ID:', result.registerID);
+            logger.info('JPush Registration ID', {
+              registerID: result.registerID,
+            });
           }
         });
       }
 
-      console.log('✅ JPush 初始化完成');
+      logger.info('JPush 初始化完成');
       return true;
     } catch (error) {
-      console.error('JPush 初始化失败:', error);
+      logger.error('JPush 初始化失败', error);
       return false;
     } finally {
       initializationPromise = null;
@@ -392,15 +389,17 @@ export const initializeJPush = async ({
 };
 
 export const openPushUrl = (url: string) => {
-  console.log('[JPush] 尝试打开跳转地址:', url);
+  logger.info('[JPush] 尝试打开跳转地址', { url });
   const trimmed = url.trim();
   const schemeMatch = trimmed.match(/^([a-z][a-z0-9+.-]*):\/\//i);
   const scheme = schemeMatch?.[1]?.toLowerCase();
 
   if (!scheme) {
-    console.warn('[JPush] 无法识别的跳转协议 (no scheme):', url);
+    logger.warn('[JPush] 无法识别的跳转协议 (no scheme)', { url });
     if (trimmed.startsWith('/')) {
-      console.log('[JPush] 识别为路径，尝试使用 ccnubox 协议处理:', trimmed);
+      logger.info('[JPush] 识别为路径，尝试使用 ccnubox 协议处理', {
+        path: trimmed,
+      });
       ccnuboxResolver(trimmed);
     }
     return;
@@ -408,12 +407,12 @@ export const openPushUrl = (url: string) => {
 
   const resolver = pushUrlResolvers[scheme];
   if (!resolver) {
-    console.warn('[JPush] 不支持的协议类型:', scheme, '完整地址:', url);
+    logger.warn('[JPush] 不支持的协议类型', { scheme, url });
     return;
   }
 
   const pathOrUrl = trimmed.replace(/^([a-z][a-z0-9+.-]*):\/\//i, '');
-  console.log(`[JPush] 使用 ${scheme} 解析器处理路径:`, pathOrUrl);
+  logger.debug(`[JPush] 使用 ${scheme} 解析器处理路径`, { pathOrUrl });
   resolver(pathOrUrl);
 };
 
@@ -423,7 +422,7 @@ const useJPush = () => {
   useEffect(() => {
     if (!enabled) return;
     initializeJPush().catch(error => {
-      console.error('JPush 自动初始化失败:', error);
+      logger.error('JPush 自动初始化失败', error);
     });
   }, [enabled]);
 };

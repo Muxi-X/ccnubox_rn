@@ -24,6 +24,7 @@ import {
 } from '@/constants/FEEDBACKS';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
+import { logger } from '@/utils/logger';
 
 export interface FeedbackItem {
   record_id: string;
@@ -246,7 +247,7 @@ export default function FeedbackHistory() {
         setPageToken(res.data.page_token || '');
       }
     } catch (err) {
-      console.error('获取用户反馈失败', err);
+      logger.error('获取用户反馈失败', err);
       Toast.fail('获取反馈历史失败，请稍后再试');
     } finally {
       loadingRef.current = false;

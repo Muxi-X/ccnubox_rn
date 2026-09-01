@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 /**
  * 使用 WeakMap 实现 EventBus，可解决内存泄漏问题，但我还没测试过
  */
@@ -69,7 +71,7 @@ export class EventBus {
       this._eventPool[name].forEach(fn => fn(...args));
       return;
     }
-    console.log(`没有名为 ${name} 的事件`);
+    logger.warn(`没有名为 ${name} 的事件`);
   }
 
   on(name: string, fn: (...args: any[]) => void): void {
