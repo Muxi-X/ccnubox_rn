@@ -1,0 +1,100 @@
+{
+  module: {
+    name: 'entry',
+    type: 'entry',
+    description: '$string:module_desc',
+    mainElement: 'EntryAbility',
+    deviceTypes: ['default'],
+    deliveryWithInstall: true,
+    installationFree: false,
+    pages: '$profile:main_pages',
+    requestPermissions: [
+      {
+        name: 'ohos.permission.INTERNET',
+      },
+      {
+        name: 'ohos.permission.VIBRATE',
+      },
+      {
+        name: 'ohos.permission.APPROXIMATELY_LOCATION',
+        reason: '$string:location_reason',
+        usedScene: {
+          abilities: ['EntryAbility'],
+          when: 'inuse',
+        },
+      },
+      {
+        name: 'ohos.permission.LOCATION',
+        reason: '$string:location_reason',
+        usedScene: {
+          abilities: ['EntryAbility'],
+          when: 'inuse',
+        },
+      },
+      {
+        name: 'ohos.permission.READ_IMAGEVIDEO',
+        reason: '$string:image_library_reason',
+        usedScene: {
+          abilities: ['EntryAbility'],
+          when: 'inuse',
+        },
+      },
+      {
+        name: 'ohos.permission.WRITE_IMAGEVIDEO',
+        reason: '$string:image_library_write_reason',
+        usedScene: {
+          abilities: ['EntryAbility'],
+          when: 'inuse',
+        },
+      },
+    ],
+    abilities: [
+      {
+        name: 'EntryAbility',
+        srcEntry: './ets/entryability/EntryAbility.ets',
+        description: '$string:EntryAbility_desc',
+        icon: '$media:layered_image',
+        label: '$string:EntryAbility_label',
+        startWindowIcon: '$media:startIcon',
+        startWindowBackground: '$color:start_window_background',
+        visible: true,
+        skills: [
+          {
+            entities: ['entity.system.browsable'],
+            actions: ['ohos.want.action.viewData'],
+            uris: [
+              {
+                scheme: 'ccnubox',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'BrowserManagerAbility',
+        srcEntry: './ets/entryability/BrowserManagerAbility.ets',
+        description: '$string:EntryAbility_desc',
+        icon: '$media:layered_image',
+        label: '$string:EntryAbility_label',
+        startWindowIcon: '$media:startIcon',
+        startWindowBackground: '$color:start_window_background',
+        visible: false,
+      },
+    ],
+    extensionAbilities: [
+      {
+        name: 'CourseWidgetAbility',
+        srcEntry: './ets/widget/CourseWidgetAbility.ets',
+        label: '$string:course_widget_name',
+        description: '$string:course_widget_description',
+        type: 'form',
+        metadata: [
+          {
+            name: 'ohos.extension.form',
+            resource: '$profile:form_config',
+          },
+        ],
+      },
+    ],
+  },
+}

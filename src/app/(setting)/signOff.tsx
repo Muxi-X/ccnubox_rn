@@ -1,7 +1,6 @@
 import { Input } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { deleteItemAsync } from 'expo-secure-store';
 import { useMemo, useState } from 'react';
 import {
   Image,
@@ -17,6 +16,9 @@ import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Toast from '@/components/toast';
+import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
+import { deleteItemAsync } from '@/platform/storage';
 import { deactivate } from '@/request/api/auth';
 import useUserStore from '@/store/user';
 import { commonColors, commonStyles } from '@/styles/common';
@@ -45,12 +47,16 @@ function SignOff() {
           await deactivate(password);
 
           try {
-            await Promise.all([
+            const localCleanupTasks = [
               AsyncStorage.multiRemove(['courses']),
               deleteItemAsync('longToken'),
               deleteItemAsync('shortToken'),
               deleteItemAsync('user'),
-            ]);
+            ];
+            if (isHarmony) {
+              localCleanupTasks.push(clearHarmonyDebugSession());
+            }
+            await Promise.all(localCleanupTasks);
             useUserStore.setState({ student_id: '', password: '' });
           } catch {
             // 忽略存储清理异常

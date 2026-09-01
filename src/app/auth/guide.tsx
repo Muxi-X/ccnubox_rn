@@ -1,7 +1,6 @@
 import { Icon, Toast } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { setItem } from 'expo-secure-store';
 import { FC, useCallback, useEffect, useState } from 'react';
 import {
   BackHandler,
@@ -29,6 +28,8 @@ import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
 import { GUIDE_CONTENTS } from '@/constants/GUIDE';
+import { isHarmony } from '@/platform/runtime';
+import { setItem } from '@/platform/storage';
 import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
@@ -67,7 +68,7 @@ const GuidePage: FC = () => {
             setAgreement(true);
           },
           onCancel() {
-            if (Platform.OS === 'android') {
+            if (Platform.OS === 'android' || isHarmony) {
               router.replace('/auth/guide');
               BackHandler.exitApp();
             } else if (Platform.OS === 'ios') {
@@ -75,7 +76,7 @@ const GuidePage: FC = () => {
             }
           },
           onClose() {
-            if (Platform.OS === 'android') {
+            if (Platform.OS === 'android' || isHarmony) {
               router.replace('/auth/guide');
             } else if (Platform.OS === 'ios') {
               router.replace('/auth/guide');

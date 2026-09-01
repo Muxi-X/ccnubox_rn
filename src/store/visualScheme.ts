@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Appearance, Platform } from 'react-native';
+import { Appearance } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { defaultLayoutName } from '@/platform/capabilities';
 import { layoutMap } from '@/styles';
 import { LayoutName, LayoutType, SingleThemeType } from '@/styles/types';
 import { setSystemUITheme } from '@/utils/systemUI';
@@ -10,7 +11,7 @@ import { setSystemUITheme } from '@/utils/systemUI';
 import { LayoutSelectSpec, visualSchemeType } from './types';
 
 const initialTheme = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
-const initialLayout: LayoutName = Platform.OS === 'ios' ? 'ios' : 'android';
+const initialLayout: LayoutName = defaultLayoutName;
 const initialLayouts = new Map(Object.entries(layoutMap)) as Map<
   LayoutName,
   LayoutType

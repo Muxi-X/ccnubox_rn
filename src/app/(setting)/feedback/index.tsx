@@ -1,6 +1,5 @@
 import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Image,
@@ -21,6 +20,7 @@ import SearchBar from '@/components/searchBar';
 import ThemeBasedView from '@/components/view';
 import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from '@/constants/FEEDBACKS';
 import FAQItem from '@/modules/setting/components/faqitem';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { feedbackFAQ, getFAQ } from '@/request/api/feedback';
 import useFAQStore from '@/store/FAQs';
 import useVisualScheme from '@/store/visualScheme';
@@ -31,7 +31,7 @@ import { log } from '@/utils/logger';
 function FeedbackPage() {
   const router = useRouter();
   const number = '791185783';
-  const user = getItem('user');
+  const user = getFeedbackUser();
   const userId = user ? JSON.parse(user)?.state?.student_id : '';
 
   const [value, setValue] = useState('');

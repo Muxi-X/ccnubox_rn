@@ -2,7 +2,6 @@ import { Toast } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -24,6 +23,8 @@ import {
   MODULE_MAP,
 } from '@/constants/FEEDBACKS';
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
+import { platformCapabilities } from '@/platform/capabilities';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { createFeedbackRecord } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
 import { runPermissionAction } from '@/utils/requestPermission';
@@ -88,6 +89,10 @@ function WriteFeedback() {
   };
 
   const handleSelectImage = async () => {
+    if (!platformCapabilities.attachmentUpload) {
+      Toast.info('鸿蒙版本暂不支持反馈附件上传');
+      return;
+    }
     try {
       const result = await runPermissionAction({
         action: () =>
@@ -144,9 +149,8 @@ function WriteFeedback() {
 
     setIsSubmitting(true);
     try {
-      const user = getItem('user');
+      const user = getFeedbackUser();
       const userId = user ? JSON.parse(user)?.state?.student_id : undefined;
-
       const fileTokens = images.map(img => img.token).filter(Boolean);
 
       const requestData = {
@@ -323,51 +327,67 @@ function WriteFeedback() {
             </View>
           </View>
 
-          <View style={styles.uploadContainer}>
-            <Text style={[styles.label, currentStyle?.text_style]}>
-              上传图片
-            </Text>
+          {platformCapabilities.attachmentUpload ? (
+            <View style={styles.uploadContainer}>
+              <Text style={[styles.label, currentStyle?.text_style]}>
+                上传图片
+              </Text>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={styles.thumbnailList}>
-                {images.map(img => (
-                  <View key={img.uri} style={styles.thumbnailWrapper}>
-                    <Image source={{ uri: img.uri }} style={styles.thumbnail} />
-                    {img.uploading && (
-                      <View style={styles.thumbnailOverlay}>
-                        <ActivityIndicator size="small" />
-                      </View>
-                    )}
-                    <TouchableOpacity
-                      style={styles.removeButton}
-                      onPress={() => handleRemoveImage(img.uri)}
-                    >
-                      <Text
-                        style={[
-                          styles.removeButtonText,
-                          currentStyle?.text_style,
-                        ]}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.thumbnailList}>
+                  {images.map(img => (
+                    <View key={img.uri} style={styles.thumbnailWrapper}>
+                      <Image
+                        source={{ uri: img.uri }}
+                        style={styles.thumbnail}
+                      />
+                      {img.uploading && (
+                        <View style={styles.thumbnailOverlay}>
+                          <ActivityIndicator size="small" />
+                        </View>
+                      )}
+                      <TouchableOpacity
+                        style={styles.removeButton}
+                        onPress={() => handleRemoveImage(img.uri)}
                       >
-                        ×
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
+                        <Text
+                          style={[
+                            styles.removeButtonText,
+                            currentStyle?.text_style,
+                          ]}
+                        >
+                          ×
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
 
-                <TouchableOpacity
-                  style={styles.addThumbnail}
-                  onPress={handleSelectImage}
-                  disabled={isAnyImageUploading}
-                >
-                  <Ionicons
-                    name="add"
-                    size={18}
-                    color={currentStyle?.information_text_style?.color}
-                  />
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          </View>
+                  <TouchableOpacity
+                    style={styles.addThumbnail}
+                    onPress={handleSelectImage}
+                    disabled={isAnyImageUploading}
+                  >
+                    <Ionicons
+                      name="add"
+                      size={18}
+                      color={currentStyle?.information_text_style?.color}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.uploadContainer}>
+              <Text style={[styles.label, currentStyle?.text_style]}>
+                上传图片
+              </Text>
+              <Text
+                style={[styles.disabledUploadHint, currentStyle?.text_style]}
+              >
+                鸿蒙适配阶段暂不支持反馈附件上传。
+              </Text>
+            </View>
+          )}
 
           <View>
             <View style={styles.inputContainer}>
@@ -510,6 +530,11 @@ const styles = StyleSheet.create({
   },
   uploadContainer: {
     marginBottom: 14,
+  },
+  disabledUploadHint: {
+    color: '#7a7a7a',
+    fontSize: 13,
+    lineHeight: 20,
   },
   thumbnailList: {
     flexDirection: 'row',

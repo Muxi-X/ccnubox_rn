@@ -1,7 +1,13 @@
 nodeLinker: hoisted
+overrides:
+  '@react-native-oh/react-native-harmony-cli>tar': 7.5.21
 allowBuilds:
+  '@react-native-oh-tpl/react-native-reanimated': true
+  '@react-native-oh-tpl/react-native-svg': true
+  '@react-native-ohos/react-native-inappbrowser-reborn': false
   '@shopify/react-native-skia': true
   core-js: true
+  react-native-inappbrowser-reborn: false
   unrs-resolver: true
 packages:
   - '.'

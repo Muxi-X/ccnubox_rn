@@ -81,16 +81,65 @@
 
 ## 开发环境版本
 
-- **Node.js**: >=18.0.0
-- **pnpm**: >=9.14.4
-- **React**: 18.2.0
-- **React Native**: 0.74.5
-- **Expo**: 51.0.38
+- **Node.js**: >=22.13.0
+- **pnpm**: 11.6.0
+- **React**: 19.2.3
+- **React Native**: 0.85.3
+- **Expo**: 56.0.20
 - **Gradle**: 8.6
 - **Android SDK**: 34 (compileSdkVersion)
 - **Android Build Tools**: 34.0.0
 - **JDK**: 17
-- **TypeScript**: ~5.3.3
+- **TypeScript**: ~6.0.3
+
+## Harmony 适配构建
+
+当前 Harmony 适配使用预发布版 `expo-harmony-toolkit@2.0.0-next.0`，矩阵边界如下：
+
+- 应用主线已升级到 Expo SDK 56、React Native `0.85.3`，但 toolkit
+  当前已验证矩阵仍是 `expo55-rnoh082-ui-stack`。因此 doctor 会报告
+  `ineligible`，不能把安装或脚手架成功当成 Harmony 发布就绪证据。
+- `@react-native-oh/react-native-harmony` 和
+  `@react-native-oh/react-native-harmony-cli` 锁定为 `0.82.29`。
+- Harmony adapter 继续按 experimental lane 管理，bundle、debug HAP、模拟器和
+  真机证据必须分别记录。
+- `react-native-svg` Harmony adapter 使用 toolkit 矩阵允许的 npm fallback
+  `15.0.1-rc.11`，避免 GitHub tarball 在安装阶段执行 prepack 失败。
+
+常用命令：
+
+```bash
+pnpm install --frozen-lockfile
+pnpm exec expo-harmony --version
+pnpm harmony:doctor --target-tier experimental --json
+pnpm harmony:sync-template
+pnpm harmony:bundle
+pnpm harmony:build:debug
+```
+
+如果本机有 HarmonyOS 模拟器和签名材料，可以再运行：
+
+```bash
+pnpm harmony:env
+pnpm harmony:build:release
+hdc install -r harmony/entry/build/default/outputs/default/entry-default-signed.hap
+aa start -a EntryAbility -b com.muxixyz.ccnubox
+```
+
+签名材料只放在本地，例如：
+
+```text
+harmony/signing/release.p12
+harmony/signing/release.p7b
+harmony/signing/release.cer
+```
+
+真实密码、p12、profile、cert、HAP/HAR、`oh_modules`、raw
+bundle/assets 都不应提交。可以复制 `.expo-harmony/signing.local.example.json`
+为本地 `signing.local.json` 后填写真实路径和密码。
+
+当前构建或模拟器证据只说明本地 build-chain
+/ 模拟器启动链路通过，不等同于真机 verified、AppGallery 生产签名或所有业务能力的运行时验收。
 
 ## 推荐开发调试方法
 

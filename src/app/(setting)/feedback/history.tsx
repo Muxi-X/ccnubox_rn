@@ -1,6 +1,5 @@
 import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import React, {
   useCallback,
   useEffect,
@@ -22,6 +21,7 @@ import {
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_STYLE_KEY,
 } from '@/constants/FEEDBACKS';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -216,7 +216,7 @@ export default function FeedbackHistory() {
   const [pageToken, setPageToken] = useState<string>('');
   const [feedbackHistory, setFeedbackHistory] = useState<FeedbackItem[]>([]);
   const loadingRef = useRef<boolean>(false);
-  const user = getItem('user');
+  const user = getFeedbackUser();
 
   const currentStyle = useVisualScheme(state => state.currentStyle);
 

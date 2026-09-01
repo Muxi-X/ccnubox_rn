@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { deleteItemAsync } from 'expo-secure-store';
 
 import aboutPng from '@/assets/images/about.png';
 import checkUpdatePng from '@/assets/images/check-update.png';
@@ -8,6 +7,9 @@ import exitPng from '@/assets/images/exit.png';
 import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
 import Modal from '@/components/modal';
+import { clearHarmonyDebugSession } from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
+import { deleteItemAsync } from '@/platform/storage';
 import { logout } from '@/request/api/auth';
 import { removeFeedToken } from '@/request/api/feeds';
 import usePushSubscriptionStore from '@/store/pushSubscription';
@@ -92,11 +94,15 @@ export const SETTING_ITEMS: SettingItem[] = [
           }
 
           try {
-            await Promise.all([
+            const localCleanupTasks = [
               AsyncStorage.multiRemove(['courses']),
               deleteItemAsync('longToken'),
               deleteItemAsync('shortToken'),
-            ]);
+            ];
+            if (isHarmony) {
+              localCleanupTasks.push(clearHarmonyDebugSession());
+            }
+            await Promise.all(localCleanupTasks);
             useUserStore.setState({ password: '' });
           } catch {
             // 忽略本地清理异常

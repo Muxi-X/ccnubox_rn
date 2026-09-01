@@ -1,0 +1,23 @@
+{
+  "signingConfigs": [
+    {
+      "name": "default",
+      "type": "HarmonyOS",
+      "material": {
+        "storeFile": "./signing/release.p12",
+        "storePassword": "<replace-with-store-password>",
+        "keyAlias": "<replace-with-key-alias>",
+        "keyPassword": "<replace-with-key-password>",
+        "signAlg": "SHA256withECDSA",
+        "profile": "./signing/release.p7b",
+        "certpath": "./signing/release.cer"
+      }
+    }
+  ],
+  "products": [
+    {
+      "name": "default",
+      "signingConfig": "default"
+    }
+  ]
+}

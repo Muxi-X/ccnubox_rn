@@ -1,12 +1,13 @@
 import { Provider, Toast } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
-import * as Haptics from 'expo-haptics';
 import { Stack, useRootNavigationState } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
+
+import * as Haptics from '@/platform/haptics';
 
 import PortalRoot from '../components/portal';
 import Scraper from '../components/scraper';
