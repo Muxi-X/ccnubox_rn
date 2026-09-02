@@ -21,27 +21,9 @@ const ASSET_HOST_OVERRIDE = 'assets.ota.ccnubox.muxixyz.com';
 const UPDATE_PROJECT_ID = '65d670f0-9625-4631-9603-f4b11f44e621';
 
 /**
- * 默认更新配置：注入 channel 为 production
+ * 默认更新配置：注入自定义源与 channel: production
  */
-const applyDefaultChannelConfig = async () => {
-  try {
-    if (typeof Updates.setUpdateRequestHeadersOverride === 'function') {
-      Updates.setUpdateRequestHeadersOverride({
-        'expo-channel-name': 'production',
-      });
-    }
-    if (typeof Updates.setExtraParamAsync === 'function') {
-      await Updates.setExtraParamAsync('channel', 'production');
-    }
-  } catch {
-    // 忽略在非支持环境或测试环境中的配置错误
-  }
-};
-
-/**
- * 重试配置：除 channel: production 外，额外注入代理域名配置
- */
-const applyRetryProxyConfig = async () => {
+const applyDefaultCustomSourceConfig = async () => {
   try {
     const updateUrl = `https://${MANIFEST_HOST_OVERRIDE}/${UPDATE_PROJECT_ID}`;
 
@@ -61,6 +43,36 @@ const applyRetryProxyConfig = async () => {
         'expo-channel-name': 'production',
         'expo-asset-host-override': ASSET_HOST_OVERRIDE,
         'expo-manifest-host-override': MANIFEST_HOST_OVERRIDE,
+      });
+    }
+
+    if (typeof Updates.setExtraParamAsync === 'function') {
+      await Updates.setExtraParamAsync('channel', 'production');
+    }
+  } catch {
+    // 忽略在非支持环境或测试环境中的配置错误
+  }
+};
+
+/**
+ * 官方源回退配置：在自定义源失败重试时，回退到 Expo 官方源
+ */
+const applyOfficialFallbackConfig = async () => {
+  try {
+    const updateUrl = `https://u.expo.dev/${UPDATE_PROJECT_ID}`;
+
+    if (typeof Updates.setUpdateURLAndRequestHeadersOverride === 'function') {
+      Updates.setUpdateURLAndRequestHeadersOverride({
+        updateUrl,
+        requestHeaders: {
+          'expo-channel-name': 'production',
+        },
+      });
+    }
+
+    if (typeof Updates.setUpdateRequestHeadersOverride === 'function') {
+      Updates.setUpdateRequestHeadersOverride({
+        'expo-channel-name': 'production',
       });
     }
 
@@ -107,8 +119,8 @@ const runUpdateOperation = async (
     return { status: 'disabled' };
   }
 
-  // 默认对所有更新请求注入 channel: production
-  await applyDefaultChannelConfig();
+  // 默认对所有更新请求走自定义代理源
+  await applyDefaultCustomSourceConfig();
 
   const retries = options.retries ?? 3;
   const retryDelayMs = options.retryDelayMs ?? 1000;
@@ -119,7 +131,7 @@ const runUpdateOperation = async (
       () => Updates.checkForUpdateAsync(),
       retries,
       retryDelayMs,
-      applyRetryProxyConfig
+      applyOfficialFallbackConfig
     );
     if (!checkResult.isAvailable && !checkResult.isRollBackToEmbedded) {
       return { status: 'up-to-date' };
@@ -131,7 +143,7 @@ const runUpdateOperation = async (
     () => Updates.fetchUpdateAsync(),
     retries,
     retryDelayMs,
-    applyRetryProxyConfig
+    applyOfficialFallbackConfig
   );
   if (fetchResult.isNew || fetchResult.isRollBackToEmbedded) {
     return { status: 'downloaded' };
