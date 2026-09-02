@@ -19,9 +19,17 @@ declare const __DEV__: boolean | undefined;
 const isDev = typeof __DEV__ !== 'undefined' ? __DEV__ : false;
 const defaultMinLevel: LogLevel = isDev ? 'debug' : 'info';
 
+// 仅当 REDACTOR=false 时关闭脱敏，其余任何情况一律默认强制脱敏
+const isRedactionEnabled =
+  process.env.EXPO_PUBLIC_REDACTOR !== 'false' &&
+  process.env.REDACTOR !== 'false';
+
 export const loggerCore = new LoggerCore({
   minLevel: defaultMinLevel,
   adapters: [new ConsoleAdapter()],
+  redactorOptions: {
+    enabled: isRedactionEnabled,
+  },
 });
 
 export const logger = {

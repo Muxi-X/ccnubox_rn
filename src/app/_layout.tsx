@@ -16,20 +16,6 @@ import { usePortalStore } from '../store/portal';
 import useScraper from '../store/scraper';
 import useVisualScheme from '../store/visualScheme';
 import { commonColors } from '../styles/common';
-import { logger } from '../utils/logger';
-
-// 打印脱敏测试日志（模拟项目中真实的用户登录凭据与网络请求数据）
-logger.info('🚀 CCNUBox 正在初始化...', {
-  student_id: '2023210001',
-  password: 'Password@123456',
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NSJ9',
-  cookie: 'session_id=abcxyz123',
-  request_payload: {
-    student_id: '2023210001',
-    password: 'Password@123456',
-    secret_key: 'custom_secret_key_value',
-  },
-});
 
 export default function RootLayout() {
   const rootNavigationState = useRootNavigationState();
