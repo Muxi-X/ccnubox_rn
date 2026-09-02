@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TextProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { useThemeChangeStyle } from '@/hooks';
+import useThemeChangeStyle from '@/hooks/useThemeChangeStyle';
 import { ConfigurableThemeNames } from '@/styles/types';
 
 /**

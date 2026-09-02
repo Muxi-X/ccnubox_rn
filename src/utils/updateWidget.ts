@@ -2,7 +2,6 @@ import { ExtensionStorage } from '@bacons/apple-targets';
 import { Platform } from 'react-native';
 
 import type { courseType } from '@/modules/courseTable/components/courseTable/type';
-import useCourseStore from '@/store/course';
 import useTimeStore from '@/store/time';
 import {
   buildAndroidWidgetCourseData,
@@ -11,15 +10,8 @@ import {
 
 import CcnuboxWidget from '../../modules/ccnubox-widget';
 
-export const updateCourseData = async (nextCourses?: courseType[]) => {
+export const updateCourseData = async (courses: courseType[]) => {
   const currentWeek = useTimeStore.getState().getCurrentWeek();
-
-  const courses = nextCourses ?? useCourseStore.getState().courses;
-
-  if (!courses) {
-    console.log('没有课程数据');
-    return;
-  }
 
   const courseData = buildAndroidWidgetCourseData(courses, currentWeek);
 
