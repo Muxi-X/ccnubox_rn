@@ -116,20 +116,34 @@ const normalizePersistedState = (value: unknown): PersistedCourseState => {
       );
     }
   } else if (Array.isArray(value.courses)) {
-    const legacyCourses = sanitizeCourseList(value.courses).courses;
-    for (const course of legacyCourses) {
-      const key = getCourseScopeKey(course.year, course.semester);
-      const bucket =
-        buckets[key] ??
-        createBucket(
-          course.year,
-          course.semester,
-          [],
-          value.lastUpdate,
-          Date.now()
-        );
-      bucket.courses.push(course);
-      buckets[key] = bucket;
+    const legacyCoursesByScope: Record<string, unknown[]> = {};
+
+    for (const rawCourse of value.courses) {
+      if (!isRecord(rawCourse)) continue;
+
+      const year =
+        typeof rawCourse.year === 'string' ? rawCourse.year.trim() : '';
+      const semester =
+        typeof rawCourse.semester === 'string' ? rawCourse.semester.trim() : '';
+      if (!isValidCourseScope(year, semester)) continue;
+
+      const key = getCourseScopeKey(year, semester);
+      const scopedCourses = legacyCoursesByScope[key] ?? [];
+      scopedCourses.push(rawCourse);
+      legacyCoursesByScope[key] = scopedCourses;
+    }
+
+    for (const [key, scopedCourses] of Object.entries(legacyCoursesByScope)) {
+      const scope = parseScopeKey(key);
+      if (!scope) continue;
+
+      buckets[key] = createBucket(
+        scope.year,
+        scope.semester,
+        scopedCourses,
+        value.lastUpdate,
+        Date.now()
+      );
     }
   }
 
