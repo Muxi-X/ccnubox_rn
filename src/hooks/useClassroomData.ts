@@ -1,84 +1,22 @@
 import * as React from 'react';
 
 import {
+  buildClassroomPickerData,
   ClassroomColumns,
+  type ClassroomStatus,
   getCurrentDayOfWeek,
   getCurrentTimeSlot,
+  getClassroomWherePrefix,
   getSelectedPeriods,
   type PickerColumnItem,
   type PickerColumns,
-} from '@/modules/mainPage/components/classroom';
+} from '@/modules/mainPage/components/classroom/model';
 import {
   getClassroomList,
   queryFreeClassroom,
 } from '@/request/api/queryClassroom';
 import { useClassroomStarStore } from '@/store/classroom';
 import useTimeStore from '@/store/time';
-
-const LOCATION_LABELS: Record<string, string> = {
-  n: '南湖综合楼',
-  '3': '3号楼',
-  '7': '7号楼',
-  '8': '8号楼',
-  '9': '9号楼',
-  '10': '10号楼',
-};
-
-const parseRoomBuilding = (
-  room: string
-): { building: string; floor: string } | null => {
-  let building: string;
-  let rest: string;
-
-  if (room.startsWith('n')) {
-    building = 'n';
-    rest = room.slice(1);
-  } else if (room.startsWith('10')) {
-    building = '10';
-    rest = room.slice(2);
-  } else if (room.length >= 1) {
-    building = room[0];
-    rest = room.slice(1);
-  } else {
-    return null;
-  }
-
-  if (rest.length === 0) return null;
-  return { building, floor: rest[0] };
-};
-
-const buildDynamicData = (
-  rooms: string[]
-): {
-  locationColumn: PickerColumnItem[];
-  buildingFloors: Record<string, string[]>;
-} => {
-  const floorMap: Record<string, Set<string>> = {};
-
-  for (const room of rooms) {
-    const parsed = parseRoomBuilding(room);
-    if (!parsed) continue;
-    if (!floorMap[parsed.building]) floorMap[parsed.building] = new Set();
-    floorMap[parsed.building].add(parsed.floor);
-  }
-
-  const locationColumn = Object.keys(floorMap)
-    .sort((a, b) => {
-      if (a === 'n') return -1;
-      if (b === 'n') return 1;
-      return parseInt(a) - parseInt(b);
-    })
-    .map(loc => ({ label: LOCATION_LABELS[loc] ?? `${loc}号楼`, value: loc }));
-
-  const buildingFloors: Record<string, string[]> = {};
-  for (const [building, floors] of Object.entries(floorMap)) {
-    buildingFloors[building] = [...floors].sort(
-      (a, b) => parseInt(a) - parseInt(b)
-    );
-  }
-
-  return { locationColumn, buildingFloors };
-};
 
 const formatAcademicYear = (year: string): string =>
   year ? `${year}-${parseInt(year, 10) + 1}` : '';
@@ -98,14 +36,6 @@ export interface ClassroomResponse {
   msg?: string;
 }
 
-export interface ClassroomStatus {
-  roomNumber: string;
-  status: {
-    period: number;
-    status: 'outTime' | 'free' | 'occupied';
-  }[];
-}
-
 const useClassroomData = (filterStarred: boolean = false) => {
   const { starredClassrooms, isClassroomStarred, toggleStarredClassroom } =
     useClassroomStarStore();
@@ -115,22 +45,27 @@ const useClassroomData = (filterStarred: boolean = false) => {
   const currentWeek = getCurrentWeek();
   const currentDayOfWeek = getCurrentDayOfWeek();
   const currentTimeSlot = getCurrentTimeSlot();
+  const starredClassroomsKey = filterStarred
+    ? starredClassrooms.join('\u0000')
+    : '';
 
   const [locationOptions, setLocationOptions] = React.useState<
     PickerColumnItem[]
-  >(ClassroomColumns[0]);
+  >([]);
   const [buildingFloors, setBuildingFloors] = React.useState<
     Record<string, string[]>
   >({});
+  const [pickerLoading, setPickerLoading] = React.useState(true);
+  const [pickerError, setPickerError] = React.useState('');
 
   const [selectedValues, setSelectedValues] = React.useState<string[]>([
-    'n',
-    '1',
+    '',
+    '',
     currentTimeSlot,
   ]);
   const [inPickerValues, setInPickerValues] = React.useState<string[]>([
-    'n',
-    '1',
+    '',
+    '',
     currentTimeSlot,
   ]);
 
@@ -138,7 +73,7 @@ const useClassroomData = (filterStarred: boolean = false) => {
     const floors = buildingFloors[inPickerValues[0]];
     const floorColumn = floors
       ? floors.map(f => ({ label: `${f}层`, value: f }))
-      : ClassroomColumns[1];
+      : [];
     return [locationOptions, floorColumn, ClassroomColumns[2]];
   }, [locationOptions, buildingFloors, inPickerValues[0]]);
 
@@ -146,7 +81,8 @@ const useClassroomData = (filterStarred: boolean = false) => {
     const buildingLabel =
       locationOptions.find(l => l.value === selectedValues[0])?.label ??
       selectedValues[0];
-    return [buildingLabel, `${selectedValues[1]}层`, selectedValues[2]];
+    const floorLabel = selectedValues[1] ? `${selectedValues[1]}层` : '';
+    return [buildingLabel, floorLabel, selectedValues[2]];
   }, [selectedValues, locationOptions]);
   const [classroomData, setClassroomData] = React.useState<ClassroomStatus[]>(
     []
@@ -156,22 +92,43 @@ const useClassroomData = (filterStarred: boolean = false) => {
   const requestIdRef = React.useRef(0);
 
   React.useEffect(() => {
+    if (filterStarred) {
+      setPickerLoading(false);
+      return;
+    }
+
+    let active = true;
+
     getClassroomList()
       .then(rooms => {
-        if (rooms.length === 0) return;
+        if (!active) return;
+
         const { locationColumn, buildingFloors: floors } =
-          buildDynamicData(rooms);
+          buildClassroomPickerData(rooms);
+        if (locationColumn.length === 0) {
+          throw new Error('教室列表为空');
+        }
+
         setLocationOptions(locationColumn);
         setBuildingFloors(floors);
         const firstBuilding = locationColumn[0].value;
-        const firstFloor = floors[firstBuilding]?.[0] ?? '1';
+        const firstFloor = floors[firstBuilding][0];
         setSelectedValues([firstBuilding, firstFloor, currentTimeSlot]);
         setInPickerValues([firstBuilding, firstFloor, currentTimeSlot]);
+        setPickerError('');
       })
       .catch(() => {
-        // 拉取失败保持硬编码默认值
+        if (!active) return;
+        setPickerError('教室列表加载失败，请稍后重试');
+      })
+      .finally(() => {
+        if (active) setPickerLoading(false);
       });
-  }, []);
+
+    return () => {
+      active = false;
+    };
+  }, [filterStarred]);
 
   const handleColumnChange = (
     values: (string | number)[],
@@ -190,8 +147,9 @@ const useClassroomData = (filterStarred: boolean = false) => {
     }
   };
 
-  const handlePickerConfirm = (_result: string[]) => {
-    setSelectedValues([...inPickerValues]);
+  const handlePickerConfirm = (result: string[]) => {
+    setSelectedValues([...result]);
+    setInPickerValues([...result]);
   };
 
   const handlePickerCancel = () => {
@@ -200,43 +158,79 @@ const useClassroomData = (filterStarred: boolean = false) => {
 
   const fetchClassroomData = async () => {
     const requestId = ++requestIdRef.current;
+
+    if (filterStarred && starredClassrooms.length === 0) {
+      setClassroomData([]);
+      setLoading(false);
+      setError('');
+      return;
+    }
+
+    if (!filterStarred && (!selectedValues[0] || !selectedValues[1])) return;
+
     setLoading(true);
     setError('');
 
     try {
       const [locationValue, floorValue, timeSlot] = selectedValues;
-      const wherePrefix = locationValue + floorValue;
       const sections = getSelectedPeriods(timeSlot);
+      const wherePrefixes = filterStarred
+        ? [
+            ...new Set(
+              starredClassrooms
+                .map(getClassroomWherePrefix)
+                .filter((prefix): prefix is string => prefix !== null)
+            ),
+          ]
+        : [locationValue + floorValue];
 
-      const queryParams = {
-        year: formatAcademicYear(storeYear),
-        semester: storeSemester,
-        week: currentWeek,
-        day: currentDayOfWeek,
-        sections: sections,
-        wherePrefix: wherePrefix,
-      };
+      if (wherePrefixes.length === 0) {
+        setClassroomData([]);
+        setError('');
+        return;
+      }
 
-      const response: ClassroomResponse = await queryFreeClassroom(queryParams);
+      const responses: ClassroomResponse[] = await Promise.all(
+        wherePrefixes.map(wherePrefix =>
+          queryFreeClassroom({
+            year: formatAcademicYear(storeYear),
+            semester: storeSemester,
+            week: currentWeek,
+            day: currentDayOfWeek,
+            sections,
+            wherePrefix,
+          })
+        )
+      );
 
       if (requestId !== requestIdRef.current) return;
 
-      if (response && response.data && response.data.stat) {
-        const convertedData: ClassroomStatus[] = response.data.stat.map(
-          (item: ClassroomClassroomAvailableStat) => ({
-            roomNumber: item.classroom || '',
-            status: item.availableStat
-              ? item.availableStat.map(
-                  (isAvailable: boolean, index: number) => ({
-                    period: sections[index] || index + 1,
-                    status: isAvailable ? 'free' : 'occupied',
-                  })
-                )
-              : [],
-          })
-        );
+      const stats = responses.flatMap(response => response.data?.stat ?? []);
+      if (responses.length > 0 && responses.every(response => response.data)) {
+        const convertedData: ClassroomStatus[] = stats.map(item => ({
+          roomNumber: item.classroom || '',
+          status: item.availableStat
+            ? item.availableStat.map((isAvailable: boolean, index: number) => ({
+                period: sections[index] || index + 1,
+                status: isAvailable ? 'free' : 'occupied',
+              }))
+            : [],
+        }));
 
-        setClassroomData(convertedData);
+        const starredOrder = new Map(
+          starredClassrooms.map((roomNumber, index) => [roomNumber, index])
+        );
+        setClassroomData(
+          filterStarred
+            ? convertedData
+                .filter(classroom => starredOrder.has(classroom.roomNumber))
+                .sort(
+                  (a, b) =>
+                    starredOrder.get(a.roomNumber)! -
+                    starredOrder.get(b.roomNumber)!
+                )
+            : convertedData
+        );
         setError('');
       } else {
         setClassroomData([]);
@@ -259,7 +253,13 @@ const useClassroomData = (filterStarred: boolean = false) => {
 
   React.useEffect(() => {
     fetchClassroomData();
-  }, [selectedValues, currentWeek, currentDayOfWeek]);
+  }, [
+    selectedValues,
+    currentWeek,
+    currentDayOfWeek,
+    filterStarred,
+    starredClassroomsKey,
+  ]);
 
   const filteredClassroomData = React.useMemo(
     () =>
@@ -276,6 +276,8 @@ const useClassroomData = (filterStarred: boolean = false) => {
     selectedLabels,
     inPickerValues,
     pickerColumns,
+    pickerLoading,
+    pickerError,
     classroomData: filteredClassroomData,
     loading,
     error,

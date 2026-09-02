@@ -21,7 +21,9 @@ export const queryFreeClassroom = async (
 
 // 获取教室参数列表（wherePrefix 列表，用于动态构建筛选项）
 export const getClassroomList = async (): Promise<string[]> => {
-  const response = await request.get('/classroom/list', {});
+  const response = await request.get('/classroom/list', undefined, {
+    isToken: false,
+  });
   return response?.data?.class_rooms ?? [];
 };
 

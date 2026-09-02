@@ -21,14 +21,15 @@ export default function ClassroomStar() {
   const emptyStateConfig = {
     noStarredTitle: '还没有收藏任何教室',
     noStarredSubtitle: '去空闲教室页面收藏一些教室吧~',
-    noDataTitle: '当前条件下没有收藏的教室',
-    noDataSubtitle: '请尝试更换地点或楼层查看',
+    noDataTitle: '暂时没有可查询的收藏教室',
+    noDataSubtitle: '请稍后再试',
   };
 
   return (
     <View style={[styles.container, currentStyle?.header_background_style]}>
       <ClassroomContent
         {...classroomProps}
+        filterMode="time"
         emptyStateConfig={emptyStateConfig}
       />
     </View>
