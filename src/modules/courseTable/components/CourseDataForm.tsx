@@ -59,16 +59,26 @@ export const CourseDataForm = (props: CourseFormProps) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { semester, year } = useTimeStore();
   const { addCourse: addCourseToStore } = useCourse();
+  const calendarWeekCount = useTimeStore(state => state.getSemesterWeekCount());
+  const maxCachedWeek = useCourse(state =>
+    state.courses.reduce(
+      (maximum, course) =>
+        Math.max(maximum, ...(Array.isArray(course.weeks) ? course.weeks : [])),
+      0
+    )
+  );
+  const pickerWeekCount = Math.max(18, calendarWeekCount, maxCachedWeek);
+  const defaultWeeks = React.useMemo(
+    () => Array.from({ length: pickerWeekCount }, (_, index) => index + 1),
+    [pickerWeekCount]
+  );
 
   const [formData, setFormData] = React.useState<CourseFormData>(() => {
     if (props.courseData) {
       const cd = props.courseData;
       return {
         name: cd.classname || '',
-        weeks:
-          cd.weeks && cd.weeks.length > 0
-            ? cd.weeks
-            : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        weeks: cd.weeks && cd.weeks.length > 0 ? cd.weeks : defaultWeeks,
         day: cd.day || 1,
         dur_class: cd.class_when || '1-2',
         where: cd.where || '',
@@ -78,7 +88,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
     }
     return {
       name: '',
-      weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+      weeks: defaultWeeks,
       day: 1,
       dur_class: '1-2',
       where: '',
@@ -95,10 +105,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
       const cd = props.courseData;
       setFormData({
         name: cd.classname || '',
-        weeks:
-          cd.weeks && cd.weeks.length > 0
-            ? cd.weeks
-            : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        weeks: cd.weeks && cd.weeks.length > 0 ? cd.weeks : defaultWeeks,
         day: cd.day || 1,
         dur_class: cd.class_when || '1-2',
         where: cd.where || '',
@@ -109,7 +116,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
         getTimePickerValue(cd.day || 1, cd.class_when || '1-2')
       );
     }
-  }, [props.courseData]);
+  }, [defaultWeeks, props.courseData]);
   const [loading, setLoading] = React.useState(false);
 
   const selectedStartClass = timePickerValue[1];
@@ -132,7 +139,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
       value:
         formData.weeks.length > 0
           ? `${Math.min(...formData.weeks)}-${Math.max(...formData.weeks)}周`
-          : '1-18周',
+          : `1-${pickerWeekCount}周`,
       type: 'picker',
     },
     {
@@ -183,6 +190,8 @@ export const CourseDataForm = (props: CourseFormProps) => {
       credit: data.credit || 0,
       semester: curSemester,
       year: curYear,
+      note: '',
+      nature: '自定义课程',
       is_official: false, // 自主添加而非教务系统的课
     };
 
@@ -252,9 +261,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
           if (props.mode !== 'edit') {
             setFormData({
               name: '',
-              weeks: [
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-              ],
+              weeks: defaultWeeks,
               day: 1,
               dur_class: '1-2',
               where: '',
@@ -301,18 +308,13 @@ export const CourseDataForm = (props: CourseFormProps) => {
                 item.title === '选择周次' ? (
                   <MultiPicker
                     data={[
-                      [...Array(18).keys()].map(i => ({
+                      [...Array(pickerWeekCount).keys()].map(i => ({
                         value: i + 1,
                         label: `第${i + 1}周`,
                       })),
                     ]}
                     defaultValue={
-                      formData.weeks.length > 0
-                        ? formData.weeks
-                        : [
-                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                            16, 17, 18,
-                          ]
+                      formData.weeks.length > 0 ? formData.weeks : defaultWeeks
                     }
                     onConfirm={values => {
                       const selectedWeeks = values.map(v => parseInt(v));

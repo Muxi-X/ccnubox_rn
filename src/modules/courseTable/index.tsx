@@ -5,11 +5,20 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  View as NativeView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import CourseTableErrorBoundary from '@/components/CourseTableErrorBoundary';
+import Toast from '@/components/toast';
 import View from '@/components/view';
 import { TABBAR_BASE_HEIGHT } from '@/constants/TABBAR';
 import { useCourseLiveActivity } from '@/hooks/useCourseLiveActivity';
@@ -22,10 +31,14 @@ import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
 import {
+  CourseDataError,
+  isValidCourseScope,
+  parseCourseTableResponse,
+} from '@/utils/courseData';
+import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,
 } from '@/utils/courseLiveActivity';
-import { serializeCoursesForAppleWidget } from '@/utils/courseRuntime';
 import {
   buildSemesterOptions,
   parseSemester,
@@ -39,28 +52,44 @@ import {
 } from '@/utils/semesterWeeks';
 
 import CourseTable from './components/courseTable';
-import type {
-  courseType,
-  SemesterWeekParams,
-} from './components/courseTable/type';
+import type { SemesterWeekParams } from './components/courseTable/type';
 import WeekSelector from './components/WeekSelector';
+
+type SemesterApiResponse = {
+  code?: unknown;
+  data?: unknown;
+  msg?: unknown;
+};
+
+const getTimetableErrorMessage = (error: unknown) => {
+  if (error instanceof CourseDataError) return error.message;
+  if (error instanceof Error && /timeout/i.test(error.message)) {
+    return '教务系统响应超时，请稍后重试';
+  }
+  return '网络连接异常，请检查网络后重试';
+};
 
 const CourseTablePage: FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const courseHydrated = useCourse(state => state.hydrated);
+  const timeHydrated = useTimeStore(state => state.hydrated);
   const extensionStorage = useMemo(() => {
     return new ExtensionStorage('group.release-20240916');
   }, []);
 
-  const { courses, updateCourses, setLastUpdate } = useCourse();
+  const {
+    courses,
+    lastUpdate,
+    clearSemester,
+    setActiveSemester,
+    replaceSemesterCourses,
+  } = useCourse();
   const {
     semester,
-    setSemester,
     year,
-    setYear,
     selectedWeek,
     setSelectedWeek,
-    setHolidayTime,
-    setSchoolTime,
+    setSemesterContext,
     showWeekPicker,
     setShowWeekPicker,
   } = useTimeStore();
@@ -74,38 +103,63 @@ const CourseTablePage: FC = () => {
     'year' | 'semester'
   > | null>(null);
   const [actualCurrentWeek, setActualCurrentWeek] = useState(1);
+  const [timetableStatus, setTimetableStatus] = useState<
+    'idle' | 'loading' | 'refreshing' | 'ready' | 'stale' | 'error'
+  >('idle');
+  const requestSequence = useRef(0);
+  const initialized = useRef(false);
 
-  const totalWeeks = useTimeStore(state => state.getSemesterWeekCount());
-
-  const syncCoursesToWidget = useCallback(
-    (nextCourses: courseType[]) => {
-      extensionStorage.set(
-        'courseTable',
-        serializeCoursesForAppleWidget(nextCourses)
-      );
-      ExtensionStorage.reloadWidget();
-    },
-    [extensionStorage]
+  const calendarWeekCount = useTimeStore(state => state.getSemesterWeekCount());
+  const maxCourseWeek = useMemo(
+    () =>
+      courses.reduce(
+        (maximum, course) =>
+          Math.max(
+            maximum,
+            ...(Array.isArray(course.weeks) ? course.weeks : [])
+          ),
+        0
+      ),
+    [courses]
   );
+  const totalWeeks = Math.max(calendarWeekCount, maxCourseWeek, 1);
 
-  const applySemesterTime = useCallback(
-    (option: SemesterOptionBase) => {
-      setSchoolTime(option.startTimestamp);
-      setHolidayTime(option.endTimestamp);
+  const applySemesterContext = useCallback(
+    (option: SemesterOptionBase, week: number) => {
+      const totalWeeks = calculateSemesterWeekCount(
+        option.startTimestamp,
+        option.endTimestamp
+      );
+      setSemesterContext({
+        year: option.year,
+        semester: option.semester,
+        selectedWeek: clampWeekToSemester(week, totalWeeks),
+        schoolTime: option.startTimestamp,
+        holidayTime: option.endTimestamp,
+      });
+      setActiveSemester(option.year, option.semester);
       extensionStorage.set('schoolTime', option.startTimestamp);
       extensionStorage.set('holidayTime', option.endTimestamp);
       ExtensionStorage.reloadWidget();
     },
-    [extensionStorage, setHolidayTime, setSchoolTime]
+    [extensionStorage, setActiveSemester, setSemesterContext]
   );
 
   const fetchSemesterInfo = useCallback(async () => {
-    const [currentRes, listRes] = await Promise.all([
+    const [currentResRaw, listResRaw] = await Promise.all([
       queryCurrentSemester(),
       querySemesterList(),
     ]);
-    const current = parseSemester(currentRes.data);
-    const options = buildSemesterOptions(listRes.data ?? []);
+    const currentRes = currentResRaw as unknown as SemesterApiResponse;
+    const listRes = listResRaw as unknown as SemesterApiResponse;
+    const current = parseSemester(
+      currentRes.data as Parameters<typeof parseSemester>[0]
+    );
+    const options = buildSemesterOptions(
+      (Array.isArray(listRes.data) ? listRes.data : []) as Parameters<
+        typeof buildSemesterOptions
+      >[0]
+    );
 
     if (
       currentRes.code !== 0 ||
@@ -118,19 +172,15 @@ const CourseTablePage: FC = () => {
 
     setSemesterOptions(options);
     setCurrentSemester({ year: current.year, semester: current.semester });
-    setYear(current.year);
-    setSemester(current.semester);
-    applySemesterTime(current);
-
     const currentWeek = clampWeekToSemester(
       calculateWeekFromStart(current.startTimestamp),
       calculateSemesterWeekCount(current.startTimestamp, current.endTimestamp)
     );
+    applySemesterContext(current, currentWeek);
     setActualCurrentWeek(currentWeek);
-    setSelectedWeek(currentWeek);
 
     return current;
-  }, [applySemesterTime, setSelectedWeek, setSemester, setYear]);
+  }, [applySemesterContext]);
 
   const fetchTimetable = useCallback(
     async (
@@ -138,32 +188,91 @@ const CourseTablePage: FC = () => {
       targetSemester: string,
       forceRefresh = false
     ) => {
+      if (!targetYear || !targetSemester) {
+        throw new CourseDataError('missing_scope', '学期信息尚未加载');
+      }
+
+      const requestId = ++requestSequence.current;
       const res = await queryCourseTable({
         semester: targetSemester,
         year: targetYear,
         refresh: forceRefresh,
       });
 
-      if (res?.code === 0 && res.data?.classes && res.data.last_refresh_time) {
-        const nextCourses = res.data.classes as courseType[];
-        updateCourses(nextCourses);
-        syncCoursesToWidget(nextCourses);
-        setLastUpdate(res.data.last_refresh_time);
+      const parsed = parseCourseTableResponse(res, {
+        year: targetYear,
+        semester: targetSemester,
+      });
+
+      if (requestId !== requestSequence.current) {
+        return;
       }
+
+      if (parsed.droppedCount > 0) {
+        log.warn(`课表数据已忽略 ${parsed.droppedCount} 条异常课程`);
+        Toast.show({
+          text: `发现 ${parsed.droppedCount} 条异常课程，已安全忽略`,
+          icon: 'fail',
+        });
+      }
+
+      replaceSemesterCourses(
+        targetYear,
+        targetSemester,
+        parsed.courses,
+        parsed.lastRefreshTime
+      );
     },
-    [setLastUpdate, syncCoursesToWidget, updateCourses]
+    [replaceSemesterCourses]
   );
 
   const onTimetableRefresh = useCallback(
     async (forceRefresh: boolean = false) => {
+      setTimetableStatus(forceRefresh ? 'refreshing' : 'loading');
       try {
         await fetchTimetable(year, semester, forceRefresh);
+        setTimetableStatus('ready');
       } catch (error) {
+        setTimetableStatus(
+          useCourse.getState().courses.length > 0 ? 'stale' : 'error'
+        );
         log.error('Failed to refresh timetable:', error);
+        throw error;
       }
     },
     [fetchTimetable, semester, year]
   );
+
+  const handleTimetableRetry = useCallback(async () => {
+    setTimetableStatus('refreshing');
+
+    try {
+      const { year: storedYear, semester: storedSemester } =
+        useTimeStore.getState();
+
+      if (!isValidCourseScope(storedYear, storedSemester)) {
+        const currentSemesterInfo = await fetchSemesterInfo();
+        await fetchTimetable(
+          currentSemesterInfo.year,
+          currentSemesterInfo.semester,
+          true
+        );
+        setTimetableStatus('ready');
+        return;
+      }
+
+      await onTimetableRefresh(true);
+    } catch (error) {
+      setTimetableStatus(
+        useCourse.getState().courses.length > 0 ? 'stale' : 'error'
+      );
+      log.error('Failed to retry timetable:', error);
+      Toast.show({
+        text: getTimetableErrorMessage(error),
+        icon: 'fail',
+      });
+    }
+  }, [fetchSemesterInfo, fetchTimetable, onTimetableRefresh]);
 
   const handleApply = useCallback(
     async ({
@@ -172,20 +281,35 @@ const CourseTablePage: FC = () => {
       week,
     }: SemesterWeekParams) => {
       const semesterChanged = newYear !== year || newSemester !== semester;
-      setYear(newYear);
-      setSemester(newSemester);
       const nextSemester = semesterOptions.find(
         option => option.year === newYear && option.semester === newSemester
       );
-      if (nextSemester) applySemesterTime(nextSemester);
-      if (week !== undefined) setSelectedWeek(week);
+      if (!nextSemester) {
+        Toast.show({ text: '学期信息无效，请重新选择', icon: 'fail' });
+        return;
+      }
+
+      if (semesterChanged) {
+        applySemesterContext(nextSemester, week ?? selectedWeek);
+      } else if (week !== undefined) {
+        setSelectedWeek(week);
+      }
 
       if (semesterChanged) {
         setIsLoadingTimetable(true);
+        setTimetableStatus('loading');
         try {
           await fetchTimetable(newYear, newSemester);
+          setTimetableStatus('ready');
         } catch (error) {
           log.error('切换学期失败:', error);
+          setTimetableStatus(
+            useCourse.getState().courses.length > 0 ? 'stale' : 'error'
+          );
+          Toast.show({
+            text: getTimetableErrorMessage(error),
+            icon: 'fail',
+          });
         } finally {
           setIsLoadingTimetable(false);
         }
@@ -195,10 +319,9 @@ const CourseTablePage: FC = () => {
     [
       year,
       semester,
-      setYear,
-      setSemester,
       semesterOptions,
-      applySemesterTime,
+      applySemesterContext,
+      selectedWeek,
       setSelectedWeek,
       fetchTimetable,
       setShowWeekPicker,
@@ -206,21 +329,55 @@ const CourseTablePage: FC = () => {
   );
 
   useEffect(() => {
+    if (!courseHydrated || !timeHydrated || initialized.current) return;
+    initialized.current = true;
+
     const initialize = async () => {
+      let targetYear = useTimeStore.getState().year;
+      let targetSemester = useTimeStore.getState().semester;
+
       try {
         const current = await fetchSemesterInfo();
-        await fetchTimetable(current.year, current.semester);
+        targetYear = current.year;
+        targetSemester = current.semester;
+      } catch (semesterError) {
+        log.error('Failed to initialize semester metadata:', semesterError);
+      }
+
+      if (!targetYear || !targetSemester) {
+        setTimetableStatus('error');
+        Toast.show({
+          text: '学期信息加载失败，请稍后重试',
+          icon: 'fail',
+        });
+        return;
+      }
+
+      setActiveSemester(targetYear, targetSemester);
+      setTimetableStatus('loading');
+      try {
+        await fetchTimetable(targetYear, targetSemester);
+        setTimetableStatus('ready');
       } catch (error) {
-        log.error('Failed to initialize semester data:', error);
+        log.error('Failed to initialize timetable:', error);
+        setTimetableStatus(
+          useCourse.getState().courses.length > 0 ? 'stale' : 'error'
+        );
+        Toast.show({
+          text: getTimetableErrorMessage(error),
+          icon: 'fail',
+        });
       }
     };
 
     void initialize();
-  }, [fetchSemesterInfo, fetchTimetable]);
-
-  useEffect(() => {
-    setSelectedWeek(selectedWeek);
-  }, [selectedWeek, setSelectedWeek, totalWeeks]);
+  }, [
+    courseHydrated,
+    fetchSemesterInfo,
+    fetchTimetable,
+    setActiveSemester,
+    timeHydrated,
+  ]);
 
   // 启用 Live Activity 自动提醒
   useCourseLiveActivity(courses);
@@ -270,11 +427,53 @@ const CourseTablePage: FC = () => {
         currentStyle?.background_style,
       ]}
     >
-      <CourseTable
-        data={courses}
-        onTimetableRefresh={onTimetableRefresh}
-        currentWeek={selectedWeek}
-      />
+      <CourseTableErrorBoundary
+        key={`${year}-${semester}-${lastUpdate}`}
+        onReset={() => {
+          clearSemester(year, semester);
+          void onTimetableRefresh(true).catch(() => undefined);
+        }}
+      >
+        <CourseTable
+          data={courses}
+          onTimetableRefresh={onTimetableRefresh}
+          currentWeek={selectedWeek}
+        />
+      </CourseTableErrorBoundary>
+      {timetableStatus === 'loading' && courses.length === 0 && (
+        <NativeView style={[styles.statusBanner, styles.topStatusBanner]}>
+          <Text style={styles.statusText}>正在获取课表…</Text>
+        </NativeView>
+      )}
+      {(timetableStatus === 'stale' ||
+        (timetableStatus === 'error' && courses.length === 0)) && (
+        <TouchableOpacity
+          accessibilityHint="重新请求当前学期课表"
+          accessibilityLabel="重新加载课表"
+          accessibilityRole="button"
+          activeOpacity={0.8}
+          style={[
+            styles.statusBanner,
+            styles.retryBanner,
+            { bottom: tabbarHeight + 20 },
+          ]}
+          onPress={() => {
+            void handleTimetableRetry();
+          }}
+        >
+          <Text style={styles.statusText}>
+            {timetableStatus === 'stale'
+              ? '刷新失败，当前展示本地缓存 · '
+              : '课表加载失败 · '}
+            <Text style={styles.retryText}>点击重试</Text>
+          </Text>
+        </TouchableOpacity>
+      )}
+      {timetableStatus === 'ready' && courses.length === 0 && (
+        <NativeView style={[styles.statusBanner, styles.topStatusBanner]}>
+          <Text style={styles.statusText}>本学期暂无课程</Text>
+        </NativeView>
+      )}
       {showWeekPicker && (
         <WeekSelector
           currentWeek={selectedWeek}
@@ -304,6 +503,32 @@ const CourseTablePage: FC = () => {
 };
 
 const styles = StyleSheet.create({
+  statusBanner: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    zIndex: 200,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(40, 40, 40, 0.82)',
+    minHeight: 48,
+    justifyContent: 'center',
+  },
+  topStatusBanner: {
+    top: 12,
+  },
+  retryBanner: {
+    left: 16,
+    right: 16,
+  },
+  statusText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  retryText: {
+    fontWeight: '700',
+  },
   testButton: {
     position: 'absolute',
     top: 20,

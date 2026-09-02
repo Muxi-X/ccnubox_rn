@@ -42,6 +42,7 @@ import {
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
+import { parseClassWhen } from '@/utils/courseRuntime';
 import globalEventBus from '@/utils/eventBus';
 import { requestPermission } from '@/utils/requestPermission';
 
@@ -81,7 +82,6 @@ const Schedule: React.FC<CourseTableProps> = ({
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
   // Canvas引用，用于截图背景
-  const canvasRef = useCanvasRef();
   // 合成Canvas引用，用于合成背景和前景
   const compositeCanvasRef = useCanvasRef();
   // 前景截图的Skia Image
@@ -354,58 +354,73 @@ const Schedule: React.FC<CourseTableProps> = ({
     // 先按时间槽和日期分组课程
     const coursesBySlot = new Map();
     const idxMap = new Map<string, number>();
-    data.forEach((course: courseType, idx: number) => {
-      const {
-        id,
-        day,
-        teacher,
-        where,
-        class_when,
-        classname,
-        weeks,
-        week_duration,
-        credit,
-        note,
-        is_official,
-      } = course;
-      idxMap.set(course.id, idx);
-      // 计算课程的时间跨度（占几节课）
-      const timeSpan = class_when
-        .split('-')
-        .map(Number)
-        .reduce((a: number, b: number) => b - a + 1);
-
-      // 计算课程在课表中的位置
-      const rowIndex = Number(class_when.split('-')[0]) - 1; // 第几节课开始
-      const colIndex = day - 1; // 周几（0-6，对应周一到周日）
-      const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
-
-      if (rowIndex !== -1 && colIndex !== -1) {
-        // 如果该时间槽还没有课程，创建一个空数组
-        if (!coursesBySlot.has(key)) {
-          coursesBySlot.set(key, []);
-        }
-
-        // 将课程添加到对应的时间槽中
-        coursesBySlot.get(key).push({
+    (Array.isArray(data) ? data : []).forEach(
+      (course: courseType, idx: number) => {
+        const {
           id,
-          courseName: classname,
-          timeSpan,
+          day,
           teacher,
-          date: DAYS_OF_WEEK[colIndex],
-          classroom: where,
-          rowIndex,
-          colIndex,
+          where,
+          class_when,
+          classname,
           weeks,
-          isThisWeek: weeks.includes(currentWeek), // 标记是否为当前周的课程
           week_duration,
           credit,
-          class_when,
           note,
           is_official,
-        });
+        } = course;
+        const parsedRange = parseClassWhen(class_when);
+        const safeDay = Number(day);
+        if (
+          !parsedRange ||
+          !Number.isInteger(safeDay) ||
+          safeDay < 1 ||
+          safeDay > DAYS_OF_WEEK.length
+        ) {
+          return;
+        }
+
+        idxMap.set(course.id, idx);
+        // 计算课程的时间跨度（占几节课）
+        const timeSpan = parsedRange.endSection - parsedRange.startSection + 1;
+
+        // 计算课程在课表中的位置
+        const rowIndex = parsedRange.startSection - 1; // 第几节课开始
+        const colIndex = safeDay - 1; // 周几（0-6，对应周一到周日）
+        const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
+
+        if (
+          rowIndex >= 0 &&
+          rowIndex < timetableMatrix.length &&
+          colIndex >= 0 &&
+          colIndex < DAYS_OF_WEEK.length
+        ) {
+          // 如果该时间槽还没有课程，创建一个空数组
+          if (!coursesBySlot.has(key)) {
+            coursesBySlot.set(key, []);
+          }
+
+          // 将课程添加到对应的时间槽中
+          coursesBySlot.get(key).push({
+            id,
+            courseName: classname,
+            timeSpan,
+            teacher,
+            date: DAYS_OF_WEEK[colIndex],
+            classroom: where,
+            rowIndex,
+            colIndex,
+            weeks: Array.isArray(weeks) ? weeks : [],
+            isThisWeek: Array.isArray(weeks) && weeks.includes(currentWeek), // 标记是否为当前周的课程
+            week_duration,
+            credit,
+            class_when,
+            note,
+            is_official,
+          });
+        }
       }
-    });
+    );
 
     // 遍历每个时间槽，选择正确的课程显示
     for (const [key, slotCourses] of coursesBySlot) {
@@ -426,7 +441,10 @@ const Schedule: React.FC<CourseTableProps> = ({
       const courseToShow = sorted[0] ?? null;
 
       if (courseToShow) {
-        timetableMatrix[rowIndex][colIndex] = {
+        const row = timetableMatrix[rowIndex];
+        if (!row || colIndex < 0 || colIndex >= row.length) continue;
+
+        row[colIndex] = {
           classname: courseToShow.courseName,
           timeSpan: courseToShow.timeSpan,
         };
