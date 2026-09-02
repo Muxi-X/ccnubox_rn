@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 
+import { BASE_URL } from '@/constants/BASE_URLS';
 import requestBus from '@/store/currentRequests';
 import { OtherTokenConfig } from '@/types/axios';
 
@@ -10,8 +10,7 @@ import { paths } from './schema';
 
 // 这一块逻辑和匣子接口强耦合，不适用反馈接口，所以加了些扩展，默认为原逻辑
 const axiosInstance: AxiosInstance = axios.create({
-  // baseURL: process.env.EXPO_PUBLIC_API_URL,
-  baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
+  baseURL: BASE_URL,
   adapter: axios.defaults.adapter,
 });
 
@@ -59,12 +58,9 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
         }
 
         // 刷新短 token
-        const response = await axios.get(
-          `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
-          {
-            headers: { Authorization: `Bearer ${longToken}` },
-          }
-        );
+        const response = await axios.get(`${BASE_URL}/users/refresh_token`, {
+          headers: { Authorization: `Bearer ${longToken}` },
+        });
 
         if (response.status === 200 || response.status === 201) {
           const newShortToken = response.headers['x-jwt-token'];

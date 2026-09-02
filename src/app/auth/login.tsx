@@ -1,7 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import axios, { AxiosError } from 'axios';
-import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
@@ -20,6 +19,7 @@ import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
+import { BASE_URL } from '@/constants/BASE_URLS';
 import { useKeyboardStatus } from '@/hooks';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
@@ -41,7 +41,7 @@ const LoginPage: FC = () => {
   const [password, setPassword] = useState('');
   // use custom axios instance to avoid global error handler
   const request = axios.create({
-    baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
+    baseURL: BASE_URL,
     adapter: axios.defaults.adapter,
   });
   const handleViewPassword = () => {

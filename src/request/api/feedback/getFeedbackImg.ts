@@ -1,7 +1,8 @@
+import { FEEDBACK_BASE_URL } from '@/constants/BASE_URLS';
 import { request } from '@/request';
 import { serializeQueryParams } from '@/utils/serializeQueryParams';
 
-import { BASE_URL, UserSheetTokenConfig } from './config';
+import { UserSheetTokenConfig } from './config';
 
 export interface GetFeedbackImgRequest {
   file_tokens: string[];
@@ -15,7 +16,7 @@ const getFeedbackImg = async (query: GetFeedbackImgRequest) => {
     { query: queryString } as any,
     {
       otherToken: UserSheetTokenConfig,
-      baseURL: BASE_URL,
+      baseURL: FEEDBACK_BASE_URL,
     }
   );
 };
