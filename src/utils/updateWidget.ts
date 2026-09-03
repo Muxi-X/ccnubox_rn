@@ -14,8 +14,6 @@ import CcnuboxWidget from '../../modules/ccnubox-widget';
 export const updateCourseData = async (courses: courseType[]) => {
   const currentWeek = useTimeStore.getState().getCurrentWeek();
 
-  const courses = nextCourses ?? useCourseStore.getState().courses;
-
   if (!courses) {
     logger.debug('没有课程数据');
     return;
