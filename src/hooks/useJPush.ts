@@ -47,16 +47,40 @@ const normalizeExtras = (extras: unknown): Record<string, string> | null => {
   return null;
 };
 
+const getUrlProtocol = (url?: string): string | null => {
+  if (!url) return null;
+  const trimmed = url.trim();
+  const match = trimmed.match(/^([a-z][a-z0-9+.-]*):/i);
+  if (match) return match[1].toLowerCase();
+  if (trimmed.startsWith('/')) return 'path';
+  return 'unknown';
+};
+
+const sanitizeUrlForLog = (url?: string): string => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  const noAuth = trimmed.replace(/\/\/[^/@:]+:[^/@:]+@/, '//');
+  const [clean] = noAuth.split(/[?#]/);
+  return clean;
+};
+
 const extractUrlFromResult = (
   result: JPushNotificationResult
 ): string | null => {
-  logger.debug('[JPush] 开始解析通知数据', result);
   const extras = normalizeExtras(result.extras);
-  logger.debug('[JPush] 解析后的 extras', extras);
+  logger.debug('[JPush] 解析通知 extras', {
+    fields: extras ? Object.keys(extras) : [],
+    hasExtras: Boolean(extras),
+    hasUrl: Boolean(extras?.url),
+    messageID: result.messageID,
+    protocol: getUrlProtocol(extras?.url),
+  });
 
   const directUrl = extras?.url;
   if (directUrl) {
-    logger.info('[JPush] 从 extras.url 中获取到跳转地址', { directUrl });
+    logger.info('[JPush] 从 extras.url 中获取到跳转地址', {
+      target: sanitizeUrlForLog(directUrl),
+    });
     return directUrl;
   }
 
@@ -69,10 +93,13 @@ const extractUrlFromResult = (
   for (const { name, value } of candidates) {
     if (!value || typeof value !== 'string') continue;
     try {
-      logger.debug(`[JPush] 尝试解析候选字段 ${name}`, { value });
+      logger.debug(`[JPush] 尝试解析候选字段 ${name}`);
       const parsed = JSON.parse(value) as { url?: string };
       if (parsed?.url) {
-        logger.info(`[JPush] 从 ${name} 解析成功，跳转地址:`, parsed.url);
+        logger.info(
+          `[JPush] 从 ${name} 解析成功，跳转地址:`,
+          sanitizeUrlForLog(parsed.url)
+        );
         return parsed.url;
       }
     } catch {
@@ -106,7 +133,9 @@ const consumeNativeInitialJPushOpened = async (stage: string) => {
 
   try {
     const payload = await nativeBridge.consumeInitialNotificationOpened();
-    logger.debug(`[JPush] 读取桥接冷启动点击消息 (${stage})`, payload);
+    logger.debug(`[JPush] 读取桥接冷启动点击消息 (${stage})`, {
+      hasPayload: Boolean(payload),
+    });
     return payload;
   } catch (error) {
     logger.error('[JPush] 读取桥接冷启动点击消息失败', error);
@@ -130,14 +159,16 @@ export const flushPendingPushNavigation = () => {
   if (!pushNavigationReady || !pendingPushPath) return;
   const path = pendingPushPath;
   pendingPushPath = null;
-  logger.info('[JPush] 执行延迟推送跳转', { path });
+  logger.info('[JPush] 执行延迟推送跳转', {
+    path: sanitizeUrlForLog(path),
+  });
   router.push(path as any);
 };
 
 const queuePushNavigation = (path: string) => {
   pendingPushPath = path;
   logger.info('[JPush] 缓存推送跳转路径', {
-    path,
+    path: sanitizeUrlForLog(path),
     pushNavigationReady,
   });
   if (pushNavigationReady) {
@@ -226,8 +257,9 @@ const handleConnectEvent = (result: { connectEnable?: boolean }) => {
 const handleNotificationEvent = (result: unknown) => {
   const payload = result as JPushNotificationResult;
   logger.debug('[JPush] 监听到通知事件', {
+    hasExtras: Boolean(payload.extras),
+    messageID: payload.messageID,
     type: payload.notificationEventType,
-    payload,
   });
 
   if (payload.notificationEventType !== 'notificationOpened') return;
@@ -242,7 +274,9 @@ const handleNotificationEvent = (result: unknown) => {
 };
 
 const handleCustomMessage = (result: unknown) => {
-  logger.debug('收到自定义消息', result);
+  logger.debug('收到自定义消息', {
+    hasResult: Boolean(result),
+  });
 };
 
 const hasGrantedPushPermission = (
@@ -389,16 +423,19 @@ export const initializeJPush = async ({
 };
 
 export const openPushUrl = (url: string) => {
-  logger.info('[JPush] 尝试打开跳转地址', { url });
+  const sanitizedTarget = sanitizeUrlForLog(url);
+  logger.info('[JPush] 尝试打开跳转地址', { target: sanitizedTarget });
   const trimmed = url.trim();
   const schemeMatch = trimmed.match(/^([a-z][a-z0-9+.-]*):\/\//i);
   const scheme = schemeMatch?.[1]?.toLowerCase();
 
   if (!scheme) {
-    logger.warn('[JPush] 无法识别的跳转协议 (no scheme)', { url });
+    logger.warn('[JPush] 无法识别的跳转协议 (no scheme)', {
+      target: sanitizedTarget,
+    });
     if (trimmed.startsWith('/')) {
       logger.info('[JPush] 识别为路径，尝试使用 ccnubox 协议处理', {
-        path: trimmed,
+        path: sanitizeUrlForLog(trimmed),
       });
       ccnuboxResolver(trimmed);
     }
@@ -407,12 +444,17 @@ export const openPushUrl = (url: string) => {
 
   const resolver = pushUrlResolvers[scheme];
   if (!resolver) {
-    logger.warn('[JPush] 不支持的协议类型', { scheme, url });
+    logger.warn('[JPush] 不支持的协议类型', {
+      scheme,
+      target: sanitizedTarget,
+    });
     return;
   }
 
   const pathOrUrl = trimmed.replace(/^([a-z][a-z0-9+.-]*):\/\//i, '');
-  logger.debug(`[JPush] 使用 ${scheme} 解析器处理路径`, { pathOrUrl });
+  logger.debug(`[JPush] 使用 ${scheme} 解析器处理路径`, {
+    path: sanitizeUrlForLog(pathOrUrl),
+  });
   resolver(pathOrUrl);
 };
 
