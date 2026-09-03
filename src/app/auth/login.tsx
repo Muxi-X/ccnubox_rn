@@ -24,7 +24,7 @@ import { useKeyboardStatus } from '@/hooks';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -84,7 +84,15 @@ const LoginPage: FC = () => {
       } else {
         Toast.fail('网络连接异常，请稍后重试', 2);
       }
-      log.error('登录请求失败:', error);
+      if (error instanceof AxiosError) {
+        logger.error('登录请求失败', {
+          message: error.message,
+          status: error.response?.status,
+          code: error.code,
+        });
+      } else {
+        logger.error('登录请求未知异常', error);
+      }
     }
     setLoginTriggered(false);
   };

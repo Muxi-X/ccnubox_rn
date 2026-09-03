@@ -44,7 +44,7 @@ import {
   parseSemester,
   type SemesterOptionBase,
 } from '@/utils/generateSemesterOptions';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 import {
   calculateSemesterWeekCount,
   calculateWeekFromStart,
@@ -236,7 +236,7 @@ const CourseTablePage: FC = () => {
         setTimetableStatus(
           useCourse.getState().courses.length > 0 ? 'stale' : 'error'
         );
-        log.error('Failed to refresh timetable:', error);
+        logger.error('Failed to refresh timetable', error);
         throw error;
       }
     },
@@ -302,7 +302,7 @@ const CourseTablePage: FC = () => {
           await fetchTimetable(newYear, newSemester);
           setTimetableStatus('ready');
         } catch (error) {
-          log.error('切换学期失败:', error);
+          logger.error('切换学期失败', error);
           setTimetableStatus(
             useCourse.getState().courses.length > 0 ? 'stale' : 'error'
           );
@@ -359,7 +359,7 @@ const CourseTablePage: FC = () => {
         await fetchTimetable(targetYear, targetSemester);
         setTimetableStatus('ready');
       } catch (error) {
-        log.error('Failed to initialize timetable:', error);
+        logger.error('Failed to initialize timetable', error);
         setTimetableStatus(
           useCourse.getState().courses.length > 0 ? 'stale' : 'error'
         );

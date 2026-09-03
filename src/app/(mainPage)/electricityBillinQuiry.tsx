@@ -14,7 +14,7 @@ import Toast from '@/components/toast';
 import { getArchitecture, getRoomInfo } from '@/request/api/electricity';
 import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 // 区域数据
 const areaData = [
@@ -86,7 +86,7 @@ const ElectricityBillinQuiry = () => {
         throw new Error('没有楼栋数据');
       }
     } catch (error) {
-      console.error('加载楼栋数据失败:', error);
+      logger.error('加载楼栋数据失败', error);
       Toast.show({ icon: 'fail', text: '加载楼栋数据失败' });
     } finally {
       setLoading(false);
@@ -122,7 +122,7 @@ const ElectricityBillinQuiry = () => {
       }
     } catch (error) {
       setRooms([]);
-      log.error(error);
+      logger.error('获取宿舍房间数据异常', error);
       Toast.show({ icon: 'fail', text: '加载房间数据失败' });
     }
   };
@@ -191,7 +191,7 @@ const ElectricityBillinQuiry = () => {
     const roomIndex = pickerValue2[0] || 0;
 
     if (architectures.length === 0 || rooms.length === 0) {
-      console.warn('数据未加载完成');
+      logger.warn('数据未加载完成');
       return;
     }
 

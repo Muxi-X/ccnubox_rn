@@ -16,6 +16,7 @@ import { FeedIconMap } from '@/constants/notificationItem';
 import { openPushUrl } from '@/hooks/useJPush';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
+import { logger } from '@/utils/logger';
 
 const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
@@ -101,12 +102,11 @@ export const ListItem: FC<EventProps> = ({
   extend_fields,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const feedIcon = FeedIconMap[type];
+  const feedIcon = type ? FeedIconMap[type] : undefined;
   const { markAsRead, deleteEvent } = useEvents();
 
   const readEvent = () => {
-    // eslint-disable-next-line no-console
-    console.log('[Notification] 点击通知项:', { id, type, url, extend_fields });
+    logger.info('[Notification] 点击通知项', { id, type, url, extend_fields });
     if (id && !read) {
       void markAsRead(id).catch(error => {
         Toast.show({
@@ -120,12 +120,10 @@ export const ListItem: FC<EventProps> = ({
     const fallbackUrl = extend_fields?.url;
     const targetUrl = url || fallbackUrl;
     if (targetUrl) {
-      // eslint-disable-next-line no-console
-      console.log('[Notification] 发现跳转 URL:', targetUrl);
+      logger.info('[Notification] 发现跳转 URL', { targetUrl });
       openPushUrl(targetUrl);
     } else {
-      // eslint-disable-next-line no-console
-      console.log('[Notification] 未发现跳转 URL');
+      logger.info('[Notification] 未发现跳转 URL');
     }
   };
 

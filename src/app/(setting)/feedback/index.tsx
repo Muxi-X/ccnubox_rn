@@ -26,7 +26,7 @@ import useFAQStore from '@/store/FAQs';
 import useVisualScheme from '@/store/visualScheme';
 import { SheetItem } from '@/types/feedback';
 import handleCopy from '@/utils/handleCopy';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 function FeedbackPage() {
   const router = useRouter();
@@ -72,7 +72,7 @@ function FeedbackPage() {
         Toast.fail('获取常见问题失败，请稍后再试');
       }
     } catch (err) {
-      log.error(err);
+      logger.error('获取常见问题异常', err);
       setFullSheetData(FAQs);
       setSheetData(FAQs);
       Toast.fail('网络异常，请稍后再试');
@@ -181,7 +181,7 @@ function FeedbackPage() {
         return false;
       }
 
-      log.error(err);
+      logger.error('检查反馈限制异常', err);
       Toast.fail('网络异常，请稍后再试');
       return false;
     }
@@ -231,7 +231,7 @@ function FeedbackPage() {
               setSheetData(filtered);
             }
           } catch (error) {
-            console.error('Search error:', error);
+            logger.error('Search error', error);
           } finally {
             setIsLoading(false);
           }

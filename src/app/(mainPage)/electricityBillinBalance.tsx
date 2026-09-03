@@ -19,7 +19,7 @@ import {
 } from '@/request/api/electricity';
 import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 interface PriceData {
   remain_money: string;
@@ -60,7 +60,7 @@ const ElectricityBillinBalance = () => {
       const priceInfo = response?.data?.price || response?.msg?.price;
       setPriceData(priceInfo);
     } catch (error) {
-      log.error(error);
+      logger.error('获取电费数据异常', error);
       Toast.show({ icon: 'fail', text: '获取电费数据失败' });
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ const ElectricityBillinBalance = () => {
         }
       }
     } catch (error) {
-      log.error(error);
+      logger.error('获取电费标准数据异常', error);
     }
   };
 
@@ -160,7 +160,7 @@ const ElectricityBillinBalance = () => {
         Toast.show({ icon: 'success', text: '电费标准设置成功' });
       }
     } catch (error) {
-      log.error(error);
+      logger.error('设置电费标准异常', error);
       Toast.show({ icon: 'fail', text: '设置失败，请稍后重试' });
     }
   };
