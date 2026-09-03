@@ -1,0 +1,1097 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  title: 木犀反馈系统 API
+  version: '1.0'
+paths:
+  /api/v1/auth/table-config/refresh:
+    get:
+      description: 刷新并重新加载系统中所有支持的表格配置信息，返回当前可用的表格列表及其基本信息。通常用于配置更新后的缓存刷新。
+      operationId: refresh-table-config
+      responses:
+        '200':
+          description: 成功返回目前支持索引的表格的公开配置
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 刷新表格配置缓存
+      tags:
+        - Auth
+  /api/v1/auth/table-config/token:
+    post:
+      description: 根据表格标识符生成JWT访问令牌，用于后续的表格数据操作。该令牌包含表格配置信息和访问权限。
+      operationId: get-table-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v1.GenerateTableTokenReq'
+        description: 获取Token请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功返回 JWT 令牌
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.GenerateTableTokenResp'
+                    type: object
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取表格访问令牌
+      tags:
+        - Auth
+  /api/v1/auth/tenant/token:
+    post:
+      description: 获取飞书应用的租户访问令牌，主要用于文件上传、图片处理等需要应用级权限的操作。该令牌具有较高的访问权限。
+      operationId: get-tenant-token
+      responses:
+        '200':
+          description: 成功返回 JWT 令牌
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.GenerateTenantToken'
+                    type: object
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取租户访问令牌
+      tags:
+        - Auth
+  /api/v1/health:
+    get:
+      description: 检查系统运行状态，返回服务健康信息、资源使用情况等监控数据。用于负载均衡器健康检查和系统监控。
+      operationId: health-check
+      responses:
+        '200':
+          description: 系统运行正常，返回健康检查详情
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.HealthCheckResponse'
+                    type: object
+        '500':
+          description: 系统异常或部分服务不可用
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        type: string
+                    type: object
+      summary: 系统健康检查
+      tags:
+        - Health
+  /api/v1/message/trigger:
+    post:
+      description: 将 `table_identify` 写入通知通道以触发下游消费
+      operationId: trigger-notification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v1.TriggerNotificationReq'
+        description: 触发通知请求参数
+        required: true
+      responses:
+        '200':
+          description: 触发成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 手动触发通知
+      tags:
+        - Message
+  /api/v1/openapi:
+    get:
+      description: 接口直接返回 docs/openapi3.yaml yaml格式的原始内容，使用BasicAuth进行验证
+      operationId: get-openapi3
+      responses:
+        '200':
+          description: 成功返回 OpenAPI3 文档内容
+          content:
+            application/x-yaml:
+              schema:
+                type: string
+        '401':
+          description: 未授权，BasicAuth 验证失败
+          content:
+            application/x-yaml:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/x-yaml:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      security:
+        - BasicAuth: []
+      summary: 获取 OpenAPI3 接口文档 (YAML)
+      tags:
+        - Swag
+  /api/v1/sheet/photos/url:
+    get:
+      description: 根据文件Token列表批量获取截图的临时下载URL，用于前端展示或下载图片。
+      operationId: get-photo-url
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 附件 token
+          in: query
+          name: file_tokens
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 成功返回临时URL信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 获取截图临时URL
+      tags:
+        - Sheet
+  /api/v1/sheet/record:
+    get:
+      description: 根据 record_id 获取单条用户反馈记录的详细内容，返回记录字段的键值对。请求中需包含合法的 table_identify，用于校验权限。
+      operationId: get-table-record-by-id
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 记录 ID
+          in: query
+          name: record_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回查询结果
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.GetTableRecordByRecordIdResp'
+                    type: object
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 按 RecordID 查询历史反馈记录
+      tags:
+        - Sheet
+  /api/v1/sheet/records:
+    get:
+      description: 根据指定的字段条件查询用户的历史反馈记录，支持分页查询。通常用于查看用户之前提交的反馈内容。
+      operationId: get-table-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 用于查询记录的关键值，一般使用学号的字段名
+          in: query
+          name: key_field
+          required: true
+          schema:
+            type: string
+        - description: 用于查询记录的关键值，一般使用学号的字段值
+          in: query
+          name: key_value
+          required: true
+          schema:
+            type: string
+        - description: 分页参数,第一次不需要
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 需要查询的字段名
+          in: query
+          name: record_names
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回查询结果
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.GetTableRecordResp'
+                    type: object
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 查询历史反馈记录
+      tags:
+        - Sheet
+    post:
+      description: 向指定的多维表格应用中添加用户反馈记录，支持文本内容、截图附件和联系方式。创建成功后会异步发送通知消息。
+      operationId: create-table-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v1.CreatTableRecordReg'
+        description: 新增记录请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功返回创建记录结果
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.CreatTableRecordResp'
+                    type: object
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 创建反馈记录
+      tags:
+        - Sheet
+  /api/v1/sheet/records/faq:
+    get:
+      description: 根据学号查询用户相关的常见问题记录及其解决状态。
+      operationId: get-faq-resolution-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 需要查询的字段名
+          in: query
+          name: record_names
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - description: 学号，用于标记用户身份
+          in: query
+          name: student_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回单条记录的字段键值对
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v1.GetTableRecordByRecordIdResp'
+                    type: object
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 查询FAQ问题记录
+      tags:
+        - Sheet
+    post:
+      description: 用户更新FAQ问题的解决状态，将问题标记为已解决或未解决。
+      operationId: update-faq-resolution
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v1.FAQResolutionUpdateReq'
+        description: 更新FAQ解决状态请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功更新FAQ解决状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 标记FAQ问题解决状态
+      tags:
+        - Sheet
+  /api/v2/sheet/records:
+    get:
+      description: 根据学号查询用户的历史反馈记录，支持分页查询，用于查看用户历史反馈内容。
+      operationId: get-table-record-by-user
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit_size
+          schema:
+            type: integer
+        - description: 分页参数,第一次不需要
+          in: query
+          name: page_token
+          schema:
+            type: string
+        - description: 学号，用于标记用户身份
+          in: query
+          name: student_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回查询结果
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v2.GetTableRecordResp'
+                    type: object
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 查询用户历史反馈记录
+      tags:
+        - SheetV2
+  /api/v2/sheet/records/faq:
+    get:
+      description: 根据学号查询用户相关的常见问题记录及其解决状态。
+      operationId: get-faq-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: 学号，用于标记用户身份
+          in: query
+          name: student_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: table_identify
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功返回单条记录的字段键值对
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v2.GetTableRecordByRecordIdResp'
+                    type: object
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 查询FAQ问题记录
+      tags:
+        - SheetV2
+    post:
+      description: 用户更新FAQ问题的解决状态，将问题标记为已解决或未解决。
+      operationId: update-faq-resolution
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v2.FAQResolutionUpdateReq'
+        description: 更新FAQ解决状态请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功更新FAQ解决状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '400':
+          description: 请求参数错误或飞书接口调用失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 标记FAQ问题解决状态
+      tags:
+        - SheetV2
+  /api/v2/sheet/sync:
+    post:
+      description: 同步指定表格下 is_synced = false 的所有记录，用于后台增量同步。
+      operationId: sync-unsynced-table-records
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v2.SyncUnsyncedTableRecordsReq'
+        description: 同步请求参数
+        required: true
+      responses:
+        '200':
+          description: 同步成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v2.SyncUnsyncedTableRecordsResp'
+                    type: object
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 同步未同步记录
+      tags:
+        - SheetV2
+  /api/v2/sheet/sync/faq:
+    post:
+      description: 同步某表格下的FAQ问题记录及其解决状态，用于后台增量同步或修复数据。
+      operationId: sync-faq-record
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v2.SyncFaqRecordReq'
+        description: 同步FAQ记录请求参数
+        required: true
+      responses:
+        '200':
+          description: 成功同步FAQ记录
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 同步FAQ问题记录
+      tags:
+        - SheetV2
+  /api/v2/sheet/sync/force:
+    post:
+      description: 同步某表格下的所有记录（不区分是否已同步），用于全量重建或修复数据。慎用！！！
+      operationId: force-sync-table-records
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v2.ForceSyncTableRecordsReq'
+        description: 强制同步请求参数
+        required: true
+      responses:
+        '200':
+          description: 同步成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v2.ForceSyncTableRecordsResp'
+                    type: object
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 强制同步表格所有记录
+      tags:
+        - SheetV2
+  /api/v2/sheet/sync/user:
+    post:
+      description: 同步指定用户在某表格下的所有记录（不区分是否已同步），用于全量重建或修复数据。
+      operationId: force-sync-user-table-records
+      parameters:
+        - description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v2.ForceSyncUserTableRecordsReq'
+        description: 强制同步请求参数
+        required: true
+      responses:
+        '200':
+          description: 同步成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.Response'
+                  - properties:
+                      data:
+                        $ref: '#/components/schemas/v2.ForceSyncUserTableRecordsResp'
+                    type: object
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.Response'
+      summary: 强制同步用户记录
+      tags:
+        - SheetV2
+servers:
+  - url: //localhost:8080
+components:
+  schemas:
+    domain.FAQTableRecord:
+      properties:
+        is_resolved:
+          type: string
+        record:
+          additionalProperties: {}
+          type: object
+        record_id:
+          type: string
+      type: object
+    domain.TableRecord:
+      properties:
+        record:
+          additionalProperties: {}
+          type: object
+        record_id:
+          type: string
+      type: object
+    response.Response:
+      properties:
+        code:
+          type: integer
+        data: {}
+        msg:
+          type: string
+      type: object
+    v1.CreatTableRecordReg:
+      properties:
+        contact_info:
+          description: 联系方式，可选
+          type: string
+        content:
+          description: 反馈内容
+          type: string
+        extra_record:
+          additionalProperties: {}
+          description: 额外记录列表，可选
+          type: object
+        images:
+          description: 图片附件 URL 列表，可选
+          items:
+            type: string
+          type: array
+        student_id:
+          description: 学号，用于标记用户身份
+          type: string
+        table_identify:
+          type: string
+      required:
+        - content
+        - student_id
+        - table_identify
+      type: object
+    v1.CreatTableRecordResp:
+      properties:
+        record_id:
+          type: string
+      type: object
+    v1.FAQResolutionUpdateReq:
+      properties:
+        is_resolved:
+          type: boolean
+        record_id:
+          type: string
+        resolved_field_name:
+          type: string
+        table_identify:
+          type: string
+        unresolved_field_name:
+          type: string
+        user_id:
+          type: string
+      required:
+        - is_resolved
+        - record_id
+        - resolved_field_name
+        - table_identify
+        - unresolved_field_name
+        - user_id
+      type: object
+    v1.GenerateTableTokenReq:
+      properties:
+        table_identify:
+          description: 反馈表格 Identify，反馈表的唯一标识
+          type: string
+      required:
+        - table_identify
+      type: object
+    v1.GenerateTableTokenResp:
+      properties:
+        access_token:
+          type: string
+      type: object
+    v1.GenerateTenantToken:
+      properties:
+        access_token:
+          type: string
+      type: object
+    v1.GetTableRecordByRecordIdResp:
+      properties:
+        record:
+          additionalProperties: {}
+          type: object
+      type: object
+    v1.GetTableRecordResp:
+      properties:
+        has_more:
+          type: boolean
+        page_token:
+          type: string
+        records:
+          items:
+            $ref: '#/components/schemas/domain.TableRecord'
+          type: array
+        total:
+          type: integer
+      type: object
+    v1.HealthCheckResponse:
+      properties:
+        process:
+          allOf:
+            - $ref: '#/components/schemas/v1.ProcessStats'
+          description: Process 当前进程的运行状态
+        response_ms:
+          description: ResponseMs 响应耗时，单位毫秒
+          type: string
+        status:
+          description: Status 服务状态，例如 "ok"
+          type: string
+        system:
+          allOf:
+            - $ref: '#/components/schemas/v1.SystemStats'
+          description: System 系统资源使用情况
+      type: object
+    v1.ProcessStats:
+      properties:
+        cpu_percent:
+          description: CPUPercent 进程 CPU 使用率（%）
+          type: string
+        go_heap_alloc_mb:
+          description: GoHeapAllocMB Go 堆分配的内存（MB）
+          type: string
+        goroutines:
+          description: Goroutines 当前运行的 goroutine 数
+          type: string
+        memory_rss_mb:
+          description: MemoryRSSMB 进程常驻内存（MB）
+          type: string
+      type: object
+    v1.SystemStats:
+      properties:
+        cpu_percent:
+          description: CPUPercent CPU 使用率（%）
+          type: string
+        disk_percent:
+          description: DiskPercent 磁盘使用率（%）
+          type: string
+        disk_total:
+          description: DiskTotalGB 磁盘总量（GB）
+          type: string
+        disk_used:
+          description: DiskUsedGB 已使用磁盘（GB）
+          type: string
+        memory_percent:
+          description: MemoryPercent 内存使用率（%）
+          type: string
+        memory_total:
+          description: MemoryTotalMB 内存总量（MB）
+          type: string
+        memory_used:
+          description: MemoryUsedMB 已使用内存（MB）
+          type: string
+      type: object
+    v1.TriggerNotificationReq:
+      properties:
+        table_identify:
+          description: 反馈表格 Identify，反馈表的唯一标识
+          type: string
+      required:
+        - table_identify
+      type: object
+    v2.FAQResolutionUpdateReq:
+      properties:
+        is_resolved:
+          type: boolean
+        record_id:
+          type: string
+        table_identify:
+          type: string
+        user_id:
+          type: string
+      required:
+        - is_resolved
+        - record_id
+        - table_identify
+        - user_id
+      type: object
+    v2.ForceSyncTableRecordsReq:
+      properties:
+        table_identify:
+          type: string
+      required:
+        - table_identify
+      type: object
+    v2.ForceSyncTableRecordsResp:
+      properties:
+        queue_full:
+          description: 队列是否已满
+          type: boolean
+        record_ids:
+          description: 成功投递到队列的记录 ID
+          items:
+            type: string
+          type: array
+        total:
+          description: 本次尝试同步的总记录数
+          type: integer
+      type: object
+    v2.ForceSyncUserTableRecordsReq:
+      properties:
+        student_id:
+          type: string
+        table_identify:
+          type: string
+      required:
+        - student_id
+        - table_identify
+      type: object
+    v2.ForceSyncUserTableRecordsResp:
+      properties:
+        queue_full:
+          description: 队列是否已满
+          type: boolean
+        record_ids:
+          description: 成功投递到队列的记录 ID
+          items:
+            type: string
+          type: array
+        total:
+          description: 本次尝试同步的总记录数
+          type: integer
+      type: object
+    v2.GetTableRecordByRecordIdResp:
+      properties:
+        records:
+          items:
+            $ref: '#/components/schemas/domain.FAQTableRecord'
+          type: array
+      type: object
+    v2.GetTableRecordResp:
+      properties:
+        has_more:
+          type: boolean
+        page_token:
+          type: string
+        records:
+          items:
+            $ref: '#/components/schemas/domain.TableRecord'
+          type: array
+      type: object
+    v2.SyncFaqRecordReq:
+      properties:
+        table_identify:
+          type: string
+      required:
+        - table_identify
+      type: object
+    v2.SyncUnsyncedTableRecordsReq:
+      properties:
+        table_identify:
+          type: string
+      required:
+        - table_identify
+      type: object
+    v2.SyncUnsyncedTableRecordsResp:
+      properties:
+        queue_full:
+          description: 队列是否已满
+          type: boolean
+        record_ids:
+          description: 成功投递到队列的记录 ID
+          items:
+            type: string
+          type: array
+        total:
+          description: 本次尝试同步的总记录数
+          type: integer
+      type: object
