@@ -16,6 +16,10 @@ import { useElectricityStore } from '@/store/electricity';
 import useVisualScheme from '@/store/visualScheme';
 import { logger } from '@/utils/logger';
 
+import AreaIcon from '../../assets/images/area.png';
+import BuildingIcon from '../../assets/images/building.png';
+import DormitoryIcon from '../../assets/images/dormitory.png';
+
 // 区域数据
 const areaData = [
   { label: '东区', value: '东区学生宿舍' },
@@ -187,7 +191,7 @@ const ElectricityBillinQuiry = () => {
   // 查询按钮处理
   const handleQuery = () => {
     const archIndex = pickerValue[0] || 0;
-    const floorIndex = pickerValue[1] || 0;
+    const _floorIndex = pickerValue[1] || 0;
     const roomIndex = pickerValue2[0] || 0;
 
     if (architectures.length === 0 || rooms.length === 0) {
@@ -245,10 +249,7 @@ const ElectricityBillinQuiry = () => {
       <View>
         <View style={styles.title1}>
           <Text style={[styles.text1, currentStyle?.text_style]}>选择区域</Text>
-          <Image
-            style={{ width: 16, height: 16 }}
-            source={require('../../assets/images/area.png')}
-          />
+          <Image style={{ width: 16, height: 16 }} source={AreaIcon} />
         </View>
         <ScrollView horizontal style={{ marginBottom: 39 }}>
           <View
@@ -262,10 +263,7 @@ const ElectricityBillinQuiry = () => {
       <View>
         <View style={styles.title1}>
           <Text style={[styles.text1, currentStyle?.text_style]}>选择楼栋</Text>
-          <Image
-            style={{ width: 16, height: 16 }}
-            source={require('../../assets/images/building.png')}
-          />
+          <Image style={{ width: 16, height: 16 }} source={BuildingIcon} />
         </View>
         <View style={{ paddingTop: 8, paddingBottom: 34 }}>
           {loading ? (
@@ -297,10 +295,7 @@ const ElectricityBillinQuiry = () => {
       <View>
         <View style={styles.title1}>
           <Text style={[styles.text1, currentStyle?.text_style]}>选择寝室</Text>
-          <Image
-            style={{ width: 16, height: 16 }}
-            source={require('../../assets/images/dormitory.png')}
-          />
+          <Image style={{ width: 16, height: 16 }} source={DormitoryIcon} />
         </View>
         <View style={{ paddingTop: 8 }}>
           {loading ? (

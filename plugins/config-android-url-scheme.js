@@ -1,4 +1,4 @@
-const { withAndroidManifest } = require('expo/config-plugins');
+import { withAndroidManifest } from 'expo/config-plugins';
 
 /**
  * @param {string[]} packages - 允许查询/唤醒的包名列表
@@ -45,4 +45,4 @@ function withAndroidQueries(config, { packages = [], schemes = [] } = {}) {
   });
 }
 
-module.exports = withAndroidQueries;
+export default withAndroidQueries;

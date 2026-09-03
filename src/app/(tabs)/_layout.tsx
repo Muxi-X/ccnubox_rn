@@ -30,7 +30,9 @@ export default function TabLayout() {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      updateCourseData(useCourse.getState().courses).catch(error => logger.error('更新小组件失败', error));
+      updateCourseData(useCourse.getState().courses).catch(error =>
+        logger.error('更新小组件失败', error)
+      );
     }
   }, []);
 

@@ -10,6 +10,8 @@ import {
   View,
 } from 'react-native';
 
+import YearIcon from '@/assets/images/xuenian.png';
+import SemesterIcon from '@/assets/images/xueqi.png';
 import MultiPicker from '@/components/picker/multiPicker';
 import type { PickerDataType } from '@/components/picker/types';
 import { queryGradeType } from '@/request/api/grade';
@@ -40,10 +42,8 @@ const CheckGrades = () => {
     const fetchFilters = async () => {
       setLoading(true);
       try {
-        const [gradeTypeRes, semesterListRes] = await Promise.all([
-          queryGradeType(),
-          querySemesterList(),
-        ]);
+        const gradeTypeRes = await queryGradeType();
+        const semesterListRes = await querySemesterList();
 
         if (
           gradeTypeRes.code !== 0 ||
@@ -77,7 +77,7 @@ const CheckGrades = () => {
     <View style={[styles.item, styles.itemBorder]}>
       <Image
         style={{ width: 35, height: 35, marginRight: 34 }}
-        source={require('../../../../assets/images/xuenian.png')}
+        source={YearIcon}
       />
       <View>
         <Text
@@ -109,7 +109,7 @@ const CheckGrades = () => {
     <View style={styles.item}>
       <Image
         style={{ width: 35, height: 35, marginRight: 34 }}
-        source={require('../../../../assets/images/xueqi.png')}
+        source={SemesterIcon}
       />
       <View style={{ display: 'flex' }}>
         <Text

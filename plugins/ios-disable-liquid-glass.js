@@ -1,4 +1,4 @@
-const { CodeGenerator, withAppDelegate } = require('expo/config-plugins');
+import { CodeGenerator, withAppDelegate } from 'expo/config-plugins';
 const { mergeContents } = CodeGenerator;
 
 /**
@@ -43,4 +43,4 @@ function withDisableLiquidGlass(config) {
   });
 }
 
-module.exports = withDisableLiquidGlass;
+export default withDisableLiquidGlass;

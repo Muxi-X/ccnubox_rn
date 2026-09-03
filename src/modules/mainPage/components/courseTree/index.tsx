@@ -10,10 +10,10 @@ import {
   View,
 } from 'react-native';
 
+import FlagIcon from '@/assets/images/flag.png';
 import Image from '@/components/image';
 import { queryGradeScore } from '@/request/api/grade';
 import useVisualScheme from '@/store/visualScheme';
-
 interface BaseCourseNode {
   title: string;
   credits: number;
@@ -152,10 +152,7 @@ const CourseTree = () => {
         ) : (
           <View style={[styles.node, styles.titleBorder]}>
             <View style={styles.nodeLeft}>
-              <Image
-                style={{ width: 35, height: 35 }}
-                source={require('../../../../assets/images/flag.png')}
-              />
+              <Image style={{ width: 35, height: 35 }} source={FlagIcon} />
               <Text
                 style={[
                   styles.nodeText,

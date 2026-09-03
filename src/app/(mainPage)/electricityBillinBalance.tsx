@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 
+import ACIcon from '@/assets/images/kongtiao.png';
+import LightIcon from '@/assets/images/zhaoming.png';
 import Modal from '@/components/modal';
 import Toast from '@/components/toast';
 import {
@@ -32,10 +34,10 @@ const ElectricityBillinBalance = () => {
   const clearSelectedDorm = useElectricityStore(
     state => state.clearSelectedDorm
   );
-  const { building, room, area, room_id } = useLocalSearchParams<{
+  const { building, room, _area, room_id } = useLocalSearchParams<{
     building?: string;
     room?: string;
-    area?: string;
+    _area?: string;
     room_id?: string;
   }>();
 
@@ -90,7 +92,7 @@ const ElectricityBillinBalance = () => {
   };
 
   // 打开设置电费标准弹窗
-  const handleSetStandard = () => {
+  const _handleSetStandard = () => {
     // 使用 ref 来存储临时输入值，避免闭包问题
     let tempInputValue = standardLimit ? String(standardLimit) : '';
 
@@ -226,10 +228,7 @@ const ElectricityBillinBalance = () => {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconContainer}>
-                  <Image
-                    source={require('@/assets/images/zhaoming.png')}
-                    style={styles.iconImage}
-                  />
+                  <Image source={LightIcon} style={styles.iconImage} />
                 </View>
                 <Text style={[styles.cardTitle, currentStyle?.text_style]}>
                   照明
@@ -257,10 +256,7 @@ const ElectricityBillinBalance = () => {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconContainer}>
-                  <Image
-                    source={require('@/assets/images/kongtiao.png')}
-                    style={styles.iconImage}
-                  />
+                  <Image source={ACIcon} style={styles.iconImage} />
                 </View>
                 <Text style={[styles.cardTitle, currentStyle?.text_style]}>
                   空调
