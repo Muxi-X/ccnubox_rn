@@ -37,7 +37,7 @@
     "expo-application": "~56.0.3",
     "expo-blur": "~56.0.4",
     "expo-build-properties": "~56.0.27",
-    "expo-clipboard": "~56.0.4",
+    "expo-clipboard": "~57.0.1",
     "expo-constants": "~56.0.25",
     "expo-dev-client": "~56.0.26",
     "expo-file-system": "^56.0.11",
