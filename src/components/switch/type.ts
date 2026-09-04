@@ -1,4 +1,4 @@
-import { StyleProp, ViewStyle } from 'react-native';
+import { ColorValue, StyleProp, ViewStyle } from 'react-native';
 
 export interface SwitchProps {
   //是否选中
@@ -10,7 +10,7 @@ export interface SwitchProps {
   //是否禁用开关
   disabled?: boolean;
   //开关轨道（长条那个）颜色
-  trackColor?: { false: string; true: string };
+  trackColor?: { false?: ColorValue; true?: ColorValue };
   // 开关滑块（小圆点）颜色
-  thumbColor?: string;
+  thumbColor?: ColorValue;
 }
