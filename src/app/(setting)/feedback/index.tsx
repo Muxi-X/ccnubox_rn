@@ -30,6 +30,7 @@ import handleCopy from '@/utils/handleCopy';
 import { log } from '@/utils/logger';
 
 import { SheetItem } from '@/types/feedback';
+import Button from '@/components/button';
 
 function FeedbackPage() {
   const router = useRouter();
@@ -314,12 +315,15 @@ function FeedbackPage() {
           </ScrollView>
         </SafeAreaView>
         <View style={styles.bottom}>
-          <TouchableOpacity
+          <Button
+            type="Primary"
+            fontSize={18}
             onPress={() => router.push('/feedback/writefeedback')}
-            style={styles.button}
+            buttonStyle={styles.button}
+            letterSpacing="25%"
           >
-            <Text style={styles.buttonText}>我要反馈</Text>
-          </TouchableOpacity>
+            我要反馈
+          </Button>
 
           <View style={currentStyle?.background_style}>
             <View style={styles.groupRow}>
@@ -397,16 +401,9 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#847AF2',
-    borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 90,
     marginVertical: 10,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 400,
-    letterSpacing: 13,
-    color: '#FFFFFF',
   },
 });
 

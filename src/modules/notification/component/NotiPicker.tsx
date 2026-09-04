@@ -1,19 +1,13 @@
+import Button from '@/components/button';
+import Switch from '@/components/switch';
 import Toast from '@/components/toast';
 import { FeedIconList } from '@/constants/notificationItem';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
 import useVisualScheme from '@/store/visualScheme';
-import Switch from '@/components/switch';
 import { MaterialIcons } from '@expo/vector-icons';
 import { type FC, useEffect, useState } from 'react';
-import {
-  Image,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { Image, Modal, StyleSheet, Text, View } from 'react-native';
 
 interface NotiPickerProps {
   visible: boolean;
@@ -116,15 +110,17 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
           ))}
 
           <View style={[styles.footer, currentStyle?.background_style]}>
-            <TouchableHighlight
-              style={[styles.button, loading && styles.buttonDisabled]}
+            <Button
+              type="Primary"
+              width={styles.button.width}
+              marginTop={10}
               onPress={handleConfirm}
-              disabled={loading}
+              isLoading={loading}
+              letterSpacing="25%"
+              fontSize={17}
             >
-              <Text style={styles.buttonText}>
-                {loading ? '保存中...' : '确认'}
-              </Text>
-            </TouchableHighlight>
+              确认
+            </Button>
           </View>
         </View>
       </View>
@@ -191,18 +187,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#7B70F1',
-    width: 150,
+    width: 200,
+    marginTop: 10,
     height: 30,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
   },
 });
 

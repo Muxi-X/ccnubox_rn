@@ -401,18 +401,18 @@ export default function OtherStyle({
         <View style={styles.actionButtons}>
           {backgroundUri && (
             <Button
-              style={[
-                styles.actionButton,
-                styles.actionButtonSpacing,
-                currentStyle?.button_style,
-              ]}
+              type="Secondary"
+              style={[styles.actionButton, styles.actionButtonSpacing]}
+              buttonStyle={styles.actionButtonInner}
               onPress={handleClearBackground}
             >
               清除
             </Button>
           )}
           <Button
-            style={[styles.actionButton, currentStyle?.button_style]}
+            type="Secondary"
+            style={styles.actionButton}
+            buttonStyle={styles.actionButtonInner}
             onPress={handlePickImage}
             isLoading={isPicking}
           >
@@ -531,7 +531,12 @@ const styles = StyleSheet.create({
   actionButton: {
     width: 60,
     height: 30,
-    borderRadius: 10,
+  },
+  actionButtonInner: {
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    minHeight: 0,
+    height: 30,
   },
   actionButtonSpacing: {
     marginRight: 10,

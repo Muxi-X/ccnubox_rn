@@ -1,7 +1,8 @@
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 import type { FC } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
+import Button from '@/components/button';
 
 interface ClearModalProps {
   clearVisible: boolean;
@@ -44,34 +45,25 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
               flexDirection: 'row',
             }}
           >
-            <TouchableOpacity
+            <Button
+              type="Round"
+              letterSpacing="5%"
+              backgroundColor="#CECECE"
+              style={styles.modalButton}
               onPress={() => {
                 setClearVisible(false);
               }}
             >
-              <Text
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: '#CECECE',
-                  },
-                ]}
-              >
-                取消
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleClear}>
-              <Text
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: '#7878F8',
-                  },
-                ]}
-              >
-                确定
-              </Text>
-            </TouchableOpacity>
+              取消
+            </Button>
+            <Button
+              type="Round"
+              letterSpacing="5%"
+              style={styles.modalButton}
+              onPress={handleClear}
+            >
+              确定
+            </Button>
           </View>
         </View>
       </View>
@@ -95,6 +87,11 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 15,
     marginVertical: 15,
+  },
+  modalButton: {
+    marginHorizontal: 16,
+    marginTop: 20,
+    minWidth: 90,
   },
   button: {
     paddingHorizontal: 40,

@@ -12,6 +12,7 @@ import {
 
 import MultiPicker from '@/components/picker/multiPicker';
 import type { PickerDataType } from '@/components/picker/types';
+import Button from '@/components/button';
 
 import useCourse from '@/store/course';
 import useVisualScheme from '@/store/visualScheme';
@@ -171,16 +172,13 @@ const CheckGrades = () => {
             {CourseTypePickerTrigger}
           </MultiPicker>
 
-          <TouchableOpacity
+          <Button
+            type="Primary"
+            letterSpacing="25%"
             style={{
               width: 309,
               height: 46,
-              backgroundColor: '#7878F8',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 'auto',
-              borderRadius: 10,
+              alignSelf: 'center',
               marginTop: 26,
             }}
             onPress={() => {
@@ -193,8 +191,8 @@ const CheckGrades = () => {
               });
             }}
           >
-            <Text style={{ color: '#FFFFFF' }}>查询</Text>
-          </TouchableOpacity>
+            查询
+          </Button>
         </>
       )}
     </View>

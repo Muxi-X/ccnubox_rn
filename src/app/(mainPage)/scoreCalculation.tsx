@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
+import Button from '@/components/button';
 
 import { useHeaderRightStore } from '@/store/headerRight';
 import useVisualScheme from '@/store/visualScheme';
@@ -318,12 +319,14 @@ const ScoreCalculation: React.FC = () => {
       )}
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.calculateButton]}
+        <Button
+          type="Primary"
+          letterSpacing="15%"
+          buttonStyle={styles.calculateButton}
           onPress={showResultModal}
         >
-          <Text style={styles.calculateButtonText}>计算学分绩</Text>
-        </TouchableOpacity>
+          计算学分绩
+        </Button>
       </View>
     </View>
   );
@@ -480,12 +483,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
   calculateButton: {
-    backgroundColor: '#7878F8',
     paddingVertical: 12,
     paddingHorizontal: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 13,
   },
   calculateButtonText: {
     color: '#FFF',

@@ -1,5 +1,5 @@
 import { Input, WhiteSpace } from '@ant-design/react-native';
-import Button from '@/components/button';
+import Button, { ButtonHierarchy } from '@/components/button';
 import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -36,6 +36,8 @@ export interface CourseFormData {
 interface CourseFormProps {
   buttonText?: string; // backward-compat
   submitText?: string; // preferred
+  buttonType?: ButtonHierarchy;
+  letterSpacing?: number | `${number}%` | string;
   pageText: string;
   mode?: 'create' | 'edit';
   onSuccess?: () => void;
@@ -406,6 +408,8 @@ export const CourseDataForm = (props: CourseFormProps) => {
         ></FlatList>
         <WhiteSpace size="lg" />
         <Button
+          type={props.buttonType ?? 'Primary'}
+          letterSpacing={props.letterSpacing}
           style={styles.button}
           isLoading={loading}
           onPress={handleSubmit}
@@ -449,7 +453,6 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 50,
-    borderRadius: 10,
     marginHorizontal: 20,
     marginVertical: 20,
   },

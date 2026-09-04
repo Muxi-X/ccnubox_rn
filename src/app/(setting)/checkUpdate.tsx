@@ -182,7 +182,9 @@ function CheckUpdate(): React.ReactNode {
           </View>
           <View style={styles.divider} />
           <Button
-            style={[styles.updateButton, currentStyle?.button_style]}
+            type="Primary"
+            letterSpacing="18%"
+            style={styles.updateButton}
             onPress={() => void handleUpdatePress()}
             isLoading={isBusy}
           >
@@ -249,11 +251,9 @@ const styles = StyleSheet.create({
   updateButton: {
     width: '80%',
     height: 44,
-    borderRadius: 12,
     alignSelf: 'center',
     marginTop: 16,
     marginBottom: 8,
-    backgroundColor: '#7B7BFF',
   },
   bottomTip: {
     textAlign: 'center',

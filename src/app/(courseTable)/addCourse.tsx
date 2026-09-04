@@ -33,6 +33,8 @@ export default function AddCourse() {
       <CourseDataForm
         pageText="course"
         submitText="添加课程"
+        buttonType="Primary"
+        letterSpacing="25%"
         mode="create"
         onSuccess={handleSuccess}
       />

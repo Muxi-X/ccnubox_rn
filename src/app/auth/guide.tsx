@@ -217,10 +217,7 @@ const GuidePage: FC = () => {
         duration={450}
         trigger={reachedLastPage}
       >
-        <Button
-          style={[styles.start_button, currentStyle?.button_style]}
-          onPress={handleStart}
-        >
+        <Button style={styles.start_button} onPress={handleStart}>
           开始使用
         </Button>
       </AnimatedFade>
@@ -297,7 +294,6 @@ const styles = StyleSheet.create({
   },
   start_button: {
     width: 200,
-    borderRadius: 12,
     marginTop: 20,
   },
   title: {

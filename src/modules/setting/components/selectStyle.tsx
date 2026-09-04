@@ -98,7 +98,8 @@ export default function SelectStyle() {
           iOS风格
         </Text>
         <Button
-          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
+          type="Secondary"
+          style={{ width: '40%', marginRight: 10 }}
           onPress={() => {
             if (!isIconStyleApplied('ios')) {
               changeIconStyle('ios');
@@ -141,7 +142,8 @@ export default function SelectStyle() {
           Android风格
         </Text>
         <Button
-          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
+          type="Secondary"
+          style={{ width: '40%', marginRight: 10 }}
           onPress={() => {
             if (!isIconStyleApplied('android')) {
               changeIconStyle('android');
