@@ -1,13 +1,9 @@
-import { Checkbox, List, ListProps } from '@ant-design/react-native';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text } from 'react-native';
-
+import CheckBox from '@/components/checkbox';
 import { ModalTrigger } from '@/components/modal';
 import { DatePickerProps, PickerDataType } from '@/components/picker/types';
-
 import useVisualScheme from '@/store/visualScheme';
-
-const CheckboxItem = Checkbox.CheckboxItem;
+import React, { useEffect, useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 /**
  * 位于底部的多选组件, 数据格式保持与 picker 基本一致
@@ -66,22 +62,30 @@ const MultiPicker: React.FC<DatePickerProps> = ({
   const [multiPickerValue, setMultiPickerValue] = useState<(string | number)[]>(
     []
   );
+  const pickedSet = useMemo(
+    () => new Set(multiPickerValue),
+    [multiPickerValue]
+  );
+
   const title = useMemo(
     () => titleDisplayLogic(multiPickerValue, data),
     [multiPickerValue, data]
   );
-  // 默认选择逻辑
+
   useEffect(() => {
     handlePick(
       new Set(defaultValue ? defaultValue : data.map(item => item[0].value))
     );
   }, [defaultValue, data]);
+
   const handlePick = (items: Set<string | number>) => {
     setMultiPickerValue(Array.from(items));
   };
+
   const handleConfirm = () => {
     if (onConfirm) onConfirm(multiPickerValue.map(item => String(item)));
   };
+
   return (
     <ModalTrigger
       title={title}
@@ -99,7 +103,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
         }}
         data={data}
         onPick={handlePick}
-        pickedItems={new Set(multiPickerValue)}
+        pickedItems={pickedSet}
       />
     </ModalTrigger>
   );
@@ -107,17 +111,18 @@ const MultiPicker: React.FC<DatePickerProps> = ({
 
 export default MultiPicker;
 
-interface CheckboxGroupProps extends ListProps {
+interface CheckboxGroupProps {
+  style?: Record<string, any>;
   pickedItems?: Set<string | number>;
   data: PickerDataType;
   onPick?: (item: Set<string | number>) => void;
 }
+
 /**
  * 多选框
  * @param onPick 被选中数组变化回调
  * @param data 数据数组 Record<'label' | 'value', string | number>
  * @param pickedItems 选中项 value 数组
- * @argument 其余参数参考 ListProps
  */
 export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   onPick,
@@ -132,7 +137,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   );
   const [checkAll, setCheckAll] = React.useState(false);
 
-  // 同步外部选择到本地状态，并更新“全选”
   React.useEffect(() => {
     const options = plainOptions ?? [];
     const next = pickedItems
@@ -141,27 +145,24 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     setCheckedList(next);
     setCheckAll(next.size === options.length);
   }, [pickedItems, plainOptions]);
-  const onChange = (
-    value: string | number,
-    e: { target: { checked: boolean } }
-  ) => {
+
+  const onChange = (value: string | number, isChecked: boolean) => {
     const newCheckedList = new Set(checkedList);
-    if (e.target.checked) {
+    if (isChecked) {
       newCheckedList.add(value);
     } else {
       newCheckedList.delete(value);
     }
-
     setCheckedList(newCheckedList);
     setCheckAll(newCheckedList.size === plainOptions.length);
     onPick?.(newCheckedList);
   };
 
   function createQuickSelect(
-    e: { target: { checked: boolean } },
+    isChecked: boolean,
     selectedValues: Set<string | number>
   ) {
-    const checkedItems: Set<string | number> = e.target.checked
+    const checkedItems: Set<string | number> = isChecked
       ? selectedValues
       : new Set();
     setCheckedList(checkedItems);
@@ -173,38 +174,31 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     return new Set(plainOptions.map(item => item.value));
   }, [plainOptions]);
 
-  const onCheckAllChange = (e: { target: { checked: boolean } }) => {
-    createQuickSelect(e, allSet);
+  const onCheckAllChange = (isChecked: boolean) => {
+    createQuickSelect(isChecked, allSet);
   };
 
   const renderCheckboxItem = (
     label: string,
     checked: boolean,
-    onChange: (e: { target: { checked: boolean } }) => void
+    onChangeCb: (checked: boolean) => void
   ) => (
-    <CheckboxItem
-      onChange={onChange}
-      checked={checked}
-      styles={{
-        Item: {
-          borderRadius: 5,
-          margin: 2,
-          backgroundColor: 'rgba(0,0,0,0)',
-        },
-        Line: {
-          borderColor: 'rgba(0, 0, 0, 0)',
-        },
-      }}
-    >
-      <Text
-        style={{
+    <View style={styles.checkItemWrap}>
+      <CheckBox
+        label={label}
+        checked={checked}
+        onChange={onChangeCb}
+        labelTextStyle={{
           color: currentStyle?.text_style?.color,
           fontSize: 14,
         }}
-      >
-        {label}
-      </Text>
-    </CheckboxItem>
+        color={
+          currentStyle?.classroom_accent_style?.backgroundColor ?? '#7878F8'
+        }
+        uncheckedColor={currentStyle?.text_style?.color ?? '#cccccc'}
+      />
+      <View style={styles.itemTransparentLine} />
+    </View>
   );
 
   return (
@@ -213,48 +207,52 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       automaticallyAdjustContentInsets={false}
       showsHorizontalScrollIndicator={false}
     >
-      <List
-        {...props}
-        styles={{
-          Body: {
-            borderColor: '#e0e0e0',
-            borderTopWidth: 2,
-          },
-          BodyBottomLine: {
-            backgroundColor: 'rgba(0, 0, 0, 0)',
-          },
-        }}
-      >
+      <View style={styles.listBody}>
         {renderCheckboxItem('全选', checkAll, onCheckAllChange)}
         <>
           {plainOptions.map(a => (
-            <CheckboxItem
-              key={a.value}
-              onChange={onChange.bind(this, a.value)}
-              checked={checkedList.has(a.value)}
-              styles={{
-                Item: {
-                  borderRadius: 5,
-                  margin: 2,
-                  backgroundColor: 'rgba(0,0,0,0)',
-                },
-                Line: {
-                  borderColor: 'rgba(0, 0, 0, 0)',
-                },
-              }}
-            >
-              <Text
-                style={{
+            <View key={a.value} style={styles.checkItemWrap}>
+              <CheckBox
+                label={a.label}
+                checked={checkedList.has(a.value)}
+                onChange={isChecked => onChange(a.value, isChecked)}
+                labelTextStyle={{
                   color: currentStyle?.text_style?.color,
                   fontSize: 14,
                 }}
-              >
-                {a.label}
-              </Text>
-            </CheckboxItem>
+                color={
+                  currentStyle?.classroom_accent_style?.backgroundColor ??
+                  '#7878F8'
+                }
+                uncheckedColor={currentStyle?.text_style?.color ?? '#cccccc'}
+              />
+              <View style={styles.itemTransparentLine} />
+            </View>
           ))}
         </>
-      </List>
+        <View style={styles.bodyBottomTransparentLine} />
+      </View>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  listBody: {
+    borderTopWidth: 2,
+    borderColor: '#e0e0e0',
+  },
+  checkItemWrap: {
+    borderRadius: 5,
+    margin: 2,
+    backgroundColor: 'rgba(0,0,0,0)',
+  },
+  itemTransparentLine: {
+    height: 1,
+    width: '60%',
+    alignSelf: 'center',
+  },
+  bodyBottomTransparentLine: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0)',
+  },
+});

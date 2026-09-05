@@ -1,4 +1,10 @@
-import { ActivityIndicator, Icon, WingBlank } from '@ant-design/react-native';
+import Checkbox from '@/components/checkbox';
+import Modal from '@/components/modal';
+import { queryGradeDetail } from '@/request/api/grade';
+import { useHeaderRightStore } from '@/store/headerRight';
+import useVisualScheme from '@/store/visualScheme';
+import { percent2px } from '@/utils';
+import { ActivityIndicator, WingBlank } from '@ant-design/react-native';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -8,14 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
-import Modal from '@/components/modal';
-
-import { useHeaderRightStore } from '@/store/headerRight';
-import useVisualScheme from '@/store/visualScheme';
-
-import { queryGradeDetail } from '@/request/api/grade';
-import { percent2px } from '@/utils';
 
 interface GradeDetails {
   usualGrade: string | number;
@@ -27,7 +25,6 @@ interface GradeDetails {
   score: number;
   creditScore: number;
 }
-
 interface GradeData {
   title: string;
   key: string;
@@ -35,7 +32,6 @@ interface GradeData {
   score: string | number;
   details: GradeDetails;
 }
-
 const ScoreCalculation: React.FC = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const [selectedCourses, setSelectedCourses] = useState<Set<string>>(
@@ -46,9 +42,7 @@ const ScoreCalculation: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<GradeData | null>(null);
   const [gradeData, setGradeData] = useState<GradeData[]>([]);
   const [loading, setLoading] = useState(false);
-
   const { courseType, semester } = useLocalSearchParams();
-
   const handleCourseSelection = (course: GradeData) => {
     const newSelection = new Set([...selectedCourses]);
     if (newSelection.has(course.key)) {
@@ -56,11 +50,9 @@ const ScoreCalculation: React.FC = () => {
     } else {
       newSelection.add(course.key);
     }
-
     setSelectedCourses(newSelection);
     updateSelectionState(newSelection);
   };
-
   const handleSelectAllToggle = useCallback(
     (isSelected: boolean) => {
       const newSelection = isSelected
@@ -72,14 +64,12 @@ const ScoreCalculation: React.FC = () => {
     },
     [gradeData]
   );
-
   const updateSelectionState = (selection: Set<string>) => {
     const isPartial = selection.size > 0 && selection.size < gradeData.length;
     setIsPartiallySelected(isPartial);
     setIsAllSelected(selection.size === gradeData.length);
   };
   const textStyle = currentStyle?.text_style;
-
   const showCourseDetails = (course: GradeData) => {
     setSelectedCourse(course);
     Modal.show({
@@ -92,10 +82,6 @@ const ScoreCalculation: React.FC = () => {
             <Text style={[styles.modalTitle, currentStyle?.text_style]}>
               {course.title}
             </Text>
-            {/* <Image
-              style={styles.modalLogo}
-              source={require('../../assets/images/mx-logo.png')}
-            /> */}
           </View>
           <View style={styles.modalContent}>
             <Text style={styles.textItem}>
@@ -135,23 +121,19 @@ const ScoreCalculation: React.FC = () => {
       ),
     });
   };
-
   const calculateAverageScore = () => {
     let totalWeightedScore = 0;
     let totalCredits = 0;
-
     gradeData.forEach(course => {
       if (selectedCourses.has(course.key)) {
         totalWeightedScore += course.details.allGrade * course.details.credit;
         totalCredits += course.details.credit;
       }
     });
-
     return totalCredits > 0
       ? Number((totalWeightedScore / totalCredits).toFixed(4))
       : 0;
   };
-
   const showResultModal = () => {
     const averageScore = calculateAverageScore();
     Modal.show({
@@ -171,7 +153,6 @@ const ScoreCalculation: React.FC = () => {
       ),
     });
   };
-
   useEffect(() => {
     setLoading(true);
     queryGradeDetail({
@@ -198,7 +179,6 @@ const ScoreCalculation: React.FC = () => {
               },
             })
           );
-
           setGradeData(transformedData);
           setSelectedCourses(
             new Set(transformedData.map(course => course.key))
@@ -208,44 +188,41 @@ const ScoreCalculation: React.FC = () => {
         setLoading(false);
       })
       .catch(_error => {
-        //console.error('获取成绩失败:', error);
         setLoading(false);
       });
   }, [semester, courseType]);
-
   const setHeaderRight = useHeaderRightStore(state => state.setContent);
-
   const selectAllNode = useMemo(
     () => (
       <View style={styles.headerRightRow}>
         <Text style={[styles.headerRightLabel, textStyle]}>全选</Text>
-        <TouchableOpacity
-          onPress={() => handleSelectAllToggle(!isAllSelected)}
-          style={[
-            styles.checkbox,
-            {
-              backgroundColor: isAllSelected ? '#9379F6' : '#fff',
-              borderColor: isAllSelected ? '#9379F6' : '#C7C7C7',
-            },
-          ]}
-        >
-          {isAllSelected && (
-            <Icon
-              name="check"
-              size={20}
-              color="#fff"
-              style={styles.checkIcon}
+        {/* 头部全选checkbox；RNE不支持半选，checked只传isAllSelected；半选保留视觉覆盖 */}
+        <View style={{ position: 'relative' }}>
+          <Checkbox
+            checked={isAllSelected}
+            onChange={val => handleSelectAllToggle(val)}
+            color="#9379F6"
+            uncheckedColor="#C7C7C7"
+          />
+          {isPartiallySelected && !isAllSelected ? (
+            <View
+              style={{
+                position: 'absolute',
+                width: 12,
+                height: 3,
+                backgroundColor: '#9379F6',
+                top: '50%',
+                left: '50%',
+                transform: [{ translateX: -6 }, { translateY: -1.5 }],
+                borderRadius: 2,
+              }}
             />
-          )}
-          {isPartiallySelected && !isAllSelected && (
-            <View style={styles.partialCheckbox} />
-          )}
-        </TouchableOpacity>
+          ) : null}
+        </View>
       </View>
     ),
     [isAllSelected, isPartiallySelected, handleSelectAllToggle, textStyle]
   );
-
   useEffect(() => {
     setHeaderRight(selectAllNode);
     return () => setHeaderRight(null);
@@ -287,36 +264,20 @@ const ScoreCalculation: React.FC = () => {
                       <Text style={styles.scoreText}>成绩：{course.score}</Text>
                     </View>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => handleCourseSelection(course)}
-                    style={styles.checkboxContainer}
-                  >
-                    <View
-                      style={[
-                        styles.checkbox,
-                        {
-                          backgroundColor: isSelected ? '#9379F6' : '#fff',
-                          borderColor: isSelected ? '#9379F6' : '#C7C7C7',
-                        },
-                      ]}
-                    >
-                      {isSelected && (
-                        <Icon
-                          name="check"
-                          size={20}
-                          color="#fff"
-                          style={styles.checkIcon}
-                        />
-                      )}
-                    </View>
-                  </TouchableOpacity>
+                  <View style={styles.checkboxContainer}>
+                    <Checkbox
+                      checked={isSelected}
+                      onChange={() => handleCourseSelection(course)}
+                      color="#9379F6"
+                      uncheckedColor="#C7C7C7"
+                    />
+                  </View>
                 </TouchableOpacity>
               );
             })}
           </WingBlank>
         </ScrollView>
       )}
-
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.calculateButton]}
@@ -430,11 +391,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalLogo: {
-    width: 24,
-    height: 24,
-    borderRadius: 24,
-  },
   modalContent: {
     alignItems: 'flex-start',
     paddingTop: 26,
@@ -493,5 +449,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
 export default ScoreCalculation;

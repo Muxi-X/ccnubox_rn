@@ -12,6 +12,7 @@ const Checkbox: FC<CheckboxProps> = ({
   ...rest
 }) => {
   const [innerChecked, setInnerChecked] = useState(defaultChecked);
+
   const isControlled = checked !== undefined;
   const mergedChecked = isControlled ? checked : innerChecked;
 
@@ -22,6 +23,7 @@ const Checkbox: FC<CheckboxProps> = ({
     if (!isControlled) {
       setInnerChecked(nextChecked);
     }
+
     onChange?.(nextChecked);
   };
 
@@ -32,6 +34,7 @@ const Checkbox: FC<CheckboxProps> = ({
       checked={mergedChecked}
       disabled={disabled}
       onPress={handlePress}
+      containerStyle={{ backgroundColor: 'transparent' }}
     />
   );
 };
