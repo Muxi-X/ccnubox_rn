@@ -47,7 +47,7 @@ export class ConsoleAdapter implements LoggerAdapter {
       outputArgs.push(prefix, LOG_STYLES[level], message);
     } else {
       const color = FALLBACK_COLORS[level] || '';
-      const prefix = `${color}[${timeStr}] [${upperLevel}]${RESET_COLOR}`;
+      const prefix = `${color}[${timeStr}]${RESET_COLOR}`;
       outputArgs.push(`${prefix} ${message}`);
     }
 
