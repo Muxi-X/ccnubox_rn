@@ -14,6 +14,7 @@ import {
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import AnimatedScale from '@/components/animatedView/AnimatedScale';
 import AnimatedSlide from '@/components/animatedView/AnimatedSlide';
+import Button from '@/components/button';
 import {
   ModalBackgroundProps,
   ModalProps,
@@ -41,6 +42,7 @@ const Modal: React.FC<ModalProps> & {
   mode = 'bottom',
   confirmText,
   cancelText,
+  buttonType = 'Round',
   isTransparent = false,
 }) => {
   const handleConfirm = () => {
@@ -122,53 +124,25 @@ const Modal: React.FC<ModalProps> & {
           <View style={styles.bottomChoice}>
             {/* showCancel 决定是否显示取消按钮 */}
             {showCancel && (cancelText || onCancel) && (
-              <TouchableOpacity onPress={handleCancel}>
-                <View
-                  style={[
-                    !isBottomMode && {
-                      ...styles.cancelViewStyle,
-                      ...styles.buttonStyle,
-                    },
-                    currentStyle?.background_style,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.bottomChoiceText,
-                      !isBottomMode && styles.cancelMiddleText,
-                      isBottomMode
-                        ? commonStyles.fontLarge
-                        : commonStyles.fontMedium,
-                    ]}
-                  >
-                    {cancelText ?? '取消'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              <Button
+                type={buttonType}
+                width={styles.buttonStyle.width}
+                backgroundColor="#FFFFFF"
+                textColor="#6A69E6"
+                buttonStyle={styles.cancelButtonStyle}
+                onPress={handleCancel}
+              >
+                {cancelText ?? '取消'}
+              </Button>
             )}
             {(confirmText || onConfirm) && (
-              <TouchableOpacity onPress={handleConfirm}>
-                <View
-                  style={
-                    !isBottomMode && {
-                      ...styles.confirmViewStyle,
-                      ...styles.buttonStyle,
-                    }
-                  }
-                >
-                  <Text
-                    style={[
-                      styles.bottomChoiceText,
-                      !isBottomMode && styles.confirmMiddleText,
-                      isBottomMode
-                        ? commonStyles.fontLarge
-                        : commonStyles.fontMedium,
-                    ]}
-                  >
-                    {confirmText ?? '确认'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              <Button
+                type={buttonType}
+                width={styles.buttonStyle.width}
+                onPress={handleConfirm}
+              >
+                {confirmText ?? '确认'}
+              </Button>
             )}
           </View>
         )}
@@ -183,6 +157,9 @@ const Modal: React.FC<ModalProps> & {
     onCancel,
     confirmText,
     onConfirm,
+    buttonType,
+    isBottomMode,
+    currentStyle,
   ]);
   useEffect(() => {
     if (!visible) {
@@ -467,6 +444,13 @@ const styles = StyleSheet.create({
   },
   confirmViewStyle: {
     backgroundColor: commonColors.purple,
+  },
+  cancelButtonStyle: {
+    borderWidth: 1,
+    borderColor: '#6A69E6',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 7,
+    paddingHorizontal: 15,
   },
   cancelViewStyle: {
     borderWidth: 1,

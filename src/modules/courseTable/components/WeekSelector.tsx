@@ -105,6 +105,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
         title: '切换学期',
         children: `确定要切换到「${pendingLabel}」吗？切换后将重新加载课表数据。`,
         mode: 'middle',
+        buttonType: 'Round',
         confirmText: '确定',
         cancelText: '取消',
         showCancel: true,

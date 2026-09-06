@@ -1,10 +1,13 @@
 import { ReactElement } from 'react';
 
+import { ButtonHierarchy } from '@/components/button';
 import { ModalTriggerProps } from '@/components/modal/types';
 
 export type PickerDataType = { value: string | number; label: string }[][];
 export type ConnectorDataType = { content: string; columnIndex: number }[];
 export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
+  /** 按钮分级类型 */
+  buttonType?: ButtonHierarchy;
   /** 数据，必须有 label 和 value */
   data?: PickerDataType;
   /** 默认选择的数据（仅首次 mount 时生效） */

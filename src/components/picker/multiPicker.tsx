@@ -51,6 +51,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
   onClose,
   defaultValue,
   mode = 'bottom',
+  buttonType,
   style,
   data = [],
   children,
@@ -89,6 +90,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
       onClose={onClose}
       onCancel={onCancel}
       mode={mode}
+      buttonType={buttonType}
       triggerComponent={children}
       style={style}
     >

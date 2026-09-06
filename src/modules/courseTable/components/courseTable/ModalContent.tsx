@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
+import Button from '@/components/button';
 import Modal from '@/components/modal';
 import ThemeChangeText from '@/components/text';
 
@@ -179,6 +180,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                 children: '确定要删除该课程吗？',
                 mode: 'middle',
                 showCancel: true,
+                buttonType: 'Round',
                 confirmText: '删除',
                 cancelText: '取消',
                 onConfirm: () => handleDeleteCourseConfirm(courseId),
@@ -287,31 +289,45 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               </View>
 
               <View style={styles.noteActionsArea}>
-                <TouchableOpacity
-                  style={[styles.touchableBtn, isSaving && { opacity: 0.6 }]}
+                <Button
+                  type="Secondary"
+                  width={68}
+                  height={36}
                   disabled={isSaving}
+                  backgroundColor="#FFFFFF"
+                  textColor="#6A69E6"
+                  buttonStyle={styles.cancelBtn}
                   onPress={() => {
                     setNoteText('');
                   }}
                 >
-                  <Text style={currentStyle?.text_style}>清除</Text>
-                </TouchableOpacity>
+                  清除
+                </Button>
 
                 <View style={styles.rightButtons}>
-                  <TouchableOpacity
-                    style={[styles.touchableBtn, isSaving && { opacity: 0.6 }]}
+                  <Button
+                    type="Secondary"
+                    width={68}
+                    height={36}
                     disabled={isSaving}
+                    backgroundColor="#FFFFFF"
+                    textColor="#6A69E6"
+                    buttonStyle={styles.cancelBtn}
                     onPress={() => {
                       setIsNoted(false);
                       setNoteText(currNote);
                     }}
                   >
-                    <Text style={currentStyle?.text_style}>取消</Text>
-                  </TouchableOpacity>
+                    取消
+                  </Button>
 
-                  <TouchableOpacity
-                    style={[styles.touchableBtn, isSaving && { opacity: 0.6 }]}
+                  <Button
+                    type="Secondary"
+                    width={68}
+                    height={36}
                     disabled={isSaving}
+                    isLoading={isSaving}
+                    buttonStyle={styles.noteBtn}
                     onPress={() => {
                       handleSaveCourseNote(
                         courseId,
@@ -322,10 +338,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                       );
                     }}
                   >
-                    <Text style={currentStyle?.text_style}>
-                      {isSaving ? '保存中...' : '完成'}
-                    </Text>
-                  </TouchableOpacity>
+                    完成
+                  </Button>
                 </View>
               </View>
             </>
@@ -530,10 +544,25 @@ const styles = StyleSheet.create({
   },
   rightButtons: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 12,
   },
   touchableBtn: {
     paddingVertical: 10,
+  },
+  noteBtn: {
+    width: 68,
+    height: 36,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+  },
+  cancelBtn: {
+    width: 68,
+    height: 36,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    borderWidth: 1,
+    borderColor: '#6A69E6',
+    backgroundColor: '#FFFFFF',
   },
 });
 

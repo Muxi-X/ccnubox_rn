@@ -1,7 +1,6 @@
+import { Button as RNEButton } from '@rneui/themed';
 import React, { FC } from 'react';
 import { StyleSheet } from 'react-native';
-
-import { Button as RNEButton } from '@rneui/themed';
 
 import { ButtonHierarchy, ButtonProps } from '@/components/button/type';
 
@@ -28,7 +27,7 @@ const PADDING_MAP: Record<
 > = {
   Primary: { paddingVertical: 12, paddingHorizontal: 24, minHeight: 46 },
   Secondary: { paddingVertical: 10, paddingHorizontal: 18, minHeight: 40 },
-  Round: { paddingVertical: 8, paddingHorizontal: 16, minHeight: 34 },
+  Round: { paddingVertical: 8, paddingHorizontal: 16, minHeight: 38 },
 };
 
 function resolveLetterSpacing(
@@ -65,6 +64,7 @@ const Button: FC<ButtonProps> = ({
   textColor,
   fontSize,
   width,
+  height,
   marginTop,
   letterSpacing,
   isLoading = false,
@@ -72,6 +72,8 @@ const Button: FC<ButtonProps> = ({
   text_style,
   style,
   buttonStyle,
+  disabledStyle,
+  disabledTitleStyle,
   children,
   disabled,
   ...rest
@@ -79,10 +81,53 @@ const Button: FC<ButtonProps> = ({
   const currentStyle = useVisualScheme(state => state.currentStyle);
 
   const borderRadius = BORDER_RADIUS_MAP[type] ?? 20;
+  const flattenedStyle = StyleSheet.flatten(style) || {};
+  const flattenedButtonStyle = StyleSheet.flatten(buttonStyle) || {};
+
   const customBorderRadius =
-    (StyleSheet.flatten(buttonStyle) as any)?.borderRadius ??
-    (StyleSheet.flatten(style) as any)?.borderRadius;
+    (flattenedButtonStyle as any)?.borderRadius ??
+    (flattenedStyle as any)?.borderRadius;
   const finalBorderRadius = customBorderRadius ?? borderRadius;
+
+  const resolvedWidth =
+    width ??
+    (flattenedButtonStyle as any)?.width ??
+    (flattenedStyle as any)?.width;
+  const resolvedHeight =
+    height ??
+    (flattenedButtonStyle as any)?.height ??
+    (flattenedStyle as any)?.height;
+
+  // 如果在 buttonStyle 中写了 margin，应同步提取到 containerStyle，避免内层 Touchable 撑大导致水波纹/按压高亮溢出
+  const resolvedMargin =
+    (flattenedButtonStyle as any)?.margin ?? (flattenedStyle as any)?.margin;
+  const resolvedMarginTop =
+    marginTop ??
+    (flattenedButtonStyle as any)?.marginTop ??
+    (flattenedStyle as any)?.marginTop;
+  const resolvedMarginBottom =
+    (flattenedButtonStyle as any)?.marginBottom ??
+    (flattenedStyle as any)?.marginBottom;
+  const resolvedMarginLeft =
+    (flattenedButtonStyle as any)?.marginLeft ??
+    (flattenedStyle as any)?.marginLeft;
+  const resolvedMarginRight =
+    (flattenedButtonStyle as any)?.marginRight ??
+    (flattenedStyle as any)?.marginRight;
+  const resolvedMarginHorizontal =
+    (flattenedButtonStyle as any)?.marginHorizontal ??
+    (flattenedStyle as any)?.marginHorizontal;
+  const resolvedMarginVertical =
+    (flattenedButtonStyle as any)?.marginVertical ??
+    (flattenedStyle as any)?.marginVertical;
+
+  const innerButtonWidth =
+    resolvedWidth === undefined
+      ? undefined
+      : typeof resolvedWidth === 'number'
+        ? resolvedWidth
+        : '100%';
+
   const defaultFontSize = FONT_SIZE_MAP[type] ?? 20;
   const paddingLayout = PADDING_MAP[type] ?? PADDING_MAP.Primary;
 
@@ -129,16 +174,43 @@ const Button: FC<ButtonProps> = ({
         },
         currentStyle?.button_style,
         (backgroundColor || isWhiteButton) && { backgroundColor: finalBgColor },
-        width !== undefined && { width },
+        innerButtonWidth !== undefined && { width: innerButtonWidth },
+        resolvedHeight !== undefined && {
+          height: resolvedHeight,
+          minHeight: resolvedHeight,
+        },
         buttonStyle,
+        // 清除 buttonStyle 里的 margin，避免内部 View 产生位移导致与外层 Pressable/水波纹区域尺寸不一致
+        resolvedMargin !== undefined && { margin: 0 },
+        resolvedMarginTop !== undefined && { marginTop: 0 },
+        resolvedMarginBottom !== undefined && { marginBottom: 0 },
+        resolvedMarginLeft !== undefined && { marginLeft: 0 },
+        resolvedMarginRight !== undefined && { marginRight: 0 },
+        resolvedMarginHorizontal !== undefined && { marginHorizontal: 0 },
+        resolvedMarginVertical !== undefined && { marginVertical: 0 },
       ]}
       containerStyle={[
         {
           borderRadius: finalBorderRadius,
           overflow: 'hidden',
         },
-        width !== undefined && { width },
-        marginTop !== undefined && { marginTop },
+        resolvedWidth !== undefined && { width: resolvedWidth },
+        resolvedHeight !== undefined && { height: resolvedHeight },
+        resolvedMargin !== undefined && { margin: resolvedMargin },
+        resolvedMarginTop !== undefined && { marginTop: resolvedMarginTop },
+        resolvedMarginBottom !== undefined && {
+          marginBottom: resolvedMarginBottom,
+        },
+        resolvedMarginLeft !== undefined && { marginLeft: resolvedMarginLeft },
+        resolvedMarginRight !== undefined && {
+          marginRight: resolvedMarginRight,
+        },
+        resolvedMarginHorizontal !== undefined && {
+          marginHorizontal: resolvedMarginHorizontal,
+        },
+        resolvedMarginVertical !== undefined && {
+          marginVertical: resolvedMarginVertical,
+        },
         style,
       ]}
       loading={isLoading}
@@ -150,20 +222,29 @@ const Button: FC<ButtonProps> = ({
         {
           color: finalTextColor,
           fontSize: resolvedFontSize,
+          lineHeight: Math.round(resolvedFontSize * 1.3),
           letterSpacing: calculatedLetterSpacing,
           fontWeight: '600',
+          includeFontPadding: false,
+          textAlignVertical: 'center',
         },
         currentStyle?.button_text_style,
         (textColor || isWhiteButton) && { color: finalTextColor },
         text_style,
       ]}
-      disabledStyle={{
-        backgroundColor: finalBgColor,
-        opacity: 0.5,
-      }}
-      disabledTitleStyle={{
-        color: finalTextColor,
-      }}
+      disabledStyle={[
+        {
+          backgroundColor: finalBgColor,
+          opacity: 0.5,
+        },
+        disabledStyle,
+      ]}
+      disabledTitleStyle={[
+        {
+          color: finalTextColor,
+        },
+        disabledTitleStyle,
+      ]}
       {...rest}
     >
       {!isStringChild ? children : undefined}

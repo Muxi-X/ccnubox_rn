@@ -1,5 +1,5 @@
-import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { ButtonProps as RNEButtonProps } from '@rneui/themed';
+import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 /**
  * 按钮分级规范
@@ -52,12 +52,17 @@ export interface ButtonProps extends Partial<
   /**
    * 自定义宽度（未设置时自适应或遵循外层/分级样式）
    */
-  width?: number | string;
+  width?: ViewStyle['width'];
+
+  /**
+   * 自定义高度（未设置时自适应或遵循外层/分级样式）
+   */
+  height?: ViewStyle['height'];
 
   /**
    * 外边距上边距
    */
-  marginTop?: number | string;
+  marginTop?: ViewStyle['marginTop'];
 
   /**
    * 字间距，支持百分比字符串（如 '15%'、'10%'）或数字像素值

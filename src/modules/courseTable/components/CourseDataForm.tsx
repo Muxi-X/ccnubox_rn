@@ -272,6 +272,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
               {item.type === 'picker' ? (
                 item.title === '选择周次' ? (
                   <MultiPicker
+                    buttonType="Round"
                     data={[
                       [...Array(18).keys()].map(i => ({
                         value: i + 1,
@@ -312,6 +313,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
                   </MultiPicker>
                 ) : (
                   <Picker
+                    buttonType="Round"
                     titleDisplayLogic={() =>
                       `周${['一', '二', '三', '四', '五', '六', '日'][formData.day - 1]}${formData.dur_class}节`
                     }

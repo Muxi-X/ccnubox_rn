@@ -21,6 +21,7 @@ const NotificationHeaderRight = () => {
       <Button
         backgroundColor="#7878F8"
         textColor={commonColors.white}
+        style={styles.notificationBtnContainer}
         buttonStyle={styles.notificationBtn}
         fontSize={14}
         onPress={() => setNotiVisible(true)}
@@ -31,6 +32,7 @@ const NotificationHeaderRight = () => {
       <Button
         backgroundColor="#EBEBEB"
         textColor="#FF6F6F"
+        style={styles.notificationBtnContainer}
         buttonStyle={styles.notificationBtn}
         fontSize={14}
         onPress={() => {
@@ -48,13 +50,16 @@ const NotificationHeaderRight = () => {
 };
 
 const styles = StyleSheet.create({
+  notificationBtnContainer: {
+    marginRight: 10,
+    borderRadius: 10,
+  },
   notificationBtn: {
     borderColor: commonColors.gray,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 3,
     minHeight: 0,
-    marginRight: 10,
   },
 });
 

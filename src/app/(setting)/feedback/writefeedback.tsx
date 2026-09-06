@@ -398,7 +398,7 @@ function WriteFeedback() {
             letterSpacing="25%"
             fontSize={20}
             width={250}
-            buttonStyle={[
+            disabledStyle={[
               (!isSubmitEnabled || isSubmitting) &&
                 currentStyle?.feedback_disabledSubmitButton_style,
             ]}

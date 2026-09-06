@@ -86,6 +86,7 @@ const ScoreCalculation: React.FC = () => {
     Modal.show({
       mode: 'middle',
       showCancel: false,
+      buttonType: 'Round',
       confirmText: '我知道了',
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
@@ -158,6 +159,7 @@ const ScoreCalculation: React.FC = () => {
     Modal.show({
       mode: 'middle',
       showCancel: false,
+      buttonType: 'Round',
       confirmText: '我知道了',
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
@@ -446,6 +448,8 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontWeight: '400',
     fontSize: 20,
+    lineHeight: 26,
+    includeFontPadding: false,
     color: '#242424',
   },
   textItem: {
@@ -453,6 +457,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#707070',
     lineHeight: 26,
+    includeFontPadding: false,
     paddingBottom: 11,
   },
   textHighlight: {
@@ -460,6 +465,8 @@ const styles = StyleSheet.create({
   },
   resultTitle: {
     fontSize: 20,
+    lineHeight: 26,
+    includeFontPadding: false,
     color: '#ABAAAA',
     fontWeight: '400',
   },
@@ -469,10 +476,14 @@ const styles = StyleSheet.create({
   },
   resultScore: {
     fontSize: 64,
+    lineHeight: 74,
+    includeFontPadding: false,
     color: '#000',
   },
   resultLabel: {
     fontSize: 14,
+    lineHeight: 20,
+    includeFontPadding: false,
     color: '#000',
   },
   footer: {
