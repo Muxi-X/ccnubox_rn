@@ -1,14 +1,5 @@
 import { Switch } from '@ant-design/react-native';
 import { ButtonGroup } from '@rneui/themed';
-import {
-  BackdropBlur,
-  Canvas,
-  Skia,
-  Image as SkImage,
-  SkImage as SkImageType,
-  useImage,
-} from '@shopify/react-native-skia';
-import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
@@ -23,6 +14,10 @@ import Toast from '@/components/toast';
 import { default as ThemeBasedView } from '@/components/view';
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
+import {
+  CourseTableBackground,
+  useCourseTableBackgroundImage,
+} from '@/modules/courseTable/components/CourseTableBackground';
 import type { CourseTransferType } from '@/modules/courseTable/types';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
@@ -135,47 +130,7 @@ export default function OtherStyle({
   const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maskTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 背景图加载 — 与课表实际渲染保持一致
-  const backgroundImageFromHook = useImage(backgroundUri || '');
-  const [loadedBackgroundImage, setLoadedBackgroundImage] =
-    useState<SkImageType | null>(null);
-
-  useEffect(() => {
-    let aborted = false;
-    const loadImage = async () => {
-      if (!backgroundUri) {
-        if (!aborted) setLoadedBackgroundImage(null);
-        return;
-      }
-      try {
-        let data = await Skia.Data.fromURI(backgroundUri);
-        if (!data) {
-          try {
-            const base64 = await FileSystem.readAsStringAsync(backgroundUri, {
-              encoding: 'base64',
-            });
-            if (base64) {
-              data = Skia.Data.fromBase64(base64);
-            }
-          } catch {
-            // ignore
-          }
-        }
-        if (!aborted && data) {
-          const image = Skia.Image.MakeImageFromEncoded(data);
-          if (!aborted) setLoadedBackgroundImage(image);
-        }
-      } catch {
-        if (!aborted) setLoadedBackgroundImage(null);
-      }
-    };
-    loadImage();
-    return () => {
-      aborted = true;
-    };
-  }, [backgroundUri]);
-
-  const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
+  const backgroundImage = useCourseTableBackgroundImage(backgroundUri);
 
   // 同步 store 的值到本地 state
   useEffect(() => {
@@ -223,43 +178,16 @@ export default function OtherStyle({
 
     return (
       <View style={styles.previewBackground}>
-        {/* 与课表实际渲染完全一致：Canvas 绘制背景图 + 模糊 */}
-        {backgroundImage ? (
-          <Canvas style={styles.previewBlurCanvas}>
-            <SkImage
-              image={backgroundImage}
-              x={0}
-              y={0}
-              width={COURSE_ITEM_WIDTH * 3}
-              height={180}
-              fit={
-                backgroundMode === 'cover'
-                  ? 'cover'
-                  : backgroundMode === 'contain'
-                    ? 'contain'
-                    : 'fill'
-              }
-              opacity={1 - localMaskOpacity / 100}
-            />
-            {localBlurRadius > 0 && <BackdropBlur blur={localBlurRadius} />}
-          </Canvas>
-        ) : (
-          <Image
-            source={{ uri: backgroundUri }}
-            style={[
-              styles.previewBlurCanvas,
-              { opacity: 1 - localMaskOpacity / 100 },
-            ]}
-            resizeMode={
-              backgroundMode === 'cover'
-                ? 'cover'
-                : backgroundMode === 'contain'
-                  ? 'contain'
-                  : 'stretch'
-            }
-            blurRadius={localBlurRadius}
-          />
-        )}
+        <CourseTableBackground
+          uri={backgroundUri}
+          image={backgroundImage}
+          mode={backgroundMode}
+          maskOpacity={localMaskOpacity}
+          blurRadius={localBlurRadius}
+          width={COURSE_ITEM_WIDTH * 3}
+          height={180}
+          style={styles.previewBlurCanvas}
+        />
         <View style={styles.previewContent}>
           {renderCoursePreview(normalizedOpacity)}
         </View>
