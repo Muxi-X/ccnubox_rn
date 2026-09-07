@@ -128,6 +128,13 @@ const Button: FC<ButtonProps> = ({
         ? resolvedWidth
         : '100%';
 
+  const innerButtonHeight =
+    resolvedHeight === undefined
+      ? undefined
+      : typeof resolvedHeight === 'number'
+        ? resolvedHeight
+        : '100%';
+
   const defaultFontSize = FONT_SIZE_MAP[type] ?? 20;
   const paddingLayout = PADDING_MAP[type] ?? PADDING_MAP.Primary;
 
@@ -174,12 +181,12 @@ const Button: FC<ButtonProps> = ({
         },
         currentStyle?.button_style,
         (backgroundColor || isWhiteButton) && { backgroundColor: finalBgColor },
-        innerButtonWidth !== undefined && { width: innerButtonWidth },
-        resolvedHeight !== undefined && {
-          height: resolvedHeight,
-          minHeight: resolvedHeight,
-        },
         buttonStyle,
+        innerButtonWidth !== undefined && { width: innerButtonWidth },
+        innerButtonHeight !== undefined && {
+          height: innerButtonHeight,
+          minHeight: innerButtonHeight,
+        },
         // 清除 buttonStyle 里的 margin，避免内部 View 产生位移导致与外层 Pressable/水波纹区域尺寸不一致
         resolvedMargin !== undefined && { margin: 0 },
         resolvedMarginTop !== undefined && { marginTop: 0 },
