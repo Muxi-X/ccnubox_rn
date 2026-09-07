@@ -6,6 +6,22 @@ import updateInfo from './src/assets/data/updateInfo.json' with { type: 'json' }
 export default ({ config }: ConfigContext): ExpoConfig => {
   const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';
   const apsEnvironment = isProduction ? 'production' : 'development';
+  const isEasBuild = process.env.EAS_BUILD === 'true';
+  const hasPrivateKeyArg =
+    process.argv.includes('--private-key-path') ||
+    process.argv.some(arg => arg.startsWith('--private-key-path='));
+  const enableCodeSigning =
+    (isEasBuild ||
+      hasPrivateKeyArg ||
+      process.env.ENABLE_CODE_SIGNING === 'true') &&
+    process.env.DISABLE_CODE_SIGNING !== 'true';
+
+  const codeSigningConfig = enableCodeSigning
+    ? {
+        codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
+        codeSigningCertificate: './certs/certificate.pem',
+      }
+    : {};
   const plugins: (string | [] | [string] | [string, any])[] = [];
   for (const plugin of config.plugins ?? []) {
     const [name, configurations] = Array.isArray(plugin)
@@ -62,6 +78,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     slug: 'ccnubox',
     name: '华师匣子',
+
     ios: {
       ...config.ios,
       entitlements: {
@@ -69,10 +86,28 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'aps-environment': apsEnvironment,
       },
     },
+
     plugins,
+
     extra: {
       ...config.extra,
       updateInfo: updateInfo,
+    },
+
+    updates: {
+      url: 'https://ota-api.muxixyz.com/manifest',
+      ...codeSigningConfig,
+      enabled: true,
+
+      requestHeaders: {
+        // Declare as a literal if you surf branches: see xprem-branch below.
+        'expo-channel-name': 'production',
+
+        'expo-app-id': '65d670f0-9625-4631-9603-f4b11f44e621',
+
+        // Branch surfing — the branch to serve; empty means the channel decides.
+        'xprem-branch': '',
+      },
     },
   };
 };

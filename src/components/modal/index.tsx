@@ -111,7 +111,6 @@ const Modal: React.FC<ModalProps> & {
           style={[
             styles.modalChildren,
             isTransparent && styles.transparentModalChildren,
-            !title && { marginTop: 0 },
           ]}
         >
           {typeof children === 'string' ? (

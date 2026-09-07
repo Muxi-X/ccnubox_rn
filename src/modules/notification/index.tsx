@@ -12,7 +12,7 @@ import {
 import { Swipeable } from 'react-native-gesture-handler';
 
 import Toast from '@/components/toast';
-import { FeedIconMap } from '@/constants/notificationItem';
+import { FeedIconMap } from '@/constants/NOTIFICATION';
 import { openPushUrl } from '@/hooks/useJPush';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';

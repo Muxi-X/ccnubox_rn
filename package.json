@@ -17,6 +17,8 @@
     "pre-commit": "lint-staged",
     "prepare": "husky",
     "genapi": "node ./scripts/genapi.js",
+    "ota:prod": "node ./scripts/ota.js production",
+    "ota:prev": "node ./scripts/ota.js preview",
     "eas-build-post-install": "find node_modules/react-native/sdks/hermesc -type f -name 'hermesc' -exec chmod +x {} \\; && cd android && ./gradlew generateCodegenArtifactsFromSchema --no-daemon || true"
   },
   "dependencies": {
@@ -33,6 +35,7 @@
     "axios": "^1.17.0",
     "babel-preset-expo": "^56.0.0",
     "dayjs": "^1.11.21",
+    "eoas": "3.2.0",
     "expo": "^56.0.21",
     "expo-application": "~56.0.3",
     "expo-blur": "~56.0.4",

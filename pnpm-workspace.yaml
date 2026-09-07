@@ -2,6 +2,7 @@ nodeLinker: hoisted
 allowBuilds:
   '@shopify/react-native-skia': true
   core-js: true
+  dtrace-provider: true
   unrs-resolver: true
 packages:
   - '.'

@@ -41,6 +41,9 @@ yarn-debug.*
 yarn-error.*
 
 *.pem
+!certs/certificate.pem
+private-key.pem
+certs/private-key.pem
 
 # local env files
 .env

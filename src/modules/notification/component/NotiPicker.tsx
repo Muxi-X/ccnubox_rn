@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import Toast from '@/components/toast';
-import { FeedIconList } from '@/constants/notificationItem';
+import { FeedIconList } from '@/constants/NOTIFICATION';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
 import useVisualScheme from '@/store/visualScheme';
