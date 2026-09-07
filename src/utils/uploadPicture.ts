@@ -64,6 +64,11 @@ async function uploadFileToFeishuBitable(
   fileName: string
 ): Promise<any> {
   try {
+    const parentNode = FIXED_CONFIG.parentNode;
+    if (!parentNode) {
+      throw new Error('未配置反馈附件父节点');
+    }
+
     // 获取文件信息和内容
     const fileInfo = await getFileInfo(fileUri);
 
@@ -73,7 +78,7 @@ async function uploadFileToFeishuBitable(
     // 添加文本字段
     formData.append('file_name', fileName);
     formData.append('parent_type', FIXED_CONFIG.parentType);
-    formData.append('parent_node', FIXED_CONFIG.parentNode);
+    formData.append('parent_node', parentNode);
     formData.append('size', fileInfo.size.toString());
 
     // 计算并添加校验和
