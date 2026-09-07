@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { SCHEDULE_ACTIONS } from '@/constants/SCHEDULE';
+import { formatCourseUpdateTime } from '@/platform/dateTime';
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
@@ -73,15 +74,7 @@ export const ScheduleHeaderTitle: React.FC = () => {
       >
         上次更新时间：
         {lastUpdate > 0
-          ? new Date(lastUpdate * 1000).toLocaleString('zh-CN', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit',
-              hour12: false,
-            })
+          ? formatCourseUpdateTime(new Date(lastUpdate * 1000))
           : '暂无'}
       </Text>
     </View>
