@@ -34,7 +34,8 @@ async function getStoredFeedbackToken(
 
 installRequestInterceptors(feedbackAxiosInstance, {
   getToken: config => getStoredFeedbackToken(config),
-  getRefresher: config => config?.refresh?.bind(config),
+  getRefresher: config =>
+    config?.refresh ? () => config.refresh() : undefined,
 });
 
 export const feedbackRequest = createRequestClient<FeedbackPaths>(

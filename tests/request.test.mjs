@@ -278,6 +278,25 @@ for (const name of ['request', 'feedbackRequest']) {
     assert.deepEqual(h.routes, []);
   });
 
+  test(`${name}: an invalid custom refresher still notifies its error callback`, async t => {
+    const h = loadClients(t, { respond: () => ({ status: 401 }) });
+    const onRefreshError = t.mock.fn();
+    await assert.rejects(
+      h[name].get('/records', undefined, {
+        otherToken: {
+          name: 'table',
+          token: 'old',
+          refresh: 123,
+          onRefreshError,
+        },
+      }),
+      TypeError
+    );
+    assert.equal(onRefreshError.mock.callCount(), 1);
+    assert.equal(h.calls.length, 1);
+    assert.deepEqual(h.routes, []);
+  });
+
   test(`${name}: token lookup failure completes the request before transport`, async t => {
     const failure = new Error('storage unavailable');
     const h = loadClients(t);
