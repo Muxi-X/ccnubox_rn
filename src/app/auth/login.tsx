@@ -1,7 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import axios, { AxiosError } from 'axios';
-import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { FC, useState } from 'react';
 import {
@@ -19,6 +18,7 @@ import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
+import { BASE_URL } from '@/constants/BASE_URLS';
 import { useKeyboardStatus } from '@/hooks';
 import {
   canUseHarmonyDebugSession,
@@ -29,7 +29,7 @@ import { setItem } from '@/platform/storage';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -46,7 +46,7 @@ const LoginPage: FC = () => {
   const [password, setPassword] = useState('');
   // use custom axios instance to avoid global error handler
   const request = axios.create({
-    baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
+    baseURL: BASE_URL,
     adapter: axios.defaults.adapter,
   });
   const handleViewPassword = () => {
@@ -99,7 +99,15 @@ const LoginPage: FC = () => {
       } else {
         Toast.fail('网络连接异常，请稍后重试', 2);
       }
-      log.error('登录请求失败:', error);
+      if (error instanceof AxiosError) {
+        logger.error('登录请求失败', {
+          message: error.message,
+          status: error.response?.status,
+          code: error.code,
+        });
+      } else {
+        logger.error('登录请求未知异常', error);
+      }
     }
     setLoginTriggered(false);
   };

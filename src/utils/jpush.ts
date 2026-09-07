@@ -1,6 +1,8 @@
 import JPush from 'jpush-react-native';
 import { NativeModules } from 'react-native';
 
+import { logger } from './logger';
+
 type RegistrationIdCallback = (result: { registerID?: string }) => void;
 type NotificationListener = (result: unknown) => void;
 type ConnectListener = (result: { connectEnable?: boolean }) => void;
@@ -20,7 +22,7 @@ const warnOnce = (key: string, message: string) => {
     return;
   }
   warnedKeys.add(key);
-  console.warn(message);
+  logger.warn(message);
 };
 
 const isNativeJPushAvailable = () => {
@@ -32,7 +34,7 @@ const runJPushAction = (methodName: string, action: () => void) => {
     action();
     return true;
   } catch (error) {
-    console.error(`[JPush] 调用 ${methodName} 失败:`, error);
+    logger.error(`[JPush] 调用 ${methodName} 失败`, error);
     return false;
   }
 };

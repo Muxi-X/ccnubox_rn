@@ -8,16 +8,26 @@ import {
   clampWeekToSemester,
 } from '@/utils/semesterWeeks';
 
-interface TimeState {
+const TIME_STORE_VERSION = 2;
+const MAX_REASONABLE_WEEK = 60;
+
+interface PersistedTimeState {
   semester: string;
-  setSemester: (_semester: string) => void;
   year: string;
-  setYear: (_year: string) => void;
   selectedWeek: number;
-  setSelectedWeek: (_week: number) => void;
   holidayTime: number;
-  setHolidayTime: (_time: number) => void;
   schoolTime: number;
+}
+
+interface TimeState extends PersistedTimeState {
+  hydrated: boolean;
+  rehydrateError: string | null;
+  setHydrated: (_hydrated: boolean, _error?: string | null) => void;
+  setSemester: (_semester: string) => void;
+  setYear: (_year: string) => void;
+  setSemesterContext: (_context: PersistedTimeState) => void;
+  setSelectedWeek: (_week: number) => void;
+  setHolidayTime: (_time: number) => void;
   setSchoolTime: (_time: number) => void;
   showWeekPicker: boolean;
   setShowWeekPicker: (_opened: boolean) => void;
@@ -25,36 +35,99 @@ interface TimeState {
   getSemesterWeekCount: () => number;
 }
 
+type UnknownRecord = Record<string, unknown>;
+
+const isRecord = (value: unknown): value is UnknownRecord =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const normalizeScopeValue = (value: unknown, pattern: RegExp) =>
+  typeof value === 'string' && pattern.test(value) ? value : '';
+
+const normalizeTimestamp = (value: unknown) =>
+  typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
+
+const normalizeWeek = (value: unknown) => {
+  const week = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(week)
+    ? clampWeekToSemester(Math.round(week), MAX_REASONABLE_WEEK)
+    : 1;
+};
+
+const normalizePersistedTime = (value: unknown): PersistedTimeState => {
+  if (!isRecord(value)) {
+    return {
+      semester: '',
+      year: '',
+      selectedWeek: 1,
+      holidayTime: 0,
+      schoolTime: 0,
+    };
+  }
+
+  return {
+    semester: normalizeScopeValue(value.semester, /^[123]$/),
+    year: normalizeScopeValue(value.year, /^\d{4}$/),
+    selectedWeek: normalizeWeek(value.selectedWeek),
+    holidayTime: normalizeTimestamp(value.holidayTime),
+    schoolTime: normalizeTimestamp(value.schoolTime),
+  };
+};
+
 const useTimeStore = create<TimeState>()(
   persist(
-    (set, get) => {
-      return {
-        semester: '',
-        setSemester: (semester: string) => set({ semester }),
-        year: '',
-        setYear: (year: string) => set({ year }),
-        selectedWeek: 1,
-        setSelectedWeek: (week: number) => {
-          const totalWeeks = get().getSemesterWeekCount();
-          set({ selectedWeek: clampWeekToSemester(week, totalWeeks) });
-        },
-        holidayTime: 0,
-        setHolidayTime: (_time: number) => set({ holidayTime: _time }),
-        schoolTime: 0,
-        setSchoolTime: (_time: number) => set({ schoolTime: _time }),
-        showWeekPicker: false,
-        setShowWeekPicker: (showWeekPicker: boolean) =>
-          set({ showWeekPicker: showWeekPicker }),
-        getCurrentWeek: () => calculateWeekFromStart(get().schoolTime),
-        getSemesterWeekCount: () => {
-          const { schoolTime, holidayTime } = get();
-          return calculateSemesterWeekCount(schoolTime, holidayTime);
-        },
-      };
-    },
+    (set, get) => ({
+      hydrated: false,
+      rehydrateError: null,
+      setHydrated: (hydrated, error = null) =>
+        set({ hydrated, rehydrateError: error }),
+      semester: '',
+      setSemester: semester =>
+        set({ semester: normalizeScopeValue(semester, /^[123]$/) }),
+      year: '',
+      setYear: year => set({ year: normalizeScopeValue(year, /^\d{4}$/) }),
+      setSemesterContext: context => set(normalizePersistedTime(context)),
+      selectedWeek: 1,
+      setSelectedWeek: week => set({ selectedWeek: normalizeWeek(week) }),
+      holidayTime: 0,
+      setHolidayTime: holidayTime =>
+        set({ holidayTime: normalizeTimestamp(holidayTime) }),
+      schoolTime: 0,
+      setSchoolTime: schoolTime =>
+        set({ schoolTime: normalizeTimestamp(schoolTime) }),
+      showWeekPicker: false,
+      setShowWeekPicker: showWeekPicker => set({ showWeekPicker }),
+      getCurrentWeek: () => calculateWeekFromStart(get().schoolTime),
+      getSemesterWeekCount: () => {
+        const { schoolTime, holidayTime } = get();
+        return calculateSemesterWeekCount(schoolTime, holidayTime);
+      },
+    }),
     {
       name: 'time',
+      version: TIME_STORE_VERSION,
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: state => ({
+        semester: state.semester,
+        year: state.year,
+        selectedWeek: state.selectedWeek,
+        holidayTime: state.holidayTime,
+        schoolTime: state.schoolTime,
+      }),
+      migrate: persistedState => normalizePersistedTime(persistedState),
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...normalizePersistedTime(persistedState),
+      }),
+      onRehydrateStorage: () => (state, error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : error ? String(error) : null;
+        if (state) state.setHydrated(true, errorMessage);
+        else
+          useTimeStore.setState({
+            hydrated: true,
+            rehydrateError: errorMessage,
+          });
+      },
     }
   )
 );

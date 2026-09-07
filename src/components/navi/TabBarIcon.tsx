@@ -6,6 +6,7 @@ import {
   tabBarIcons,
   tabBarSelectedIcons,
 } from '@/assets/icons';
+import { logger } from '@/utils/logger';
 
 export const icons = tabBarIcons;
 
@@ -26,8 +27,7 @@ export function TabBarIcon({
 }: TabBarIconProps) {
   const Icon = focused ? tabBarSelectedIcons[name] : tabBarIcons[name];
   if (!Icon) {
-    // eslint-disable-next-line no-console
-    console.warn(`Icon ${name} not found`);
+    logger.warn(`Icon ${name} not found`);
     return null;
   }
 

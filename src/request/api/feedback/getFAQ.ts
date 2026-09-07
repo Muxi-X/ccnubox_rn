@@ -1,7 +1,7 @@
-import { request } from '@/request';
+import { feedbackRequest } from '@/request';
 import { serializeQueryParams } from '@/utils/serializeQueryParams';
 
-import { BASE_URL, FAQTokenConfig } from './config';
+import { FAQTokenConfig } from './config';
 
 export interface GetFAQRequest {
   record_names: string[];
@@ -12,12 +12,11 @@ export interface GetFAQRequest {
 const getFAQ = async (query: GetFAQRequest) => {
   const queryString = serializeQueryParams(query as any);
 
-  return request.get(
+  return feedbackRequest.get(
     '/api/v1/sheet/records/faq',
     { query: queryString } as any,
     {
       otherToken: FAQTokenConfig,
-      baseURL: BASE_URL,
     }
   );
 };

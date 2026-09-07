@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+import { logger } from './logger';
+
 // 创建axios实例
 const api = axios.create({
   baseURL: 'http://116.62.179.155:8080',
@@ -18,7 +20,7 @@ api.interceptors.request.use(async config => {
     }
     return config;
   } catch (error) {
-    console.error('获取token失败:', error);
+    logger.error('获取token失败', error);
     return config;
   }
 });

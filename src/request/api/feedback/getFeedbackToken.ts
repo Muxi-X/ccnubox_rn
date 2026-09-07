@@ -1,15 +1,17 @@
-import { request } from '@/request';
+import { feedbackRequest } from '@/request';
 
-import { BASE_URL } from './config';
 export interface GetFeedbackTokenRequest {
   table_identify: string;
 }
 
 const getFeedbackToken = async (tableId: GetFeedbackTokenRequest) => {
-  return await request.post('/api/v1/auth/table-config/token', tableId, {
-    isToken: false,
-    baseURL: BASE_URL,
-  });
+  return await feedbackRequest.post(
+    '/api/v1/auth/table-config/token',
+    tableId,
+    {
+      isToken: false,
+    }
+  );
 };
 
 export default getFeedbackToken;

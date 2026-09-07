@@ -643,6 +643,15 @@ export interface paths {
             'application/json': components['schemas']['web.Response'];
           };
         };
+        /** @description 统一身份认证账户尚未初始化，code=40603 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
         /** @description 请求参数错误，code=40002 */
         422: {
           headers: {
@@ -2187,6 +2196,15 @@ export interface paths {
             };
           };
         };
+        /** @description 统一身份认证账户尚未初始化，code=40603 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
         /** @description 系统异常，获取失败 */
         500: {
           headers: {
@@ -2233,6 +2251,15 @@ export interface paths {
             'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['grade.GetGradeScoreResp'];
             };
+          };
+        };
+        /** @description 统一身份认证账户尚未初始化，code=40603 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常，获取失败 */
@@ -2283,6 +2310,15 @@ export interface paths {
             'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['grade.GetGradeTypeResp'];
             };
+          };
+        };
+        /** @description 统一身份认证账户尚未初始化，code=40603 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常，获取失败 */
@@ -2338,6 +2374,15 @@ export interface paths {
             'application/json': components['schemas']['web.Response'] & {
               data?: components['schemas']['grade.GetRankByTermResp'];
             };
+          };
+        };
+        /** @description 统一身份认证账户尚未初始化，code=40603 */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
           };
         };
         /** @description 系统异常，获取失败 */
@@ -3514,6 +3559,15 @@ export interface paths {
         };
         /** @description 账号或密码错误，code=40005 */
         401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            'application/json': components['schemas']['web.Response'];
+          };
+        };
+        /** @description 统一身份认证账户尚未初始化，code=40603 */
+        409: {
           headers: {
             [name: string]: unknown;
           };

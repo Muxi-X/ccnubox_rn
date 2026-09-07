@@ -1,7 +1,9 @@
 import { fakerZH_CN as faker } from '@faker-js/faker';
 
+import { BASE_URL } from '../constants/BASE_URLS';
+
 export const mockConfig = {
-  urlPrefix: process.env.EXPO_PUBLIC_API_URL,
+  urlPrefix: BASE_URL,
   routes: [
     {
       method: 'get',

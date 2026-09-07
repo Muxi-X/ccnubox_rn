@@ -22,7 +22,7 @@ const HeaderLeft: React.FC<{ config?: MainPageGridDataType }> = () => {
       <Ionicons
         name="arrow-back-outline"
         size={commonStyles.fontLarge.fontSize}
-        color={(currentStyle?.text_style as TextStyle).color}
+        color={(currentStyle?.text_style as TextStyle | undefined)?.color}
       />
     </TouchableOpacity>
   );

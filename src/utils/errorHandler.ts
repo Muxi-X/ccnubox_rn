@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 import errorLogger from '@/request/api/errorLogger';
 
-import { log } from './logger';
+import { logger } from './logger';
 
 /**
  * 全局错误处理器
@@ -21,7 +21,7 @@ export const setupGlobalErrorHandler = () => {
       timestamp: new Date().toISOString(),
     };
     if (__DEV__) {
-      log.error(errorInfo);
+      logger.error('全局捕获未处理异常', errorInfo);
     } else {
       // 上报错误，捕获可能出现的网络异常以避免二次报错
       errorLogger('frontend', 'js_error', errorInfo).catch(() => {});

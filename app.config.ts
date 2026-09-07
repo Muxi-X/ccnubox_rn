@@ -1,5 +1,5 @@
-import type { ConfigContext, ExpoConfig } from 'expo/config';
 import 'dotenv-flow/config';
+import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 import updateInfo from './src/assets/data/updateInfo.json' with { type: 'json' };
 
@@ -13,6 +13,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       : [plugin, undefined];
     if (name === 'mx-jpush-expo') {
       if (!process.env.JPUSH_APP_KEY) {
+        // eslint-disable-next-line no-console
         console.error('JPUSH_APP_KEY is not set');
         continue;
       }

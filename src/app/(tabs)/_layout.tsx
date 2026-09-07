@@ -8,9 +8,11 @@ import Toast from '@/components/toast';
 import { TABS } from '@/constants/TABBAR';
 import PushSubscriptionPromptContent from '@/modules/setting/components/PushSubscriptionPromptContent';
 import { platformCapabilities } from '@/platform/capabilities';
+import useCourse from '@/store/course';
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import useVisualScheme from '@/store/visualScheme';
 import { SinglePageType } from '@/types/tabBarTypes';
+import { logger } from '@/utils/logger';
 import {
   enablePushSubscription,
   syncPushSubscription,
@@ -29,8 +31,8 @@ export default function TabLayout() {
 
   useEffect(() => {
     if (platformCapabilities.widgetSync) {
-      updateCourseData().catch(error =>
-        console.error('更新小组件失败:', error)
+      updateCourseData(useCourse.getState().courses).catch(error =>
+        logger.error('更新小组件失败', error)
       );
     }
   }, []);

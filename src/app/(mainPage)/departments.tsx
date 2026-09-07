@@ -15,6 +15,10 @@ import { queryDepartments } from '@/request/api';
 import useVisualScheme from '@/store/visualScheme';
 import { openPhoneNumber } from '@/utils/handleOpenURL';
 
+import LocationIcon from '../../assets/images/location.png';
+import PhoneIcon from '../../assets/images/phone.png';
+import TimeIcon from '../../assets/images/time.png';
+
 interface DepartmentInformation {
   id: number;
   name: string;
@@ -35,10 +39,7 @@ const Department = ({ info }: { info: DepartmentInformation }) => {
         onPress={() => openPhoneNumber(info.phone)}
         style={styles.infoContainer}
       >
-        <Image
-          source={require('@/assets/images/phone.png')}
-          style={styles.icon}
-        ></Image>
+        <Image source={PhoneIcon} style={styles.icon}></Image>
         <Text style={{ color: '#9379F6' }}>{info.phone}</Text>
       </TouchableOpacity>
       <View
@@ -53,17 +54,14 @@ const Department = ({ info }: { info: DepartmentInformation }) => {
         ]}
       >
         <Image
-          source={require('@/assets/images/location.png')}
+          source={LocationIcon}
           // this icon is not a square, fxxk
           style={{ width: 15, height: 19, marginHorizontal: 2 }}
         ></Image>
         <Text style={currentScheme?.information_text_style}>{info.place}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Image
-          source={require('@/assets/images/timep.png')}
-          style={styles.icon}
-        ></Image>
+        <Image source={TimeIcon} style={styles.icon}></Image>
         <Text style={currentScheme?.information_text_style}>{info.time}</Text>
       </View>
     </View>

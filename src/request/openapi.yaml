@@ -350,6 +350,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/web.Response'
+        '409':
+          description: 统一身份认证账户尚未初始化，code=40603
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
         '422':
           description: 请求参数错误，code=40002
           content:
@@ -1326,6 +1332,12 @@ paths:
                       data:
                         $ref: '#/components/schemas/grade.GetGradeByTermResp'
                     type: object
+        '409':
+          description: 统一身份认证账户尚未初始化，code=40603
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
         '500':
           description: 系统异常，获取失败
           content:
@@ -1350,6 +1362,12 @@ paths:
                       data:
                         $ref: '#/components/schemas/grade.GetGradeScoreResp'
                     type: object
+        '409':
+          description: 统一身份认证账户尚未初始化，code=40603
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
         '500':
           description: 系统异常，获取失败
           content:
@@ -1374,6 +1392,12 @@ paths:
                       data:
                         $ref: '#/components/schemas/grade.GetGradeTypeResp'
                     type: object
+        '409':
+          description: 统一身份认证账户尚未初始化，code=40603
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
         '500':
           description: 系统异常，获取失败
           content:
@@ -1405,6 +1429,12 @@ paths:
                       data:
                         $ref: '#/components/schemas/grade.GetRankByTermResp'
                     type: object
+        '409':
+          description: 统一身份认证账户尚未初始化，code=40603
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
         '500':
           description: 系统异常，获取失败
           content:
@@ -2052,6 +2082,12 @@ paths:
                 $ref: '#/components/schemas/web.Response'
         '401':
           description: 账号或密码错误，code=40005
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/web.Response'
+        '409':
+          description: 统一身份认证账户尚未初始化，code=40603
           content:
             application/json:
               schema:

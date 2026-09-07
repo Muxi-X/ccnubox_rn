@@ -16,6 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import refreshAnimation from '@/assets/animation/renovate.json';
 import Divider from '@/components/divider';
 import Toast from '@/components/toast';
 import { COURSE_HEADER_HEIGHT, TIME_WIDTH } from '@/constants/SCHEDULE';
@@ -419,7 +420,7 @@ const TimetableScrollView = (
         ]}
       >
         <LottieView
-          source={require('@/assets/animation/renovate.json')}
+          source={refreshAnimation}
           style={[styles.lottieAnimation]}
           loop={true}
           ref={animationRef}
@@ -552,7 +553,11 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   backgroundLayer: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     zIndex: -1,
   },
   text: {

@@ -8,6 +8,8 @@ import {
   FIXED_CONFIG,
 } from '@/request/api/feedback/config';
 
+import { logger } from './logger';
+
 function calculateAdler32(arrayBuffer: ArrayBuffer): string {
   const view = new Uint8Array(arrayBuffer);
   let a = 1;
@@ -53,7 +55,7 @@ async function getFileInfo(
       arrayBuffer,
     };
   } catch (error) {
-    console.error('获取文件信息失败:', error);
+    logger.error('获取文件信息失败', error);
     throw error;
   }
 }
@@ -91,7 +93,7 @@ async function uploadFileToFeishuBitable(
       name: fileName,
     } as any);
 
-    console.log('准备上传文件:', {
+    logger.info('准备上传文件', {
       fileName,
       fileSize: fileInfo.size,
       fileUri: fileUriFormatted,
@@ -118,7 +120,7 @@ async function uploadFileToFeishuBitable(
 
     return res;
   } catch (error: any) {
-    console.error('上传错误详情:', {
+    logger.error('上传错误详情', {
       message: error.message,
       response: error.response?.data,
       status: error.response?.status,

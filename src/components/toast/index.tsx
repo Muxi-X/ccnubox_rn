@@ -1,4 +1,3 @@
-import { View } from '@ant-design/react-native';
 import { FC, useEffect, useState } from 'react';
 import {
   Image,
@@ -6,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  View,
 } from 'react-native';
 
 import SuccessIcon from '@/assets/images/success.png';
