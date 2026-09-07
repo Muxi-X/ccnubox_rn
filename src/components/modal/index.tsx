@@ -106,7 +106,14 @@ const Modal: React.FC<ModalProps> & {
             )}
           </View>
         )}
-        <View style={styles.modalChildren}>
+        <View
+          pointerEvents={isTransparent ? 'box-none' : 'auto'}
+          style={[
+            styles.modalChildren,
+            isTransparent && styles.transparentModalChildren,
+            !title && { marginTop: 0 },
+          ]}
+        >
           {typeof children === 'string' ? (
             <Text
               style={[
@@ -191,6 +198,8 @@ const Modal: React.FC<ModalProps> & {
     isBottomMode,
     themeName,
     currentStyle,
+    isTransparent,
+    title,
   ]);
   useEffect(() => {
     if (!visible) {
@@ -229,6 +238,7 @@ const Modal: React.FC<ModalProps> & {
               direction="vertical"
               duration={200}
               trigger={visible}
+              pointerEvents={isTransparent ? 'box-none' : 'auto'}
               style={[
                 isTransparent
                   ? styles.transparentModalContent
@@ -244,6 +254,7 @@ const Modal: React.FC<ModalProps> & {
               duration={400}
               outputRange={[0.6, 1]}
               trigger={visible}
+              pointerEvents={isTransparent ? 'box-none' : 'auto'}
               style={[
                 isTransparent
                   ? styles.transparentModalContent
@@ -465,13 +476,15 @@ const styles = StyleSheet.create({
   },
   transparentModalContent: {
     zIndex: 1,
-    width: '80%',
-    borderRadius: 20,
-    margin: 20,
     shadowOpacity: 0,
     shadowRadius: 0,
     display: 'flex',
-    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  transparentModalChildren: {
+    marginTop: 0,
+    paddingHorizontal: 0,
   },
   modalChildren: {
     width: '100%',

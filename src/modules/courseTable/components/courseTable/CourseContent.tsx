@@ -118,24 +118,25 @@ const CourseContent: React.FC<CourseContentProps> = memo(
           onPress={() => {
             Modal.show({
               isTransparent: true,
-              // 这里的三元是因为前面去掉了高度，如果统一放在ScollView中会导致单个课表在垂直方向上居上，因此独立出来
-              children: (
-                <View
-                  style={{
-                    minHeight: 220,
-                    // height: slotCourses.length * 260 + 30,
-                    maxHeight: 600,
-                  }} // 这里固定高度会导致用户打开备注时课表高度超出容器，加上滚动条也需要向下滚动，感觉体验不太好，所以去掉了
-                >
-                  {slotCourses.length > 1 ? (
-                    <ScrollView style={{ width: '100%' }}>
-                      {slotCourses.map((c, i) => renderCourse(c, i))}
-                    </ScrollView>
-                  ) : (
-                    slotCourses.map((c, i) => renderCourse(c, i))
-                  )}
-                </View>
-              ),
+              children:
+                slotCourses.length > 1 ? (
+                  <ScrollView
+                    style={{
+                      width: 280,
+                      maxHeight: 600,
+                      flexGrow: 0,
+                    }}
+                    contentContainerStyle={{
+                      alignItems: 'center',
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    bounces={false}
+                  >
+                    {slotCourses.map((c, i) => renderCourse(c, i))}
+                  </ScrollView>
+                ) : (
+                  slotCourses.map((c, i) => renderCourse(c, i))
+                ),
               mode: 'middle',
             });
           }}
