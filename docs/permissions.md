@@ -2,60 +2,50 @@
 
 ## 统一申请规则
 
-运行时权限必须通过 `src/utils/requestPermission.ts`
-申请。调用方只提供：
+运行时权限与敏感数据访问必须通过 `src/utils/requestPermission.ts` 统一调度，文案与 Purpose ID 统一定义在 `src/constants/PERMISSIONS.ts` 中。
 
-- 当前权限查询函数；
-- 系统权限申请函数；
-- 如何判断已授权；
-- 对应的用途说明文案。
+模块提供两类调用模式：
 
-该模块负责在系统权限框出现前渲染用途说明、等待用户确认、保持说明直到系统请求结束，并串行化并发申请。每种用途在用户点击“继续”后持久化确认状态，后续不再重复展示；点击“取消”不会记录确认状态。
+1. **系统运行时权限申请 (`requestPermission`)**：用于需要系统授权弹窗的场景（如保存图片到相册、开启系统通知推送）。调用方提供权限查询、授权判断、系统请求函数以及对应的用途说明（`PermissionPurpose`）。
+2. **敏感动作用途提示 (`runPermissionAction`)**：用于无须显式运行时权限但仍涉及敏感用户数据交互的场景（如 Android Photo Picker 选择图片）。
 
-当前业务入口：
+该模块负责在系统弹窗或系统选择器出现前渲染统一用途说明 Modal、等待用户确认、保持说明直到系统交互结束，并通过 Promise 队列串行化并发申请，避免系统弹窗相互覆盖或冲突。
 
-- 反馈上传图片：通过系统 Photo Picker 选择图片，不申请媒体库读取权限；
-- 课表背景图片：通过系统 Photo Picker 选择图片，不申请媒体库读取权限；
-- 保存课表截图：相册写入权限；
-- 开启消息推送：通知权限。
-- 校园地图：使用期间定位权限。
+每种用途在用户点击“继续”后持久化确认状态（存储 Key 前缀为 `@ccnubox/permission-purpose/`，同时向前兼容旧版 `@ccnubox/sensitive-permission-purpose/`），后续再次触发时不再重复弹窗；若用户点击“取消”或关闭弹窗，则不会持久化确认状态。
 
-## 冗余权限的来源
+### 当前业务入口与用途映射
 
-`android.permissions` 只描述应用显式声明的权限，但 Expo config
-plugin 会在解析配置时继续合并权限：
+| 业务场景         | 调起方式              | 涉及权限 / 系统能力                             | PERMISSION_PURPOSES 项    |
+| :--------------- | :-------------------- | :---------------------------------------------- | :------------------------ |
+| **反馈上传图片** | `runPermissionAction` | 系统 Photo Picker（不申请运行时媒体库读取权限） | `feedbackImage`           |
+| **课表背景图片** | `runPermissionAction` | 系统 Photo Picker（不申请运行时媒体库读取权限） | `courseTableBackground`   |
+| **保存课表截图** | `requestPermission`   | 相册写入权限（`expo-media-library`）            | `saveCourseTable`         |
+| **开启消息推送** | `requestPermission`   | 通知权限（`expo-notifications` / `jpush`）      | `pushNotification`        |
+| **校园地图**     | 系统/WebView 自带触发 | 仅在使用期间定位权限（WebView 内部定位服务）    | 由系统及 WebView 页面管理 |
 
-- `expo-media-library` 总是添加
-  `READ_EXTERNAL_STORAGE`、`WRITE_EXTERNAL_STORAGE` 和
-  `READ_MEDIA_VISUAL_USER_SELECTED`；未配置 `granularPermissions`
-  时还会默认添加图片、视频、音频读取权限。
-- `expo-image-picker` 在 `microphonePermission` 未设为 `false` 时添加
-  `RECORD_AUDIO`，并可能写入相机相关声明。
-- `android/app/src/main/AndroidManifest.xml`、`ios/ccnubox/Info.plist`
-  是 prebuild 产物，不应作为长期权限配置的唯一来源；手动删除产物中的声明会在下一次 prebuild 时被恢复。
+## 冗余权限来源与管控策略
 
-因此配置采取以下策略：
+`app.json` 中的 `android.permissions` 仅描述应用显式声明的权限，但 Expo Config Plugins 在解析构建配置时会自动合并依赖库声明的权限：
 
-1. 在 `app.json` 为图片插件指定最小用途文案，并只请求
-   `granularPermissions: ["photo"]`；图片读取和旧版 Android 相册写入所需的基础权限由插件保留。
-2. 将 `expo-image-picker` 的 `cameraPermission` 和 `microphonePermission` 设为
-   `false`，由官方插件阻止相机和录音权限进入最终 Manifest。
-3. 从 `android.permissions`
-   中移除没有业务用途的显式权限；该数组只用于添加应用确实需要且依赖没有自动声明的权限。
-4. 运行 `remove-unused-ios-permissions`，移除 `expo-secure-store`
-   自动加入但应用没有使用的 Face ID 权限说明。
+- `expo-media-library` 默认会添加 `READ_EXTERNAL_STORAGE`、`WRITE_EXTERNAL_STORAGE` 和 `READ_MEDIA_VISUAL_USER_SELECTED`；未配置 `granularPermissions` 时还会自动添加全量音视频和图片读取权限。
+- `expo-image-picker` 在 `microphonePermission` 未显式设为 `false` 时会添加 `RECORD_AUDIO`，且可能写入相机相关声明。
+- `android/app/src/main/AndroidManifest.xml`、`ios/ccnubox/Info.plist` 是 `expo prebuild` 生成的原生工程产物，不应作为长期权限配置的唯一维护地；手动在产物中删除的声明会在下一次执行 prebuild 时被覆盖。
 
-Android 的 `expo-image-picker` 使用系统 Photo
-Picker。选取反馈图片和课表背景时，先展示必须确认的用途说明，再直接打开 Photo
-Picker；不调用
-`requestMediaLibraryPermissionsAsync`。系统只向应用提供用户主动选择的图片。
+### 权限收敛与防护策略
 
-如果后续依赖的原生 Manifest 自动加入了无法通过其配置关闭的权限，应优先在
-`android.blockedPermissions` 中声明。Expo 会在最终 Manifest 中生成
-`tools:node="remove"`；不需要为此维护自定义 Android 权限过滤插件。
-
-React Native 的 debug 依赖会声明
-`SYSTEM_ALERT_WINDOW`，但 release 依赖不会。权限审计应以 release 合并后的 Manifest 为准。
-
-修改权限配置后，应重新运行 prebuild 并检查生成的 Android Manifest 和 iOS
-Info.plist；不要只修改生成文件。
+1. **最小权限文案与细粒度限制**：
+   在 `app.json` 中配置 `expo-media-library` 插件的最小权限文案，并显式指定 `granularPermissions: ["photo"]`；图片读取和旧版 Android 相册写入所需的基础权限由插件按需保留。
+2. **阻止不必要的硬件权限**：
+   将 `expo-image-picker` 的 `cameraPermission` 和 `microphonePermission` 显式设为 `false`，阻止相机和录音权限进入最终的 Android Manifest 和 iOS Info.plist。
+3. **精准声明必要权限**：
+   `android.permissions` 中只保留应用业务确实必需且无法由依赖自动补充的权限（如定位权限 `ACCESS_COARSE_LOCATION`、`ACCESS_FINE_LOCATION`，通知权限 `POST_NOTIFICATIONS`，以及自启动广播 `RECEIVE_BOOT_COMPLETED`）。
+4. **移除 iOS 冗余 Face ID 声明**：
+   通过自定义插件 `./plugins/remove-unused-ios-permissions.js`，在构建时从生成的 iOS `Info.plist` 中移除 `expo-secure-store` 自动注入的 `NSFaceIDUsageDescription`，避免应用因未实际使用 Face ID 导致的 App Store 审核被拒。
+5. **Android 软件包可见性与 URL Scheme 配置**：
+   通过自定义插件 `./plugins/config-android-url-scheme.js`，向 AndroidManifest `<queries>` 节点注入微信（`com.tencent.mm`, `weixin`）、支付宝（`com.eg.android.AlipayGphone`, `alipays`）以及系统 `tel` / `sms` 的包名与 Intent Scheme，保证在 Android 11+ 上正常调起第三方应用。
+6. **Android 权限移除机制 (`tools:node="remove"`)**：
+   如果第三方依赖的原生 Manifest 强制加入了无法通过配置关闭的权限，应在 `android.blockedPermissions` 中声明，Expo prebuild 会在最终 Manifest 节点上添加 `tools:node="remove"`。
+7. **Release 环境审计原则**：
+   React Native 的 Debug 依赖可能会包含 `SYSTEM_ALERT_WINDOW`，但在 Release 打包时不会注入。权限合规性审计均应以 Release 最终合并生成的 Manifest 和 Info.plist 为准。
+8. **Prebuild 验证要求**：
+   任何涉及权限配置的修改均应重新运行 `npx expo prebuild`，并核查生成的 `AndroidManifest.xml` 与 `Info.plist`，确保没有意外多余的权限被合入。
