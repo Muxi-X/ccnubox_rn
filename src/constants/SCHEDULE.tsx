@@ -12,6 +12,8 @@ import { percent2px } from '@/utils/percent2px';
 
 import { commonColors } from '../styles/common';
 
+export { DAYS_OF_WEEK, TIME_SLOTS } from '@/modules/courseTable/constants';
+
 const TextNode: React.FC<{ text: string }> = ({ text }) => {
   const currentScheme = useVisualScheme(state => state.currentStyle);
   return (
@@ -57,31 +59,9 @@ export const COURSE_ITEM_HEIGHT = percent2px(8, 'height');
  */
 export const TIME_WIDTH = percent2px(12);
 /**
- * 一周天数
- */
-export const DAYS_OF_WEEK = ['一', '二', '三', '四', '五', '六', '日'];
-/**
  * 每隔几个时间格出现下划线
  */
 export const COURSE_COLLAPSE = 2;
-/**
- * 时间段
- */
-export const TIME_SLOTS = [
-  '08:00\n08:45',
-  '08:55\n09:40',
-  '10:10\n10:55',
-  '11:05\n11:50',
-  '14:00\n14:45',
-  '14:55\n15:40',
-  '16:10\n16:55',
-  '17:05\n17:50',
-  '18:30\n19:15',
-  '19:20\n20:05',
-  '20:15\n21:00',
-  '21:05\n21:50',
-];
-
 /**
  * 颜色选项
  */

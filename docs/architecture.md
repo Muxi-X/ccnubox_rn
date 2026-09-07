@@ -57,6 +57,7 @@
    - 包含高聚合度的业务逻辑、业务组件与子视图模型。
    - 例如课表视图计算、双向手势画布 `TimetableScrollView` 位于 `src/modules/courseTable/`。
    - 课程共用模型 `courseType`、`CourseTransferType` 位于 `src/modules/courseTable/types.ts`，供状态、工具、小组件与课程视图使用；视图专用 Props 保留在 `components/courseTable/type.ts`。
+   - `courseTable/layout.ts` 只接收课程和周次，计算网格与可见课程，不依赖 React Native。课表和外观预览共用 `CourseTableBackground` 的图片加载、缩放、遮罩透明度与模糊处理；截图仍使用原生 `Image` 路径。
 3. **通用 UI 组件 (`src/components/`)**：
    - 纯受控或仅含局部交互状态的 UI 基础设施，无特定业务感知。
 4. **状态仓储 (`src/store/`)**：
