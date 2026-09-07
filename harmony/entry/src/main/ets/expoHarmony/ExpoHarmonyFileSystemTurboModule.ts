@@ -1,4 +1,7 @@
 import fs from '@ohos.file.fs';
+import http from '@ohos.net.http';
+import util from '@ohos.util';
+import cryptoFramework from '@ohos.security.cryptoFramework';
 import {
   AnyThreadTurboModule,
   AnyThreadTurboModuleContext,
@@ -82,8 +85,6 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     path: string,
     options?: FileInfoOptions
   ): Promise<FileInfoResult> {
-    this.assertMd5Unsupported(options);
-
     const normalizedPath = this.normalizeSandboxPath(path, true);
     const stat = await this.getStatOrNull(normalizedPath);
 
@@ -101,7 +102,10 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
       isDirectory: stat.isDirectory(),
       size: Number(stat.size),
       modificationTime: Number(stat.mtime),
-      md5: undefined,
+      md5:
+        options?.md5 === true && !stat.isDirectory()
+          ? await this.computeDigest(await this.readFileBytes(normalizedPath))
+          : undefined,
     };
   }
 
@@ -165,7 +169,17 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     options?: MakeDirectoryOptions
   ): Promise<void> {
     const normalizedPath = this.normalizeSandboxPath(path);
-    await fs.mkdir(normalizedPath, options?.intermediates === true);
+    try {
+      await fs.mkdir(normalizedPath, options?.intermediates === true);
+    } catch (error) {
+      if (
+        options?.intermediates !== true ||
+        !fs.accessSync(normalizedPath) ||
+        !(await fs.stat(normalizedPath)).isDirectory()
+      ) {
+        throw error;
+      }
+    }
   }
 
   async readDirectory(path: string): Promise<string[]> {
@@ -208,71 +222,52 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     destinationPath: string,
     options?: DownloadOptions
   ): Promise<DownloadResult> {
-    this.assertMd5Unsupported(options);
-
     const normalizedDestinationPath =
       this.normalizeSandboxPath(destinationPath);
     await this.ensureParentDirectory(normalizedDestinationPath);
-    const fetchFn = (
-      globalThis as {
-        fetch?: (
-          input: string,
-          init?: { headers?: Record<string, string> }
-        ) => Promise<{
-          arrayBuffer: () => Promise<ArrayBuffer>;
-          headers?: {
-            get?: (name: string) => string | null;
-          };
-          status?: number;
-        }>;
-      }
-    ).fetch;
-
-    if (typeof fetchFn !== 'function') {
-      throw new Error(
-        'ExpoHarmonyFileSystem requires global fetch support for downloadAsync.'
-      );
-    }
-
-    const response = await fetchFn(url, {
-      headers: options?.headers ?? {},
-    });
-    const contentLength = this.getContentLength(response.headers);
-
-    if (
-      contentLength !== null &&
-      contentLength > MAX_IN_MEMORY_DOWNLOAD_BYTES
-    ) {
-      throw new Error(
-        'ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.'
-      );
-    }
-
-    const responseBuffer = new Uint8Array(await response.arrayBuffer());
-
-    if (responseBuffer.byteLength > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
-      throw new Error(
-        'ExpoHarmonyFileSystem downloadAsync response is too large for this adapter.'
-      );
-    }
-
-    const file = await fs.open(
-      normalizedDestinationPath,
-      fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE | fs.OpenMode.TRUNC
-    );
-
+    const request = http.createHttp();
     try {
-      await fs.write(file.fd, responseBuffer.buffer);
+      const response = await request.request(url, {
+        header: options?.headers ?? {},
+        expectDataType: http.HttpDataType.ARRAY_BUFFER,
+        // ponytail: buffer at most 25 MiB; use streaming for larger downloads.
+        maxLimit: MAX_IN_MEMORY_DOWNLOAD_BYTES,
+      });
+      if (response.responseCode < 200 || response.responseCode >= 300) {
+        throw new Error('File download failed with HTTP ' + response.responseCode);
+      }
+      if (!(response.result instanceof ArrayBuffer)) {
+        throw new Error('File download did not return binary data.');
+      }
+      const buffer = response.result;
+      if (buffer.byteLength > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
+        throw new Error('File download response is too large for this adapter.');
+      }
+      const md5 = options?.md5 === true ? await this.computeDigest(new Uint8Array(buffer)) : undefined;
+      const temporaryPath = normalizedDestinationPath + '.download-' + util.generateRandomUUID();
+      const file = await fs.open(temporaryPath, fs.OpenMode.WRITE_ONLY | fs.OpenMode.CREATE | fs.OpenMode.TRUNC);
+      try {
+        try {
+          if (await fs.write(file.fd, buffer) !== buffer.byteLength) {
+            throw new Error('Incomplete file download write.');
+          }
+        } finally {
+          await fs.close(file);
+        }
+        await fs.rename(temporaryPath, normalizedDestinationPath);
+      } catch (error) {
+        await fs.unlink(temporaryPath);
+        throw error;
+      }
+      return {
+        uri: normalizedDestinationPath,
+        status: response.responseCode,
+        headers: response.header as Record<string, string>,
+        md5,
+      };
     } finally {
-      await fs.close(file);
+      request.destroy();
     }
-
-    return {
-      uri: normalizedDestinationPath,
-      status: Number(response.status ?? 200),
-      headers: {},
-      md5: undefined,
-    };
   }
 
   private get documentDirectoryPath(): string {
@@ -316,14 +311,15 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     await fs.mkdir(parentPath, true);
   }
 
-  private assertMd5Unsupported(
-    options?: FileInfoOptions | DownloadOptions
-  ): void {
-    if (options?.md5 === true) {
-      throw new Error(
-        'ExpoHarmonyFileSystem does not support md5 calculation yet.'
-      );
+  private async computeDigest(bytes: Uint8Array): Promise<string> {
+    const md = cryptoFramework.createMd('MD5');
+    await md.update({ data: bytes });
+    const result = await md.digest();
+    let digest = '';
+    for (const byte of result.data) {
+      digest += byte.toString(16).padStart(2, '0');
     }
+    return digest;
   }
 
   private assertNotSelfOrDescendant(
@@ -352,22 +348,6 @@ export class ExpoHarmonyFileSystemTurboModule extends AnyThreadTurboModule {
     }
 
     return normalizedPath;
-  }
-
-  private getContentLength(headers?: {
-    get?: (name: string) => string | null;
-  }): number | null {
-    const rawContentLength =
-      headers?.get?.('content-length') ?? headers?.get?.('Content-Length');
-
-    if (typeof rawContentLength !== 'string' || rawContentLength.length === 0) {
-      return null;
-    }
-
-    const parsedContentLength = Number(rawContentLength);
-    return Number.isFinite(parsedContentLength) && parsedContentLength >= 0
-      ? parsedContentLength
-      : null;
   }
 
   private getParentPath(targetPath: string): string | null {
