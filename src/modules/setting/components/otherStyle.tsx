@@ -23,7 +23,7 @@ import Toast from '@/components/toast';
 import { default as ThemeBasedView } from '@/components/view';
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
-import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
+import type { CourseTransferType } from '@/modules/courseTable/types';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';

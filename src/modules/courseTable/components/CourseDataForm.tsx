@@ -6,7 +6,7 @@ import Image from '@/components/image';
 import Modal from '@/components/modal';
 import Picker from '@/components/picker';
 import MultiPicker from '@/components/picker/multiPicker';
-import { courseType } from '@/modules/courseTable/components/courseTable/type';
+import type { courseType } from '@/modules/courseTable/types';
 import { addCourse } from '@/request/api/course';
 import useCourse from '@/store/course';
 import useTimeStore from '@/store/time';

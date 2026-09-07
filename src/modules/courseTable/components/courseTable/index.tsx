@@ -32,6 +32,10 @@ import {
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
+import type {
+  CourseTransferType,
+  courseType,
+} from '@/modules/courseTable/types';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
@@ -44,7 +48,7 @@ import { StickyBottom } from './StickyBottom';
 import { StickyLeft } from './StickyLeft';
 import { StickyTop } from './StickyTop';
 import TimetableScrollView from './TimetableScrollView';
-import { CourseTableProps, CourseTransferType, courseType } from './type';
+import type { CourseTableProps } from './type';
 
 const Schedule: React.FC<CourseTableProps> = ({
   data,

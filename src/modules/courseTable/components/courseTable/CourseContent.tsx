@@ -9,12 +9,15 @@ import {
   COURSE_VERTICAL_PADDING,
   DAYS_OF_WEEK,
 } from '@/constants/SCHEDULE';
+import type {
+  CourseTransferType,
+  courseType,
+} from '@/modules/courseTable/types';
 import useVisualScheme from '@/store/visualScheme';
 import { componentMap } from '@/themeBasedComponents';
 import { parseClassWhen } from '@/utils/courseRuntime';
 
 import ModalContent from './ModalContent';
-import { CourseTransferType, courseType } from './type';
 
 type CourseContentProps = CourseTransferType & {
   originalData: courseType[];
