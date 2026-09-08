@@ -10,6 +10,7 @@ import {
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useTimeStore from '@/store/time';
 import useVisualScheme from '@/store/visualScheme';
+import { getAlphaColor } from '@/utils/color';
 import { getWeekMonday } from '@/utils/semesterWeeks';
 
 export const StickyTop: React.FC = memo(function StickyTop() {
@@ -17,6 +18,7 @@ export const StickyTop: React.FC = memo(function StickyTop() {
   const { selectedWeek } = useTimeStore();
   const schoolTime = useTimeStore(state => state.schoolTime);
   const { backgroundUri } = useCourseTableAppearance();
+  const themeName = useVisualScheme(state => state.themeName);
   const [dates, setDates] = useState<string[]>([]);
 
   const scheduleBackgroundStyle = useMemo(() => {
@@ -26,8 +28,11 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     if (!backgroundUri || !flattened) {
       return currentStyle?.schedule_item_background_style;
     }
-    return { ...flattened, backgroundColor: 'transparent' };
-  }, [currentStyle?.schedule_item_background_style, backgroundUri]);
+    const baseColor =
+      flattened.backgroundColor ||
+      (themeName === 'light' ? '#F7F5FD' : '#242424');
+    return { ...flattened, backgroundColor: getAlphaColor(baseColor, 0.2) };
+  }, [currentStyle?.schedule_item_background_style, backgroundUri, themeName]);
 
   useEffect(() => {
     const calculateDates = () => {

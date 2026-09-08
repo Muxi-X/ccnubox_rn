@@ -1,9 +1,9 @@
 import {
   BackdropBlur,
   Canvas,
-  Image as SkImage,
   makeImageFromView,
   Skia,
+  Image as SkImage,
   SkImage as SkImageType,
   useImage,
 } from '@shopify/react-native-skia';
@@ -35,6 +35,7 @@ import {
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
+import { getAlphaColor } from '@/utils/color';
 import { parseClassWhen } from '@/utils/courseRuntime';
 import globalEventBus from '@/utils/eventBus';
 import { requestPermission } from '@/utils/requestPermission';
@@ -120,6 +121,16 @@ const Schedule: React.FC<CourseTableProps> = ({
   // 优先使用手动加载的图片，否则使用hook加载的
   const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
   const normalizedForegroundOpacity = (100 - foregroundOpacity) / 100;
+
+  const cornerBackgroundColor = React.useMemo(() => {
+    const rawColor =
+      currentStyle?.schedule_item_background_style?.backgroundColor ||
+      (themeName === 'light' ? commonColors.lightGray : commonColors.black);
+    if (!backgroundUri) {
+      return rawColor;
+    }
+    return getAlphaColor(rawColor, 0.2);
+  }, [currentStyle?.schedule_item_background_style, themeName, backgroundUri]);
 
   const renderBackgroundContent = (
     children: React.ReactNode,
@@ -532,17 +543,13 @@ const Schedule: React.FC<CourseTableProps> = ({
           <View style={{ flexDirection: 'row' }}>
             {/* 左上角空白区域 */}
             <View
-              style={{
-                width: TIME_WIDTH,
-                height: COURSE_HEADER_HEIGHT,
-                backgroundColor: backgroundUri
-                  ? 'transparent'
-                  : currentStyle?.schedule_item_background_style
-                      ?.backgroundColor ||
-                    (themeName === 'light'
-                      ? commonColors.lightGray
-                      : commonColors.black),
-              }}
+              style={[
+                styles.corner,
+                currentStyle?.schedule_border_style,
+                {
+                  backgroundColor: cornerBackgroundColor,
+                },
+              ]}
             />
             {/* 顶部周标题 */}
             <StickyTop />
@@ -571,14 +578,13 @@ const Schedule: React.FC<CourseTableProps> = ({
         stickyTop={<StickyTop />}
         ref={imageRef}
         collapsable={false}
-        cornerStyle={{
-          backgroundColor: backgroundUri
-            ? 'transparent'
-            : currentStyle?.schedule_item_background_style?.backgroundColor ||
-              (themeName === 'light'
-                ? commonColors.lightGray
-                : commonColors.black),
-        }}
+        cornerStyle={[
+          styles.corner,
+          currentStyle?.schedule_border_style,
+          {
+            backgroundColor: cornerBackgroundColor,
+          },
+        ]}
         onRefresh={async (handleSuccess, handleFail) => {
           try {
             setIsFetching(true);
@@ -720,6 +726,12 @@ const styles = StyleSheet.create({
     width: TIME_WIDTH,
     flexGrow: 0,
     flexShrink: 0,
+  },
+  corner: {
+    width: TIME_WIDTH,
+    height: COURSE_HEADER_HEIGHT,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
   },
   weekBlock: {
     width: TIME_WIDTH,

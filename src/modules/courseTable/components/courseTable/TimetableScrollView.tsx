@@ -356,12 +356,6 @@ const TimetableScrollView = (
     };
   }, []);
 
-  // Animated style for sticky top margin
-  const stickyTopMarginStyle = useAnimatedStyle(() => {
-    return {
-      marginLeft: TIME_WIDTH,
-    };
-  }, []);
   // For the sticky top, we only want horizontal scrolling, not vertical
   const animatedOnlyX = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -431,46 +425,40 @@ const TimetableScrollView = (
         ></Animated.Text>
       </Animated.View>
       <Animated.View style={[refreshHeight, { flex: 1 }]}>
-        {/* sticky top */}
-        <Animated.View
-          style={[
-            styles.stickyTop,
-            { width: containerSize.width },
-            stickyTopMarginStyle,
-            animatedOnlyX,
-          ]}
-        >
-          {stickyTop}
-        </Animated.View>
+        {/* sticky top: 视口固定在小方块右侧，裁切向左溢出到小方块的内容 */}
+        <View style={styles.stickyTopViewport}>
+          <Animated.View
+            style={[
+              styles.stickyTopContent,
+              { width: containerSize.width },
+              animatedOnlyX,
+            ]}
+          >
+            {stickyTop}
+          </Animated.View>
+        </View>
         {/* corner */}
         <Animated.View
-          style={[
-            defaultCornerStyle,
-            {
-              position: 'absolute',
-              left: 0,
-              backgroundColor: commonColors.gray,
-              zIndex: 20,
-              ...cornerStyle,
-            },
-          ]}
-        ></Animated.View>
+          style={[defaultCornerStyle, styles.corner, cornerStyle]}
+        />
         <Animated.View
           style={{
             flexDirection: 'column',
             flex: 1,
           }}
         >
-          {/* stickyLeft */}
-          <Animated.View
-            style={[
-              styles.stickyLeft,
-              { height: containerSize.height },
-              animatedOnlyY,
-            ]}
-          >
-            {stickyLeft}
-          </Animated.View>
+          {/* stickyLeft: 视口固定在小方块下方，裁切向上溢出到小方块的内容 */}
+          <View style={styles.stickyLeftViewport} pointerEvents="box-none">
+            <Animated.View
+              style={[
+                styles.stickyLeftContent,
+                { height: containerSize.height },
+                animatedOnlyY,
+              ]}
+            >
+              {stickyLeft}
+            </Animated.View>
+          </View>
           <Animated.View
             style={[styles.wrapper, contentMarginStyle]}
             onLayout={event => {
@@ -530,20 +518,36 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 2,
   },
-  stickyTop: {
-    position: 'relative',
+  stickyTopViewport: {
+    marginLeft: TIME_WIDTH,
+    height: COURSE_HEADER_HEIGHT,
     overflow: 'hidden',
-    top: 0,
-    left: 0,
     zIndex: 10,
   },
-  stickyLeft: {
+  stickyTopContent: {
+    height: COURSE_HEADER_HEIGHT,
+  },
+  corner: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backgroundColor: 'transparent',
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'transparent',
+    zIndex: 20,
+  },
+  stickyLeftViewport: {
     position: 'absolute',
     top: 0,
     left: 0,
-    flexShrink: 0,
-    flexGrow: 0,
+    bottom: 0,
+    width: TIME_WIDTH,
+    overflow: 'hidden',
     zIndex: 9,
+  },
+  stickyLeftContent: {
+    width: TIME_WIDTH,
   },
   stickyContent: {
     flexShrink: 0,

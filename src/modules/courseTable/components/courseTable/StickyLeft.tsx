@@ -9,9 +9,11 @@ import {
 } from '@/constants/SCHEDULE';
 import useCourseTableAppearance from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
+import { getAlphaColor } from '@/utils/color';
 
 export const StickyLeft: React.FC = memo(function StickyLeft() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const themeName = useVisualScheme(state => state.themeName);
   const { backgroundUri } = useCourseTableAppearance();
 
   const timeSlotBackground = useMemo(() => {
@@ -21,8 +23,11 @@ export const StickyLeft: React.FC = memo(function StickyLeft() {
     if (!backgroundUri || !flattened) {
       return currentStyle?.schedule_item_background_style;
     }
-    return { ...flattened, backgroundColor: 'transparent' };
-  }, [currentStyle?.schedule_item_background_style, backgroundUri]);
+    const baseColor =
+      flattened.backgroundColor ||
+      (themeName === 'light' ? '#F7F5FD' : '#242424');
+    return { ...flattened, backgroundColor: getAlphaColor(baseColor, 0.2) };
+  }, [currentStyle?.schedule_item_background_style, backgroundUri, themeName]);
 
   return (
     <>
