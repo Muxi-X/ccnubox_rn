@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-01T18:02:59.385Z",
-  "toolkitVersion": "2.0.0-next.1",
+  "generatedAt": "2026-09-08T00:05:27.243Z",
+  "toolkitVersion": "2.0.0-next.2",
   "templateVersion": "rnoh-0.82.29",
   "matrixId": "expo56-rn085-rnoh082-preview",
-  "projectRoot": "/Users/blackishgreen03/workspace/ccnubox-pr278-v2-next-refresh",
+  "projectRoot": "/Users/blackishgreen03/workspace/ccnubox-harmony-simulator-closeout",
   "files": [
     {
       "relativePath": "harmony/codelinter.json",
@@ -19,7 +19,7 @@
     },
     {
       "relativePath": "harmony/AppScope/resources/base/media/app_icon.png",
-      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+      "sha1": "7bb59fb1c3b3806c7201ec9a3d6c2d2c11febeb2"
     },
     {
       "relativePath": "harmony/entry/hvigorfile.ts",
@@ -39,7 +39,7 @@
     },
     {
       "relativePath": "harmony/entry/src/main/resources/base/media/foreground.png",
-      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+      "sha1": "7bb59fb1c3b3806c7201ec9a3d6c2d2c11febeb2"
     },
     {
       "relativePath": "harmony/entry/src/main/resources/base/media/layered_image.json",
@@ -47,7 +47,7 @@
     },
     {
       "relativePath": "harmony/entry/src/main/resources/base/media/startIcon.png",
-      "sha1": "ae8ce46beb8b8417b5a68841f5eed4b0dada53df"
+      "sha1": "7bb59fb1c3b3806c7201ec9a3d6c2d2c11febeb2"
     },
     {
       "relativePath": "harmony/entry/src/main/resources/rawfile/.gitkeep",
@@ -55,11 +55,11 @@
     },
     {
       "relativePath": "harmony/oh-package.json5",
-      "sha1": "4920957a55ede056ac506af28bad6c2e12769086"
+      "sha1": "af006fa8f1ced55d063b475d6a32f2da986a622f"
     },
     {
       "relativePath": "harmony/entry/src/main/ets/RNOHPackagesFactory.ets",
-      "sha1": "4ed1c88819712e6c1a5795cc191f04dd01043ef9"
+      "sha1": "8fcef60e889b371dfdcce770d7736d6718b8f0af"
     },
     {
       "relativePath": "harmony/entry/src/main/cpp/RNOHPackagesFactory.h",
@@ -79,7 +79,7 @@
     },
     {
       "relativePath": ".expo-harmony/shims/expo-modules-core/index.js",
-      "sha1": "8e7ab2ae6947f68f54d6bdd78a05f581a0f3e671"
+      "sha1": "5ab9749a5882af736d1339c9ffe885b87c5ef65c"
     },
     {
       "relativePath": ".expo-harmony/shims/expo-file-system/index.js",
@@ -91,7 +91,7 @@
     },
     {
       "relativePath": ".expo-harmony/shims/expo-location/index.js",
-      "sha1": "49bce8f21a522f823680ad511adb0eef3d524ef9"
+      "sha1": "a8734b68b89d3ce9c899002727d48e41c3106520"
     },
     {
       "relativePath": ".expo-harmony/shims/expo-camera/index.js",
@@ -159,7 +159,7 @@
     },
     {
       "relativePath": ".expo-harmony/toolkit-config.json",
-      "sha1": "30dac19cd856a1473f305e69e730d7e1a9194176"
+      "sha1": "cb8c264d6ea1de50de22216b84d66ff167a154c6"
     },
     {
       "relativePath": ".expo-harmony/signing.local.example.json",

@@ -31,12 +31,15 @@
           "coverageProfile": "managed-native-heavy",
           "excludeDependencies": [
             "@bacons/apple-targets",
-            "@react-navigation/core"
+            "@react-navigation/core",
+            "react-native-worklets"
           ],
           "excludePlugins": [
             "mx-jpush-expo",
             "@bacons/apple-targets",
             "./plugins/config-android-url-scheme.js",
+            "./plugins/ios-disable-liquid-glass",
+            "./plugins/remove-unused-ios-permissions",
             "react-native-edge-to-edge"
           ]
         }

@@ -44,6 +44,14 @@ test('loads the Harmony course table and saves snapshots through native adapters
   assert.match(cppPackages, /SkiaPackage/);
   assert.match(cmake, /rnoh_skia/);
   assert.match(cmake, /ArkTSTurboModule::getContext/);
+  const appLabel = /label:\s*'([^']+)'/.exec(
+    read('harmony/AppScope/app.json5')
+  )?.[1];
+  const abilityLabel = /name: 'EntryAbility',[\s\S]*?label:\s*'([^']+)'/.exec(
+    read('harmony/entry/src/main/module.json5')
+  )?.[1];
+  assert.ok(appLabel);
+  assert.equal(abilityLabel, appLabel);
 });
 
 test('registers the maintained Harmony JPush adapter without replacing native clients', () => {
@@ -66,6 +74,10 @@ test('registers the maintained Harmony JPush adapter without replacing native cl
   assert.match(appConfig, /autoRegisterOnLaunch: false/);
   assert.match(metro, /@react-native-ohos\/jpush-react-native\/index\.js/);
   assert.match(ohPackage, /@react-native-ohos\/jpush-react-native/);
+  assert.match(
+    read('harmony/build-profile.json5'),
+    /srcPath: '\.\.\/node_modules\/@react-native-ohos\/jpush-react-native\/harmony\/jpush_react_native'/
+  );
   assert.match(etsPackages, /RNJPushPackage/);
   assert.match(cppPackages, /JPushModulePackage/);
   assert.match(cmake, /rnoh_jPushModule/);
@@ -98,10 +110,7 @@ test('uses native Harmony storage, safe-area, gesture, screen, and cold-start pu
     metro,
     /@react-native-oh-tpl\/react-native-safe-area-context\/src\/index\.tsx/
   );
-  assert.match(
-    metro,
-    /@react-native-oh-tpl\/react-native-screens\/src\/index\.ts/
-  );
+  assert.match(metro, /\['react-native-screens', 'react-native-screens'\]/);
   assert.match(layout, /<Stack/);
   assert.doesNotMatch(layout, /<Slot/);
   assert.match(hook, /addLocalNotificationListener/);
@@ -113,4 +122,8 @@ test('uses native Harmony storage, safe-area, gesture, screen, and cold-start pu
   assert.match(moduleConfig, /entity\.system\.browsable/);
   assert.match(moduleConfig, /ohos\.want\.action\.viewData/);
   assert.match(moduleConfig, /scheme: 'ccnubox'/);
+  assert.match(
+    moduleConfig,
+    /querySchemes: \['http', 'https', 'alipays', 'weixin', 'tel'\]/
+  );
 });

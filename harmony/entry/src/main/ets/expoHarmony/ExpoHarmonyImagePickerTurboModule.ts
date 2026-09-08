@@ -1,10 +1,10 @@
 import abilityAccessCtrl, { type Permissions } from '@ohos.abilityAccessCtrl';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
-import picker from '@ohos.file.picker';
 import camera from '@ohos.multimedia.camera';
 import cameraPicker from '@ohos.multimedia.cameraPicker';
 import image from '@ohos.multimedia.image';
+import util from '@ohos.util';
 import { UITurboModule } from '@rnoh/react-native-openharmony/ts';
 
 type PermissionResponse = {
@@ -83,28 +83,21 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
   async launchImageLibrary(
     options?: LaunchImageLibraryOptions
   ): Promise<ImagePickerResult> {
-    await this.ensurePermissionGranted('ohos.permission.READ_IMAGEVIDEO', true);
-
     const photoPicker = new photoAccessHelper.PhotoViewPicker();
     const selection = await photoPicker.select(
       this.createPhotoSelectOptions(options)
     );
-    let selectedUris = this.normalizeSelectedUris(selection?.photoUris);
-
-    if (selectedUris.length === 0) {
-      selectedUris = await this.launchLegacyPhotoPicker(options);
-    }
+    const selectedUris = this.normalizeSelectedUris(selection?.photoUris);
 
     if (selectedUris.length === 0) {
       return this.createCanceledResult();
     }
 
-    const authorizedUris = await this.requestAuthorizedUris(selectedUris);
     const assets = await Promise.all(
-      authorizedUris.map(async (uri, index) =>
+      selectedUris.map(async (uri, index) =>
         this.createImagePickerAsset(
           await this.compressImageIfNeeded(uri, options?.quality, index),
-          selectedUris[index] ?? uri,
+          uri,
           this.inferAssetTypeFromMediaTypes(options?.mediaTypes)
         )
       )
@@ -299,23 +292,6 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     return selectOptions;
   }
 
-  private async launchLegacyPhotoPicker(
-    options?: LaunchImageLibraryOptions
-  ): Promise<string[]> {
-    const legacyPicker = new picker.PhotoViewPicker(this.ctx.uiAbilityContext);
-    const legacyOptions = new picker.PhotoSelectOptions();
-    legacyOptions.MIMEType = this.resolveLegacyPhotoViewMimeType(
-      options?.mediaTypes
-    );
-    legacyOptions.maxSelectNumber =
-      options?.allowsMultipleSelection === true
-        ? this.resolveSelectionLimit(options?.selectionLimit)
-        : 1;
-
-    const selection = await legacyPicker.select(legacyOptions);
-    return this.normalizeSelectedUris(selection?.photoUris);
-  }
-
   private resolveSelectionLimit(selectionLimit?: number): number {
     if (
       typeof selectionLimit === 'number' &&
@@ -342,22 +318,6 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     }
 
     return photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
-  }
-
-  private resolveLegacyPhotoViewMimeType(
-    rawMediaTypes?: string | string[]
-  ): picker.PhotoViewMIMETypes {
-    const normalized = this.normalizeMediaTypes(rawMediaTypes);
-
-    if (normalized.includes('video') && !normalized.includes('image')) {
-      return picker.PhotoViewMIMETypes.VIDEO_TYPE;
-    }
-
-    if (normalized.includes('video') && normalized.includes('image')) {
-      return picker.PhotoViewMIMETypes.IMAGE_VIDEO_TYPE;
-    }
-
-    return picker.PhotoViewMIMETypes.IMAGE_TYPE;
   }
 
   private createCameraPickerMediaTypes(
@@ -474,6 +434,23 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     originalUri: string,
     fallbackType: 'image' | 'video' | null
   ): Promise<ImagePickerAsset> {
+    // Picker grants access to media URIs, not filesystem paths usable by native consumers.
+    if (assetUri.startsWith('file://media/')) {
+      const source = fs.openSync(assetUri, fs.OpenMode.READ_ONLY);
+      try {
+        const extension =
+          this.extractFileName(assetUri)?.match(/\.[a-z0-9]+$/i)?.[0] ?? '';
+        const cachePath =
+          this.ctx.uiAbilityContext.cacheDir +
+          '/image-picker-' +
+          util.generateRandomUUID() +
+          extension;
+        await fs.copyFile(source.fd, cachePath);
+        assetUri = 'file://' + cachePath;
+      } finally {
+        fs.closeSync(source);
+      }
+    }
     const inferredType = this.inferAssetTypeFromUri(assetUri, fallbackType);
     const imageSize =
       inferredType === 'image'
@@ -481,7 +458,7 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
         : { width: 0, height: 0 };
     const fileSize = await this.getFileSize(assetUri);
     const fileName =
-      this.extractFileName(assetUri) ?? this.extractFileName(originalUri);
+      this.extractFileName(originalUri) ?? this.extractFileName(assetUri);
 
     return {
       uri: assetUri,
@@ -514,10 +491,12 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
 
     let imageSource: image.ImageSource | null = null;
     let imagePacker: image.ImagePacker | null = null;
+    let inputFile: fs.File | null = null;
     let outputFile: fs.File | null = null;
 
     try {
-      imageSource = image.createImageSource(assetUri);
+      inputFile = fs.openSync(assetUri, fs.OpenMode.READ_ONLY);
+      imageSource = image.createImageSource(inputFile.fd);
       const imageInfo = await imageSource.getImageInfo();
       const isHeif =
         imageInfo.mimeType === 'image/heif' ||
@@ -561,6 +540,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
         } catch {
           // Ignore cleanup errors after the picker result is ready.
         }
+      }
+      if (inputFile) {
+        fs.closeSync(inputFile);
       }
     }
   }
@@ -655,7 +637,9 @@ export class ExpoHarmonyImagePickerTurboModule extends UITurboModule {
     let imageSource: image.ImageSource | null = null;
 
     try {
-      imageSource = image.createImageSource(assetUri);
+      imageSource = image.createImageSource(
+        this.resolveFsTarget(assetUri) ?? assetUri
+      );
       const imageInfo = await imageSource.getImageInfo();
       return {
         width: Number(imageInfo.size?.width ?? 0),

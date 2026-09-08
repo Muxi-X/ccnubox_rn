@@ -1,6 +1,7 @@
 nodeLinker: hoisted
 overrides:
   '@react-native-oh/react-native-harmony-cli>tar': 7.5.21
+  '@shopify/react-native-skia@1.3.7>react-reconciler': 0.31.0
 allowBuilds:
   '@react-native-oh-tpl/react-native-reanimated': true
   '@react-native-oh-tpl/react-native-svg': true
@@ -13,5 +14,6 @@ packages:
   - '.'
 patchedDependencies:
   '@bacons/apple-targets@4.0.7': 'patches/@bacons__apple-targets@4.0.7.patch'
+  '@shopify/react-native-skia@1.3.7': patches/@shopify__react-native-skia@1.3.7.patch
 minimumReleaseAge: 0
 virtualStoreDirMaxLength: 20

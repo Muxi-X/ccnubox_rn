@@ -1,10 +1,56 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import test from 'node:test';
 
 const read = path =>
   readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const compact = value => value.replace(/\s+/g, ' ').trim();
+const require = createRequire(import.meta.url);
+
+test('pairs Harmony React with its renderer without downgrading the native app', () => {
+  const renderer = read(
+    'node_modules/@react-native-oh/react-native-harmony/Libraries/Renderer/implementations/ReactNativeRenderer-prod.js'
+  );
+  const rendererVersion = renderer.match(
+    /if \("([\d.]+)" !== isomorphicReactPackageVersion\)/
+  )?.[1];
+  assert.equal(
+    require('@harmony-js/react/package.json').version,
+    rendererVersion
+  );
+  assert.equal(require('react/package.json').version, '19.2.3');
+  assert.match(
+    read('metro.harmony.config.js'),
+    /react: path\.dirname\(require\.resolve\('@harmony-js\/react\/package.json'\)\)/
+  );
+});
+
+test('isolates Harmony JS and worklet versions from iOS and Android', () => {
+  const babel = require('../babel.config.js');
+  for (const platform of ['ios', 'android', 'web']) {
+    assert.deepEqual(babel({ caller: inspect => inspect({ platform }) }), {
+      presets: ['babel-preset-expo'],
+    });
+  }
+  assert.deepEqual(
+    babel({ caller: inspect => inspect({ platform: 'harmony' }) }),
+    {
+      presets: [['babel-preset-expo', { reanimated: false, worklets: false }]],
+      plugins: [require.resolve('@harmony-js/react-native-reanimated/plugin')],
+    }
+  );
+  const nativeConfig = require('../react-native.config.js');
+  const packageJson = JSON.parse(read('package.json'));
+  for (const name of Object.keys(packageJson.devDependencies).filter(name =>
+    name.startsWith('@harmony-js/')
+  )) {
+    assert.deepEqual(nativeConfig.dependencies[name].platforms, {
+      android: null,
+      ios: null,
+    });
+  }
+});
 
 test('keeps the existing iOS and Android native configuration', () => {
   const config = read('react-native.config.js');
@@ -115,6 +161,6 @@ test('uses the requested toolkit prerelease', () => {
   const packageJson = JSON.parse(read('package.json'));
   assert.equal(
     packageJson.devDependencies['expo-harmony-toolkit'],
-    '2.0.0-next.1'
+    '2.0.0-next.2'
   );
 });

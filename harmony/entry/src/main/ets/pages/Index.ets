@@ -25,8 +25,8 @@ struct Index {
             createRNPackages: getRNOHPackages,
             fontResourceByFontFamily: {
               antoutline: $rawfile('assets/node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf'),
-              MaterialIcons: $rawfile('assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
-              Ionicons: $rawfile('assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+              material: $rawfile('assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
+              ionicons: $rawfile('assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
             },
             enableDebugger: this.rnohCoreContext?.isDebugModeEnabled,
           },

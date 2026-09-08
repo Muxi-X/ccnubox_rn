@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { createHarmonyPackageResolver } = require('expo-harmony-toolkit/metro');
 
 process.env.EXPO_ROUTER_APP_ROOT =
   process.env.EXPO_ROUTER_APP_ROOT ?? 'src/app';
@@ -13,11 +14,22 @@ const defaultConfig = getDefaultConfig(__dirname);
 const harmonyConfig = createHarmonyMetroConfig({
   reactNativeHarmonyPackageName: '@react-native-oh/react-native-harmony',
 });
+const resolveHarmonyPackage = createHarmonyPackageResolver(
+  __dirname,
+  Object.fromEntries(
+    [
+      ['react-native-gesture-handler', 'react-native-gesture-handler'],
+      ['react-native-reanimated', 'react-native-reanimated'],
+      ['react-native-screens', 'react-native-screens'],
+      ['@shopify/react-native-skia', 'react-native-skia'],
+      ['react-native-svg', 'react-native-svg'],
+    ].map(([name, suffix]) => [name, {
+      source: `@harmony-js/${suffix}`,
+      adapter: `@react-native-oh-tpl/${suffix}`,
+    }])
+  )
+);
 const expoHarmonyShims = {
-  '@shopify/react-native-skia': path.resolve(
-    __dirname,
-    'node_modules/@react-native-oh-tpl/react-native-skia/src/index.ts'
-  ),
   'expo-modules-core': path.resolve(
     __dirname,
     '.expo-harmony/shims/expo-modules-core'
@@ -61,6 +73,7 @@ const projectRootModuleAliases = {
   '@': path.resolve(__dirname, 'src'),
 };
 const uiStackRootModuleAliases = {
+  react: path.dirname(require.resolve('@harmony-js/react/package.json')),
   '@react-native-async-storage/async-storage': path.resolve(
     __dirname,
     'node_modules/@react-native-oh-tpl/async-storage/src/index.ts'
@@ -68,40 +81,6 @@ const uiStackRootModuleAliases = {
   '@react-navigation/native': path.resolve(
     __dirname,
     'src/platform/harmonyReactNavigation/native.tsx'
-  ),
-  'react-native-gesture-handler/src/handlers/handlersRegistry': path.resolve(
-    __dirname,
-    'src/platform/harmonyGestureHandlersRegistry.ts'
-  ),
-  'react-native-gesture-handler/src/handlers/gestureHandlerCommon':
-    path.resolve(__dirname, 'src/platform/harmonyGestureHandlerCommon.ts'),
-  'react-native-gesture-handler/src/utils': path.resolve(
-    __dirname,
-    'src/platform/harmonyGestureHandlerUtils.ts'
-  ),
-  'react-native-gesture-handler/DrawerLayout': path.resolve(
-    __dirname,
-    'node_modules/react-native-gesture-handler/src/components/DrawerLayout.tsx'
-  ),
-  'react-native-gesture-handler/GestureDetector': path.resolve(
-    __dirname,
-    'node_modules/react-native-gesture-handler/src/handlers/gestures/GestureDetector/index.tsx'
-  ),
-  'react-native-gesture-handler/GestureHandlerRootView': path.resolve(
-    __dirname,
-    'node_modules/@react-native-oh-tpl/react-native-gesture-handler/src/components/GestureHandlerRootView.tsx'
-  ),
-  'react-native-gesture-handler/Swipeable': path.resolve(
-    __dirname,
-    'node_modules/react-native-gesture-handler/src/components/Swipeable.tsx'
-  ),
-  'react-native-gesture-handler': path.resolve(
-    __dirname,
-    'src/platform/harmonyGestureHandlerPackage.tsx'
-  ),
-  'react-native-reanimated': path.resolve(
-    __dirname,
-    'node_modules/react-native-reanimated'
   ),
   'react-native-safe-area-context': path.resolve(
     __dirname,
@@ -111,17 +90,9 @@ const uiStackRootModuleAliases = {
     __dirname,
     'src/platform/harmonyScreens/index.tsx'
   ),
-  'react-native-screens': path.resolve(
-    __dirname,
-    'node_modules/@react-native-oh-tpl/react-native-screens/src/index.ts'
-  ),
-  'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
-  'react-native-webview': path.resolve(
-    __dirname,
-    'node_modules/react-native-webview'
-  ),
 };
 const resolvePackageAlias = (context, moduleName, platform, aliases) => {
+  if (platform !== 'harmony') return null;
   for (const [aliasedModuleName, aliasedModulePath] of Object.entries(
     aliases
   )) {
@@ -308,6 +279,9 @@ const resolveExpoHarmonyShim = (context, moduleName, platform) => {
   if (expoHarmonyModuleAliasResolution) {
     return expoHarmonyModuleAliasResolution;
   }
+
+  const harmonyPackageResolution = resolveHarmonyPackage(context, moduleName, platform);
+  if (harmonyPackageResolution) return harmonyPackageResolution;
 
   const compatibilityWrapperResolution = resolveReactNativeCompatibilityWrapper(
     context,

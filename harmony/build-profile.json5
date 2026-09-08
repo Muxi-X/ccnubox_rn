@@ -26,6 +26,10 @@
   },
   modules: [
     {
+      name: 'jpush_react_native',
+      srcPath: '../node_modules/@react-native-ohos/jpush-react-native/harmony/jpush_react_native',
+    },
+    {
       name: 'entry',
       srcPath: './entry',
       targets: [

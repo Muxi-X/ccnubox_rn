@@ -7,7 +7,6 @@
 #include "BlobUtilPackage.h"
 #include "InappbrowserRebornPackage.h"
 #include "LinearGradientPackage.h"
-#include "PdfViewPackage.h"
 
 using namespace rnoh;
 
@@ -20,7 +19,6 @@ std::vector<std::shared_ptr<Package>> PackageProvider::getPackages(
   packages.push_back(std::make_shared<BlobUtilPackage>(ctx));
   packages.push_back(std::make_shared<InappbrowserRebornPackage>(ctx));
   packages.push_back(std::make_shared<LinearGradientPackage>(ctx));
-  packages.push_back(std::make_shared<PdfViewPackage>(ctx));
   packages.push_back(std::make_shared<ExpoHarmonyPackage>(ctx));
   return packages;
 }

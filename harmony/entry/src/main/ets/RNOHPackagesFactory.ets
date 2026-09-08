@@ -7,6 +7,7 @@ import { ReanimatedPackage } from '@react-native-oh-tpl/react-native-reanimated/
 import { SvgPackage } from '@react-native-oh-tpl/react-native-svg/ts';
 import { AsyncStoragePackage } from '@react-native-oh-tpl/async-storage/ts';
 import { WebViewPackage } from '@react-native-oh-tpl/react-native-webview/ts';
+import { RNOHLottiePackage } from '@react-native-oh-tpl/lottie-react-native';
 import { SafeAreaViewPackage } from '@react-native-oh-tpl/react-native-safe-area-context/ts';
 import { CameraRollPackage } from '@react-native-oh-tpl/camera-roll/ts';
 import { ClipboardPackage } from '@react-native-oh-tpl/clipboard/ts';
@@ -21,6 +22,7 @@ export function createRNOHPackages(ctx: RNPackageContext): RNPackage[] {
     new SvgPackage(ctx),
     new AsyncStoragePackage(ctx),
     new WebViewPackage(ctx),
+    new RNOHLottiePackage(ctx),
     new SafeAreaViewPackage(ctx),
     new CameraRollPackage(ctx),
     new ClipboardPackage(ctx),

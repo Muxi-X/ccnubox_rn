@@ -95,10 +95,6 @@ add_subdirectory(
   "${OH_MODULES_DIR}/@react-native-ohos/react-native-linear-gradient/src/main/cpp"
   ./rnoh_linear_gradient
 )
-add_subdirectory(
-  "${OH_MODULES_DIR}/@react-native-ohos/react-native-pdf/src/main/cpp"
-  ./rnoh_pdf_view
-)
 
 if(DEFINED CMAKE_SYSROOT)
   set(RNOH_FORCE_ASSERT_INCLUDE "-include${CMAKE_SYSROOT}/usr/include/assert.h")
@@ -131,7 +127,6 @@ target_link_libraries(rnoh_app PUBLIC rnoh_jPushModule)
 target_link_libraries(rnoh_app PUBLIC rnoh_blob_util)
 target_link_libraries(rnoh_app PUBLIC rnoh_inappbrowser_reborn)
 target_link_libraries(rnoh_app PUBLIC rnoh_linear_gradient)
-target_link_libraries(rnoh_app PUBLIC rnoh_pdf_view)
 target_link_options(rnoh_app PRIVATE
   "-Wl,-z,relro,-z,now,-z,noexecstack"
   "$<$<CONFIG:Release>:-s>"

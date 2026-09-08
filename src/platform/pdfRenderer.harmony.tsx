@@ -1,9 +1,20 @@
-import Pdf from '@react-native-ohos/react-native-pdf';
+import { WebView } from 'react-native-webview';
 
 const HarmonyPdfRenderer = ({ source }: { source?: string }) => {
   if (!source) return null;
 
-  return <Pdf source={{ uri: source }} style={{ flex: 1 }} />;
+  // ArkWeb previews sandbox PDFs without PDFKit, which is absent on some emulators.
+  return (
+    <WebView
+      source={{ uri: source }}
+      originWhitelist={['file://*']}
+      allowFileAccess
+      domStorageEnabled
+      javaScriptEnabled
+      scalesPageToFit
+      style={{ flex: 1 }}
+    />
+  );
 };
 
 export default HarmonyPdfRenderer;

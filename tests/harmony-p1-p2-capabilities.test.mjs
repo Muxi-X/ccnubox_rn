@@ -55,6 +55,20 @@ test('enables Harmony feedback attachments through the existing native picker an
     /isEditSupported = options\?\.allowsEditing === true/
   );
   assert.match(nativePicker, /imagePacker\.packToFile/);
+  const launchLibrary = nativePicker
+    .split('async launchImageLibrary(')[1]
+    .split('async launchCamera(')[0];
+  assert.doesNotMatch(
+    launchLibrary,
+    /ensurePermissionGranted|launchLegacyPhotoPicker|requestAuthorizedUris/
+  );
+  assert.match(
+    launchLibrary,
+    /selectedUris.length === 0[\s\S]*return this.createCanceledResult\(\)/
+  );
+  assert.match(nativePicker, /await fs.copyFile\(source.fd, cachePath\)/);
+  assert.match(nativePicker, /finally \{\s*fs.closeSync\(source\)/);
+  assert.match(nativePicker, /image.createImageSource\(inputFile.fd\)/);
 });
 
 test('renders Harmony PDFs and in-app browser content with maintained native adapters', () => {
@@ -69,7 +83,7 @@ test('renders Harmony PDFs and in-app browser content with maintained native ada
 
   assert.equal(
     packageJson.dependencies['@react-native-ohos/react-native-pdf'],
-    '7.0.0'
+    undefined
   );
   assert.equal(
     packageJson.dependencies[
@@ -77,10 +91,10 @@ test('renders Harmony PDFs and in-app browser content with maintained native ada
     ],
     '3.8.0'
   );
-  assert.match(pdf, /@react-native-ohos\/react-native-pdf/);
+  assert.match(pdf, /react-native-webview/);
   assert.match(browser, /@react-native-ohos\/react-native-inappbrowser-reborn/);
   assert.match(calendar, /isHarmony \? \(/);
-  assert.match(packageProvider, /PdfViewPackage/);
+  assert.doesNotMatch(packageProvider, /PdfViewPackage/);
   assert.match(packageProvider, /RNInAppBrowserPackage/);
   assert.match(moduleConfig, /BrowserManagerAbility/);
 });
@@ -135,8 +149,8 @@ test('uses native Harmony gradients, registered fonts, and edge-to-edge layout',
   assert.match(gradient, /@react-native-ohos\/react-native-linear-gradient/);
   assert.match(index, /fontResourceByFontFamily/);
   assert.match(index, /antoutline/);
-  assert.match(index, /MaterialIcons/);
-  assert.match(index, /Ionicons/);
+  assert.match(index, /material: \$rawfile\('[^']*\/MaterialIcons\.ttf'\)/);
+  assert.match(index, /ionicons: \$rawfile\('[^']*\/Ionicons\.ttf'\)/);
   assert.match(index, /expandSafeArea/);
   assert.match(capabilities, /edgeToEdge: true/);
 });

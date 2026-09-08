@@ -21,7 +21,6 @@
     '@react-native-ohos/react-native-blob-util': 'file:../node_modules/@react-native-ohos/react-native-blob-util/harmony/blobUtil.har',
     '@react-native-ohos/react-native-inappbrowser-reborn': 'file:../node_modules/@react-native-ohos/react-native-inappbrowser-reborn/harmony/inappbrowser.har',
     '@react-native-ohos/react-native-linear-gradient': 'file:../node_modules/@react-native-ohos/react-native-linear-gradient/harmony/linear_gradient.har',
-    '@react-native-ohos/react-native-pdf': 'file:../node_modules/@react-native-ohos/react-native-pdf/harmony/pdfview.har',
   },
   devDependencies: {
     '@ohos/hypium': '1.0.6',
