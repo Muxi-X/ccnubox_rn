@@ -44,7 +44,7 @@
 │   └── remove-unused-ios-permissions.js # 移除未使用的 iOS 权限声明
 ├── scripts/                      # 构建与辅助脚本
 │   ├── genapi.js                 # 从后端端点拉取 OpenAPI 并生成 TS 类型的脚本
-│   └── prebuild.js               # 交互式预构建并触发 EAS Build 脚本
+│   └── ota.js                    # 加载环境密钥并发布分支 OTA 热更新脚本
 ├── src/                          # 应用源代码
 │   ├── app/                      # Expo Router 文件路由与页面
 │   │   ├── (courseTable)/        # 课表相关页面 (添加课程、编辑课程等)
@@ -216,7 +216,7 @@ npx expo prebuild --platform android --no-install
 | `pnpm format`       | 使用 `oxfmt` 格式化代码                                                     |
 | `pnpm format:check` | 使用 `oxfmt` 检查代码格式                                                   |
 | `pnpm prebuild`     | 执行 `expo prebuild` 生成 iOS/Android 原生工程                              |
-| `pnpm build`        | 运行 `scripts/prebuild.js`，支持交互式构建与选择发布至 EAS                  |
+| `pnpm build`        | 运行 `eas build`，使用 EAS 官方交互式 CLI 构建应用                          |
 | `pnpm genapi`       | 运行 `scripts/genapi.js`，拉取后端接口文档并生成 TypeScript 类型            |
 | `pnpm ota:prod`     | 加载 `EXPO_TOKEN` 并发布生产分支热更新 (`eoas publish --branch production`) |
 | `pnpm ota:prev`     | 加载 `EXPO_TOKEN` 并发布预览分支热更新 (`eoas publish --branch preview`)    |
