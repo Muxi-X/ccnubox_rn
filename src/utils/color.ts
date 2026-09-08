@@ -1,10 +1,14 @@
+import type { ColorValue } from 'react-native';
+
 /**
  * 将 hex 或 rgb 颜色转换为带指定透明度的 rgba 颜色
  */
-export const getAlphaColor = (color?: string, alpha = 0.8): string => {
+export const getAlphaColor = (color?: ColorValue, alpha = 0.8): ColorValue => {
   if (!color || color === 'transparent') {
     return color || 'transparent';
   }
+  // Native semantic colors are opaque; keep them intact rather than parsing them.
+  if (typeof color !== 'string') return color;
   const trimmed = color.trim();
   if (trimmed.startsWith('#')) {
     let hex = trimmed.slice(1);

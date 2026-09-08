@@ -89,3 +89,12 @@ test('course error boundary records the original error without throwing again', 
   );
   assert.equal(Boundary.getDerivedStateFromError(error).error, error);
 });
+
+test('theme alpha conversion preserves opaque native colors and existing string results', () => {
+  const { getAlphaColor } = load('src/utils/color.ts', {});
+  const nativeColor = { semantic: ['systemBackgroundColor'] };
+  assert.equal(getAlphaColor(nativeColor, 0.2), nativeColor);
+  assert.equal(getAlphaColor('#abc', 0.2), 'rgba(170, 187, 204, 0.2)');
+  assert.equal(getAlphaColor('rgba(1, 2, 3, 0.8)', 0.2), 'rgba(1, 2, 3, 0.2)');
+  assert.equal(getAlphaColor(undefined, 0.2), 'transparent');
+});
