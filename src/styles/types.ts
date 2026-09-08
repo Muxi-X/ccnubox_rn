@@ -69,16 +69,16 @@ type ViewStyleNames = Exclude<
   StatusStyleNames
 >;
 
-/** 状态-样式映射表 */
-type StatusStyleMap = Record<string, ViewStyle | TextStyle>;
-
 /** 单个 Theme 配置类型 */
 export type SingleThemeType = {
   [K in TextStyleNames]?: TextStyle;
 } & {
   [K in ViewStyleNames]?: ViewStyle;
 } & {
-  [K in StatusStyleNames]?: StatusStyleMap;
+  [K in StatusStyleNames]?: Record<
+    string,
+    K extends 'feedback_statusText_style' ? TextStyle : ViewStyle
+  >;
 };
 
 /** 完整 layout 应有配置类型 */

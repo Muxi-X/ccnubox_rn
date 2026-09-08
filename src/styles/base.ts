@@ -70,7 +70,6 @@ const baseStyle: ThemeType = {
     },
     button_style: {
       backgroundColor: purple,
-      color: white,
     },
     button_text_style: {
       color: white,

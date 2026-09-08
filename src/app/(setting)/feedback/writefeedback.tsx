@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   thumbnailOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.6)',

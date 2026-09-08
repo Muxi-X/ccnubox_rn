@@ -79,7 +79,7 @@ export interface PortalStore {
 export type ThemeBasedComponentMap = Record<
   LayoutName,
   ThemeBasedComponentRecord
-> | null;
+>;
 
 export type ThemeBasedComponentRecord = Record<
   ConfigurableComponentName,
