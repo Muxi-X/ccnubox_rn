@@ -44,7 +44,7 @@
 │   └── remove-unused-ios-permissions.js # 移除未使用的 iOS 权限声明
 ├── scripts/                      # 构建与辅助脚本
 │   ├── genapi.js                 # 从后端端点拉取 OpenAPI 并生成 TS 类型的脚本
-│   └── prebuild.js               # 交互式预构建并触发 EAS Build 脚本
+│   └── ota.js                    # 加载环境密钥并发布分支 OTA 热更新脚本
 ├── src/                          # 应用源代码
 │   ├── app/                      # Expo Router 文件路由与页面
 │   │   ├── (courseTable)/        # 课表相关页面 (添加课程、编辑课程等)
@@ -132,19 +132,24 @@
 ### 1. 环境准备
 
 1. 克隆代码仓库后，安装项目依赖：
+
    ```bash
    pnpm install
    ```
+
 2. 拉取远程 EAS 环境变量（若有权限），或在项目根目录创建 `.env.local` 配置文件：
+
    ```bash
    eas env:pull --environment development
    ```
+
    可参考 `.env.example` 配置 `API_BASE_URL`、`JPUSH_APP_KEY` 等关键环境变量。
 
 ### 2. 本地调试模式
 
 - **Expo Dev Client 调试（推荐）**：
   由于项目包含原生 JPush、小组件、自定义 Config Plugins 等原生模块，推荐在原生 Dev Client 环境下调试：
+
   ```bash
   # 启动 Metro 调试服务
   pnpm start
@@ -155,7 +160,9 @@
   # 启动并构建运行到 iOS 设备/模拟器
   pnpm ios
   ```
+
 - **纯 Expo Go 调试（部分原生功能不可用）**：
+
   ```bash
   pnpm start:go
   ```
@@ -186,37 +193,39 @@ Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／An
 ### `app.json` & `app.config.ts`
 
 - `app.json` 维护静态应用基础元数据（包名、版本号、应用权限声明、静态插件列表等）。
-- `app.config.ts` 在构建时动态读取环境变量（通过 `dotenv-flow`），负责动态注入 JPush 厂商通道参数、切换生产/开发推送环境（`aps-environment`）、加载 `src/assets/data/updateInfo.json` 到全局 `extra` 等。
+- `app.config.ts` 在构建时动态读取环境变量（通过 `dotenv-flow`），负责：
+  - 动态注入自建私有化 OTA 服务配置（Manifest URL、Channel、App ID 与 Branch Surfing 参数）。
+  - 条件启用代码签名（Code Signing）：绑定 `certs/certificate.pem` 公钥与 `rsa-v1_5-sha256` 算法。
+  - 动态注入 JPush 厂商通道参数、切换生产/开发推送环境（`aps-environment`）。
+  - 加载 `src/assets/data/updateInfo.json` 到全局 `extra`。
 
 ### `eas.json`
 
 - 配置 EAS 构建流程与发布 Profile，包含：
-  - `development`：用于本地与真机联调的 Development Client 构建包。
-  - `test`：测试环境构建包，发布到内测分发渠道。
-  - `production`：正式生产环境构建，生成发布到应用商店的安装包。
+  - `development`：用于本地与真机联调的 Development Client 构建包，配置 `DISABLE_CODE_SIGNING: "true"` 方便免签调试。
+  - `test`：测试环境构建包，发布到内测分发渠道，启用代码签名验证。
+  - `preview`：针对 Android 的独立 APK 预览包。
+  - `production`：正式生产环境构建，生成发布到应用商店的安装包，启用代码签名验证。
   - `simulator`：用于 iOS 模拟器架构的构建。
-- 配置了自建 OTA 服务器的 URL override：
-  ```json
-  "updateAssetHostOverride": "assets.ota.ccnubox.muxixyz.com",
-  "updateManifestHostOverride": "ota.ccnubox.muxixyz.com"
-  ```
 
 ## 常用脚本指令
 
-| 命令                | 说明                                                             |
-| :------------------ | :--------------------------------------------------------------- |
-| `pnpm start`        | 启动 Metro 开发服务器（指定 `--dev-client`）                     |
-| `pnpm start:go`     | 以 Expo Go 模式启动 Metro                                        |
-| `pnpm android`      | 编译并在 Android 模拟器/真机上启动应用                           |
-| `pnpm ios`          | 编译并在 iOS 模拟器/真机上启动应用                               |
-| `pnpm web`          | 启动 Web 端预览                                                  |
-| `pnpm lint`         | 使用 `oxlint` 运行代码静态检查                                   |
-| `pnpm lint:fix`     | 使用 `oxlint` 自动修复可修复的 Lint 问题                         |
-| `pnpm format`       | 使用 `oxfmt` 格式化代码                                          |
-| `pnpm format:check` | 使用 `oxfmt` 检查代码格式                                        |
-| `pnpm prebuild`     | 执行 `expo prebuild` 生成 iOS/Android 原生工程                   |
-| `pnpm build`        | 运行 `scripts/prebuild.js`，支持交互式构建与选择发布至 EAS       |
-| `pnpm genapi`       | 运行 `scripts/genapi.js`，拉取后端接口文档并生成 TypeScript 类型 |
+| 命令                | 说明                                                                        |
+| :------------------ | :-------------------------------------------------------------------------- |
+| `pnpm start`        | 启动 Metro 开发服务器（指定 `--dev-client`）                                |
+| `pnpm start:go`     | 以 Expo Go 模式启动 Metro                                                   |
+| `pnpm android`      | 编译并在 Android 模拟器/真机上启动应用                                      |
+| `pnpm ios`          | 编译并在 iOS 模拟器/真机上启动应用                                          |
+| `pnpm web`          | 启动 Web 端预览                                                             |
+| `pnpm lint`         | 使用 `oxlint` 运行代码静态检查                                              |
+| `pnpm lint:fix`     | 使用 `oxlint` 自动修复可修复的 Lint 问题                                    |
+| `pnpm format`       | 使用 `oxfmt` 格式化代码                                                     |
+| `pnpm format:check` | 使用 `oxfmt` 检查代码格式                                                   |
+| `pnpm prebuild`     | 执行 `expo prebuild` 生成 iOS/Android 原生工程                              |
+| `pnpm build`        | 运行 `eas build`，使用 EAS 官方交互式 CLI 构建应用                          |
+| `pnpm genapi`       | 运行 `scripts/genapi.js`，拉取后端接口文档并生成 TypeScript 类型            |
+| `pnpm ota:prod`     | 加载 `EXPO_TOKEN` 并发布生产分支热更新 (`eoas publish --branch production`) |
+| `pnpm ota:prev`     | 加载 `EXPO_TOKEN` 并发布预览分支热更新 (`eoas publish --branch preview`)    |
 
 ## 核心技术实现与代码规范
 
@@ -229,6 +238,7 @@ Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／An
 
 - **自动化类型生成**：运行 `pnpm genapi` 会自动拉取主服务和反馈服务的 OpenAPI 规范，生成类型定义文件 `src/request/schema.d.ts` 和 `src/request/schema.feedback.d.ts`。
 - **类型安全请求客户端**：位于 `src/request/`，通过 `createRequestClient<paths>(axiosInstance)` 构建具有严格端点路径与参数校验的请求实例：
+
   ```ts
   import { request } from '@/request';
 
@@ -237,6 +247,7 @@ Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／An
     params: { query: { semester: '2024-2025-1' } },
   });
   ```
+
 - **双 Token 认证与自动无缝续期**：
   - 用户登录后，`shortToken` 和 `longToken` 被持久化保存在安全存储（`expo-secure-store`）中。
   - 请求拦截器默认自动注入 `Authorization: Bearer <shortToken>`。
@@ -250,6 +261,7 @@ Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／An
   - `layoutName`：`'ios'` \| `'android'` 布局风格。
   - `iconStyleName`：`'ios'` \| `'android'` 图标展示策略。
 - **使用与切换方法**：
+
   ```ts
   import useVisualScheme from '@/store/visualScheme';
 
@@ -261,6 +273,7 @@ Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／An
   const { changeTheme, changeLayout, changeIconStyle, setAutoTheme } =
     useVisualScheme();
   ```
+
 - 支持 `layoutSelect` 与 `iconStyleSelect` 辅助函数，可根据用户当前布局风格无缝按需派发组件与图标实现。
 
 ### 4. 敏感权限申请与合规
@@ -280,28 +293,40 @@ Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／An
 
 ## 构建、发布与更新
 
-### 1. OTA 热更新 (EAS Update)
+### 1. OTA 热更新 (EAS Update 与自建服务器)
 
-应用支持通过 EAS Update 进行 JavaScript 层的热更新：
+应用基于自建私有化 OTA 服务器（`https://ota-api.muxixyz.com/manifest`）进行 JavaScript 层热更新，并启用 RSA 代码签名保障下发安全：
 
 ```bash
-# 发布热更新到指定分支（例如 production 或 test）
-eas update --branch production --message "更新说明"
+# 1. 确保 Git 工作区干净（提交或暂存未提交修改）
+git status
+# git commit -am "feat: ..." 或 git stash
+
+# 2. 拉取 EAS 环境变量确保本地有 EXPO_TOKEN 环境变量
+eas env:pull development
+
+# 3. 一键发布到正式生产通道 (production)
+pnpm ota:prod
+
+# 4. 或一键发布到预览通道 (preview)
+pnpm ota:prev
 ```
 
 - **自动化 CI 发布**：
   修改 `src/assets/data/updateInfo.json` 中的更新内容和版本并推送到 GitHub `main` 分支时，GitHub Actions（`test_update.yml`）会自动触发热更新发布到 `test` 分支。
 - **`runtimeVersion` 严格一致性**：
   OTA 更新仅在客户端原生工程的 `runtimeVersion` 与 OTA 包的 `runtimeVersion` 严格一致时才会被客户端下载与应用。
+
   ```json
   {
     "expo": {
-      "version": "3.1.10",
-      "runtimeVersion": "3.1.8"
+      "version": "3.2.0",
+      "runtimeVersion": "3.2.0"
     }
   }
   ```
-  如果改动了原生代码、原生依赖或更新了 Android / iOS 配置，必须递增版本号并打包发布新的原生应用安装包。
+
+  如果改动了原生代码、原生依赖或更新了 Android / iOS 原生配置，必须递增版本号并打包发布新的原生应用安装包。详细运维说明参见 [构建发布与 OTA 热更新运维指南](docs/release-and-ota.md)。
 
 ### 2. 原生打包 (EAS Build)
 

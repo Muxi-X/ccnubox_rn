@@ -9,6 +9,7 @@ allowBuilds:
   '@shopify/react-native-skia': true
   core-js: true
   react-native-inappbrowser-reborn: false
+  dtrace-provider: true
   unrs-resolver: true
 packages:
   - '.'

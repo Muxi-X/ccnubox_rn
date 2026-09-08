@@ -4,6 +4,7 @@ import * as React from 'react';
 import { isHarmony } from '@/platform/runtime';
 import { getItem, setItem } from '@/platform/storage';
 import useCourse from '@/store/course';
+import { reportUpdatesLogs } from '@/utils/easUpdate';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
 import { logger } from '@/utils/logger';
 
@@ -21,6 +22,7 @@ const Index = () => {
         const token = await getItem('longToken');
 
         setupGlobalErrorHandler();
+        void reportUpdatesLogs();
         await SplashScreen.hideAsync();
 
         if (!token) {

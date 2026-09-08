@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
+
+const { getConfig } = createRequire(import.meta.url)('expo/config');
 
 const read = path =>
   readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -27,10 +31,12 @@ test('uses native Harmony application and clipboard data', () => {
 
 test('reports the current native version and keeps unsupported Harmony OTA explicit', () => {
   const appScope = read('harmony/AppScope/app.json5');
-  const appJson = JSON.parse(read('app.json'));
+  const { exp } = getConfig(fileURLToPath(new URL('..', import.meta.url)), {
+    skipPlugins: true,
+  });
   const updates = read('src/platform/harmonyExpoUpdates.ts');
 
-  assert.match(appScope, new RegExp(`versionName: '${appJson.expo.version}'`));
+  assert.match(appScope, new RegExp(`versionName: '${exp.version}'`));
   assert.match(updates, /export const isEnabled = false/);
   assert.match(updates, /export const runtimeVersion = null/);
   assert.match(updates, /export const updateId = null/);

@@ -6,7 +6,7 @@
     "start": "expo start --dev-client",
     "start:go": "expo start --go",
     "prebuild": "expo prebuild",
-    "build": "node ./scripts/prebuild.js",
+    "build": "eas build",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -26,6 +26,8 @@
     "harmony:env": "expo-harmony env",
     "harmony:init": "expo-harmony init",
     "harmony:sync-template": "expo-harmony sync-template",
+    "ota:prod": "node ./scripts/ota.js production",
+    "ota:prev": "node ./scripts/ota.js preview",
     "eas-build-post-install": "find node_modules/react-native/sdks/hermesc -type f -name 'hermesc' -exec chmod +x {} \\; && cd android && ./gradlew generateCodegenArtifactsFromSchema --no-daemon || true"
   },
   "dependencies": {
@@ -65,6 +67,7 @@
     "axios": "^1.17.0",
     "babel-preset-expo": "^56.0.0",
     "dayjs": "^1.11.21",
+    "eoas": "3.2.0",
     "expo": "^56.0.21",
     "expo-application": "~56.0.3",
     "expo-blur": "~56.0.4",
@@ -126,7 +129,6 @@
     "@harmony-js/react-native-screens": "npm:react-native-screens@4.8.0",
     "@harmony-js/react-native-skia": "npm:@shopify/react-native-skia@1.3.7",
     "@harmony-js/react-native-svg": "npm:react-native-svg@15.0.0",
-    "@inquirer/prompts": "^8.5.2",
     "@react-native-community/cli": "20.2.0",
     "@types/react": "~19.2.17",
     "commitlint": "^21.0.2",
