@@ -80,7 +80,10 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
 
         if (response.status === 200 || response.status === 201) {
           const newShortToken = response.headers['x-jwt-token'];
-          if (typeof newShortToken !== 'string' || newShortToken.length === 0) {
+          if (
+            isHarmony &&
+            (typeof newShortToken !== 'string' || newShortToken.length === 0)
+          ) {
             throw new Error('刷新短 token 响应缺少 token');
           }
           if (isHarmony) {

@@ -188,7 +188,10 @@ test('limits Harmony auth and layout behavior to Harmony', () => {
     request,
     /if \(isHarmony && isHarmonyDebugCredential\(longToken\)\)/
   );
-  assert.match(request, /typeof newShortToken !== 'string'/);
+  assert.match(
+    request,
+    /if \( isHarmony && \(typeof newShortToken !== 'string' \|\| newShortToken.length === 0\) \)/
+  );
   assert.match(
     visualScheme,
     /const fallbackLayouts: LayoutName\[\] = \['ios', 'android'\]/
