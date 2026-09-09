@@ -1,4 +1,4 @@
-import { Stack, useSegments } from 'expo-router';
+import { Stack, useGlobalSearchParams, useSegments } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -17,7 +17,13 @@ const TITLE_MAP: Record<string, string> = {
 
 function useCurrentTitle() {
   const segments = useSegments();
+  const { title } = useGlobalSearchParams<{ title?: string }>();
   const lastName = segments[segments.length - 1];
+
+  if (lastName === 'webview' && typeof title === 'string' && title) {
+    return title;
+  }
+
   return (
     TITLE_MAP[lastName] ??
     getMainPageApplications().find(a => a.name === lastName)?.title ??
