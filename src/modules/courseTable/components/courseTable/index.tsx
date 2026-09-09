@@ -12,6 +12,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library/legacy';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   StyleProp,
@@ -269,12 +270,14 @@ const Schedule: React.FC<CourseTableProps> = ({
                 );
               }
             } catch (err) {
+              setSnapShot(false);
               Toast.show({ text: `截图失败：${err}`, icon: 'fail' });
               return;
             }
           }
 
           if (!snapshotImage) {
+            setSnapShot(false);
             Toast.show({
               text: '截图失败',
               icon: 'fail',
@@ -296,17 +299,20 @@ const Schedule: React.FC<CourseTableProps> = ({
 
           if (manipulateResult && manipulateResult.uri) {
             await MediaLibrary.createAssetAsync(manipulateResult.uri);
+            setSnapShot(false);
             Toast.show({
               text: '截图成功',
               icon: 'success',
             });
           } else {
+            setSnapShot(false);
             Toast.show({
               text: '截图保存失败',
               icon: 'fail',
             });
           }
         } catch (error) {
+          setSnapShot(false);
           Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
         } finally {
           setSnapShot(false);
@@ -314,8 +320,8 @@ const Schedule: React.FC<CourseTableProps> = ({
         }
       }, 400);
     } catch (e) {
-      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
       setSnapShot(false);
+      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
       isSavingImageRef.current = false;
     }
   };
@@ -683,6 +689,26 @@ const Schedule: React.FC<CourseTableProps> = ({
       {snapshot && fullTableContent}
       {fixedBackground}
       {timetableForeground}
+      {snapshot && (
+        <View style={styles.loadingOverlay} pointerEvents="auto">
+          <View
+            style={[
+              styles.loadingCard,
+              {
+                backgroundColor:
+                  (currentStyle?.modal_background_style
+                    ?.backgroundColor as string) ||
+                  (themeName === 'dark' ? '#2C2C2E' : '#FFFFFF'),
+              },
+            ]}
+          >
+            <ActivityIndicator size="large" color={commonColors.purple} />
+            <ThemeChangeText style={styles.loadingText}>
+              正在生成截图...
+            </ThemeChangeText>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -756,6 +782,36 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRightWidth: 1,
     zIndex: 0,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingCard: {
+    paddingHorizontal: 28,
+    paddingVertical: 22,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+    minWidth: 160,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 15,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });
 
