@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-09T02:41:58.678Z",
-  "toolkitVersion": "2.0.0-next.3",
+  "generatedAt": "2026-09-09T05:16:43.270Z",
+  "toolkitVersion": "2.0.0-next.4",
   "templateVersion": "rnoh-0.82.29",
   "matrixId": "expo56-rn085-rnoh082-preview",
   "rnohVersion": "0.82.29",
@@ -65,7 +65,7 @@
       "id": "expo-clipboard",
       "packageName": "expo-clipboard",
       "supportTier": "preview",
-      "runtimeMode": "shim",
+      "runtimeMode": "adapter",
       "evidence": {
         "bundle": true,
         "debugBuild": true,
@@ -101,7 +101,7 @@
       "id": "expo-haptics",
       "packageName": "expo-haptics",
       "supportTier": "preview",
-      "runtimeMode": "shim",
+      "runtimeMode": "adapter",
       "evidence": {
         "bundle": true,
         "debugBuild": true,
@@ -173,7 +173,7 @@
       "id": "expo-secure-store",
       "packageName": "expo-secure-store",
       "supportTier": "preview",
-      "runtimeMode": "shim",
+      "runtimeMode": "adapter",
       "evidence": {
         "bundle": true,
         "debugBuild": true,
@@ -245,7 +245,7 @@
       "id": "react-native-safe-area-context",
       "packageName": "react-native-safe-area-context",
       "supportTier": "experimental",
-      "runtimeMode": "shim",
+      "runtimeMode": "adapter",
       "evidence": {
         "bundle": true,
         "debugBuild": true,
@@ -301,6 +301,8 @@
     "ohos.permission.MICROPHONE",
     "ohos.permission.NOTIFICATION_CONTROLLER",
     "ohos.permission.READ_IMAGEVIDEO",
+    "ohos.permission.READ_PASTEBOARD",
+    "ohos.permission.VIBRATE",
     "ohos.permission.WRITE_IMAGEVIDEO"
   ],
   "nextActions": [

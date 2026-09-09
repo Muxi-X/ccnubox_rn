@@ -324,8 +324,8 @@ importers:
         specifier: 4.4.1
         version: 4.4.1(eslint@10.8.1(jiti@2.6.1))
       expo-harmony-toolkit:
-        specifier: 2.0.0-next.3
-        version: 2.0.0-next.3(expo@56.0.21)(typescript@6.0.3)
+        specifier: 2.0.0-next.4
+        version: 2.0.0-next.4(expo@56.0.21)(typescript@6.0.3)
       hermes-compiler:
         specifier: ^250829098.0.2
         version: 250829098.0.2
@@ -3907,8 +3907,8 @@ packages:
     peerDependencies:
       expo: '*'
 
-  expo-harmony-toolkit@2.0.0-next.3:
-    resolution: {integrity: sha512-djxrygjaJE/dgX4vGVB4WlEzFNTx0hnUUjP1VaFeCwiI7XgxQp/n2mDvVnNW3i9mgZ2AskhwzMjHsalH6ZKb7w==}
+  expo-harmony-toolkit@2.0.0-next.4:
+    resolution: {integrity: sha512-iEyAKKWDDzGzh5plFsIPM2uaHK6KP/gk1biv0QSIkxI1kUmqox7jDeKa1Csvr0TuwBVzH65RbEtpDln7JiwZYg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       expo: '>=55.0.0 <58.0.0'
@@ -11542,7 +11542,7 @@ snapshots:
     dependencies:
       expo: 56.0.21(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.21)(expo-router@56.2.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-webview@13.16.1(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
 
-  expo-harmony-toolkit@2.0.0-next.3(expo@56.0.21)(typescript@6.0.3):
+  expo-harmony-toolkit@2.0.0-next.4(expo@56.0.21)(typescript@6.0.3):
     dependencies:
       '@expo/config': 57.0.9(typescript@6.0.3)
       commander: 14.0.3

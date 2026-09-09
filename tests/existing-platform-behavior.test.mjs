@@ -215,6 +215,6 @@ test('uses the requested toolkit prerelease', () => {
   const packageJson = JSON.parse(read('package.json'));
   assert.equal(
     packageJson.devDependencies['expo-harmony-toolkit'],
-    '2.0.0-next.3'
+    '2.0.0-next.4'
   );
 });
