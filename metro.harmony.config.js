@@ -43,6 +43,10 @@ const expoHarmonyShims = {
     '.expo-harmony/shims/expo-clipboard'
   ),
   'expo-font': path.resolve(__dirname, 'src/platform/harmonyExpoFont.ts'),
+  'expo-haptics': path.resolve(
+    __dirname,
+    'src/platform/haptics.harmony.ts'
+  ),
   'expo-image-picker': path.resolve(
     __dirname,
     '.expo-harmony/shims/expo-image-picker'

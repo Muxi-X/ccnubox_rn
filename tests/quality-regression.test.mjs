@@ -35,6 +35,41 @@ const load = (path, modules, globals = {}) => {
   return exports;
 };
 
+test('direct Expo haptics imports reuse the existing Harmony native bridge', async () => {
+  const metro = readFileSync(
+    new URL('../metro.harmony.config.js', import.meta.url),
+    'utf8'
+  );
+  assert.match(
+    metro,
+    /'expo-haptics': path\.resolve\(\s*__dirname,\s*'src\/platform\/haptics\.harmony\.ts'/
+  );
+  const triggerHaptic = mock.fn(async () => {});
+  const haptics = load('src/platform/haptics.harmony.ts', {
+    'react-native': {
+      TurboModuleRegistry: {
+        getEnforcing: name => {
+          assert.equal(name, 'ExpoHarmonySystem');
+          return { triggerHaptic };
+        },
+      },
+    },
+  });
+  await haptics.impactAsync(haptics.ImpactFeedbackStyle.Light);
+  await haptics.selectionAsync();
+  assert.deepEqual(
+    triggerHaptic.mock.calls.map(call => call.arguments[0]),
+    ['light', 'selection']
+  );
+  assert.equal(
+    readFileSync(
+      new URL('../src/platform/haptics.ts', import.meta.url),
+      'utf8'
+    ),
+    "export * from 'expo-haptics';\n"
+  );
+});
+
 test('feedback preserves native file access and the existing multipart request on every platform', async () => {
   for (const platform of ['ios', 'android', 'harmony']) {
     const getInfoAsync = mock.fn(async () => ({ exists: true, size: 3 }));
