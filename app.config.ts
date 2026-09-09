@@ -6,22 +6,14 @@ import updateInfo from './src/assets/data/updateInfo.json' with { type: 'json' }
 export default ({ config }: ConfigContext): ExpoConfig => {
   const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';
   const apsEnvironment = isProduction ? 'production' : 'development';
-  const isEasBuild = process.env.EAS_BUILD === 'true';
-  const hasPrivateKeyArg =
-    process.argv.includes('--private-key-path') ||
-    process.argv.some(arg => arg.startsWith('--private-key-path='));
-  const enableCodeSigning =
-    (isEasBuild ||
-      hasPrivateKeyArg ||
-      process.env.ENABLE_CODE_SIGNING === 'true') &&
-    process.env.DISABLE_CODE_SIGNING !== 'true';
 
-  const codeSigningConfig = enableCodeSigning
-    ? {
-        codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
-        codeSigningCertificate: './certs/certificate.pem',
-      }
-    : {};
+  const codeSigningConfig =
+    process.env.DISABLE_CODE_SIGNING !== 'true'
+      ? {
+          codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
+          codeSigningCertificate: './certs/certificate.pem',
+        }
+      : {};
   const plugins: (string | [] | [string] | [string, any])[] = [];
   for (const plugin of config.plugins ?? []) {
     const [name, configurations] = Array.isArray(plugin)

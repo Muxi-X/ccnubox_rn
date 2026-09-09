@@ -2,7 +2,8 @@
   "cli": {
     "version": ">= 10.2.1",
     "updateAssetHostOverride": "assets.ota.ccnubox.muxixyz.com",
-    "updateManifestHostOverride": "ota.ccnubox.muxixyz.com"
+    "updateManifestHostOverride": "ota.ccnubox.muxixyz.com",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -47,11 +48,13 @@
     "production": {
       "channel": "production",
       "environment": "production",
+      "autoIncrement": true,
       "android": {
         "buildType": "apk"
       },
       "ios": {
-        "image": "sdk-56"
+        "image": "auto",
+        "scheme": "ccnubox"
       }
     }
   },
