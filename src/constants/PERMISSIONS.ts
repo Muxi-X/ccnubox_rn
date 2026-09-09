@@ -28,4 +28,9 @@ export const PERMISSION_PURPOSES = {
     description:
       '用于向您发送已订阅的校园消息和功能提醒，您可以随时在系统设置中关闭。',
   },
+  scanSeatQrCode: {
+    id: 'scan-seat-qr-code-v1',
+    title: '相机权限使用说明',
+    description: '用于扫描图书馆座位二维码以完成座位签到与预约。',
+  },
 } as const satisfies Record<string, PermissionPurpose>;
