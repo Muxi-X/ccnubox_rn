@@ -11,6 +11,7 @@ import Button from '@/components/button';
 import Toast from '@/components/toast';
 import { TypoText } from '@/components/typography/TypoText';
 import ThemeBasedView from '@/components/view';
+import { isHarmony } from '@/platform/runtime';
 import useVisualScheme from '@/store/visualScheme';
 import { UpdateInfo } from '@/types/updateInfo';
 import { getUpdatesBasicInfo, reportUpdatesLogs } from '@/utils/easUpdate';
@@ -132,6 +133,7 @@ function CheckUpdate(): React.ReactNode {
   }, [currentlyRunning]);
 
   const buttonLabel = useMemo(() => {
+    if (isHarmony) return '查看更新方式';
     if (isRestarting) return '正在重启…';
     if (isDownloading) {
       return downloadProgress === undefined
@@ -155,6 +157,7 @@ function CheckUpdate(): React.ReactNode {
   ]);
 
   const statusText = useMemo(() => {
+    if (isHarmony) return '鸿蒙版通过应用市场或安装包更新，不使用 EAS 热更新。';
     if (isRestarting) return '正在应用更新并重启，请稍候。';
     if (isDownloading) {
       return downloadProgress !== undefined
@@ -197,6 +200,11 @@ function CheckUpdate(): React.ReactNode {
   const handleUpdatePress = async () => {
     if (isBusy) return;
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    if (isHarmony) {
+      Toast.show({ text: '请通过应用市场或官方安装包更新鸿蒙版。' });
+      return;
+    }
 
     // 1. 更新已就绪，立即重启
     if (isUpdatePending) {
@@ -328,9 +336,11 @@ function CheckUpdate(): React.ReactNode {
           </TypoText>
 
           <View style={styles.versionBlock}>
-            <TypoText level={2} bold style={styles.versionTitle}>
-              热更新版本 {updateInfo?.otaVersion ?? Updates.runtimeVersion}
-            </TypoText>
+            {!isHarmony ? (
+              <TypoText level={2} bold style={styles.versionTitle}>
+                热更新版本 {updateInfo?.otaVersion ?? Updates.runtimeVersion}
+              </TypoText>
+            ) : null}
             <TypoText level="body">应用版本 {version}</TypoText>
             {updateInfo?.updateTime ? (
               <TypoText level="body">{updateInfo.updateTime}</TypoText>

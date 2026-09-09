@@ -180,6 +180,12 @@ npx expo prebuild --platform ios --no-install
 npx expo prebuild --platform android --no-install
 ```
 
+## Harmony 适配构建
+
+Harmony 适配使用 `expo-harmony-toolkit@2.0.0-next.1`，保留既有 iOS／Android 构建配置。开发命令为 `pnpm harmony:doctor`、`pnpm harmony:bundle` 和 `pnpm harmony:build:debug`。
+
+当前能力、版本矩阵与验收边界以 [PR #278](https://github.com/Muxi-X/ccnubox_rn/pull/278) 为准；本地签名配置不得提交。
+
 ## 配置文件体系
 
 任何关于配置文件的修改都应该在对应的 Git Commit Message 中清晰声明，以便溯源。

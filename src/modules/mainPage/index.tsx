@@ -1,4 +1,3 @@
-import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -12,6 +11,7 @@ import Skeleton from '@/components/skeleton';
 import Text from '@/components/text';
 import ThemeChangeView from '@/components/view';
 import { TABBAR_BASE_HEIGHT } from '@/constants/TABBAR';
+import * as Haptics from '@/platform/haptics';
 import { queryBanners } from '@/request/api';
 import useGridOrder from '@/store/gridOrder';
 import useVisualScheme from '@/store/visualScheme';

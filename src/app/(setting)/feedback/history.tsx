@@ -1,6 +1,5 @@
 import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
-import { getItem } from 'expo-secure-store';
 import React, {
   useCallback,
   useEffect,
@@ -22,6 +21,8 @@ import {
   FEEDBACK_TABLE_IDENTIFY,
   STATUS_STYLE_KEY,
 } from '@/constants/FEEDBACKS';
+import { formatFeedbackDate } from '@/platform/dateTime';
+import { getFeedbackUser } from '@/platform/feedbackUser';
 import { queryUserFeedbackSheet } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
 import { logger } from '@/utils/logger';
@@ -55,23 +56,7 @@ function formatSubmitTime(timestamp: any): string {
     return '未知时间';
   }
 
-  const parts = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-    .formatToParts(date)
-    .reduce((acc: any, part: any) => {
-      acc[part.type] = part.value;
-      return acc;
-    }, {});
-
-  const year = parts.year;
-  const month = parts.month;
-  const day = parts.day;
-
-  return `${year}-${month}-${day}`;
+  return formatFeedbackDate(date);
 }
 
 export function transformSingleRecord(
@@ -217,7 +202,7 @@ export default function FeedbackHistory() {
   const [pageToken, setPageToken] = useState<string>('');
   const [feedbackHistory, setFeedbackHistory] = useState<FeedbackItem[]>([]);
   const loadingRef = useRef<boolean>(false);
-  const user = getItem('user');
+  const user = getFeedbackUser();
 
   const currentStyle = useVisualScheme(state => state.currentStyle);
 

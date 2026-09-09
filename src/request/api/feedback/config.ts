@@ -1,4 +1,4 @@
-import { setItem } from 'expo-secure-store';
+import { setItem } from '@/platform/storage';
 
 import getFeedbackToken from './getFeedbackToken';
 import getFeishuToken from './getFeishuToken';

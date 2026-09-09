@@ -9,14 +9,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const isEasBuild = process.env.EAS_BUILD === 'true';
   const hasPrivateKeyArg =
     process.argv.includes('--private-key-path') ||
-    process.argv.some(arg => arg.startsWith('--private-key-path='));
+    process.argv.some((arg: string) => arg.startsWith('--private-key-path='));
   const enableCodeSigning =
     (isEasBuild ||
       hasPrivateKeyArg ||
       process.env.ENABLE_CODE_SIGNING === 'true') &&
     process.env.DISABLE_CODE_SIGNING !== 'true';
 
-  const codeSigningConfig = enableCodeSigning
+  const codeSigningConfig: ExpoConfig['updates'] = enableCodeSigning
     ? {
         codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
         codeSigningCertificate: './certs/certificate.pem',

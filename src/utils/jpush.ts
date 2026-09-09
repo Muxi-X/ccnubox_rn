@@ -6,6 +6,7 @@ import { logger } from './logger';
 type RegistrationIdCallback = (result: { registerID?: string }) => void;
 type NotificationListener = (result: unknown) => void;
 type ConnectListener = (result: { connectEnable?: boolean }) => void;
+type NotificationEnabledCallback = (_enabled: boolean) => void;
 type JPushListener =
   | RegistrationIdCallback
   | NotificationListener
@@ -113,6 +114,11 @@ export const jpushClient = {
       { requireInit: true }
     );
   },
+  isNotificationEnabled(callback: NotificationEnabledCallback) {
+    return invokeJPush('isNotificationEnabled', () => {
+      JPush.isNotificationEnabled(callback);
+    });
+  },
   removeListener(callback: JPushListener) {
     return invokeJPush('removeListener', () => {
       JPush.removeListener(callback);
@@ -126,6 +132,11 @@ export const jpushClient = {
   addNotificationListener(callback: NotificationListener) {
     return invokeJPush('addNotificationListener', () => {
       JPush.addNotificationListener(callback);
+    });
+  },
+  addLocalNotificationListener(callback: NotificationListener) {
+    return invokeJPush('addLocalNotificationListener', () => {
+      JPush.addLocalNotificationListener(callback);
     });
   },
   addCustomMessageListener(callback: NotificationListener) {

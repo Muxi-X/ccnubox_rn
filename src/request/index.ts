@@ -1,8 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 import { router } from 'expo-router';
-import { getItem, setItem } from 'expo-secure-store';
 
 import { BASE_URL } from '@/constants/BASE_URLS';
+import {
+  HARMONY_DEBUG_SHORT_VALUE,
+  isHarmonyDebugCredential,
+  isHarmonyDebugSessionEnabled,
+} from '@/platform/harmonyDebugSession';
+import { isHarmony } from '@/platform/runtime';
+import { getItem, setItem } from '@/platform/storage';
 import requestBus from '@/store/currentRequests';
 import { OtherTokenConfig } from '@/types/axios';
 
@@ -52,9 +58,19 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
 
     refreshingPromise = (async () => {
       try {
+        if (isHarmony && (await isHarmonyDebugSessionEnabled())) {
+          await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
+          return HARMONY_DEBUG_SHORT_VALUE;
+        }
+
         const longToken = await getItem('longToken');
         if (!longToken) {
           throw new Error('长 token 不存在，跳转登录');
+        }
+
+        if (isHarmony && isHarmonyDebugCredential(longToken)) {
+          await setItem('shortToken', HARMONY_DEBUG_SHORT_VALUE);
+          return HARMONY_DEBUG_SHORT_VALUE;
         }
 
         // 刷新短 token
@@ -64,7 +80,17 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
 
         if (response.status === 200 || response.status === 201) {
           const newShortToken = response.headers['x-jwt-token'];
-          setItem('shortToken', newShortToken);
+          if (
+            isHarmony &&
+            (typeof newShortToken !== 'string' || newShortToken.length === 0)
+          ) {
+            throw new Error('刷新短 token 响应缺少 token');
+          }
+          if (isHarmony) {
+            await setItem('shortToken', newShortToken);
+          } else {
+            setItem('shortToken', newShortToken);
+          }
           return newShortToken;
         }
 

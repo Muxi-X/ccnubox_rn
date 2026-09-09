@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
+import { isHarmony } from '@/platform/runtime';
 import { request } from '@/request';
 import {
   FeishuUploadTokenConfig,
@@ -43,7 +44,7 @@ async function getFileInfo(
     }
 
     const fileContent = await FileSystem.readAsStringAsync(fileUri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: isHarmony ? 'base64' : FileSystem.EncodingType.Base64,
     });
 
     const bytes = base64ToUint8Array(fileContent);
@@ -80,9 +81,11 @@ async function uploadFileToFeishuBitable(
     const checkSum = calculateAdler32(fileInfo.arrayBuffer);
     formData.append('checksum', checkSum);
 
-    // 处理文件URI以兼容iOS和Android
+    // RNOH passes this value to native HTTP's filePath, which needs an absolute path.
     const fileUriFormatted =
-      Platform.OS === 'ios' ? fileUri.replace('file://', '') : fileUri;
+      Platform.OS === 'ios' || isHarmony
+        ? fileUri.replace('file://', '')
+        : fileUri;
     const fileType = fileName.includes('.png') ? 'image/png' : 'image/jpeg';
 
     // 添加文件
