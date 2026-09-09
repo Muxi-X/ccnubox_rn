@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-08T00:05:27.243Z",
-  "toolkitVersion": "2.0.0-next.2",
+  "generatedAt": "2026-09-09T02:47:01.333Z",
+  "toolkitVersion": "2.0.0-next.3",
   "templateVersion": "rnoh-0.82.29",
   "matrixId": "expo56-rn085-rnoh082-preview",
   "projectRoot": "/Users/blackishgreen03/workspace/ccnubox-harmony-simulator-closeout",
@@ -55,7 +55,7 @@
     },
     {
       "relativePath": "harmony/oh-package.json5",
-      "sha1": "af006fa8f1ced55d063b475d6a32f2da986a622f"
+      "sha1": "18e3226d21bb593afe18d04a5d948dd7feeebe1b"
     },
     {
       "relativePath": "harmony/entry/src/main/ets/RNOHPackagesFactory.ets",
@@ -79,7 +79,7 @@
     },
     {
       "relativePath": ".expo-harmony/shims/expo-modules-core/index.js",
-      "sha1": "5ab9749a5882af736d1339c9ffe885b87c5ef65c"
+      "sha1": "742e869c017c63e79551056aa1e2182e41c0d4dc"
     },
     {
       "relativePath": ".expo-harmony/shims/expo-file-system/index.js",
@@ -95,7 +95,7 @@
     },
     {
       "relativePath": ".expo-harmony/shims/expo-camera/index.js",
-      "sha1": "6c34ade10fc2b4a9e8f64d2f78eaad735d9d8966"
+      "sha1": "d527788a33385a01f2db31f2eabe6eccb29ccbec"
     },
     {
       "relativePath": ".expo-harmony/shims/expo-secure-store/index.js",
@@ -159,7 +159,7 @@
     },
     {
       "relativePath": ".expo-harmony/toolkit-config.json",
-      "sha1": "cb8c264d6ea1de50de22216b84d66ff167a154c6"
+      "sha1": "a1dbd2527c768b55170c1d1be9725d0e1fbf25e3"
     },
     {
       "relativePath": ".expo-harmony/signing.local.example.json",

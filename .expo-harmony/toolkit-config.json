@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-07T12:57:26.651Z",
-  "toolkitVersion": "2.0.0-next.2",
+  "generatedAt": "2026-09-09T02:41:58.678Z",
+  "toolkitVersion": "2.0.0-next.3",
   "templateVersion": "rnoh-0.82.29",
   "matrixId": "expo56-rn085-rnoh082-preview",
   "rnohVersion": "0.82.29",
@@ -315,7 +315,7 @@
   "project": {
     "name": "华师匣子",
     "slug": "ccnubox",
-    "version": "3.1.10",
+    "version": "3.2.0",
     "hvigorPluginFilename": "rnoh-hvigor-plugin-0.82.29.tgz"
   }
 }
