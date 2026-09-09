@@ -25,6 +25,7 @@ import {
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { platformCapabilities } from '@/platform/capabilities';
 import { getFeedbackUser } from '@/platform/feedbackUser';
+import { isHarmony } from '@/platform/runtime';
 import { createFeedbackRecord } from '@/request/api/feedback';
 import useVisualScheme from '@/store/visualScheme';
 import { logger } from '@/utils/logger';
@@ -555,7 +556,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   thumbnailOverlay: {
-    ...StyleSheet.absoluteFill,
+    ...(isHarmony ? StyleSheet.absoluteFill : StyleSheet.absoluteFillObject),
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.6)',

@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
 import { isHarmony } from '@/platform/runtime';
@@ -65,11 +65,6 @@ async function uploadFileToFeishuBitable(
   fileName: string
 ): Promise<any> {
   try {
-    const parentNode = FIXED_CONFIG.parentNode;
-    if (!parentNode) {
-      throw new Error('未配置反馈附件父节点');
-    }
-
     // 获取文件信息和内容
     const fileInfo = await getFileInfo(fileUri);
 
@@ -79,16 +74,18 @@ async function uploadFileToFeishuBitable(
     // 添加文本字段
     formData.append('file_name', fileName);
     formData.append('parent_type', FIXED_CONFIG.parentType);
-    formData.append('parent_node', parentNode);
+    formData.append('parent_node', FIXED_CONFIG.parentNode);
     formData.append('size', fileInfo.size.toString());
 
     // 计算并添加校验和
     const checkSum = calculateAdler32(fileInfo.arrayBuffer);
     formData.append('checksum', checkSum);
 
-    // 处理文件URI以兼容iOS和Android
+    // RNOH passes this value to native HTTP's filePath, which needs an absolute path.
     const fileUriFormatted =
-      Platform.OS === 'ios' ? fileUri.replace('file://', '') : fileUri;
+      Platform.OS === 'ios' || isHarmony
+        ? fileUri.replace('file://', '')
+        : fileUri;
     const fileType = fileName.includes('.png') ? 'image/png' : 'image/jpeg';
 
     // 添加文件

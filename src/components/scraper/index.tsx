@@ -29,6 +29,14 @@ const Scraper = forwardRef<SafeWebViewHandle | WebView | null, ScraperProps>(
     const student_id = useUserStore(state => state.student_id) || '2023122691';
     const storedCredential = useUserStore(state => state.password) || '';
 
+    // Local Harmony fixtures must never submit synthetic credentials to the university.
+    if (
+      isHarmony &&
+      process.env.EXPO_PUBLIC_API_URL?.startsWith('http://127.0.0.1:')
+    ) {
+      return null;
+    }
+
     const runFirst = storedCredential
       ? LOGIN_SCRAPER(student_id, storedCredential)
       : undefined;

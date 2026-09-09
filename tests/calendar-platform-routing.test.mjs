@@ -9,6 +9,27 @@ const calendarSource = readFileSync(
 const compact = value => value.replace(/\s+/g, ' ').trim();
 const compactSource = compact(calendarSource);
 
+test('preserves the Android File API cache and download path', () => {
+  assert.match(
+    calendarSource,
+    /import \{ File as ExpoFile, Paths \} from 'expo-file-system';/
+  );
+  assert.ok(
+    compactSource.includes(
+      compact(`
+    const localFile = new ExpoFile(Paths.document, \`calendar_\${year}.pdf\`);
+    if (localFile.exists) {
+      setSource(localFile.uri);
+      setDownloading(false);
+      return;
+    }
+    ExpoFile.downloadFileAsync(url, localFile)
+      .then(file => setSource(file.uri))
+  `)
+    )
+  );
+});
+
 test('keeps the existing iOS and Android calendar renderers', () => {
   assert.match(
     calendarSource,

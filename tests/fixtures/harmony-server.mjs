@@ -2,10 +2,12 @@
 // Run: node tests/fixtures/harmony-server.mjs
 // Forward: hdc rport tcp:18787 tcp:18787
 // Bundle with EXPO_PUBLIC_API_URL=http://127.0.0.1:18787/api/v1
+
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 
 const origin = 'http://127.0.0.1:18787';
+const feedbackState = { uploads: [], records: [] };
 const semester = {
   semester: '2026-1',
   start_date: '2026-08-31',
@@ -35,6 +37,21 @@ const feed = {
   read: false,
   url: `${origin}/webview`,
 };
+const grades = [90, 80].map((score, index) => ({
+  Kclbmc: '專業課',
+  kcbj: '主修',
+  kcmc: `模擬器成績 ${index + 1}`,
+  kcxzmc: '專業必修',
+  xf: index + 2,
+  cj: score,
+  jd: index ? 3 : 4,
+  regularGrade: score,
+  finalGrade: score,
+  regularGradePercent: '30%',
+  finalGradePercent: '70%',
+  xnm: 2026,
+  xqm: 1,
+}));
 // One-page, ASCII-only PDF with calculated byte offsets; no external fixture download.
 const stream = 'BT /F1 24 Tf 72 720 Td (Harmony Simulator PDF) Tj ET';
 const pdfObjects = [
@@ -83,6 +100,10 @@ const routes = {
     ],
   },
   '/feed/getFeedEvents': { feed_events: [feed] },
+  '/grade/getGradeType': { kcxzmc: ['專業必修'] },
+  '/grade/getGradeScore': {
+    type_of_grade_scores: [{ kcxzmc: '專業必修', grade_score_list: grades }],
+  },
 };
 
 createServer(async (req, res) => {
@@ -93,6 +114,61 @@ createServer(async (req, res) => {
     res.writeHead(status, { 'content-type': 'application/json', ...headers });
     res.end(JSON.stringify(data));
   };
+  if (req.method === 'GET' && route === '/fixture/feedback-state') {
+    json(200, feedbackState);
+    return;
+  }
+  if (req.method === 'POST' && route === '/fixture/upload') {
+    if (req.headers.authorization !== 'Bearer fixture-feishu-token') {
+      json(401, { code: 1 });
+      return;
+    }
+    try {
+      const chunks = [];
+      let size = 0;
+      for await (const chunk of req) {
+        size += chunk.length;
+        if (size > 8 * 1024 * 1024) throw new Error('Fixture upload too large');
+        chunks.push(chunk);
+      }
+      const form = await new Request(url, {
+        method: 'POST',
+        headers: req.headers,
+        body: Buffer.concat(chunks),
+      }).formData();
+      const file = form.get('file');
+      if (!(file instanceof File)) throw new Error('Missing file');
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      let a = 1;
+      let b = 0;
+      for (const byte of bytes) {
+        a = (a + byte) % 65521;
+        b = (b + a) % 65521;
+      }
+      const checksum = String(((b << 16) | a) >>> 0);
+      if (
+        form.get('size') !== String(file.size) ||
+        form.get('checksum') !== checksum ||
+        form.get('parent_node') !== 'fixture-parent' ||
+        form.get('parent_type') !== 'bitable_image'
+      ) {
+        throw new Error('Invalid multipart contract');
+      }
+      const file_token = `fixture-file-${feedbackState.uploads.length + 1}`;
+      feedbackState.uploads.push({
+        file_token,
+        size: file.size,
+        checksum,
+        name: file.name,
+        type: file.type,
+      });
+      json(200, { code: 0, data: { file_token } });
+    } catch (error) {
+      console.log('Fixture upload rejected:', error.message);
+      json(400, { code: 1, msg: 'Invalid fixture multipart upload' });
+    }
+    return;
+  }
   if (req.method === 'GET' && route === '/image.png') {
     res.writeHead(200, { 'content-type': 'image/png' });
     res.end(
@@ -128,6 +204,43 @@ createServer(async (req, res) => {
       if (body.length > 8192) throw new Error('Fixture request too large');
     }
     const payload = body ? JSON.parse(body) : {};
+    if (
+      req.method === 'POST' &&
+      ['/auth/tenant/token', '/auth/table-config/token'].includes(route)
+    ) {
+      json(200, {
+        code: 0,
+        data: {
+          access_token:
+            route === '/auth/tenant/token'
+              ? 'fixture-feishu-token'
+              : 'fixture-feedback-token',
+        },
+      });
+      return;
+    }
+    if (req.method === 'POST' && route === '/sheet/records') {
+      if (req.headers.authorization !== 'Bearer fixture-feedback-token') {
+        json(401, { code: 1 });
+      } else if (
+        !payload.content ||
+        payload.student_id !== '1000000000' ||
+        !Array.isArray(payload.images) ||
+        payload.images.some(
+          token =>
+            !feedbackState.uploads.some(upload => upload.file_token === token)
+        )
+      ) {
+        json(400, { code: 1, msg: 'Invalid fixture feedback' });
+      } else {
+        feedbackState.records.push(payload);
+        json(200, {
+          code: 0,
+          data: { record_id: `fixture-record-${feedbackState.records.length}` },
+        });
+      }
+      return;
+    }
     if (route === '/users/login_ccnu' && req.method === 'POST') {
       const valid =
         payload.student_id === '1000000000' &&
@@ -146,6 +259,76 @@ createServer(async (req, res) => {
       json(401, { code: 1, msg: 'Use the isolated simulator test login' });
     } else if (req.method === 'GET' && Object.hasOwn(routes, route)) {
       json(200, { code: 0, data: routes[route] });
+    } else if (
+      (req.method === 'POST' && route === '/class/add') ||
+      (req.method === 'PUT' && route === '/class/update')
+    ) {
+      if (
+        !payload.name ||
+        !payload.dur_class ||
+        !payload.year ||
+        !payload.semester ||
+        !Number.isInteger(payload.day) ||
+        !Array.isArray(payload.weeks)
+      ) {
+        json(400, { code: 1, msg: 'Invalid course fixture' });
+        return;
+      }
+      const classes = routes['/class/get'].classes;
+      const index = classes.findIndex(item => item.id === payload.classId);
+      if (route === '/class/update' && index < 0) {
+        json(404, { code: 1, msg: 'Unknown fixture course' });
+        return;
+      }
+      const item = {
+        ...course,
+        ...payload,
+        id: [
+          'Class',
+          payload.name,
+          payload.year,
+          payload.semester,
+          payload.day,
+          payload.dur_class,
+          payload.teacher ?? '',
+          payload.where ?? '',
+          payload.weeks.reduce((mask, week) => mask | (1 << (week - 1)), 0),
+        ].join(':'),
+        classname: payload.name,
+        class_when: payload.dur_class,
+        week_duration: `${Math.min(...payload.weeks)}-${Math.max(...payload.weeks)}周`,
+      };
+      if (index < 0) classes.push(item);
+      else classes[index] = item;
+      json(200, { code: 0 });
+    } else if (req.method === 'POST' && route === '/class/delete') {
+      const classes = routes['/class/get'].classes;
+      const index = classes.findIndex(
+        item =>
+          item.id === payload.id &&
+          item.year === payload.year &&
+          item.semester === payload.semester
+      );
+      if (index < 0) json(404, { code: 1, msg: 'Unknown fixture course' });
+      else {
+        classes.splice(index, 1);
+        json(200, { code: 0 });
+      }
+    } else if (req.method === 'POST' && route === '/grade/getGradeByTerm') {
+      if (!Array.isArray(payload.terms) || !Array.isArray(payload.kcxzmcs)) {
+        json(400, { code: 1, msg: 'Invalid grade filters' });
+        return;
+      }
+      json(200, {
+        code: 0,
+        data: {
+          grades: grades.filter(
+            item =>
+              payload.terms.includes(`${item.xnm}-${item.xqm}`) &&
+              payload.kcxzmcs.includes(item.kcxzmc)
+          ),
+        },
+      });
     } else if (
       req.method === 'POST' &&
       route === '/feed/readFeedEvent' &&

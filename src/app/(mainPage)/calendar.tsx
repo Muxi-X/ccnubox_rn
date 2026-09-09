@@ -1,4 +1,5 @@
 import { Icon } from '@ant-design/react-native';
+import { File as ExpoFile, Paths } from 'expo-file-system';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as React from 'react';
 import {
@@ -204,15 +205,32 @@ const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
   const [source, setSource] = React.useState<string>();
 
   React.useEffect(() => {
-    const localUri = `${FileSystem.documentDirectory}calendar_${year}.pdf`;
+    if (isHarmony) {
+      const localUri = `${FileSystem.documentDirectory}calendar_${year}.pdf`;
+      FileSystem.getInfoAsync(localUri)
+        .then(info =>
+          info.exists
+            ? localUri
+            : FileSystem.downloadAsync(url, localUri).then(file => file.uri)
+        )
+        .then(setSource)
+        .catch(() => {
+          // 下载失败处理
+        })
+        .finally(() => setDownloading(false));
+      return;
+    }
 
-    FileSystem.getInfoAsync(localUri)
-      .then(info =>
-        info.exists
-          ? localUri
-          : FileSystem.downloadAsync(url, localUri).then(file => file.uri)
-      )
-      .then(setSource)
+    const localFile = new ExpoFile(Paths.document, `calendar_${year}.pdf`);
+
+    if (localFile.exists) {
+      setSource(localFile.uri);
+      setDownloading(false);
+      return;
+    }
+
+    ExpoFile.downloadFileAsync(url, localFile)
+      .then(file => setSource(file.uri))
       .catch(() => {
         // 下载失败处理
       })

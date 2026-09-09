@@ -209,7 +209,7 @@ const CourseTablePage: FC = () => {
       }
 
       if (parsed.droppedCount > 0) {
-        logger.warn(`课表数据已忽略 ${parsed.droppedCount} 条异常课程`);
+        log.warn(`课表数据已忽略 ${parsed.droppedCount} 条异常课程`);
         Toast.show({
           text: `发现 ${parsed.droppedCount} 条异常课程，已安全忽略`,
           icon: 'fail',
@@ -266,7 +266,7 @@ const CourseTablePage: FC = () => {
       setTimetableStatus(
         useCourse.getState().courses.length > 0 ? 'stale' : 'error'
       );
-      logger.error('Failed to retry timetable', error);
+      log.error('Failed to retry timetable:', error);
       Toast.show({
         text: getTimetableErrorMessage(error),
         icon: 'fail',
@@ -341,7 +341,7 @@ const CourseTablePage: FC = () => {
         targetYear = current.year;
         targetSemester = current.semester;
       } catch (semesterError) {
-        logger.error('Failed to initialize semester metadata', semesterError);
+        log.error('Failed to initialize semester metadata:', semesterError);
       }
 
       if (!targetYear || !targetSemester) {

@@ -1,12 +1,63 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
+import { runInNewContext } from 'node:vm';
 
 const read = path =>
   readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const compact = value => value.replace(/\s+/g, ' ').trim();
 const require = createRequire(import.meta.url);
+
+test('redirects uploads only in the explicitly isolated Harmony fixture build', () => {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const env = {};
+  const module = { exports: {} };
+  const fixtureRequire = name => {
+    if (name === 'expo/metro-config') return { getDefaultConfig: () => ({}) };
+    if (name === '@react-native-oh/react-native-harmony/metro.config')
+      return { createHarmonyMetroConfig: () => ({}) };
+    if (name === 'expo-harmony-toolkit/metro')
+      return { createHarmonyPackageResolver: () => () => null };
+    return require(name);
+  };
+  fixtureRequire.resolve = require.resolve;
+  runInNewContext(read('metro.harmony.config.js'), {
+    module,
+    require: fixtureRequire,
+    __dirname: root,
+    process: { env },
+  });
+  const resolve = module.exports.resolver.resolveRequest;
+  const context = {
+    originModulePath: path.join(root, 'src/utils/uploadPicture.ts'),
+    resolveRequest: (_ctx, name) => name,
+  };
+  const fixture = path.join(root, 'tests/fixtures/feedback-upload.ts');
+  assert.notEqual(resolve(context, '@/request', 'harmony'), fixture);
+  env.EXPO_PUBLIC_API_URL = 'http://127.0.0.1:18787/api/v1';
+  assert.notEqual(resolve(context, '@/request', 'harmony'), fixture);
+  env.EXPO_PUBLIC_FEEDBACK_BASE_URL = 'http://127.0.0.1:18787';
+  assert.equal(resolve(context, '@/request', 'harmony'), fixture);
+  for (const platform of ['ios', 'android', 'web']) {
+    assert.equal(resolve(context, '@/request', platform), '@/request');
+  }
+  context.originModulePath = path.join(
+    root,
+    'src/request/api/feedback/config.ts'
+  );
+  assert.notEqual(resolve(context, '@/request', 'harmony'), fixture);
+  for (const name of ['expo-file-system', 'expo-file-system/legacy']) {
+    assert.equal(
+      resolve(context, name, 'harmony'),
+      path.join(root, '.expo-harmony/shims/expo-file-system/index.js')
+    );
+    assert.equal(resolve(context, name, 'android'), name);
+    assert.equal(resolve(context, name, 'ios'), name);
+  }
+});
 
 test('pairs Harmony React with its renderer without downgrading the native app', () => {
   const renderer = read(

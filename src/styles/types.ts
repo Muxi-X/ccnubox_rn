@@ -73,7 +73,9 @@ type ViewStyleNames = Exclude<
 export type SingleThemeType = {
   [K in TextStyleNames]?: TextStyle;
 } & {
-  [K in ViewStyleNames]?: ViewStyle;
+  [K in ViewStyleNames]?: K extends 'button_style'
+    ? ViewStyle & Pick<TextStyle, 'color'>
+    : ViewStyle;
 } & {
   [K in StatusStyleNames]?: Record<
     string,

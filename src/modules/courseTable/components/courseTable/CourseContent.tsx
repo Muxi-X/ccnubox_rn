@@ -141,7 +141,7 @@ const CourseContent: React.FC<CourseContentProps> = memo(
             });
           }}
         >
-          {CourseItem != null && isRender ? <CourseItem {...props} /> : null}
+          {CourseItem && isRender ? <CourseItem {...props} /> : null}
           {slotCourses.length > 1 && isRender && (
             <View
               pointerEvents="none"

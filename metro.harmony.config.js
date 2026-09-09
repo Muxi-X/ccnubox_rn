@@ -51,6 +51,10 @@ const expoHarmonyShims = {
     __dirname,
     'src/platform/harmonyExpoImageManipulator.ts'
   ),
+  'expo-file-system': path.resolve(
+    __dirname,
+    '.expo-harmony/shims/expo-file-system/index.js'
+  ),
   'expo-file-system/legacy': path.resolve(
     __dirname,
     '.expo-harmony/shims/expo-file-system/index.js'
@@ -250,6 +254,17 @@ const resolveReactNativeCompatibilityWrapper = (
   return null;
 };
 const resolveExpoHarmonyShim = (context, moduleName, platform) => {
+  // Isolated simulator fixtures only: never send synthetic uploads to Feishu.
+  if (
+    platform === 'harmony' &&
+    process.env.EXPO_PUBLIC_API_URL === 'http://127.0.0.1:18787/api/v1' &&
+    process.env.EXPO_PUBLIC_FEEDBACK_BASE_URL === 'http://127.0.0.1:18787' &&
+    moduleName === '@/request' &&
+    context.originModulePath === path.join(__dirname, 'src/utils/uploadPicture.ts')
+  ) {
+    return context.resolveRequest(context, path.join(__dirname, 'tests/fixtures/feedback-upload.ts'), platform);
+  }
+
   const projectRootModuleAliasResolution = resolveProjectRootModuleAlias(
     context,
     moduleName,
