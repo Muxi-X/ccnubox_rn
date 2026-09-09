@@ -1,4 +1,4 @@
-name: Test Update
+name: Preview
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  eas-update:
+  ota-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +27,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run EAS Update
+      - name: Publish OTA Update
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          pnpx eas-cli update --branch test --message "${{ github.event.head_commit.message }}"
+          if [ -n "$COMMIT_MESSAGE" ]; then
+            pnpm exec eoas publish --branch preview --nonInteractive -m "$COMMIT_MESSAGE"
+          else
+            pnpm exec eoas publish --branch preview --nonInteractive
+          fi
