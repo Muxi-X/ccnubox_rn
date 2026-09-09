@@ -4,6 +4,33 @@
   <dict>
     <key>EXUpdatesCheckOnLaunch</key>
     <string>ALWAYS</string>
+    <key>EXUpdatesCodeSigningCertificate</key>
+    <string>-----BEGIN CERTIFICATE-----
+MIIC9zCCAd+gAwIBAgIJAKkUgWvOU/yXMA0GCSqGSIb3DQEBCwUAMBIxEDAOBgNV
+BAMMB2NjbnVib3gwHhcNMjYwOTA3MDgzMjE5WhcNMzYwOTA0MDgzMjE5WjASMRAw
+DgYDVQQDDAdjY251Ym94MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+m4hIAU9F90LM/n7d8P135lI5Uzp4NBESVlldekfWJ2nIat7RNryszF8zy0oMPwQy
+qGPJhUmOws4U99c7fEcpoXBkL+b2Mn4gDvlYaYQDHyRglAtEZhtngcdQLkzGcpCA
+Ep03bjmb1KICXnrhyzB2Unxu/BxKvriI4D36MCtKBtua9nkeZ51lbGQxOt6d2eqM
+PbwmLGhAtRETilwpZEphEQPkX98Xh6GGoqxGUk4iwChN029F/uTZjumSTWstiEsC
+tPZj++rIDHdddHeC2AF/n7D7WVBXw2lpk8sNnZagIqjRXICijkpgAqBvKOWxAR6/
+FeOY7ImWpXEc6hoiiVzUOQIDAQABo1AwTjAdBgNVHQ4EFgQU45U/IF3cczvvCC2q
+7yr6wr7rh7cwHwYDVR0jBBgwFoAU45U/IF3cczvvCC2q7yr6wr7rh7cwDAYDVR0T
+BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAQBe7fdP28vgOVVtHvCN7MCf4KlYp
+cbi5sL9WmuR1rUU04EHOzse0kHQhBNcL65iZDVXbloi2OZGL1kWCJsf/cI5qbISK
+o7WP8pMc+3SeY2Rj6U1Ab71yK/3fMsM9H7NXRF+aU5wY2aMiNW0gdJJFSjN9w+Uc
+M7SpgDElxveGL0PflZPyuu2pQ7QOnV8qisxIr/byBLeLOJLNtCG+p3dDEgngVCkK
+tX+Xupl4oGbHG32Dz/PxGvMVvc66QZbujpLrzHgs/4Fvd6SlSm9C7c/+0COifNw1
+FU/sRViCpZWuEB9rIX7Bss66PAb15AdgFFE/tb1O1iv+KThNG1+7Ar7bgA==
+-----END CERTIFICATE-----
+</string>
+    <key>EXUpdatesCodeSigningMetadata</key>
+    <dict>
+      <key>keyid</key>
+      <string>main</string>
+      <key>alg</key>
+      <string>rsa-v1_5-sha256</string>
+    </dict>
     <key>EXUpdatesEnableBsdiffPatchSupport</key>
     <true/>
     <key>EXUpdatesEnabled</key>
