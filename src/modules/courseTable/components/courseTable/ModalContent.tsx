@@ -166,13 +166,14 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
             flexDirection: 'row',
             gap: 10,
             justifyContent: 'space-around',
+            alignItems: 'center',
+            paddingVertical: 10,
             borderTopWidth: 0.5,
             borderTopColor: '#E1E2F1',
           }}
         >
-          <TouchableOpacity
-            style={styles.touchableBtn}
-            accessibilityRole="button"
+          <Button
+            type="ghost"
             onPress={() => {
               Modal.clear();
               Modal.show({
@@ -197,10 +198,9 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               />
               <Text style={currentStyle?.text_style}>删除</Text>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.touchableBtn}
-            accessibilityRole="button"
+          </Button>
+          <Button
+            type="ghost"
             onPress={() => {
               Modal.clear();
               router.push({
@@ -219,7 +219,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               />
               <Text style={currentStyle?.text_style}>编辑</Text>
             </View>
-          </TouchableOpacity>
+          </Button>
         </View>
       );
     }
@@ -290,12 +290,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
 
               <View style={styles.noteActionsArea}>
                 <Button
-                  type="Secondary"
-                  width={68}
-                  height={36}
-                  disabled={isSaving}
-                  backgroundColor="#FFFFFF"
-                  textColor="#6A69E6"
+                  type="ghost"
+                  textStyle={{ fontSize: 12 }}
                   buttonStyle={styles.cancelBtn}
                   onPress={() => {
                     setNoteText('');
@@ -306,12 +302,9 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
 
                 <View style={styles.rightButtons}>
                   <Button
-                    type="Secondary"
-                    width={68}
-                    height={36}
+                    type="ghost"
+                    textStyle={{ fontSize: 12 }}
                     disabled={isSaving}
-                    backgroundColor="#FFFFFF"
-                    textColor="#6A69E6"
                     buttonStyle={styles.cancelBtn}
                     onPress={() => {
                       setIsNoted(false);
@@ -322,9 +315,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                   </Button>
 
                   <Button
-                    type="Secondary"
-                    width={68}
-                    height={36}
+                    type="ghost"
+                    textStyle={{ fontSize: 12, color: '#6A69E6' }}
                     disabled={isSaving}
                     isLoading={isSaving}
                     buttonStyle={styles.noteBtn}
@@ -544,25 +536,20 @@ const styles = StyleSheet.create({
   },
   rightButtons: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 20,
   },
   touchableBtn: {
     paddingVertical: 10,
   },
   noteBtn: {
-    width: 68,
-    height: 36,
     paddingVertical: 0,
     paddingHorizontal: 0,
+    minHeight: 0,
   },
   cancelBtn: {
-    width: 68,
-    height: 36,
     paddingVertical: 0,
     paddingHorizontal: 0,
-    borderWidth: 1,
-    borderColor: '#6A69E6',
-    backgroundColor: '#FFFFFF',
+    minHeight: 0,
   },
 });
 

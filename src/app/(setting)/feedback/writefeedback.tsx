@@ -396,8 +396,8 @@ function WriteFeedback() {
           <Button
             type="Primary"
             letterSpacing="25%"
-            fontSize={20}
-            width={250}
+            textStyle={{ fontSize: 20 }}
+            style={{ width: 250 }}
             disabledStyle={[
               (!isSubmitEnabled || isSubmitting) &&
                 currentStyle?.feedback_disabledSubmitButton_style,

@@ -11,14 +11,11 @@ const BORDER_RADIUS_MAP: Record<ButtonHierarchy, number> = {
   Primary: 20,
   Secondary: 15,
   Round: 30,
+  ghost: 0,
 };
 
-// 分级默认字体大小（1/2/3级默认均为20）
-const FONT_SIZE_MAP: Record<ButtonHierarchy, number> = {
-  Primary: 15,
-  Secondary: 15,
-  Round: 15,
-};
+// 默认字体大小
+const DEFAULT_FONT_SIZE = 15;
 
 // 分级默认最小高度与内边距
 const PADDING_MAP: Record<
@@ -28,6 +25,7 @@ const PADDING_MAP: Record<
   Primary: { paddingVertical: 12, paddingHorizontal: 24, minHeight: 46 },
   Secondary: { paddingVertical: 10, paddingHorizontal: 18, minHeight: 40 },
   Round: { paddingVertical: 8, paddingHorizontal: 16, minHeight: 38 },
+  ghost: { paddingVertical: 6, paddingHorizontal: 8, minHeight: 0 },
 };
 
 function resolveLetterSpacing(
@@ -37,7 +35,13 @@ function resolveLetterSpacing(
 ): number | undefined {
   if (letterSpacing === undefined) {
     const defaultPercent =
-      type === 'Secondary' ? 10 : type === 'Round' ? 5 : 15;
+      type === 'Secondary'
+        ? 10
+        : type === 'Round'
+          ? 5
+          : type === 'ghost'
+            ? 0
+            : 15;
     return (fontSize * defaultPercent) / 100;
   }
   if (typeof letterSpacing === 'number') {
@@ -58,165 +62,100 @@ function resolveLetterSpacing(
 
 const Button: FC<ButtonProps> = ({
   type = 'Primary',
-  isWhite,
-  white,
-  backgroundColor,
-  textColor,
-  fontSize,
-  width,
-  height,
-  marginTop,
   letterSpacing,
   isLoading = false,
   onPress,
-  text_style,
+  textStyle,
   style,
   buttonStyle,
   disabledStyle,
   disabledTitleStyle,
   children,
   disabled,
+  android_ripple,
   ...rest
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
+  const isGhost = type === 'ghost';
+  const defaultBorderRadius = BORDER_RADIUS_MAP[type] ?? (isGhost ? 0 : 20);
 
-  const borderRadius = BORDER_RADIUS_MAP[type] ?? 20;
-  const flattenedStyle = StyleSheet.flatten(style) || {};
+  const paddingLayout =
+    PADDING_MAP[type] ?? (isGhost ? PADDING_MAP.ghost : PADDING_MAP.Primary);
+
   const flattenedButtonStyle = StyleSheet.flatten(buttonStyle) || {};
+  const flattenedTextStyle = StyleSheet.flatten(textStyle) || {};
 
-  const customBorderRadius =
-    (flattenedButtonStyle as any)?.borderRadius ??
-    (flattenedStyle as any)?.borderRadius;
-  const finalBorderRadius = customBorderRadius ?? borderRadius;
-
-  const resolvedWidth =
-    width ??
-    (flattenedButtonStyle as any)?.width ??
-    (flattenedStyle as any)?.width;
-  const resolvedHeight =
-    height ??
-    (flattenedButtonStyle as any)?.height ??
-    (flattenedStyle as any)?.height;
-
-  // 如果在 buttonStyle 中写了 margin，应同步提取到 containerStyle，避免内层 Touchable 撑大导致水波纹/按压高亮溢出
-  const resolvedMargin =
-    (flattenedButtonStyle as any)?.margin ?? (flattenedStyle as any)?.margin;
-  const resolvedMarginTop =
-    marginTop ??
-    (flattenedButtonStyle as any)?.marginTop ??
-    (flattenedStyle as any)?.marginTop;
-  const resolvedMarginBottom =
-    (flattenedButtonStyle as any)?.marginBottom ??
-    (flattenedStyle as any)?.marginBottom;
-  const resolvedMarginLeft =
-    (flattenedButtonStyle as any)?.marginLeft ??
-    (flattenedStyle as any)?.marginLeft;
-  const resolvedMarginRight =
-    (flattenedButtonStyle as any)?.marginRight ??
-    (flattenedStyle as any)?.marginRight;
-  const resolvedMarginHorizontal =
-    (flattenedButtonStyle as any)?.marginHorizontal ??
-    (flattenedStyle as any)?.marginHorizontal;
-  const resolvedMarginVertical =
-    (flattenedButtonStyle as any)?.marginVertical ??
-    (flattenedStyle as any)?.marginVertical;
-
-  const innerButtonWidth =
-    resolvedWidth === undefined
-      ? undefined
-      : typeof resolvedWidth === 'number'
-        ? resolvedWidth
-        : '100%';
-
-  const innerButtonHeight =
-    resolvedHeight === undefined
-      ? undefined
-      : typeof resolvedHeight === 'number'
-        ? resolvedHeight
-        : '100%';
-
-  const defaultFontSize = FONT_SIZE_MAP[type] ?? 20;
-  const paddingLayout = PADDING_MAP[type] ?? PADDING_MAP.Primary;
-
-  const flattenedTextStyle = StyleSheet.flatten(text_style) || {};
-  const resolvedFontSize =
-    fontSize ?? flattenedTextStyle.fontSize ?? defaultFontSize;
+  const resolvedFontSize = flattenedTextStyle.fontSize ?? DEFAULT_FONT_SIZE;
   const calculatedLetterSpacing = resolveLetterSpacing(
-    letterSpacing,
+    letterSpacing ?? (flattenedTextStyle as any)?.letterSpacing,
     resolvedFontSize,
     type
   );
 
-  const isWhiteButton = Boolean(isWhite ?? white);
-
-  // 默认背景色：白色按钮为 80% 不透明度白色底；普通按钮取主题或设计稿默认主色 #6A69E6
-  const defaultBgColor = isWhiteButton
-    ? 'rgba(255, 255, 255, 0.8)'
+  // 默认背景色：优先从 buttonStyle 获取；若无则 ghost 为透明，普通按钮取主题或设计稿默认主色 #6A69E6
+  const customBgColor = (flattenedButtonStyle as any)?.backgroundColor;
+  const defaultBgColor = isGhost
+    ? 'transparent'
     : (currentStyle?.button_style?.backgroundColor ?? '#6A69E6');
-  const finalBgColor = backgroundColor ?? defaultBgColor;
+  const finalBgColor = customBgColor ?? defaultBgColor;
 
-  // 默认文字颜色：白色按钮取主紫色 #6A69E6；普通按钮取主题或纯白
-  const defaultTextColor = isWhiteButton
-    ? '#6A69E6'
+  // 默认文字颜色：优先从 textStyle 获取；若无则 ghost 为主题文本色或主紫色，普通按钮取主题或纯白
+  const customTextColor = flattenedTextStyle.color;
+  const defaultTextColor = isGhost
+    ? (currentStyle?.text_style?.color ?? '#6A69E6')
     : (currentStyle?.button_text_style?.color ?? '#FFFFFF');
-  const finalTextColor = textColor ?? defaultTextColor;
+  const finalTextColor = customTextColor ?? defaultTextColor;
 
-  const loadingColor = isWhiteButton ? '#6A69E6' : '#FFFFFF';
-  const isStringChild = typeof children === 'string';
+  const loadingColor = isGhost
+    ? (customTextColor ?? currentStyle?.text_style?.color ?? '#6A69E6')
+    : (customTextColor ?? '#FFFFFF');
+
+  // 水波纹配置：ghost 按钮默认无水波纹（除非显式传入）；普通按钮默认前景水波纹
+  const bg = String(finalBgColor).toLowerCase();
+  const isLightBackground =
+    bg === '#ffffff' ||
+    bg === '#fff' ||
+    bg === 'white' ||
+    finalTextColor === '#6A69E6';
+
+  const defaultRippleColor = isLightBackground
+    ? 'rgba(106, 105, 230, 0.25)'
+    : 'rgba(255, 255, 255, 0.32)';
+
+  const resolvedAndroidRipple = isGhost
+    ? (android_ripple ?? null)
+    : android_ripple === null
+      ? null
+      : {
+          color: defaultRippleColor,
+          borderless: false,
+          foreground: true,
+          ...android_ripple,
+        };
 
   return (
     <RNEButton
-      title={isStringChild ? children : undefined}
+      {...rest}
+      type={isGhost ? 'clear' : 'solid'}
       onPress={onPress}
       disabled={disabled || isLoading}
+      android_ripple={resolvedAndroidRipple}
       buttonStyle={[
         {
           backgroundColor: finalBgColor,
-          borderRadius: finalBorderRadius,
+          borderRadius: defaultBorderRadius,
           paddingVertical: paddingLayout.paddingVertical,
           paddingHorizontal: paddingLayout.paddingHorizontal,
           minHeight: paddingLayout.minHeight,
           alignItems: 'center',
           justifyContent: 'center',
         },
-        currentStyle?.button_style,
-        (backgroundColor || isWhiteButton) && { backgroundColor: finalBgColor },
         buttonStyle,
-        innerButtonWidth !== undefined && { width: innerButtonWidth },
-        innerButtonHeight !== undefined && {
-          height: innerButtonHeight,
-          minHeight: innerButtonHeight,
-        },
-        // 清除 buttonStyle 里的 margin，避免内部 View 产生位移导致与外层 Pressable/水波纹区域尺寸不一致
-        resolvedMargin !== undefined && { margin: 0 },
-        resolvedMarginTop !== undefined && { marginTop: 0 },
-        resolvedMarginBottom !== undefined && { marginBottom: 0 },
-        resolvedMarginLeft !== undefined && { marginLeft: 0 },
-        resolvedMarginRight !== undefined && { marginRight: 0 },
-        resolvedMarginHorizontal !== undefined && { marginHorizontal: 0 },
-        resolvedMarginVertical !== undefined && { marginVertical: 0 },
       ]}
       containerStyle={[
         {
-          borderRadius: finalBorderRadius,
+          borderRadius: defaultBorderRadius,
           overflow: 'hidden',
-        },
-        resolvedWidth !== undefined && { width: resolvedWidth },
-        resolvedHeight !== undefined && { height: resolvedHeight },
-        resolvedMargin !== undefined && { margin: resolvedMargin },
-        resolvedMarginTop !== undefined && { marginTop: resolvedMarginTop },
-        resolvedMarginBottom !== undefined && {
-          marginBottom: resolvedMarginBottom,
-        },
-        resolvedMarginLeft !== undefined && { marginLeft: resolvedMarginLeft },
-        resolvedMarginRight !== undefined && {
-          marginRight: resolvedMarginRight,
-        },
-        resolvedMarginHorizontal !== undefined && {
-          marginHorizontal: resolvedMarginHorizontal,
-        },
-        resolvedMarginVertical !== undefined && {
-          marginVertical: resolvedMarginVertical,
         },
         style,
       ]}
@@ -229,32 +168,20 @@ const Button: FC<ButtonProps> = ({
         {
           color: finalTextColor,
           fontSize: resolvedFontSize,
-          lineHeight: Math.round(resolvedFontSize * 1.3),
           letterSpacing: calculatedLetterSpacing,
           fontWeight: '600',
-          includeFontPadding: false,
-          textAlignVertical: 'center',
         },
-        currentStyle?.button_text_style,
-        (textColor || isWhiteButton) && { color: finalTextColor },
-        text_style,
+        textStyle,
       ]}
       disabledStyle={[
         {
-          backgroundColor: finalBgColor,
           opacity: 0.5,
         },
         disabledStyle,
       ]}
-      disabledTitleStyle={[
-        {
-          color: finalTextColor,
-        },
-        disabledTitleStyle,
-      ]}
-      {...rest}
+      disabledTitleStyle={disabledTitleStyle}
     >
-      {!isStringChild ? children : undefined}
+      {children}
     </RNEButton>
   );
 };

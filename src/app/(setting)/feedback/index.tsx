@@ -317,7 +317,7 @@ function FeedbackPage() {
         <View style={styles.bottom}>
           <Button
             type="Primary"
-            fontSize={18}
+            textStyle={{ fontSize: 18 }}
             onPress={() => router.push('/feedback/writefeedback')}
             buttonStyle={styles.button}
             letterSpacing="25%"

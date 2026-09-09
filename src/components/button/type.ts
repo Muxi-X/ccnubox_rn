@@ -1,13 +1,19 @@
 import { ButtonProps as RNEButtonProps } from '@rneui/themed';
-import { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import {
+  PressableAndroidRippleConfig,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
 /**
  * 按钮分级规范
- * - Primary: 最高级，圆角20，默认字号20，默认字间距15%
- * - Secondary: 第二级，圆角15，默认字号20，默认字间距10%
- * - Round: 第三级，圆角30，默认字号20，默认字间距5%
+ * - Primary: 最高级，圆角20，默认字间距15%
+ * - Secondary: 第二级，圆角15，默认字间距10%
+ * - Round: 第三级，圆角30，默认字间距5%
+ * - ghost: 幽灵按钮，透明背景，无内边距/外层包裹，用于轻量级文字或图标操作
  */
-export type ButtonHierarchy = 'Primary' | 'Secondary' | 'Round';
+export type ButtonHierarchy = 'Primary' | 'Secondary' | 'Round' | 'ghost';
 
 // omit 排除不支持或被内部接管的 props
 export interface ButtonProps extends Partial<
@@ -19,50 +25,19 @@ export interface ButtonProps extends Partial<
     | 'buttonStyle'
     | 'containerStyle'
     | 'type'
+    | 'android_ripple'
   >
 > {
   /**
-   * 按钮分级类型（Primary / Secondary / Round）
+   * 按钮分级类型（Primary / Secondary / Round / ghost）
    * @default 'Primary'
    */
   type?: ButtonHierarchy;
 
   /**
-   * 是否为白色样式按钮（如特定纯色背景页面），布尔值判断
-   * @default false
+   * Android 原生水波纹配置（ghost 默认无水波纹，其他类型默认开启；传 null 显式禁用）
    */
-  isWhite?: boolean;
-  white?: boolean;
-
-  /**
-   * 自定义背景颜色（优先级高于主题和 isWhite）
-   */
-  backgroundColor?: string;
-
-  /**
-   * 自定义文字颜色（优先级高于主题和 isWhite）
-   */
-  textColor?: string;
-
-  /**
-   * 自定义字体大小（字号，未提供时由分级规范默认决定）
-   */
-  fontSize?: number;
-
-  /**
-   * 自定义宽度（未设置时自适应或遵循外层/分级样式）
-   */
-  width?: ViewStyle['width'];
-
-  /**
-   * 自定义高度（未设置时自适应或遵循外层/分级样式）
-   */
-  height?: ViewStyle['height'];
-
-  /**
-   * 外边距上边距
-   */
-  marginTop?: ViewStyle['marginTop'];
+  android_ripple?: PressableAndroidRippleConfig | null;
 
   /**
    * 字间距，支持百分比字符串（如 '15%'、'10%'）或数字像素值
@@ -83,19 +58,15 @@ export interface ButtonProps extends Partial<
   /**
    * 文字样式
    */
-  text_style?: StyleProp<TextStyle>;
+  textStyle?: StyleProp<TextStyle>;
 
   /**
-   * button 外层容器样式
+   * button 外层容器样式（用于设置 width, height, margin 等容器与布局属性）
    */
   style?: StyleProp<ViewStyle>;
 
   /**
-   * button 本身样式
+   * button 本身样式（用于设置 backgroundColor, borderRadius, padding 等按钮本体属性）
    */
   buttonStyle?: StyleProp<ViewStyle>;
-
-  onPress?: () => void;
-
-  disabled?: boolean;
 }

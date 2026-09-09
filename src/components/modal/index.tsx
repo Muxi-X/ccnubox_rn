@@ -126,10 +126,9 @@ const Modal: React.FC<ModalProps> & {
             {showCancel && (cancelText || onCancel) && (
               <Button
                 type={buttonType}
-                width={styles.buttonStyle.width}
-                backgroundColor="#FFFFFF"
-                textColor="#6A69E6"
+                style={{ width: styles.buttonStyle.width }}
                 buttonStyle={styles.cancelButtonStyle}
+                textStyle={{ color: '#6A69E6' }}
                 onPress={handleCancel}
               >
                 {cancelText ?? '取消'}
@@ -138,7 +137,7 @@ const Modal: React.FC<ModalProps> & {
             {(confirmText || onConfirm) && (
               <Button
                 type={buttonType}
-                width={styles.buttonStyle.width}
+                style={{ width: styles.buttonStyle.width }}
                 onPress={handleConfirm}
               >
                 {confirmText ?? '确认'}

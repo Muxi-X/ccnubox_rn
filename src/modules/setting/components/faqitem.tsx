@@ -7,6 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SvgProps, SvgXml } from 'react-native-svg';
 
+import Button from '@/components/button';
 import Modal from '@/components/modal';
 
 import useVisualScheme from '@/store/visualScheme';
@@ -202,8 +203,13 @@ const FAQItem: React.FC<FAQItemProps> = ({
             </View>
 
             <View style={styles.buttonGroup}>
-              <TouchableOpacity
-                style={[
+              <Button
+                type="Primary"
+                buttonStyle={[
+                  styles.statusButton,
+                  selectedStatus === 'unresolved' && styles.selectedButton,
+                ]}
+                disabledStyle={[
                   styles.statusButton,
                   selectedStatus === 'unresolved' && styles.selectedButton,
                 ]}
@@ -221,24 +227,31 @@ const FAQItem: React.FC<FAQItemProps> = ({
                 }
                 disabled={selectedStatus === 'unresolved'}
               >
-                {selectedStatus === 'unresolved' ? (
-                  <UnresolvedSelectedIcon style={styles.buttonIcon} />
-                ) : (
-                  <UnresolvedIcon style={styles.buttonIcon} />
-                )}
-                <Text
-                  style={[
-                    styles.buttonText,
-                    selectedStatus === 'unresolved' &&
-                      styles.selectedButtonText,
-                  ]}
-                >
-                  未解决
-                </Text>
-              </TouchableOpacity>
+                <View style={styles.buttonContent}>
+                  {selectedStatus === 'unresolved' ? (
+                    <UnresolvedSelectedIcon style={styles.buttonIcon} />
+                  ) : (
+                    <UnresolvedIcon style={styles.buttonIcon} />
+                  )}
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      selectedStatus === 'unresolved' &&
+                        styles.selectedButtonText,
+                    ]}
+                  >
+                    未解决
+                  </Text>
+                </View>
+              </Button>
 
-              <TouchableOpacity
-                style={[
+              <Button
+                type="Primary"
+                buttonStyle={[
+                  styles.statusButton,
+                  selectedStatus === 'resolved' && styles.selectedButton,
+                ]}
+                disabledStyle={[
                   styles.statusButton,
                   selectedStatus === 'resolved' && styles.selectedButton,
                 ]}
@@ -256,20 +269,23 @@ const FAQItem: React.FC<FAQItemProps> = ({
                 }
                 disabled={selectedStatus === 'resolved'}
               >
-                {selectedStatus === 'resolved' ? (
-                  <ResolvedSelectedIcon style={styles.buttonIcon} />
-                ) : (
-                  <ResolvedIcon style={styles.buttonIcon} />
-                )}
-                <Text
-                  style={[
-                    styles.buttonText,
-                    selectedStatus === 'resolved' && styles.selectedButtonText,
-                  ]}
-                >
-                  已解决
-                </Text>
-              </TouchableOpacity>
+                <View style={styles.buttonContent}>
+                  {selectedStatus === 'resolved' ? (
+                    <ResolvedSelectedIcon style={styles.buttonIcon} />
+                  ) : (
+                    <ResolvedIcon style={styles.buttonIcon} />
+                  )}
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      selectedStatus === 'resolved' &&
+                        styles.selectedButtonText,
+                    ]}
+                  >
+                    已解决
+                  </Text>
+                </View>
+              </Button>
             </View>
           </View>
         </View>
@@ -354,9 +370,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 7,
     paddingHorizontal: 24,
+    minHeight: 0,
     borderWidth: 1,
     borderColor: '#968EF4',
     borderRadius: 20,
+    backgroundColor: 'transparent',
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   selectedButton: {
     borderColor: '#968EF4',
