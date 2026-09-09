@@ -9,6 +9,7 @@ import {
 } from '@rnoh/react-native-openharmony';
 import { ExpoHarmonyFileSystemTurboModule } from './ExpoHarmonyFileSystemTurboModule';
 import { ExpoHarmonyImagePickerTurboModule } from './ExpoHarmonyImagePickerTurboModule';
+import { selectCrop } from './ExpoHarmonyImageEditor';
 import { ExpoHarmonyLocationTurboModule } from './ExpoHarmonyLocationTurboModule';
 import { ExpoHarmonyCameraTurboModule } from './ExpoHarmonyCameraTurboModule';
 import { ExpoHarmonySecureStorageTurboModule } from './ExpoHarmonySecureStorageTurboModule';
@@ -41,7 +42,7 @@ export class ExpoHarmonyPackage extends RNOHPackage {
     return new Map<string, (ctx: UITurboModuleContext) => UITurboModule | null>()
       .set(
         ExpoHarmonyImagePickerTurboModule.NAME,
-        (ctx) => new ExpoHarmonyImagePickerTurboModule(ctx),
+        (ctx) => new ExpoHarmonyImagePickerTurboModule(ctx, selectCrop),
       )
       .set(
         ExpoHarmonyCameraTurboModule.NAME,

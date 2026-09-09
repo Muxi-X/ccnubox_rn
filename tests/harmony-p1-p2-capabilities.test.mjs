@@ -60,7 +60,17 @@ test('enables Harmony feedback attachments through the existing native picker an
     nativePicker,
     /isEditSupported = options\?\.allowsEditing === true/
   );
-  assert.match(nativePicker, /imagePacker\.packToFile/);
+  assert.match(nativePicker, /await this\.selectCrop\(/);
+  assert.match(nativePicker, /await pixels\.crop\(region\)/);
+  assert.match(nativePicker, /packer\.packing\(pixels/);
+  assert.match(
+    nativePicker,
+    /quality: Math\.round\(\(options\?\.quality \?\? 1\) \* 100\)/
+  );
+  assert.match(
+    read('harmony/entry/src/main/ets/expoHarmony/ExpoHarmonyPackage.ets'),
+    /new ExpoHarmonyImagePickerTurboModule\(ctx, selectCrop\)/
+  );
   const launchLibrary = nativePicker
     .split('async launchImageLibrary(')[1]
     .split('async launchCamera(')[0];
@@ -74,7 +84,10 @@ test('enables Harmony feedback attachments through the existing native picker an
   );
   assert.match(nativePicker, /await fs.copyFile\(source.fd, cachePath\)/);
   assert.match(nativePicker, /finally \{\s*fs.closeSync\(source\)/);
-  assert.match(nativePicker, /image.createImageSource\(inputFile.fd\)/);
+  assert.match(
+    nativePicker,
+    /image.createImageSource\(this.resolveFsTarget\(asset.uri\)/
+  );
 });
 
 test('renders Harmony PDFs and in-app browser content with maintained native adapters', () => {
