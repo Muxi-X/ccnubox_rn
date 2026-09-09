@@ -204,7 +204,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
     if (!formData.name.trim()) {
       Modal.show({
         title: '提示',
-        children: '请输入课程名称',
+        children: `请输入${props.pageText === 'test' ? '考试' : '课程'}名称`,
         mode: 'middle',
         showCancel: false,
         confirmText: '确定',
@@ -215,6 +215,26 @@ export const CourseDataForm = (props: CourseFormProps) => {
       Modal.show({
         title: '提示',
         children: '请选择周次',
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+      });
+      return;
+    }
+    if (!formData.where.trim()) {
+      Modal.show({
+        title: '提示',
+        children: `请输入${text}地点`,
+        mode: 'middle',
+        showCancel: false,
+        confirmText: '确定',
+      });
+      return;
+    }
+    if (!formData.teacher.trim()) {
+      Modal.show({
+        title: '提示',
+        children: '请输入教师',
         mode: 'middle',
         showCancel: false,
         confirmText: '确定',
@@ -234,14 +254,21 @@ export const CourseDataForm = (props: CourseFormProps) => {
 
     setLoading(true);
     try {
+      const trimmedFormData: CourseFormData = {
+        ...formData,
+        name: formData.name.trim(),
+        where: formData.where.trim(),
+        teacher: formData.teacher.trim(),
+      };
+
       if (props.onSubmit) {
-        await props.onSubmit(formData);
+        await props.onSubmit(trimmedFormData);
         return;
       }
 
       // default create behavior
       const data = {
-        ...formData,
+        ...trimmedFormData,
         semester,
         year,
         is_official: false, // 自主添加而非教务系统的课
@@ -249,7 +276,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
 
       await addCourse(data);
 
-      createAndCacheCourse(formData, semester, year);
+      createAndCacheCourse(trimmedFormData, semester, year);
 
       Modal.show({
         title: '成功',
@@ -273,11 +300,14 @@ export const CourseDataForm = (props: CourseFormProps) => {
           props.onSuccess?.();
         },
       });
-    } catch {
+    } catch (err: any) {
+      const serverMsg =
+        err?.response?.data?.msg || err?.response?.data?.message;
       Modal.show({
         title: '错误',
         children:
-          props.mode === 'edit' ? '保存失败，请重试' : '添加课程失败，请重试',
+          serverMsg ||
+          (props.mode === 'edit' ? '保存失败，请重试' : '添加课程失败，请重试'),
         mode: 'middle',
         showCancel: false,
         confirmText: '确定',
