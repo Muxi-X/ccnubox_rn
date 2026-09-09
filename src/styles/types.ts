@@ -75,7 +75,9 @@ export type SingleThemeType = {
 } & {
   [K in ViewStyleNames]?: K extends 'button_style'
     ? ViewStyle & Pick<TextStyle, 'color'>
-    : ViewStyle;
+    : K extends 'schedule_item_background_style'
+      ? Omit<ViewStyle, 'backgroundColor'> & { backgroundColor?: string }
+      : ViewStyle;
 } & {
   [K in StatusStyleNames]?: Record<
     string,
