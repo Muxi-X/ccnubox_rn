@@ -7,13 +7,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';
   const apsEnvironment = isProduction ? 'production' : 'development';
 
-  // const codeSigningConfig =
-  //   process.env.DISABLE_CODE_SIGNING !== 'true'
-  //     ? {
-  //         codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
-  //         codeSigningCertificate: './certs/certificate.pem',
-  //       }
-  //     : {};
   const plugins: (string | [] | [string] | [string, any])[] = [];
   for (const plugin of config.plugins ?? []) {
     const [name, configurations] = Array.isArray(plugin)
@@ -88,9 +81,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
     updates: {
       url: 'https://ota-api.muxixyz.com/manifest',
-      // ...codeSigningConfig,
-      codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
-      codeSigningCertificate: './certs/certificate.pem',
+      codeSigningMetadata: process.env.DISABLE_CODE_SIGNING
+        ? undefined
+        : { keyid: 'main', alg: 'rsa-v1_5-sha256' },
+      codeSigningCertificate: process.env.DISABLE_CODE_SIGNING
+        ? undefined
+        : './certs/certificate.pem',
       enabled: true,
 
       requestHeaders: {
