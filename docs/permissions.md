@@ -15,13 +15,14 @@
 
 ### 当前业务入口与用途映射
 
-| 业务场景         | 调起方式              | 涉及权限 / 系统能力                             | PERMISSION_PURPOSES 项    |
-| :--------------- | :-------------------- | :---------------------------------------------- | :------------------------ |
-| **反馈上传图片** | `runPermissionAction` | 系统 Photo Picker（不申请运行时媒体库读取权限） | `feedbackImage`           |
-| **课表背景图片** | `runPermissionAction` | 系统 Photo Picker（不申请运行时媒体库读取权限） | `courseTableBackground`   |
-| **保存课表截图** | `requestPermission`   | 相册写入权限（`expo-media-library`）            | `saveCourseTable`         |
-| **开启消息推送** | `requestPermission`   | 通知权限（`expo-notifications` / `jpush`）      | `pushNotification`        |
-| **校园地图**     | 系统/WebView 自带触发 | 仅在使用期间定位权限（WebView 内部定位服务）    | 由系统及 WebView 页面管理 |
+| 业务场景         | 调起方式              | 涉及权限 / 系统能力                               | PERMISSION_PURPOSES 项    |
+| :--------------- | :-------------------- | :------------------------------------------------ | :------------------------ |
+| **反馈上传图片** | `runPermissionAction` | 系统 Photo Picker（不申请运行时媒体库读取权限）   | `feedbackImage`           |
+| **课表背景图片** | `runPermissionAction` | 系统 Photo Picker（不申请运行时媒体库读取权限）   | `courseTableBackground`   |
+| **保存课表截图** | `requestPermission`   | 相册写入权限（`expo-media-library`）              | `saveCourseTable`         |
+| **开启消息推送** | `requestPermission`   | 通知权限（`expo-notifications` / `jpush`）        | `pushNotification`        |
+| **座位预约扫码** | `requestPermission`   | 相机权限（`CAMERA` / `NSCameraUsageDescription`） | `scanSeatQrCode`          |
+| **校园地图**     | 系统/WebView 自带触发 | 仅在使用期间定位权限（WebView 内部定位服务）      | 由系统及 WebView 页面管理 |
 
 ## 冗余权限来源与管控策略
 
@@ -35,8 +36,8 @@
 
 1. **最小权限文案与细粒度限制**：
    在 `app.json` 中配置 `expo-media-library` 插件的最小权限文案，并显式指定 `granularPermissions: ["photo"]`；图片读取和旧版 Android 相册写入所需的基础权限由插件按需保留。
-2. **阻止不必要的硬件权限**：
-   将 `expo-image-picker` 的 `cameraPermission` 和 `microphonePermission` 显式设为 `false`，阻止相机和录音权限进入最终的 Android Manifest 和 iOS Info.plist。
+2. **硬件权限精准管控与防护**：
+   相机权限（`android.permission.CAMERA` 与 iOS `NSCameraUsageDescription`）仅按需声明用于图书馆座位扫码签到与预约；在 `app.json` 中将 `expo-image-picker` 的 `cameraPermission` 明确配置为该扫码用途文案，同时将 `microphonePermission` 显式设为 `false`，阻止录音权限（`RECORD_AUDIO`）进入最终产物。
 3. **精准声明必要权限**：
    `android.permissions` 中只保留应用业务确实必需且无法由依赖自动补充的权限（如定位权限 `ACCESS_COARSE_LOCATION`、`ACCESS_FINE_LOCATION`，通知权限 `POST_NOTIFICATIONS`，以及自启动广播 `RECEIVE_BOOT_COMPLETED`）。
 4. **移除 iOS 冗余 Face ID 声明**：
