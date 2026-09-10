@@ -34,7 +34,13 @@ if (!targetBranch) {
 }
 
 const extraArgs = process.argv.slice(3);
-const args = ['publish', '--branch', targetBranch, ...extraArgs];
+const args = [
+  'publish',
+  '--branch',
+  targetBranch,
+  '--nonInteractive',
+  ...extraArgs,
+];
 
 // eslint-disable-next-line no-console
 console.log(`[OTA] 正在发布热更新至分支: ${targetBranch}`);
