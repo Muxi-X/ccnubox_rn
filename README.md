@@ -12,7 +12,7 @@
   - **iOS**：基于 `@bacons/apple-targets` 构建 Widget Extension（Swift / WidgetKit），支持桌面课表组件与实时活动（Live Activity），通过 App Group 共享数据。
   - **Android**：基于自定义本地 Expo Module（`modules/ccnubox-widget`）结合 AppWidgetProvider，提供 2x2 与 4x2 规格的今日课表桌面微件。
 - 采用 **EAS (Expo Application Services)** 进行跨平台构建与发布，支持自建私有化 EAS Update (OTA) 服务与静态资源加速。
-- 国际化（i18n）：支持简体中文与英文切换（`languages/zh-CN.json`、`languages/en-US.json`）。
+- 国际化（i18n）：桌面应用名称多语言配置（`languages/zh-CN.json` 对应“华师匣子”、`languages/en-US.json` 对应“CCNUBox”）。
 
 ## 专题文档导航
 
@@ -20,6 +20,9 @@
 
 - 🌐 [核心领域模型全景 (Domain Context)](CONTEXT.md)：学期、教学周对齐规则、课表桶模型、电费与绩点模型等业务上下文。
 - 🏛️ [系统整体架构设计](docs/architecture.md)：New Architecture 运行时机制、分层原则、文件路由及多端主题自适应。
+- 📅 [课表核心算法与视图引擎](docs/timetable.md)：双向手势滚动画布、周次对齐推导、重叠冲突防变深与外观定制。
+- 🏫 [校园微服务与数据体系](docs/campus-services.md)：电费架构定位、成绩 GPA 算法、空闲自习室与微应用排序。
+- 🛡️ [生命周期与认证安全规范](docs/auth-and-lifecycle.md)：冷启动状态机、分级加密存储、双 Token 静默轮转与注销合规。
 - 📱 [桌面小组件与实时活动指南](docs/widgets.md)：iOS WidgetKit / Live Activity 与 Android AppWidget 跨端数据同步全解析。
 - 🔔 [消息推送与厂商通道集成](docs/push-notifications.md)：JPush 插件化装配、厂商通道参数、冷启动深链接桥接与跳转。
 - 🔌 [网络请求与 OpenAPI 规范驱动](docs/api-and-request.md)：接口代码全自动生成、泛型 Client、双 Token 静默刷新队列。
@@ -96,8 +99,8 @@
 │   │   ├── schema.d.ts           # 自动生成的主服务 TypeScript 类型
 │   │   ├── schema.feedback.d.ts  # 自动生成的反馈服务 TypeScript 类型
 │   │   └── index.ts              # 主服务 request 客户端与双 Token 拦截器
-│   ├── secret/                   # 敏感加密与加解密逻辑
-│   ├── store/                    # Zustand 全局状态仓库 (认证、课表、主题、通知等)
+│   ├── secret/                   # 推送凭据配置 (JPush.ts)
+│   ├── store/                    # Zustand 全局状态仓库 (用户凭据、课表、时间、外观等)
 │   ├── styles/                   # 主题样式系统 (深浅主题、Android/iOS 布局样式映射)
 │   ├── themeBasedComponents/     # 针对 Android / iOS 平台定制的主题组件
 │   ├── types/                    # 全局 TypeScript 类型声明
@@ -307,7 +310,7 @@ pnpm ota:prev
 ```
 
 - **自动化 CI 发布**：
-  修改 `src/assets/data/updateInfo.json` 中的更新内容和版本并推送到 GitHub `main` 分支时，GitHub Actions（`test_update.yml`）会自动触发热更新发布到 `test` 分支。
+  修改 `src/assets/data/updateInfo.json` 中的更新内容和版本并推送到 GitHub `main` 分支时，GitHub Actions（`.github/workflows/preview.yml`）会自动触发热更新发布到 `preview` 预览通道。正式生产发布建议使用 `pnpm ota:prod`。
 - **`runtimeVersion` 严格一致性**：
   OTA 更新仅在客户端原生工程的 `runtimeVersion` 与 OTA 包的 `runtimeVersion` 严格一致时才会被客户端下载与应用。
 
