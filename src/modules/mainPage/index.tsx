@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import { FC, memo, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { FC, memo, useEffect, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
@@ -22,6 +22,7 @@ import { jpushClient } from '@/utils/jpush';
 
 const IndexPage: FC = () => {
   const router = useRouter();
+  const isBannerScrolling = useRef(false);
   const [banners, setBanners] = useState<
     {
       bannerUrl: string;
@@ -111,10 +112,32 @@ const IndexPage: FC = () => {
             autoPlay
             loop
             scrollAnimationDuration={1500}
+            onScrollStart={
+              Platform.OS === 'ios'
+                ? () => {
+                    isBannerScrolling.current = true;
+                  }
+                : undefined
+            }
+            onScrollEnd={
+              Platform.OS === 'ios'
+                ? () => {
+                    isBannerScrolling.current = false;
+                  }
+                : undefined
+            }
             renderItem={({ item, index }) => {
               return (
                 <View style={styles.bannerItem} key={index}>
-                  <Pressable onPress={() => openBrowser(item.navUrl)}>
+                  <Pressable
+                    onPress={() => {
+                      if (Platform.OS === 'ios' && isBannerScrolling.current) {
+                        return;
+                      }
+
+                      openBrowser(item.navUrl);
+                    }}
+                  >
                     <Image
                       source={{ uri: item.bannerUrl, cache: 'force-cache' }}
                       style={{
