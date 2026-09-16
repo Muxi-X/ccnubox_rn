@@ -79,7 +79,7 @@ function About() {
       <Button
         type="Primary"
         letterSpacing="3%"
-        style={styles.button}
+        containerStyle={styles.button}
         onPress={() => handleOpenURL('https://ccnubox.muxixyz.com/', '浏览器')}
       >
         进入华师匣子官网

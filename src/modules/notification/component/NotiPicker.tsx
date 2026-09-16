@@ -116,7 +116,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
           <View style={[styles.footer, currentStyle?.background_style]}>
             <Button
               type="Primary"
-              style={{ width: styles.button.width, marginTop: 10 }}
+              containerStyle={{ width: styles.button.width, marginTop: 10 }}
               textStyle={{ fontSize: 17 }}
               onPress={handleConfirm}
               isLoading={loading}

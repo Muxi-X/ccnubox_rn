@@ -184,7 +184,7 @@ function CheckUpdate(): React.ReactNode {
           <Button
             type="Primary"
             letterSpacing="18%"
-            style={styles.updateButton}
+            containerStyle={styles.updateButton}
             onPress={() => void handleUpdatePress()}
             isLoading={isBusy}
           >

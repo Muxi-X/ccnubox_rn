@@ -1,7 +1,7 @@
 import { Icon, Toast } from '@ant-design/react-native';
-import { setItem } from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
+import { setItem } from 'expo-secure-store';
 import { FC, useCallback, useEffect, useState } from 'react';
 import {
   BackHandler,
@@ -217,7 +217,7 @@ const GuidePage: FC = () => {
         duration={450}
         trigger={reachedLastPage}
       >
-        <Button style={styles.start_button} onPress={handleStart}>
+        <Button containerStyle={styles.start_button} onPress={handleStart}>
           开始使用
         </Button>
       </AnimatedFade>

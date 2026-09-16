@@ -19,7 +19,7 @@ const NotificationHeaderRight = () => {
       }}
     >
       <Button
-        style={styles.notificationBtnContainer}
+        containerStyle={styles.notificationBtnContainer}
         buttonStyle={[styles.notificationBtn, { backgroundColor: '#7878F8' }]}
         textStyle={{ color: commonColors.white, fontSize: 14 }}
         onPress={() => setNotiVisible(true)}
@@ -28,7 +28,7 @@ const NotificationHeaderRight = () => {
       </Button>
       <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
       <Button
-        style={styles.notificationBtnContainer}
+        containerStyle={styles.notificationBtnContainer}
         buttonStyle={[styles.notificationBtn, { backgroundColor: '#EBEBEB' }]}
         textStyle={{ color: '#FF6F6F', fontSize: 14 }}
         onPress={() => {

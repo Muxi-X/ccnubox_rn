@@ -175,7 +175,7 @@ const CheckGrades = () => {
           <Button
             type="Primary"
             letterSpacing="25%"
-            style={{
+            containerStyle={{
               width: 309,
               height: 46,
               alignSelf: 'center',

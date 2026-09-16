@@ -49,7 +49,7 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
               type="Round"
               letterSpacing="5%"
               buttonStyle={{ backgroundColor: '#CECECE' }}
-              style={styles.modalButton}
+              containerStyle={styles.modalButton}
               onPress={() => {
                 setClearVisible(false);
               }}
@@ -59,7 +59,7 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
             <Button
               type="Round"
               letterSpacing="5%"
-              style={styles.modalButton}
+              containerStyle={styles.modalButton}
               onPress={handleClear}
             >
               确定

@@ -99,7 +99,7 @@ export default function SelectStyle() {
         </Text>
         <Button
           type="Secondary"
-          style={{ width: '40%', marginRight: 10 }}
+          containerStyle={{ width: '40%', marginRight: 10 }}
           onPress={() => {
             if (!isIconStyleApplied('ios')) {
               changeIconStyle('ios');
@@ -143,7 +143,7 @@ export default function SelectStyle() {
         </Text>
         <Button
           type="Secondary"
-          style={{ width: '40%', marginRight: 10 }}
+          containerStyle={{ width: '40%', marginRight: 10 }}
           onPress={() => {
             if (!isIconStyleApplied('android')) {
               changeIconStyle('android');
@@ -198,7 +198,7 @@ export default function SelectStyle() {
           普通模式
         </Text>
         <Button
-          style={[
+          containerStyle={[
             { width: '40%', borderRadius: 10, marginRight: 10 },
             isAutoTheme && { opacity: 0.4 },
           ]}

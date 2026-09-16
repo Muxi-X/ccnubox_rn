@@ -412,7 +412,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
         <Button
           type={props.buttonType ?? 'Primary'}
           letterSpacing={props.letterSpacing}
-          style={styles.button}
+          containerStyle={styles.button}
           isLoading={loading}
           onPress={handleSubmit}
         >

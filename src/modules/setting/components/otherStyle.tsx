@@ -402,7 +402,7 @@ export default function OtherStyle({
           {backgroundUri && (
             <Button
               type="Secondary"
-              style={[styles.actionButton, styles.actionButtonSpacing]}
+              containerStyle={[styles.actionButton, styles.actionButtonSpacing]}
               buttonStyle={styles.actionButtonInner}
               onPress={handleClearBackground}
             >
@@ -411,7 +411,7 @@ export default function OtherStyle({
           )}
           <Button
             type="Secondary"
-            style={styles.actionButton}
+            containerStyle={styles.actionButton}
             buttonStyle={styles.actionButtonInner}
             onPress={handlePickImage}
             isLoading={isPicking}

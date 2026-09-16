@@ -16,17 +16,15 @@ import {
 export type ButtonHierarchy = 'Primary' | 'Secondary' | 'Round' | 'ghost';
 
 // omit 排除不支持或被内部接管的 props
-export interface ButtonProps extends Partial<
-  Omit<
-    RNEButtonProps,
-    | 'title'
-    | 'titleStyle'
-    | 'loading'
-    | 'buttonStyle'
-    | 'containerStyle'
-    | 'type'
-    | 'android_ripple'
-  >
+export interface ButtonProps extends Omit<
+  RNEButtonProps,
+  | 'title'
+  | 'titleStyle'
+  | 'loading'
+  | 'type'
+  | 'android_ripple'
+  | 'buttonStyle'
+  | 'containerStyle'
 > {
   /**
    * 按钮分级类型（Primary / Secondary / Round / ghost）
@@ -35,7 +33,7 @@ export interface ButtonProps extends Partial<
   type?: ButtonHierarchy;
 
   /**
-   * Android 原生水波纹配置（ghost 默认无水波纹，其他类型默认开启；传 null 显式禁用）
+   * Android 原生水波纹配置（ghost 默认无水波纹，其他类型由底层根据文本色自适应；传 null 显式禁用）
    */
   android_ripple?: PressableAndroidRippleConfig | null;
 
@@ -61,9 +59,9 @@ export interface ButtonProps extends Partial<
   textStyle?: StyleProp<TextStyle>;
 
   /**
-   * button 外层容器样式（用于设置 width, height, margin 等容器与布局属性）
+   * button 外层容器样式（用于设置 width, margin 等容器与布局属性）
    */
-  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
 
   /**
    * button 本身样式（用于设置 backgroundColor, borderRadius, padding 等按钮本体属性）

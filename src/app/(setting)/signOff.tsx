@@ -107,7 +107,7 @@ function SignOff() {
             type="ghost"
             onPress={handleSubmit}
             isLoading={isSubmitting}
-            style={styles.submitButton}
+            containerStyle={styles.submitButton}
             textStyle={{ color: commonColors.white }}
           >
             确认注销
