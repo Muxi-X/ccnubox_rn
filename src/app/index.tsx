@@ -3,8 +3,9 @@ import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
 
 import useCourse from '@/store/course';
-
+import { reportUpdatesLogs } from '@/utils/easUpdate';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
+import { logger } from '@/utils/logger';
 
 const Index = () => {
   const hydrated = useCourse(state => state.hydrated);
@@ -20,12 +21,13 @@ const Index = () => {
         const token = await getItem('longToken');
 
         setupGlobalErrorHandler();
+        void reportUpdatesLogs();
         await SplashScreen.hideAsync();
 
         if (!token) {
           if (firstLaunch === null) {
             setItem('firstLaunch', 'false');
-            console.log('首次启动，跳转到引导页');
+            logger.info('首次启动，跳转到引导页');
             router.replace('/auth/guide');
           } else {
             router.replace('/auth/login');
@@ -34,7 +36,7 @@ const Index = () => {
           router.replace('/(tabs)');
         }
       } catch (error) {
-        console.error('初始化失败:', error);
+        logger.error('初始化失败', error);
       }
     };
 

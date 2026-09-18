@@ -44,46 +44,6 @@ public class AppDelegate: ExpoAppDelegate {
       UINavigationBar.appearance().compactAppearance = opaqueAppearance
     }
 // @generated end disable-liquid-glass
-// @generated begin jpush-swift-initialization - expo prebuild (DO NOT MODIFY) sync-f2466d2721650a20f81fa09cdbb285913c1a7327
-
-    // JPush 注册配置
-    let entity = JPUSHRegisterEntity()
-    if #available(iOS 12.0, *) {
-      entity.types = Int(UNAuthorizationOptions.alert.rawValue |
-                        UNAuthorizationOptions.sound.rawValue |
-                        UNAuthorizationOptions.badge.rawValue |
-                        UNAuthorizationOptions.provisional.rawValue)
-    } else {
-      entity.types = Int(UNAuthorizationOptions.alert.rawValue |
-                        UNAuthorizationOptions.sound.rawValue |
-                        UNAuthorizationOptions.badge.rawValue)
-    }
-    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
-
-    #if DEBUG
-    // 开启调试模式
-    JPUSHService.setDebugMode()
-    #endif
-
-    let appKey = Bundle.main.object(forInfoDictionaryKey: "JPUSH_APPKEY") as? String ?? ""
-    let channel = Bundle.main.object(forInfoDictionaryKey: "JPUSH_CHANNEL") as? String ?? ""
-    let apsForProduction =
-      (Bundle.main.object(forInfoDictionaryKey: "JPUSH_APS_FOR_PRODUCTION") as? NSNumber)?.boolValue ?? false
-
-    // 初始化 JPush
-    JPUSHService.setup(withOption: launchOptions,
-                       appKey: appKey,
-                       channel: channel,
-                       apsForProduction: apsForProduction)
-
-    // 监听自定义消息
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(self.networkDidReceiveMessage(_:)),
-      name: NSNotification.Name.jpfNetworkDidReceiveMessage,
-      object: nil
-    )
-// @generated end jpush-swift-initialization
   return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 

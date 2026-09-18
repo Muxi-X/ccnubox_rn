@@ -22,17 +22,15 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import NextIcon from '@/assets/images/next.png';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
-
+import { GUIDE_CONTENTS } from '@/constants/GUIDE';
 import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
-
-import NextIcon from '@/assets/images/next.png';
-import { GUIDE_CONTENTS } from '@/constants/GUIDE';
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
@@ -228,9 +226,15 @@ const GuidePage: FC = () => {
 export default GuidePage;
 
 export const AgreementModal: FC = () => {
+  const currentStyle = useVisualScheme(state => state.currentStyle);
+
   return (
     <Text
-      style={[commonStyles.fontMedium, { textAlign: 'center', lineHeight: 22 }]}
+      style={[
+        commonStyles.fontMedium,
+        currentStyle?.text_style,
+        { textAlign: 'center', lineHeight: 22 },
+      ]}
     >
       请你务必审慎阅读、充分理解“用户协议”和“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。你可阅读
       <Text

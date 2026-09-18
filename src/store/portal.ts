@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react';
 import { create } from 'zustand';
 
 import { PortalStore } from '@/store/types';
-
 import { keyGenerator } from '@/utils';
 
 /** portal 组件信息 */
@@ -13,13 +12,13 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
   updateFromElements: () => {
     const { elements, portalRef } = get();
     const portalInst = portalRef.current;
-    if (portalInst)
+    if (portalInst && typeof portalInst.setChildren === 'function')
       portalInst.setChildren([
         ...Object.entries(elements).map(element => element[1] as ReactElement),
       ]);
   },
   updateChildren: (key, props) => {
-    const tmpMap = get().elements;
+    const tmpMap = { ...get().elements };
     const currentElement = tmpMap[key];
     if (currentElement) {
       tmpMap[key] = React.cloneElement(currentElement, props);
@@ -30,7 +29,7 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
     get().updateFromElements();
   },
   appendChildren: (newChildren, portalType = 'common') => {
-    const tmpMap: Record<number, ReactElement> = get().elements;
+    const tmpMap: Record<number, ReactElement> = { ...get().elements };
     const { updateFromElements } = get();
     const key = keyGenerator.next().value as unknown as number;
     if (newChildren) {
@@ -47,10 +46,12 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
     return newChildren ? key : -1;
   },
   deleteChildren: key => {
-    const { elements, updateFromElements } = get();
-    delete elements[key];
-
-    updateFromElements();
+    const tmpMap = { ...get().elements };
+    delete tmpMap[key];
+    set({
+      elements: tmpMap,
+    });
+    get().updateFromElements();
   },
   clearAll: () => {
     set({

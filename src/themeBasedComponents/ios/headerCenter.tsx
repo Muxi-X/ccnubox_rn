@@ -1,12 +1,7 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonStyles } from '@/styles/common';
 
 const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
@@ -19,7 +14,7 @@ const HeaderCenter: React.FC<{ title: string }> = ({ title }) => {
           currentStyle?.header_text_style,
           commonStyles.TabBarPadding,
           commonStyles.fontLarge,
-          {position: "relative"}
+          { position: 'relative' },
         ]}
       >
         {title}

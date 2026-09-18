@@ -5,9 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ModalTrigger } from '@/components/modal';
 import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors, commonStyles } from '@/styles/common';
 import { percent2px } from '@/utils';
 
@@ -110,12 +108,12 @@ const Picker: React.FC<DatePickerProps> = ({
   const isBottomMode = useMemo(() => {
     return mode !== 'middle';
   }, [mode]);
-  // 默认选择逻辑（仅 mount 时）
+  // 默认选择逻辑
   useEffect(() => {
     const initial = defaultValue ?? data.map(item => item[0].value);
     prevPickerValue.current = initial;
     setPickerValue(initial);
-  }, []);
+  }, [JSON.stringify(defaultValue)]);
   // 外部 controlledValue 变化时同步内部状态（用于级联重置）
   useEffect(() => {
     if (!controlledValue) return;

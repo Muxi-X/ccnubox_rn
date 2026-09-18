@@ -1,9 +1,8 @@
 import { Image, ImageSourcePropType, StyleSheet } from 'react-native';
 
+import KestackQR from '@/assets/images/kestackqr.png';
 import Text from '@/components/text';
 import View from '@/components/view';
-
-import KestackQR from '@/assets/images/kestackqr.png';
 
 export default function Page() {
   return (

@@ -8,29 +8,31 @@ import {
   View,
 } from 'react-native';
 
+import { courseTableIcons } from '@/assets/icons';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import ThemeChangeText from '@/components/text';
-
-import useCourse from '@/store/course';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
-import DeleteIcon from '@/assets/icons/calendar/delete.svg';
-import EditIcon from '@/assets/icons/calendar/edit.svg';
-import FailIcon from '@/assets/icons/calendar/fail.svg';
-import LocationIcon from '@/assets/icons/calendar/location.svg';
-import NoteIcon from '@/assets/icons/calendar/note.svg';
-import SuccessIcon from '@/assets/icons/calendar/success.svg';
-import TeacherIcon from '@/assets/icons/calendar/teacher.svg';
-import TimeIcon from '@/assets/icons/calendar/time.svg';
-import WeekIcon from '@/assets/icons/calendar/week.svg';
 import {
   addCourseNote,
   deleteCourse,
   deleteCourseNote,
 } from '@/request/api/course';
+import useCourse from '@/store/course';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
+
+const {
+  delete: DeleteIcon,
+  edit: EditIcon,
+  fail: FailIcon,
+  location: LocationIcon,
+  note: NoteIcon,
+  success: SuccessIcon,
+  teacher: TeacherIcon,
+  time: TimeIcon,
+  week: WeekIcon,
+} = courseTableIcons;
 
 interface ModalContentProps {
   id: string;
@@ -59,14 +61,18 @@ function handleDeleteCourseConfirm(id: string) {
     useTimeStore.getState().year
   )
     .then(res => {
-      if (res.code === 0) {
+      if (res?.code === 0) {
         useCourse.getState().deleteCourse(id);
         showModal('删除成功', '课程已删除', true);
+      } else {
+        showModal('删除失败', '请稍后重试', false);
       }
     })
     .catch(err => {
-      if (err.response.data.code === 50001) {
+      if (err?.response?.data?.code === 50001) {
         showModal('删除失败', '从教务系统导入的课程不支持删除', false);
+      } else {
+        showModal('删除失败', '网络异常，请稍后重试', false);
       }
     });
 }
@@ -291,7 +297,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               <View style={styles.noteActionsArea}>
                 <Button
                   type="ghost"
-                  textStyle={{ fontSize: 12 }}
+                  textStyle={{ fontSize: 14 }}
                   buttonStyle={styles.cancelBtn}
                   onPress={() => {
                     setNoteText('');
@@ -303,7 +309,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                 <View style={styles.rightButtons}>
                   <Button
                     type="ghost"
-                    textStyle={{ fontSize: 12 }}
+                    textStyle={{ fontSize: 14 }}
                     disabled={isSaving}
                     buttonStyle={styles.cancelBtn}
                     onPress={() => {
@@ -316,7 +322,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
 
                   <Button
                     type="ghost"
-                    textStyle={{ fontSize: 12, color: '#6A69E6' }}
+                    textStyle={{ fontSize: 14, color: '#6A69E6' }}
                     disabled={isSaving}
                     isLoading={isSaving}
                     buttonStyle={styles.noteBtn}
@@ -360,6 +366,7 @@ const ModalContent: React.FC<ModalContentProps> = memo(
 
     return (
       <View
+        onStartShouldSetResponder={() => true}
         style={[
           styles.modalContainer,
           { width: 280 },

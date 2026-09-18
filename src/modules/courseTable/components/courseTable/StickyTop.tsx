@@ -2,22 +2,23 @@ import React, { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import ThemeChangeText from '@/components/text';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useTimeStore from '@/store/time';
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   COURSE_HEADER_HEIGHT,
   COURSE_ITEM_WIDTH,
   DAYS_OF_WEEK,
 } from '@/constants/SCHEDULE';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useTimeStore from '@/store/time';
+import useVisualScheme from '@/store/visualScheme';
+import { getAlphaColor } from '@/utils/color';
+import { getWeekMonday } from '@/utils/semesterWeeks';
 
 export const StickyTop: React.FC = memo(function StickyTop() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { selectedWeek } = useTimeStore();
   const schoolTime = useTimeStore(state => state.schoolTime);
   const { backgroundUri } = useCourseTableAppearance();
+  const themeName = useVisualScheme(state => state.themeName);
   const [dates, setDates] = useState<string[]>([]);
 
   const scheduleBackgroundStyle = useMemo(() => {
@@ -27,26 +28,28 @@ export const StickyTop: React.FC = memo(function StickyTop() {
     if (!backgroundUri || !flattened) {
       return currentStyle?.schedule_item_background_style;
     }
-    return { ...flattened, backgroundColor: 'transparent' };
-  }, [currentStyle?.schedule_item_background_style, backgroundUri]);
+    const baseColor =
+      flattened.backgroundColor ||
+      (themeName === 'light' ? '#F7F5FD' : '#242424');
+    return { ...flattened, backgroundColor: getAlphaColor(baseColor, 0.2) };
+  }, [currentStyle?.schedule_item_background_style, backgroundUri, themeName]);
 
   useEffect(() => {
-    const calculateDates = async () => {
+    const calculateDates = () => {
       try {
         if (!schoolTime) {
           return;
         }
 
-        // 计算开学日期
-        const startTimestamp = schoolTime * 1000;
-        const startDate = new Date(startTimestamp);
+        // 计算开学日期所在周的周一
+        const firstWeekMonday = getWeekMonday(schoolTime);
 
-        // 计算当前周的第一天（周一）
+        // 计算当前选定周的周一
         const daysToAdd = (selectedWeek - 1) * 7;
-        const currentWeekStartDate = new Date(startDate);
-        currentWeekStartDate.setDate(startDate.getDate() + daysToAdd);
+        const currentWeekStartDate = new Date(firstWeekMonday);
+        currentWeekStartDate.setDate(firstWeekMonday.getDate() + daysToAdd);
 
-        // 计算当前周的每一天
+        // 计算当前周的每一天（周一至周日）
         const weekDates: string[] = [];
         for (let i = 0; i < 7; i++) {
           const date = new Date(currentWeekStartDate);

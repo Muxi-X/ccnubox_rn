@@ -13,13 +13,12 @@ import {
   View,
 } from 'react-native';
 
+import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
-
-import useUserStore from '@/store/user';
-
-import logo from '@/assets/images/mx-logo.png';
+import Toast from '@/components/toast';
 import { deactivate } from '@/request/api/auth';
+import useUserStore from '@/store/user';
 import { commonColors, commonStyles } from '@/styles/common';
 
 function SignOff() {
@@ -43,16 +42,30 @@ function SignOff() {
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
-          deactivate(password)
-            .then(() => {
-              Promise.all([
-                AsyncStorage.multiRemove(['courses']),
-                deleteItemAsync('longToken'),
-                deleteItemAsync('shortToken'),
-                deleteItemAsync('user'),
-              ]);
-            })
-            .finally(() => router.replace('/auth/login'));
+          await deactivate(password);
+
+          try {
+            await Promise.all([
+              AsyncStorage.multiRemove(['courses']),
+              deleteItemAsync('longToken'),
+              deleteItemAsync('shortToken'),
+              deleteItemAsync('user'),
+            ]);
+            useUserStore.setState({ student_id: '', password: '' });
+          } catch {
+            // 忽略存储清理异常
+          }
+
+          Modal.clear();
+          Toast.show({ icon: 'success', text: '账号已注销' });
+          router.replace('/auth/login');
+        } catch (error: any) {
+          const errMsg =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            error?.message ||
+            '注销失败，请检查密码或网络连接';
+          Toast.show({ icon: 'fail', text: errMsg });
         } finally {
           setIsSubmitting(false);
         }

@@ -9,18 +9,19 @@ import {
   View,
 } from 'react-native';
 
+import ACIcon from '@/assets/images/kongtiao.png';
+import LightIcon from '@/assets/images/zhaoming.png';
 import Modal from '@/components/modal';
-
-import { useElectricityStore } from '@/store/electricity';
-import useVisualScheme from '@/store/visualScheme';
-
+import Toast from '@/components/toast';
 import {
   cancelStandard,
   getPrice,
   getStandardList,
   setStandard,
 } from '@/request/api/electricity';
-import { log } from '@/utils/logger';
+import { useElectricityStore } from '@/store/electricity';
+import useVisualScheme from '@/store/visualScheme';
+import { logger } from '@/utils/logger';
 
 interface PriceData {
   remain_money: string;
@@ -33,10 +34,10 @@ const ElectricityBillinBalance = () => {
   const clearSelectedDorm = useElectricityStore(
     state => state.clearSelectedDorm
   );
-  const { building, room, area, room_id } = useLocalSearchParams<{
+  const { building, room, _area, room_id } = useLocalSearchParams<{
     building?: string;
     room?: string;
-    area?: string;
+    _area?: string;
     room_id?: string;
   }>();
 
@@ -61,7 +62,8 @@ const ElectricityBillinBalance = () => {
       const priceInfo = response?.data?.price || response?.msg?.price;
       setPriceData(priceInfo);
     } catch (error) {
-      log.error(error);
+      logger.error('获取电费数据异常', error);
+      Toast.show({ icon: 'fail', text: '获取电费数据失败' });
     } finally {
       setLoading(false);
     }
@@ -85,12 +87,12 @@ const ElectricityBillinBalance = () => {
         }
       }
     } catch (error) {
-      log.error(error);
+      logger.error('获取电费标准数据异常', error);
     }
   };
 
   // 打开设置电费标准弹窗
-  const handleSetStandard = () => {
+  const _handleSetStandard = () => {
     // 使用 ref 来存储临时输入值，避免闭包问题
     let tempInputValue = standardLimit ? String(standardLimit) : '';
 
@@ -142,10 +144,12 @@ const ElectricityBillinBalance = () => {
       if (value === '' || value === null) {
         await cancelStandard({ room_id });
         setStandardLimit(null);
+        Toast.show({ icon: 'success', text: '已取消电费提醒' });
       } else {
         // 设置电费标准
         const limitValue = parseInt(value, 10);
         if (isNaN(limitValue) || limitValue <= 0) {
+          Toast.show({ icon: 'fail', text: '请输入有效金额' });
           return;
         }
 
@@ -155,9 +159,11 @@ const ElectricityBillinBalance = () => {
           limit: limitValue,
         });
         setStandardLimit(limitValue);
+        Toast.show({ icon: 'success', text: '电费标准设置成功' });
       }
     } catch (error) {
-      log.error(error);
+      logger.error('设置电费标准异常', error);
+      Toast.show({ icon: 'fail', text: '设置失败，请稍后重试' });
     }
   };
 
@@ -222,10 +228,7 @@ const ElectricityBillinBalance = () => {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconContainer}>
-                  <Image
-                    source={require('@/assets/images/zhaoming.png')}
-                    style={styles.iconImage}
-                  />
+                  <Image source={LightIcon} style={styles.iconImage} />
                 </View>
                 <Text style={[styles.cardTitle, currentStyle?.text_style]}>
                   照明
@@ -253,10 +256,7 @@ const ElectricityBillinBalance = () => {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconContainer}>
-                  <Image
-                    source={require('@/assets/images/kongtiao.png')}
-                    style={styles.iconImage}
-                  />
+                  <Image source={ACIcon} style={styles.iconImage} />
                 </View>
                 <Text style={[styles.cardTitle, currentStyle?.text_style]}>
                   空调

@@ -1,5 +1,7 @@
 import { NativeModules, Platform } from 'react-native';
 
+import { logger } from './logger';
+
 export {
   calculateMinutesUntilClass,
   getClassTimeRange as formatClassTime,
@@ -54,7 +56,7 @@ class CourseLiveActivityManager {
     const module = getCourseLiveActivityModule();
     if (!module && !this.hasWarnedMissingModule) {
       this.hasWarnedMissingModule = true;
-      console.warn(
+      logger.warn(
         '[LiveActivity] CourseLiveActivityModule 不存在，跳过相关调用'
       );
     }
@@ -75,7 +77,7 @@ class CourseLiveActivityManager {
     }
 
     if (Platform.OS !== 'ios') {
-      console.log('Live Activity only available on iOS');
+      logger.debug('Live Activity only available on iOS');
       return null;
     }
 
@@ -95,14 +97,14 @@ class CourseLiveActivityManager {
       );
 
       this.activeActivityId = activityId;
-      console.log('✅ Live Activity started:', activityId);
+      logger.info('Live Activity started', { activityId });
 
       // 设置定时器，到时间自动关闭
       this.scheduleAutoEnd(classStartTime);
 
       return activityId;
     } catch (error) {
-      console.error('❌ Failed to start Live Activity:', error);
+      logger.error('Failed to start Live Activity', error);
       return null;
     }
   }
@@ -119,7 +121,7 @@ class CourseLiveActivityManager {
 
     if (delay > 0) {
       this.endTimer = setTimeout(() => {
-        console.log('⏰ Auto ending Live Activity');
+        logger.debug('Auto ending Live Activity');
         this.disableManualMode();
         this.endActivity();
       }, delay);
@@ -152,9 +154,9 @@ class CourseLiveActivityManager {
         classStartTime.getTime(),
         isInClass
       );
-      console.log('✅ Live Activity updated');
+      logger.info('Live Activity updated');
     } catch (error) {
-      console.error('❌ Failed to update Live Activity:', error);
+      logger.error('Failed to update Live Activity', error);
     }
   }
 
@@ -180,7 +182,7 @@ class CourseLiveActivityManager {
       }
       return Boolean(exists);
     } catch (error) {
-      console.warn('⚠️ Failed to validate Live Activity state:', error);
+      logger.warn('Failed to validate Live Activity state', error);
       return this.activeActivityId !== null;
     }
   }
@@ -202,10 +204,10 @@ class CourseLiveActivityManager {
 
     try {
       await liveActivityModule.endActivity(this.activeActivityId);
-      console.log('✅ Live Activity ended');
+      logger.info('Live Activity ended');
       this.activeActivityId = null;
     } catch (error) {
-      console.error('❌ Failed to end Live Activity:', error);
+      logger.error('Failed to end Live Activity', error);
       // Native 侧找不到该活动时，避免 JS 保留脏 id 导致后续无法重新拉起
       this.activeActivityId = null;
     }
@@ -226,10 +228,10 @@ class CourseLiveActivityManager {
 
     try {
       await liveActivityModule.endAllActivities();
-      console.log('✅ All Live Activities ended');
+      logger.info('All Live Activities ended');
       this.activeActivityId = null;
     } catch (error) {
-      console.error('❌ Failed to end all Live Activities:', error);
+      logger.error('Failed to end all Live Activities', error);
     }
   }
 

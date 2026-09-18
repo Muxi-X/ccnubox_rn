@@ -39,12 +39,23 @@ const sectionScheduleByNumber = new Map(
   SECTION_SCHEDULE.map(item => [item.section, item])
 );
 
-export const parseClassWhen = (classWhen: string): ParsedClassWhen | null => {
-  const [rawStartSection, rawEndSection] = classWhen.split('-');
-  const startSection = Number(rawStartSection);
-  const endSection = Number(rawEndSection ?? rawStartSection);
+export const parseClassWhen = (classWhen: unknown): ParsedClassWhen | null => {
+  if (typeof classWhen !== 'string') return null;
 
-  if (!Number.isInteger(startSection) || !Number.isInteger(endSection)) {
+  const normalizedClassWhen = classWhen.trim().replace(/\s*-\s*/g, '-');
+  const match = /^(\d{1,2})(?:-(\d{1,2}))?$/.exec(normalizedClassWhen);
+  if (!match) return null;
+
+  const startSection = Number(match[1]);
+  const endSection = Number(match[2] ?? match[1]);
+
+  if (
+    !Number.isInteger(startSection) ||
+    !Number.isInteger(endSection) ||
+    startSection < 1 ||
+    endSection > SECTION_SCHEDULE.length ||
+    startSection > endSection
+  ) {
     return null;
   }
 

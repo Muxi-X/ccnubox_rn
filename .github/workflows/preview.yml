@@ -1,0 +1,39 @@
+name: Preview
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/assets/data/updateInfo.json"
+  workflow_dispatch:
+
+jobs:
+  ota-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Publish OTA Update
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -n "$COMMIT_MESSAGE" ]; then
+            pnpm exec eoas publish --branch preview --nonInteractive -m "$COMMIT_MESSAGE"
+          else
+            pnpm exec eoas publish --branch preview --nonInteractive
+          fi

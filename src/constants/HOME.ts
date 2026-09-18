@@ -1,40 +1,13 @@
 import { Href } from 'expo-router';
 
-import AndroidCardSvg from '@/assets/images/icons/android/card.svg';
-import AndroidClassroomSvg from '@/assets/images/icons/android/classroom.svg';
-import AndroidDateSvg from '@/assets/images/icons/android/date.svg';
-import AndroidEnergySvg from '@/assets/images/icons/android/energy.svg';
-import AndroidEventGlideSvg from '@/assets/images/icons/android/event-glide.svg';
-import AndroidGradesSvg from '@/assets/images/icons/android/grades.svg';
-import AndroidInformationSvg from '@/assets/images/icons/android/information.svg';
-import AndroidKestackSvg from '@/assets/images/icons/android/kestack.svg';
-import AndroidMapSvg from '@/assets/images/icons/android/map.svg';
-import AndroidMoreSvg from '@/assets/images/icons/android/more.svg';
-import AndroidSeatSvg from '@/assets/images/icons/android/seat.svg';
-import AndroidWebSvg from '@/assets/images/icons/android/web.svg';
-import IosCardSvg from '@/assets/images/icons/ios/card.svg';
-import IosClassroomSvg from '@/assets/images/icons/ios/classroom.svg';
-import IosDateSvg from '@/assets/images/icons/ios/date.svg';
-import IosEnergySvg from '@/assets/images/icons/ios/energy.svg';
-import IosEventGlideSvg from '@/assets/images/icons/ios/event-glide.svg';
-import IosGradesSvg from '@/assets/images/icons/ios/grades.svg';
-import IosInformationSvg from '@/assets/images/icons/ios/information.svg';
-import IosKestackSvg from '@/assets/images/icons/ios/kestack.svg';
-import IosMapSvg from '@/assets/images/icons/ios/map.svg';
-import IosMoreSvg from '@/assets/images/icons/ios/more.svg';
-import IosSeatSvg from '@/assets/images/icons/ios/seat.svg';
-import IosWebSvg from '@/assets/images/icons/ios/web.svg';
+import { homeGridIcons } from '@/assets/icons';
 import { handleOpenURL } from '@/utils/handleOpenURL';
 
 export const HOME_ITEMS = [
   {
     title: '查算学分绩',
     name: 'scoreInquiry',
-    imageUrl: {
-      ios: IosGradesSvg,
-      android: AndroidGradesSvg,
-      default: AndroidGradesSvg,
-    },
+    Icon: homeGridIcons.grades,
     key: 'grid-1',
     href: '/scoreInquiry',
   },
@@ -42,32 +15,20 @@ export const HOME_ITEMS = [
     title: '电费查询',
     name: 'electricity',
     href: '/electricity',
-    imageUrl: {
-      ios: IosEnergySvg,
-      android: AndroidEnergySvg,
-      default: AndroidEnergySvg,
-    },
+    Icon: homeGridIcons.energy,
     key: 'grid-2',
   },
   {
     title: '地图',
     name: 'map',
-    imageUrl: {
-      ios: IosMapSvg,
-      android: AndroidMapSvg,
-      default: AndroidMapSvg,
-    },
+    Icon: homeGridIcons.map,
     key: 'grid-3',
     href: '/map' as Href,
   },
   {
     title: '校园卡',
     name: 'schoolCard',
-    imageUrl: {
-      ios: IosCardSvg,
-      android: AndroidCardSvg,
-      default: AndroidCardSvg,
-    },
+    Icon: homeGridIcons.card,
     key: 'grid-4',
     action: () =>
       handleOpenURL(
@@ -78,65 +39,42 @@ export const HOME_ITEMS = [
   {
     title: '空闲教室',
     name: 'classroom',
-    imageUrl: {
-      ios: IosClassroomSvg,
-      android: AndroidClassroomSvg,
-      default: AndroidClassroomSvg,
-    },
+    Icon: homeGridIcons.classroom,
     key: 'grid-5',
     href: '/classroom' as Href,
   },
   // {
   //   title: '蹭课',
   //   name: 'spaceLesson',
-  //   imageUrl: layoutSelect({
-  //     ios: require('../assets/images/icons/ios/lesson.png'),
-  //     android: require('../assets/images/icons/android/lesson.png'),
-  //   }),
+  //   Icon: homeGridIcons.lesson,
   //   key: 'grid-6',
   //   href: '/spaceLesson' as Href,
   // },
   {
     title: '部门信息',
     name: 'departments',
-    imageUrl: {
-      ios: IosInformationSvg,
-      android: AndroidInformationSvg,
-      default: AndroidInformationSvg,
-    },
+    Icon: homeGridIcons.information,
     key: 'grid-7',
     href: '/departments' as Href,
   },
   {
     title: '校历',
     name: 'calendar',
-    imageUrl: {
-      ios: IosDateSvg,
-      android: AndroidDateSvg,
-      default: AndroidDateSvg,
-    },
+    Icon: homeGridIcons.date,
     key: 'grid-8',
     href: '/calendar' as Href,
   },
   {
     title: '常用网站',
     name: 'websites',
-    imageUrl: {
-      ios: IosWebSvg,
-      android: AndroidWebSvg,
-      default: AndroidWebSvg,
-    },
+    Icon: homeGridIcons.web,
     key: 'grid-9',
     href: '/websites' as Href,
   },
   {
     title: '木犀课栈',
     name: 'kestack',
-    imageUrl: {
-      ios: IosKestackSvg,
-      android: AndroidKestackSvg,
-      default: AndroidKestackSvg,
-    },
+    Icon: homeGridIcons.kestack,
     key: 'grid-10',
     // action: () => {
     //   // 暂时还不能用，等课栈提供生成加密 URL Scheme的接口
@@ -147,10 +85,7 @@ export const HOME_ITEMS = [
   // {
   //   title: '信息整合',
   //   name: 'all',
-  //   imageUrl: layoutSelect({
-  //     ios: require('../assets/images/icons/ios/all.png'),
-  //     android: require('../assets/images/icons/android/all.png'),
-  //   }),
+  //   Icon: homeGridIcons.all,
   //   key: 'grid-11',
   //   href: '/all' as Href,
   // },
@@ -158,33 +93,21 @@ export const HOME_ITEMS = [
   // {
   //   title: '座位预约',
   //   name: 'site',
-  //   imageUrl: {
-  //     ios: IosSiteSvg,
-  //     android: AndroidSiteSvg,
-  //     default: AndroidSiteSvg,
-  //   },
+  //   Icon: homeGridIcons.seat,
   //   key: 'grid-12',
   //   href: `/(mainPage)/webview?link=${btoa('https://account.ccnu.edu.cn/cas/login?service=http://kjyy.ccnu.edu.cn/loginall.aspx?page=&pageId=1053906&wfwfid=1740&websiteId=548973')}` as Href,
   // },
   {
     title: '座位预约',
     name: 'site',
-    imageUrl: {
-      ios: IosSeatSvg,
-      android: AndroidSeatSvg,
-      default: AndroidSeatSvg,
-    },
+    Icon: homeGridIcons.seat,
     key: 'grid-12',
     href: `/(mainPage)/webview?title=座位预约&link=${btoa('https://account.ccnu.edu.cn/cas/login?service=https%3A%2F%2Fkjyy.ccnu.edu.cn%2Frem%2Fstatic%2Fsso%2FwebOAuthRed')}` as Href,
   },
   {
     title: '校灵通',
     name: 'eventGlide',
-    imageUrl: {
-      ios: IosEventGlideSvg,
-      android: AndroidEventGlideSvg,
-      default: AndroidEventGlideSvg,
-    },
+    Icon: homeGridIcons.eventGlide,
     key: 'grid-14',
     action: () =>
       handleOpenURL(
@@ -195,11 +118,7 @@ export const HOME_ITEMS = [
   {
     title: '更多',
     name: 'more',
-    imageUrl: {
-      ios: IosMoreSvg,
-      android: AndroidMoreSvg,
-      default: AndroidMoreSvg,
-    },
+    Icon: homeGridIcons.more,
     key: 'grid-13',
     href: '/more' as Href,
     disabledDrag: true,
@@ -207,10 +126,7 @@ export const HOME_ITEMS = [
   // {
   //   title: '更新小组件',
   //   name: 'updateWidget',
-  //   imageUrl: layoutSelect({
-  //     ios: IosMoreSvg,
-  //     android: AndroidMoreSvg,
-  //   }),
+  //   Icon: homeGridIcons.more,
   //   key: 'grid-14',
   //   action: () =>
   //     updateCourseData()

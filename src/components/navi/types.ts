@@ -1,6 +1,6 @@
-import { icons } from './TabBarIcon';
-
 import { SinglePageType } from '@/types/tabBarTypes';
+
+import { icons } from './TabBarIcon';
 
 export interface TabBarItemProps extends SinglePageType {
   /**

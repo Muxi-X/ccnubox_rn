@@ -3,13 +3,20 @@ import { jpushClient } from '@/utils/jpush';
  * 获取推送注册ID
  * @returns 推送注册ID字符串或null
  */
-export const getPushToken = async (): Promise<string | null> => {
+export const getPushToken = async (
+  timeoutMs = 1000
+): Promise<string | null> => {
   if (!jpushClient.isInitialized()) {
     return null;
   }
 
   return new Promise(resolve => {
+    const timer = setTimeout(() => {
+      resolve(null);
+    }, timeoutMs);
+
     const invoked = jpushClient.getRegistrationID(({ registerID }) => {
+      clearTimeout(timer);
       if (!registerID) {
         resolve(null);
       } else {
@@ -17,6 +24,7 @@ export const getPushToken = async (): Promise<string | null> => {
       }
     });
     if (!invoked) {
+      clearTimeout(timer);
       resolve(null);
     }
   });

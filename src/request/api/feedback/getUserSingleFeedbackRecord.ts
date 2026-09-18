@@ -1,6 +1,6 @@
-import { request } from '@/request';
+import { feedbackRequest } from '@/request';
 
-import { BASE_URL, UserSheetTokenConfig } from './config';
+import { UserSheetTokenConfig } from './config';
 
 export interface getSingleFeedbackRecordRequest {
   record_id: string;
@@ -10,9 +10,8 @@ export interface getSingleFeedbackRecordRequest {
 const getSingleFeedbackRecord = async (
   query: getSingleFeedbackRecordRequest
 ) => {
-  return await request.get('/api/v1/sheet/record', { query } as any, {
+  return await feedbackRequest.get('/api/v1/sheet/record', { query } as any, {
     otherToken: UserSheetTokenConfig,
-    baseURL: BASE_URL,
   });
 };
 

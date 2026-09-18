@@ -3,22 +3,20 @@ import { useEffect, useRef } from 'react';
 import { Platform, Text } from 'react-native';
 
 import Modal from '@/components/modal';
-
-import { updateCourseData } from '@/utils/updateWidget';
 import TabBar from '@/components/navi';
 import Toast from '@/components/toast';
-
-import usePushSubscriptionStore from '@/store/pushSubscription';
-import useVisualScheme from '@/store/visualScheme';
-
 import { TABS } from '@/constants/TABBAR';
 import PushSubscriptionPromptContent from '@/modules/setting/components/PushSubscriptionPromptContent';
+import useCourse from '@/store/course';
+import usePushSubscriptionStore from '@/store/pushSubscription';
+import useVisualScheme from '@/store/visualScheme';
+import { SinglePageType } from '@/types/tabBarTypes';
+import { logger } from '@/utils/logger';
 import {
   enablePushSubscription,
   syncPushSubscription,
 } from '@/utils/pushSubscription';
-
-import { SinglePageType } from '@/types/tabBarTypes';
+import { updateCourseData } from '@/utils/updateWidget';
 
 export default function TabLayout() {
   const currentStyle = useVisualScheme(state => state.currentStyle);
@@ -32,8 +30,8 @@ export default function TabLayout() {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      updateCourseData().catch(error =>
-        console.error('更新小组件失败:', error)
+      updateCourseData(useCourse.getState().courses).catch(error =>
+        logger.error('更新小组件失败', error)
       );
     }
   }, []);

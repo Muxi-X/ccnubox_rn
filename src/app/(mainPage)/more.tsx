@@ -1,10 +1,9 @@
 import { Link } from 'expo-router';
 import { Image, StyleSheet } from 'react-native';
 
+import MuxiLogo from '@/assets/images/mx-logo.png';
 import Text from '@/components/text';
 import View from '@/components/view';
-
-import MuxiLogo from '@/assets/images/mx-logo.png';
 import { commonColors } from '@/styles/common';
 
 export default function More() {

@@ -1,17 +1,14 @@
-import { type FC, useEffect, useState } from 'react';
-import { Image, Modal, StyleSheet, Text, View } from 'react-native';
-
 import { MaterialIcons } from '@expo/vector-icons';
+import { type FC, useEffect, useState } from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Button from '@/components/button';
 import Switch from '@/components/switch';
 import Toast from '@/components/toast';
-
-import useVisualScheme from '@/store/visualScheme';
-
-import { FeedIconList } from '@/constants/notificationItem';
+import { FeedIconList } from '@/constants/NOTIFICATION';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
 import queryFeedAllowList from '@/request/api/feeds/queryFeedAllowList';
+import useVisualScheme from '@/store/visualScheme';
 
 interface NotiPickerProps {
   visible: boolean;
@@ -32,18 +29,22 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   // 只在 modal 打开时获取数据
   useEffect(() => {
     if (visible) {
-      queryFeedAllowList().then(res => {
-        const data = res?.data;
-        if (data) {
-          setCheckList({
-            energy: data?.energy ?? true,
-            grade: data?.grade ?? true,
-            holiday: data?.holiday ?? true,
-            muxi: data?.muxi ?? true,
-            feedback: data?.feed_back ?? true,
-          });
-        }
-      });
+      queryFeedAllowList()
+        .then((res: any) => {
+          const data = res?.data;
+          if (data) {
+            setCheckList({
+              energy: data?.energy ?? true,
+              grade: data?.grade ?? true,
+              holiday: data?.holiday ?? true,
+              muxi: data?.muxi ?? true,
+              feedback: data?.feed_back ?? data?.feedback ?? true,
+            });
+          }
+        })
+        .catch(() => {
+          Toast.show({ icon: 'fail', text: '获取推送设置失败' });
+        });
     }
   }, [visible]);
 
@@ -52,9 +53,11 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
     try {
       await changeFeedAllowList(checkList);
       Toast.show({ icon: 'success', text: '修改成功' });
+      setVisible(false);
+    } catch {
+      Toast.show({ icon: 'fail', text: '修改失败，请检查网络' });
     } finally {
       setLoading(false);
-      setVisible(false);
     }
   };
 
@@ -66,8 +69,16 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   };
 
   return (
-    <Modal visible={visible} transparent={true}>
+    <Modal
+      visible={visible}
+      transparent={true}
+      onRequestClose={() => setVisible(false)}
+    >
       <View style={styles.overlay}>
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => setVisible(false)}
+        />
         <View style={styles.container}>
           <View style={[styles.header, currentStyle?.background_style]}>
             <Text
@@ -97,7 +108,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
               style={[styles.listItem, currentStyle?.background_style]}
               key={item.name}
             >
-              <Image source={item.imageUrl} style={styles.icon} />
+              <item.Icon style={styles.icon} />
               <View style={styles.content}>
                 <Text style={[styles.title, currentStyle?.schedule_text_style]}>
                   {item.text}提醒

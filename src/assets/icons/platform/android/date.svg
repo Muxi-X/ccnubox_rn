@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_图层_2" data-name="图层 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 650">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ffe200;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #7777ed;
+      }
+
+      .cls-4 {
+        fill: none;
+      }
+
+      .cls-5 {
+        fill: #6f66ef;
+      }
+
+      .cls-6 {
+        fill: #565599;
+      }
+
+      .cls-7 {
+        fill: #a7a1f5;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 8.5px;
+      }
+    </style>
+  </defs>
+  <g id="_图层_2-2" data-name="图层 2">
+    <g>
+      <g>
+        <g>
+          <path class="cls-6" d="M389.13,234.36l-45.11-78.12c-3.73-6.33-12.89-6.33-16.51,0l-45.11,78.12c-3.73,6.33.9,14.36,8.25,14.36h90.21c7.35,0,11.98-7.91,8.25-14.36ZM298.46,232.21l37.19-64.44,37.19,64.44h-74.39,0Z"/>
+          <g>
+            <path class="cls-6" d="M123.97,247.97v222.62s.01.09.01.14v-222.9s-.01.09-.01.14Z"/>
+            <path class="cls-6" d="M147.6,290.12v213.73c3.71,1.31,7.64,2.16,11.8,2.16h352.74c4.16,0,8.1-.85,11.81-2.17v-213.73H147.6Z"/>
+            <path class="cls-6" d="M147.6,214.71c-13.7,4.86-23.56,17.78-23.62,33.12v222.9c.06,15.35,9.92,28.26,23.62,33.12V214.71Z"/>
+            <path class="cls-6" d="M523.94,214.71v289.14c13.73-4.88,23.62-17.86,23.62-33.26v-222.62c0-15.4-9.89-28.38-23.62-33.26Z"/>
+            <path class="cls-6" d="M523.94,290.12v-75.41c-3.71-1.32-7.65-2.17-11.81-2.17H159.4c-4.16,0-8.09.85-11.8,2.16v75.41h376.34Z"/>
+          </g>
+          <rect class="cls-6" x="200.35" y="302.72" width="270.84" height="187.38" rx="19.45" ry="19.45"/>
+          <rect class="cls-6" x="200.33" y="353.11" width="270.84" height="9.45"/>
+          <rect class="cls-6" x="200.33" y="420.82" width="270.84" height="9.45"/>
+          <rect class="cls-6" x="227.1" y="353.11" width="9.45" height="136.99"/>
+          <rect class="cls-6" x="279.07" y="353.11" width="9.45" height="136.99"/>
+          <rect class="cls-6" x="331.03" y="353.11" width="9.45" height="136.99"/>
+          <rect class="cls-6" x="382.99" y="353.11" width="9.45" height="136.99"/>
+          <rect class="cls-6" x="434.96" y="353.11" width="9.45" height="136.99"/>
+          <rect class="cls-6" x="288.51" y="430.27" width="42.52" height="59.84"/>
+        </g>
+        <path class="cls-1" d="M371.1,226.85l-45.11-78.12c-3.73-6.33-12.89-6.33-16.51,0l-45.11,78.12c-3.73,6.33.9,14.36,8.25,14.36h90.21c7.35,0,11.98-7.91,8.25-14.36ZM280.43,224.7l37.19-64.44,37.19,64.44h-74.39,0Z"/>
+        <rect class="cls-5" x="102.44" y="209.02" width="425" height="296" rx="41.63" ry="41.63"/>
+        <path class="cls-3" d="M138.92,210.02h351.04c20.13,0,36.48,16.35,36.48,36.48v45.73c0,.99-.8,1.79-1.79,1.79H102.44v-47.52c0-20.13,16.35-36.48,36.48-36.48Z"/>
+        <rect class="cls-7" x="168.44" y="325.02" width="286" height="144" rx="19.32" ry="19.32"/>
+        <rect class="cls-2" x="168.31" y="396.35" width="285.33" height="9.95"/>
+        <rect class="cls-2" x="129.32" y="392.2" width="144.32" height="9.95" transform="translate(-195.7 598.66) rotate(-90)"/>
+        <rect class="cls-2" x="184.06" y="392.2" width="144.32" height="9.95" transform="translate(-140.95 653.41) rotate(-90)"/>
+        <rect class="cls-2" x="238.81" y="392.2" width="144.32" height="9.95" transform="translate(-86.21 708.15) rotate(-90)"/>
+        <rect class="cls-2" x="293.55" y="392.2" width="144.32" height="9.95" transform="translate(-31.47 762.89) rotate(-90)"/>
+        <rect class="cls-2" x="348.29" y="392.2" width="144.32" height="9.95" transform="translate(23.28 817.64) rotate(-90)"/>
+        <rect class="cls-1" x="261.2" y="406.3" width="44.79" height="63.04"/>
+      </g>
+      <rect id="_切片_" data-name="&amp;lt;切片&amp;gt;" class="cls-4" width="650" height="650"/>
+    </g>
+  </g>
+</svg>

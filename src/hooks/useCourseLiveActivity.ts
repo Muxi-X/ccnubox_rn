@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 
-import useTimeStore from '@/store/time';
-
 import type { courseType } from '@/modules/courseTable/components/courseTable/type';
+import useTimeStore from '@/store/time';
 import {
   courseLiveActivity,
   LIVE_ACTIVITY_ENABLED,

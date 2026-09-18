@@ -11,6 +11,8 @@
   <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:replace="android:maxSdkVersion"/>
+  <uses-feature android:name="android.hardware.camera" android:required="false"/>
+  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -43,12 +45,15 @@
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true" android:requestLegacyExternalStorage="true" android:fullBackupContent="@xml/secure_store_backup_rules" android:dataExtractionRules="@xml/secure_store_data_extraction_rules" android:usesCleartextTraffic="true" android:enableOnBackInvokedCallback="false">
     <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}"/>
     <meta-data android:name="JPUSH_CHANNEL" android:value="${JPUSH_CHANNEL}"/>
+    <meta-data android:name="expo.modules.updates.CODE_SIGNING_CERTIFICATE" android:value="-----BEGIN CERTIFICATE-----&#xD;&#xA;MIIC1zCCAb+gAwIBAgIJa5/qjCOSWIbNMA0GCSqGSIb3DQEBCwUAMBUxEzARBgNV&#xD;&#xA;BAMTCk11eGlTdHVkaW8wHhcNMjYwOTA5MTczMjU5WhcNMzYwOTA5MTczMjU5WjAV&#xD;&#xA;MRMwEQYDVQQDEwpNdXhpU3R1ZGlvMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB&#xD;&#xA;CgKCAQEAkcfQNbQ3SKaPWfG+kkOHRKYI/E8g2ObuGFxZ83e/p0EblcFCdcmo/1eo&#xD;&#xA;L9tNWAc6SD8bipPhklDiWH592IkOXBPSrlX8ds1m6/uZnw8+EbV3j4+QzVGSba+V&#xD;&#xA;8/Qo9OLIxW+RKjWM+0DPyiVM2ZtuaDy3tpB6IQI3BSAh+WK8g9HN9bfi8306u1cL&#xD;&#xA;dmK+d8yCTNF8AtIRLazOjknPYWDntc81gdQCCjgPdLu1FV+oy4u7PKibtA6Q5hm4&#xD;&#xA;pzh/PSOHR7+vTiNCOFoj6Fjxfa9UcxjfxPDpLWKx1f4EvD94p/43OCOYItL1P+g7&#xD;&#xA;jOB/bOKNjdu9uH6iscpMjI0traUNgQIDAQABoyowKDAOBgNVHQ8BAf8EBAMCB4Aw&#xD;&#xA;FgYDVR0lAQH/BAwwCgYIKwYBBQUHAwMwDQYJKoZIhvcNAQELBQADggEBACNelOTn&#xD;&#xA;vG4CU+GcS0ROkMPcvz1Ybt/JiNsj8E1JOuOTconO4mrXPfpv8p1CCMiULk4yCErd&#xD;&#xA;KT+cT9yZVXprmijPs3k5vFQzAdeGN5qPr+hxJsAuZuCLf0SjlflKWYJR2f6RPlCg&#xD;&#xA;BA94OI3ust6wPXWfdlJvelz/ExqGQKwfoNUz01u7tOrxNj0+T0e0+FPL1Vg5Ww7F&#xD;&#xA;NGbwQFdBnY36vdEBsuYySEY0lMofVCUGNZfn15b84CPNYX8oaTWbo4mjTshPAN1q&#xD;&#xA;PIlclVREQYpGrSa2/IgaU9001DwNjMhSEZ2ZMr1Ubu+kjWmsR0jecJwS5XidVXUd&#xD;&#xA;LuNyn189Z5et1/c=&#xD;&#xA;-----END CERTIFICATE-----&#xD;&#xA;"/>
+    <meta-data android:name="expo.modules.updates.CODE_SIGNING_METADATA" android:value="{&quot;keyid&quot;:&quot;main&quot;,&quot;alg&quot;:&quot;rsa-v1_5-sha256&quot;}"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.ENABLE_BSDIFF_PATCH_SUPPORT" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
-    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://ota.ccnubox.muxixyz.com/65d670f0-9625-4631-9603-f4b11f44e621"/>
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://ota-api.muxixyz.com/manifest"/>
+    <meta-data android:name="expo.modules.updates.UPDATES_CONFIGURATION_REQUEST_HEADERS_KEY" android:value="{&quot;expo-channel-name&quot;:&quot;production&quot;,&quot;expo-app-id&quot;:&quot;65d670f0-9625-4631-9603-f4b11f44e621&quot;,&quot;xprem-branch&quot;:&quot;&quot;}"/>
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

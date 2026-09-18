@@ -1,17 +1,17 @@
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Text } from 'react-native';
 
-import useVisualScheme from '@/store/visualScheme';
-
 import {
   ScheduleHeaderRight,
   ScheduleHeaderTitle,
 } from '@/modules/courseTable/components/ScheduleHeaders';
 //import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
 import NotificationHeaderRight from '@/modules/notification/component/NotiNavbar';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
-
 import type { SinglePageType } from '@/types/tabBarTypes';
+
+export const TABBAR_BASE_HEIGHT = 50;
 
 /**
  * @enum tabBar颜色

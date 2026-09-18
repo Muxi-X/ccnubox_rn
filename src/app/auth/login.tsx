@@ -1,7 +1,6 @@
 import { Checkbox, Icon, Input, Toast } from '@ant-design/react-native';
 import { OnChangeParams } from '@ant-design/react-native/es/checkbox/PropsType';
 import axios, { AxiosError } from 'axios';
-import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { setItem } from 'expo-secure-store';
 import { FC, useState } from 'react';
@@ -15,19 +14,17 @@ import {
   View,
 } from 'react-native';
 
-import { useKeyboardStatus } from '@/hooks';
-
+import MXLogo from '@/assets/images/mx-logo.png';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
-
+import { BASE_URL } from '@/constants/BASE_URLS';
+import { useKeyboardStatus } from '@/hooks';
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
-
-import MXLogo from '@/assets/images/mx-logo.png';
 import { commonColors, commonStyles } from '@/styles/common';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -44,7 +41,7 @@ const LoginPage: FC = () => {
   const [password, setPassword] = useState('');
   // use custom axios instance to avoid global error handler
   const request = axios.create({
-    baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
+    baseURL: BASE_URL,
     adapter: axios.defaults.adapter,
   });
   const handleViewPassword = () => {
@@ -82,8 +79,20 @@ const LoginPage: FC = () => {
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401) {
         Toast.fail('账号密码有误', 2);
+      } else if (error instanceof AxiosError && error.response?.status) {
+        Toast.fail(`登录失败 (${error.response.status})`, 2);
+      } else {
+        Toast.fail('网络连接异常，请稍后重试', 2);
       }
-      log.error('注册请求失败:', error);
+      if (error instanceof AxiosError) {
+        logger.error('登录请求失败', {
+          message: error.message,
+          status: error.response?.status,
+          code: error.code,
+        });
+      } else {
+        logger.error('登录请求未知异常', error);
+      }
     }
     setLoginTriggered(false);
   };
@@ -122,17 +131,27 @@ const LoginPage: FC = () => {
           onChangeText={text => setStudentId(text.toString())}
           placeholderTextColor={styles.textColor.color}
           textAlign="center"
+          autoComplete="username"
+          textContentType="username"
+          importantForAutofill="yes"
+          autoCapitalize="none"
+          autoCorrect={false}
         ></Input>
 
         <Input
           style={styles.input}
           placeholderTextColor={styles.textColor.color}
           textAlign="center"
-          /* 前后缀都要有，不然对不齐 */
+          /* 前后缀都要有，不然对齐 */
           prefix={<View style={styles.suffixStyle}></View>}
           value={password}
           onChangeText={text => setPassword(text.toString())}
           type={isPasswordShow ? 'text' : 'password'}
+          autoComplete="password"
+          textContentType="password"
+          importantForAutofill="yes"
+          autoCapitalize="none"
+          autoCorrect={false}
           suffix={
             <Icon
               name={isPasswordShow ? 'eye' : 'eye-invisible'}

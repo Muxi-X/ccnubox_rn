@@ -9,11 +9,9 @@ import {
 } from 'react-native';
 
 import Modal from '@/components/modal';
-
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonStyles } from '@/styles/common';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 import { calculateSemesterWeekCount } from '@/utils/semesterWeeks';
 
 import { WeekSelectorProps } from './courseTable/type';
@@ -110,7 +108,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
         cancelText: '取消',
         showCancel: true,
         onConfirm: async () => {
-          log.info('确认切换学期', `${targetYear} 学期${targetSemester}`);
+          logger.info('确认切换学期', { targetYear, targetSemester });
           await onApply({ year: targetYear, semester: targetSemester, week });
         },
         onCancel: () => {
@@ -129,7 +127,7 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   // 选择周次
   const handleWeekSelect = useCallback(
     (week: number) => {
-      log.info('选择周次', week);
+      logger.info('选择周次', { week });
       if (hasSemesterChanged) {
         showSemesterChangeModal({
           year: pendingYear,

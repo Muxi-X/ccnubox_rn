@@ -1,24 +1,21 @@
 import React from 'react';
 import { ColorValue, ViewStyle } from 'react-native';
 
-// 导入所有SVG图标
-import CalendarIcon from '@/assets/icons/calendar.svg';
-import HomeIcon from '@/assets/icons/home.svg';
-import SettingIcon from '@/assets/icons/setting.svg';
-import NotificationIcon from '@/assets/icons/notification.svg';
+import {
+  type TabBarIconName,
+  tabBarIcons,
+  tabBarSelectedIcons,
+} from '@/assets/icons';
+import { logger } from '@/utils/logger';
 
-export const icons = {
-  calendar: CalendarIcon,
-  home: HomeIcon,
-  setting: SettingIcon,
-  notification: NotificationIcon,
-};
+export const icons = tabBarIcons;
 
 interface TabBarIconProps {
   style?: ViewStyle;
-  name?: keyof typeof icons;
+  name?: TabBarIconName;
   size?: number;
   color?: ColorValue;
+  focused?: boolean;
 }
 
 export function TabBarIcon({
@@ -26,10 +23,11 @@ export function TabBarIcon({
   name = 'home',
   size = 24,
   color = 'black',
+  focused = false,
 }: TabBarIconProps) {
-  const Icon = icons[name];
+  const Icon = focused ? tabBarSelectedIcons[name] : tabBarIcons[name];
   if (!Icon) {
-    console.warn(`Icon ${name} not found`);
+    logger.warn(`Icon ${name} not found`);
     return null;
   }
 

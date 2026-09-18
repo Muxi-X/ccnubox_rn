@@ -9,7 +9,6 @@ import {
 } from 'react-native-reanimated';
 
 import useVisualScheme from '@/store/visualScheme';
-
 import { ConfigurableThemeNames } from '@/styles/types';
 
 const useThemeChangeStyle = (

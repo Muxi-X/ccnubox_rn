@@ -3,11 +3,9 @@ import { Slot } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useKeyboardStatus } from '@/hooks';
-
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Divider from '@/components/divider';
-
+import { useKeyboardStatus } from '@/hooks';
 import { commonStyles } from '@/styles/common';
 
 const Login: React.FC = () => {

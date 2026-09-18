@@ -1,20 +1,16 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import Constants from 'expo-constants';
+import axios, { AxiosInstance } from 'axios';
 import { router } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 
-import Toast from '@/components/toast';
-
+import { BASE_URL } from '@/constants/BASE_URLS';
 import requestBus from '@/store/currentRequests';
-
-import { paths } from './schema';
-
 import { OtherTokenConfig } from '@/types/axios';
 
-// 这一块逻辑和匣子接口强耦合，不适用反馈接口，所以加了些扩展，默认为原逻辑
+import { createRequestClient } from './createRequestClient';
+import { paths } from './schema';
+
 const axiosInstance: AxiosInstance = axios.create({
-  // baseURL: process.env.EXPO_PUBLIC_API_URL,
-  baseURL: Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL,
+  baseURL: BASE_URL,
   adapter: axios.defaults.adapter,
 });
 
@@ -46,28 +42,39 @@ async function getStoredToken(config?: OtherTokenConfig): Promise<string> {
   }
 }
 
+let refreshingPromise: Promise<string> | null = null;
+
 async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   if (!config) {
-    const longToken = await getItem('longToken');
-    if (!longToken) {
-      throw new Error('长 token 不存在，跳转登录');
+    if (refreshingPromise) {
+      return refreshingPromise;
     }
 
-    // 刷新短 token
-    const response = await axios.get(
-      `${Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL}/users/refresh_token`,
-      {
-        headers: { Authorization: `Bearer ${longToken}` },
+    refreshingPromise = (async () => {
+      try {
+        const longToken = await getItem('longToken');
+        if (!longToken) {
+          throw new Error('长 token 不存在，跳转登录');
+        }
+
+        // 刷新短 token
+        const response = await axios.get(`${BASE_URL}/users/refresh_token`, {
+          headers: { Authorization: `Bearer ${longToken}` },
+        });
+
+        if (response.status === 200 || response.status === 201) {
+          const newShortToken = response.headers['x-jwt-token'];
+          setItem('shortToken', newShortToken);
+          return newShortToken;
+        }
+
+        throw new Error('刷新短 token 失败');
+      } finally {
+        refreshingPromise = null;
       }
-    );
+    })();
 
-    if (response.status === 200 || response.status === 201) {
-      const newShortToken = response.headers['x-jwt-token'];
-      setItem('shortToken', newShortToken);
-      return newShortToken;
-    }
-
-    throw new Error('刷新短 token 失败');
+    return refreshingPromise;
   }
 
   if (config.refresh) {
@@ -103,17 +110,8 @@ axiosInstance.interceptors.response.use(
   response => {
     requestBus.requestComplete();
 
-    switch (response.status) {
-      case 200:
-        return response;
-      case 401:
-        throw new Error('token过期');
-      //  break;
-      case 403:
-        Toast.show({ text: '无权限' });
-        break;
-      default:
-        Toast.show({ text: '服务器错误' });
+    if (response.status >= 200 && response.status < 300) {
+      return response;
     }
     return Promise.reject(new Error(`Error status code: ${response.status}`));
   },
@@ -121,7 +119,11 @@ axiosInstance.interceptors.response.use(
     requestBus.requestComplete();
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true; // 防止无限循环
 
       const tokenConfig = originalRequest?.otherToken;
@@ -146,124 +148,8 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-type Path = keyof paths;
-type Method = keyof paths[Path];
-
-type RequestParams<P extends Path, M extends Method> = paths[P][M] extends {
-  parameters: infer Params;
-}
-  ? Params extends object
-    ? Params
-    : never
-  : never;
-
-type RequestBody<P extends Path, M extends Method> = paths[P][M] extends {
-  requestBody: { content: { 'application/json': infer Body } };
-}
-  ? Body
-  : never;
-
-type ResponseData<P extends Path, M extends Method> = paths[P][M] extends {
-  responses: { 200: { content: { 'application/json': infer Data } } };
-}
-  ? Data
-  : never;
-
-function resolvePathWithParams<P extends Path>(
-  path: P,
-  params?: RequestParams<P, Method>
-): string {
-  // @ts-expect-error 2339 never type
-  if (!params || !params.query) {
-    return path as string;
-  }
-
-  if (typeof params === 'object' && 'query' in params) {
-    // @ts-expect-error 2339 never type
-    const query = params.query;
-    if (typeof query === 'string') {
-      return `${path as string}?${query}`;
-    } else if (typeof query === 'object') {
-      const queryParams = new URLSearchParams();
-      for (const key in query) {
-        if (Object.prototype.hasOwnProperty.call(query, key)) {
-          const value = query[key];
-          // 处理数组参数
-          if (Array.isArray(value)) {
-            value
-              .filter(item => item != null)
-              .forEach(item => {
-                queryParams.append(key, String(item));
-              });
-          } else if (value != null) {
-            queryParams.append(key, String(value));
-          }
-        }
-      }
-      const queryString = queryParams.toString();
-      return `${path as string}?${queryString}`;
-    } else {
-      throw new Error(
-        `Expected query to be an object or string, but received: ${typeof query}`
-      );
-    }
-  } else {
-    throw new Error(
-      `Expected params to be an object with a query property, but received: ${typeof params}`
-    );
-  }
-}
-
-async function baseRequest<P extends Path, M extends Method>(
-  path: P,
-  method: M,
-  body?: RequestBody<P, M>,
-  params?: RequestParams<P, M>,
-  config?: AxiosRequestConfig
-): Promise<ResponseData<P, M>> {
-  const url = resolvePathWithParams(path, params);
-
-  const axiosConfig: AxiosRequestConfig = {
-    method,
-    url,
-    data: body,
-    ...config,
-  };
-
-  const response = await axiosInstance(axiosConfig);
-
-  return response.data as ResponseData<P, M>;
-}
-
-const request = {
-  async get<P extends Path>(
-    path: P,
-    params?: RequestParams<P, 'get'>,
-    config?: AxiosRequestConfig
-  ): Promise<ResponseData<P, 'get'>> {
-    return baseRequest(path, 'get', undefined, params, config);
-  },
-  async post<P extends Path>(
-    path: P,
-    body?: RequestBody<P, 'post'>,
-    config?: AxiosRequestConfig
-  ): Promise<ResponseData<P, 'post'>> {
-    return baseRequest(path, 'post', body, undefined, config);
-  },
-  async put<P extends Path>(
-    path: P,
-    body?: RequestBody<P, 'put'>,
-    config?: AxiosRequestConfig
-  ): Promise<ResponseData<P, 'put'>> {
-    return baseRequest(path, 'put', body, undefined, config);
-  },
-  async delete<P extends Path>(
-    path: P,
-    params?: RequestParams<P, 'delete'>,
-    config?: AxiosRequestConfig
-  ): Promise<ResponseData<P, 'delete'>> {
-    return baseRequest(path, 'delete', undefined, params, config);
-  },
-};
+const request = createRequestClient<paths>(axiosInstance);
 
 export { request };
+export { feedbackRequest } from './feedbackRequest';
+export * from './createRequestClient';

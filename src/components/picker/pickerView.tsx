@@ -5,7 +5,6 @@ import { FC } from 'react';
 import { DimensionValue, StyleSheet, Text, View } from 'react-native';
 
 import { PickerConnectorProps } from '@/components/picker/types';
-
 import { commonColors, commonStyles } from '@/styles/common';
 
 const PickerView: FC<PickerViewProps> = ({ styles: propStyles, ...props }) => {

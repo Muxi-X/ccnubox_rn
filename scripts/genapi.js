@@ -89,52 +89,96 @@ function runCommand(command, args) {
     rl.close();
   }
 
-  // 获取 swagger 文档
-  let apidocText = '';
-  try {
-    const res = await fetchFn('https://v3.ccnubox.muxixyz.com/api/v1/swag', {
-      method: 'GET',
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
-      },
-    });
-    if (!res.ok) {
-      console.error('接口请求失败', res.status, await res.text());
+  const mainBaseUrl = (
+    process.env.API_BASE_URL ||
+    process.env.EXPO_PUBLIC_API_URL ||
+    'https://v3.ccnubox.muxixyz.com/api/v1'
+  ).replace(/\/+$/, '');
+  const mainDocPath = mainBaseUrl.endsWith('/api/v1')
+    ? '/swag'
+    : '/api/v1/swag';
+  const mainDocUrl = process.env.API_DOC_URL || `${mainBaseUrl}${mainDocPath}`;
+
+  const feedbackBaseUrl = (
+    process.env.FEEDBACK_BASE_URL ||
+    process.env.EXPO_PUBLIC_FEEDBACK_BASE_URL ||
+    'https://feedback.muxixyz.com'
+  ).replace(/\/+$/, '');
+  const feedbackDocPath = feedbackBaseUrl.endsWith('/api/v1')
+    ? '/openapi'
+    : '/api/v1/openapi';
+  const feedbackDocUrl =
+    process.env.FEEDBACK_API_DOC_URL || `${feedbackBaseUrl}${feedbackDocPath}`;
+
+  const apis = [
+    {
+      name: 'CCNUBox 主服务',
+      url: mainDocUrl,
+      schemaPath: './src/request/openapi.yaml',
+      outputPath: './src/request/schema.d.ts',
+      cleanContent: text => text,
+    },
+    {
+      name: '反馈服务 (Feedback)',
+      url: feedbackDocUrl,
+      schemaPath: './src/request/openapi.feedback.yaml',
+      outputPath: './src/request/schema.feedback.d.ts',
+      cleanContent: text =>
+        text.replace(/\{"code":\s*\d+.*\}\s*$/, '').trimEnd() + '\n',
+    },
+  ];
+
+  for (const api of apis) {
+    console.log(`\n正在拉取 [${api.name}] 接口文档: ${api.url}`);
+    let apidocText = '';
+    try {
+      const res = await fetchFn(api.url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
+        },
+      });
+      if (!res.ok) {
+        console.error(
+          `[${api.name}] 接口请求失败`,
+          res.status,
+          await res.text()
+        );
+        process.exit(1);
+      }
+      apidocText = await res.text();
+    } catch (err) {
+      console.error(`[${api.name}] 请求接口失败：`, err.message);
       process.exit(1);
     }
-    apidocText = await res.text();
-  } catch (err) {
-    console.error('请求接口失败：', err.message);
-    process.exit(1);
-  }
 
-  // 写入 openapi.yaml
-  try {
-    writeFileSync('./src/request/openapi.yaml', apidocText);
-    console.log('openapi.yaml 写入完成');
-  } catch (err) {
-    console.error('写文件失败：', err.message);
-    process.exit(1);
-  }
+    try {
+      const cleaned = api.cleanContent(apidocText);
+      writeFileSync(api.schemaPath, cleaned);
+      console.log(`[${api.name}] ${api.schemaPath} 写入完成`);
+    } catch (err) {
+      console.error(`[${api.name}] 写文件失败：`, err.message);
+      process.exit(1);
+    }
 
-  // 生成类型
-  try {
-    await runCommand('pnpx', [
-      'openapi-typescript',
-      './src/request/openapi.yaml',
-      '-o',
-      './src/request/schema.d.ts',
-    ]);
-    console.log('类型定义生成完毕！');
-  } catch (err) {
-    console.error('类型定义生成/命令执行失败：', err.message);
-    process.exit(1);
+    try {
+      await runCommand('pnpx', [
+        'openapi-typescript',
+        api.schemaPath,
+        '-o',
+        api.outputPath,
+      ]);
+      console.log(`[${api.name}] 类型定义生成完毕：${api.outputPath}`);
+    } catch (err) {
+      console.error(`[${api.name}] 类型定义生成/命令执行失败：`, err.message);
+      process.exit(1);
+    }
   }
 
   // 格式化
   try {
     await runCommand('pnpm', ['format']);
-    console.log('格式化完成！');
+    console.log('\n代码格式化完成！');
   } catch (err) {
     console.error('格式化失败：', err.message);
     process.exit(1);

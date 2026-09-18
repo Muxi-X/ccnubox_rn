@@ -16,10 +16,10 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import refreshAnimation from '@/assets/animation/renovate.json';
 import Divider from '@/components/divider';
 import Toast from '@/components/toast';
 import { COURSE_HEADER_HEIGHT, TIME_WIDTH } from '@/constants/SCHEDULE';
-
 import { commonColors } from '@/styles/common';
 import globalEventBus from '@/utils/eventBus';
 
@@ -51,6 +51,7 @@ const TimetableScrollView = (
   const {
     stickyTop,
     stickyLeft,
+    stickyBottom,
     children,
     style,
     cornerStyle,
@@ -286,21 +287,29 @@ const TimetableScrollView = (
       // 处理下拉刷新
       handlePullToRefresh(event);
       // 永远处理滚动, 包括下拉刷新时
+      const maxScrollX = Math.max(0, containerSize.width - wrapperSize.width);
       const newTranslateX = Math.min(
         0,
-        Math.max(
-          startX.value + Math.floor(event.translationX),
-          wrapperSize.width - containerSize.width
-        )
+        Math.max(startX.value + Math.floor(event.translationX), -maxScrollX)
       );
 
-      const newTranslateY = Math.min(
+      const maxNormalScrollY = Math.max(
         0,
-        Math.max(
-          startY.value + Math.floor(event.translationY),
-          wrapperSize.height - containerSize.height
-        )
+        containerSize.height - wrapperSize.height
       );
+      const EXTRA_BOTTOM_SPACE = 70;
+      const maxOverscrollY = maxNormalScrollY + EXTRA_BOTTOM_SPACE;
+
+      const rawY = startY.value + Math.floor(event.translationY);
+      let newTranslateY = rawY;
+      // 超过正常底部（上拉到底露出提示时）增加阻尼感
+      if (rawY < -maxNormalScrollY) {
+        const overscroll = -maxNormalScrollY - rawY;
+        newTranslateY =
+          -maxNormalScrollY - Math.min(EXTRA_BOTTOM_SPACE, overscroll * 0.6);
+      }
+      newTranslateY = Math.min(0, Math.max(newTranslateY, -maxOverscrollY));
+
       translateX.value = newTranslateX;
       translateY.value = newTranslateY;
     })
@@ -310,8 +319,15 @@ const TimetableScrollView = (
       if (!shouldRefresh.value || isRefreshing.value) {
         return;
       }
-      if (wrapperSize.height - translateY.value - containerSize.height >= -60) {
-        translateY.value = withTiming(translateY.value + 60);
+
+      const maxNormalScrollY = Math.max(
+        0,
+        containerSize.height - wrapperSize.height
+      );
+
+      // 上拉到底部超出了正常课表范围时，松手自动回弹到第 12 节课
+      if (translateY.value < -maxNormalScrollY) {
+        translateY.value = withTiming(-maxNormalScrollY, { duration: 300 });
       }
 
       handleRefreshComplete(event);
@@ -340,12 +356,6 @@ const TimetableScrollView = (
     };
   }, []);
 
-  // Animated style for sticky top margin
-  const stickyTopMarginStyle = useAnimatedStyle(() => {
-    return {
-      marginLeft: TIME_WIDTH,
-    };
-  }, []);
   // For the sticky top, we only want horizontal scrolling, not vertical
   const animatedOnlyX = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -360,6 +370,10 @@ const TimetableScrollView = (
   // For the sticky left, we only want vertical scrolling, not horizontal
   const refreshHeight = useAnimatedStyle(() => ({
     transform: [{ translateY: backHeight.value }],
+  }));
+  const refreshHeaderStyle = useAnimatedStyle(() => ({
+    height: backHeight.value,
+    opacity: interpolate(backHeight.value, [0, MIN_THRESHOLD], [0, 1], 'clamp'),
   }));
   const handleChildLayout = (event: LayoutChangeEvent) => {
     const { layout } = event.nativeEvent;
@@ -381,24 +395,26 @@ const TimetableScrollView = (
       pointerEvents="box-none"
     >
       <Animated.View
+        pointerEvents="none"
         style={[
           {
             width: '100%',
             zIndex: -1,
-            height: REFRESH_THRESHOLD,
-            opacity: 1,
             display: 'flex',
             flexDirection: 'column',
             backgroundColor: refreshBackgroundColor,
             overflow: 'hidden',
             alignItems: 'center',
+            justifyContent: 'center',
             position: 'absolute',
-            elevation: 5,
+            top: 0,
+            left: 0,
           },
+          refreshHeaderStyle,
         ]}
       >
         <LottieView
-          source={require('@/assets/animation/renovate.json')}
+          source={refreshAnimation}
           style={[styles.lottieAnimation]}
           loop={true}
           ref={animationRef}
@@ -409,46 +425,40 @@ const TimetableScrollView = (
         ></Animated.Text>
       </Animated.View>
       <Animated.View style={[refreshHeight, { flex: 1 }]}>
-        {/* sticky top */}
-        <Animated.View
-          style={[
-            styles.stickyTop,
-            { width: containerSize.width },
-            stickyTopMarginStyle,
-            animatedOnlyX,
-          ]}
-        >
-          {stickyTop}
-        </Animated.View>
+        {/* sticky top: 视口固定在小方块右侧，裁切向左溢出到小方块的内容 */}
+        <View style={styles.stickyTopViewport}>
+          <Animated.View
+            style={[
+              styles.stickyTopContent,
+              { width: containerSize.width },
+              animatedOnlyX,
+            ]}
+          >
+            {stickyTop}
+          </Animated.View>
+        </View>
         {/* corner */}
         <Animated.View
-          style={[
-            defaultCornerStyle,
-            {
-              position: 'absolute',
-              left: 0,
-              backgroundColor: commonColors.gray,
-              zIndex: 20,
-              ...cornerStyle,
-            },
-          ]}
-        ></Animated.View>
+          style={[defaultCornerStyle, styles.corner, cornerStyle]}
+        />
         <Animated.View
           style={{
             flexDirection: 'column',
             flex: 1,
           }}
         >
-          {/* stickyLeft */}
-          <Animated.View
-            style={[
-              styles.stickyLeft,
-              { height: containerSize.height },
-              animatedOnlyY,
-            ]}
-          >
-            {stickyLeft}
-          </Animated.View>
+          {/* stickyLeft: 视口固定在小方块下方，裁切向上溢出到小方块的内容 */}
+          <View style={styles.stickyLeftViewport} pointerEvents="box-none">
+            <Animated.View
+              style={[
+                styles.stickyLeftContent,
+                { height: containerSize.height },
+                animatedOnlyY,
+              ]}
+            >
+              {stickyLeft}
+            </Animated.View>
+          </View>
           <Animated.View
             style={[styles.wrapper, contentMarginStyle]}
             onLayout={event => {
@@ -471,10 +481,24 @@ const TimetableScrollView = (
               </Animated.View>
             </GestureDetector>
           </Animated.View>
-          {/* sticky bottom */}
-          <View style={{ width: '100%', height: 60 }}>
-            <Divider>别闹, 学霸也是要睡觉的</Divider>
-          </View>
+          {/* stickyBottom: 只随垂直滚动移动，水平方向固定占满屏幕 */}
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              {
+                position: 'absolute',
+                top: containerSize.height,
+                left: 0,
+                right: 0,
+                width: '100%',
+                height: 60,
+                justifyContent: 'center',
+              },
+              animatedOnlyY,
+            ]}
+          >
+            {stickyBottom || <Divider>别闹, 学霸也是要睡觉的</Divider>}
+          </Animated.View>
         </Animated.View>
       </Animated.View>
     </View>
@@ -494,20 +518,36 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 2,
   },
-  stickyTop: {
-    position: 'relative',
+  stickyTopViewport: {
+    marginLeft: TIME_WIDTH,
+    height: COURSE_HEADER_HEIGHT,
     overflow: 'hidden',
-    top: 0,
-    left: 0,
     zIndex: 10,
   },
-  stickyLeft: {
+  stickyTopContent: {
+    height: COURSE_HEADER_HEIGHT,
+  },
+  corner: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backgroundColor: 'transparent',
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'transparent',
+    zIndex: 20,
+  },
+  stickyLeftViewport: {
     position: 'absolute',
     top: 0,
     left: 0,
-    flexShrink: 0,
-    flexGrow: 0,
+    bottom: 0,
+    width: TIME_WIDTH,
+    overflow: 'hidden',
     zIndex: 9,
+  },
+  stickyLeftContent: {
+    width: TIME_WIDTH,
   },
   stickyContent: {
     flexShrink: 0,
@@ -517,7 +557,11 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   backgroundLayer: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     zIndex: -1,
   },
   text: {

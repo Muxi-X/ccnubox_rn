@@ -1,24 +1,17 @@
 import { Toast } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 
+import YearIcon from '@/assets/images/xuenian.png';
+import SemesterIcon from '@/assets/images/xueqi.png';
+import Button from '@/components/button';
 import MultiPicker from '@/components/picker/multiPicker';
 import type { PickerDataType } from '@/components/picker/types';
-import Button from '@/components/button';
-
-import useCourse from '@/store/course';
-import useVisualScheme from '@/store/visualScheme';
-
 import { queryGradeType } from '@/request/api/grade';
 import { querySemesterList } from '@/request/api/semester';
+import useCourse from '@/store/course';
+import useVisualScheme from '@/store/visualScheme';
 import { generateSemesterOptions } from '@/utils/generateSemesterOptions';
 
 const formatCourseType = (types: string[]) => {
@@ -43,10 +36,8 @@ const CheckGrades = () => {
     const fetchFilters = async () => {
       setLoading(true);
       try {
-        const [gradeTypeRes, semesterListRes] = await Promise.all([
-          queryGradeType(),
-          querySemesterList(),
-        ]);
+        const gradeTypeRes = await queryGradeType();
+        const semesterListRes = await querySemesterList();
 
         if (
           gradeTypeRes.code !== 0 ||
@@ -80,7 +71,7 @@ const CheckGrades = () => {
     <View style={[styles.item, styles.itemBorder]}>
       <Image
         style={{ width: 35, height: 35, marginRight: 34 }}
-        source={require('../../../../assets/images/xuenian.png')}
+        source={YearIcon}
       />
       <View>
         <Text
@@ -112,7 +103,7 @@ const CheckGrades = () => {
     <View style={styles.item}>
       <Image
         style={{ width: 35, height: 35, marginRight: 34 }}
-        source={require('../../../../assets/images/xueqi.png')}
+        source={SemesterIcon}
       />
       <View style={{ display: 'flex' }}>
         <Text

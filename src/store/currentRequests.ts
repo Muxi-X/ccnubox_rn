@@ -1,5 +1,4 @@
 import { CurrentRequestsType } from '@/store/types';
-
 import globalEventBus from '@/utils/eventBus';
 
 /** 当前所有请求监听 */

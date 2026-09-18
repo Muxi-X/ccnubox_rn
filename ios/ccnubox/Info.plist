@@ -21,7 +21,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>3.1.7</string>
+    <string>3.2.0</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -41,7 +41,7 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>23</string>
+    <string>29</string>
     <key>JPUSH_APPKEY</key>
     <string>85271fccfbf4106a0e78556c</string>
     <key>JPUSH_APS_FOR_PRODUCTION</key>
@@ -68,6 +68,8 @@
     <array>
       <string>_expo._tcp</string>
     </array>
+    <key>NSCameraUsageDescription</key>
+    <string>用于扫描图书馆座位二维码以完成座位签到与预约。</string>
     <key>NSLocalNetworkUsageDescription</key>
     <string>Expo Dev Launcher uses the local network to discover and connect to development servers running on your computer.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
@@ -82,6 +84,8 @@
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
     </array>
+    <key>RCTMetroPort</key>
+    <string>$(RCT_METRO_PORT)</string>
     <key>RCTNewArchEnabled</key>
     <true/>
     <key>UIBackgroundModes</key>

@@ -1,11 +1,9 @@
 import { StyleSheet, View } from 'react-native';
 
 import TabBar from '@/components/tabs';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import CheckGrades from '@/modules/mainPage/components/checkgrades';
 import CourseTree from '@/modules/mainPage/components/courseTree';
+import useVisualScheme from '@/store/visualScheme';
 
 const ScoreInquiry = () => {
   const currentStyle = useVisualScheme(state => state.currentStyle);

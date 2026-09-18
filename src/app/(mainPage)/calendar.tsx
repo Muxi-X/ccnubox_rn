@@ -13,10 +13,8 @@ import { WebView } from 'react-native-webview';
 
 import Text from '@/components/text';
 import View from '@/components/view';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import queryCalendars from '@/request/api/queryCalendars';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 
 type CalendarItem = { label: string; value: number };
@@ -32,10 +30,10 @@ export default function Calendar() {
 
   React.useEffect(() => {
     queryCalendars()
-      .then(res => {
-        const raw = res.data?.calendars ?? [];
+      .then((res: any) => {
+        const raw = res?.data?.calendars ?? [];
         const linkMap: Record<number, string> = {};
-        raw.forEach(c => {
+        raw.forEach((c: { year?: number; link?: string }) => {
           if (c.year != null && c.link) linkMap[c.year] = c.link;
         });
         setLinks(linkMap);
@@ -46,6 +44,9 @@ export default function Calendar() {
           .map(y => ({ label: `${y}～${y + 1} 学年`, value: y }));
         setYears(list);
         if (list.length > 0) setSelectedYear(list[0].value);
+      })
+      .catch(() => {
+        // 网络请求失败时 years 为空
       })
       .finally(() => setLoading(false));
   }, []);
@@ -208,6 +209,9 @@ const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
 
     ExpoFile.downloadFileAsync(url, localFile)
       .then(file => setSource(file.uri))
+      .catch(() => {
+        // 下载失败处理
+      })
       .finally(() => setDownloading(false));
   }, [url, year]);
 

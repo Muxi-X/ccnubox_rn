@@ -17,19 +17,18 @@ import {
   View,
 } from 'react-native';
 
-import ThemeBasedView from '@/components/view';
 import Button from '@/components/button';
-
-import useVisualScheme from '@/store/visualScheme';
-
+import ThemeBasedView from '@/components/view';
 import {
   FEEDBACK_TABLE_IDENTIFY,
   ISSUE_TYPE_MAP,
   MODULE_MAP,
 } from '@/constants/FEEDBACKS';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import { createFeedbackRecord } from '@/request/api/feedback';
-import { runSensitiveAction } from '@/utils/requestSensitivePermission';
+import useVisualScheme from '@/store/visualScheme';
+import { logger } from '@/utils/logger';
+import { runPermissionAction } from '@/utils/requestPermission';
 import { uploadFileToFeishuBitable } from '@/utils/uploadPicture';
 
 type ImageItem = {
@@ -81,18 +80,18 @@ function WriteFeedback() {
       if (uploadResult && uploadResult.data && uploadResult.data.file_token) {
         return uploadResult.data.file_token;
       } else {
-        console.warn('上传缺少token', uploadResult);
+        logger.warn('上传缺少token', uploadResult);
         return null;
       }
     } catch (error: any) {
-      console.error('上传图片出错:', error);
+      logger.error('上传图片出错', error);
       return null;
     }
   };
 
   const handleSelectImage = async () => {
     try {
-      const result = await runSensitiveAction({
+      const result = await runPermissionAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'images',
@@ -100,7 +99,7 @@ function WriteFeedback() {
             quality: 0.7,
             aspect: [4, 3],
           }),
-        purpose: SENSITIVE_PERMISSION_PURPOSES.feedbackImage,
+        purpose: PERMISSION_PURPOSES.feedbackImage,
       });
       if (!result || result.canceled) return;
 
@@ -133,7 +132,7 @@ function WriteFeedback() {
         })();
       }
     } catch (err: any) {
-      console.error('选择图片出错:', err);
+      logger.error('选择图片出错', err);
       Toast.fail('选择图片失败,请重试');
     }
   };
@@ -171,15 +170,15 @@ function WriteFeedback() {
         setDescription('');
         setContact('');
         setImages([]);
+        router.back();
       } else {
         Toast.fail('提交失败, 请稍后重试');
       }
     } catch (error: any) {
-      console.error('提交错误:', error.response || error);
+      logger.error('提交反馈错误', error.response || error);
       Toast.fail('提交失败,无法连接到服务器，请检查网络');
     } finally {
       setIsSubmitting(false);
-      router.back();
     }
   };
 

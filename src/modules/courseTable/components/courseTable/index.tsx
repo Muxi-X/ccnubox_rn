@@ -1,30 +1,29 @@
 import {
   BackdropBlur,
   Canvas,
-  Image as SkImage,
   makeImageFromView,
   Skia,
+  Image as SkImage,
   SkImage as SkImageType,
-  useCanvasRef,
   useImage,
 } from '@shopify/react-native-skia';
+import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library/legacy';
-import React, {
-  RefObject,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import ThemeChangeText from '@/components/text';
 import Toast from '@/components/toast';
-
-import useCourseTableAppearance from '@/store/courseTableAppearance';
-import useVisualScheme from '@/store/visualScheme';
-
+import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
 import {
   COURSE_COLLAPSE,
   COURSE_HEADER_HEIGHT,
@@ -34,10 +33,13 @@ import {
   TIME_SLOTS,
   TIME_WIDTH,
 } from '@/constants/SCHEDULE';
-import { SENSITIVE_PERMISSION_PURPOSES } from '@/constants/SENSITIVE_PERMISSIONS';
+import useCourseTableAppearance from '@/store/courseTableAppearance';
+import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
+import { getAlphaColor } from '@/utils/color';
+import { parseClassWhen } from '@/utils/courseRuntime';
 import globalEventBus from '@/utils/eventBus';
-import { requestSensitivePermission } from '@/utils/requestSensitivePermission';
+import { requestPermission } from '@/utils/requestPermission';
 
 import CourseContent from './CourseContent';
 import { StickyBottom } from './StickyBottom';
@@ -59,21 +61,21 @@ const Schedule: React.FC<CourseTableProps> = ({
   const {
     backgroundUri,
     backgroundMode,
+    backgroundScrollable = true,
     foregroundOpacity,
     backgroundMaskOpacity,
     backgroundBlurRadius,
   } = useCourseTableAppearance();
+  const [viewportSize, setViewportSize] = useState<{
+    width: number;
+    height: number;
+  }>(() => {
+    const { width, height } = Dimensions.get('window');
+    return { width, height };
+  });
   const imageRef = useRef<View>(null);
   // 完整课表内容的引用
   const fullTableRef = useRef<View>(null);
-  // Canvas引用，用于截图背景
-  const canvasRef = useCanvasRef();
-  // 合成Canvas引用，用于合成背景和前景
-  const compositeCanvasRef = useCanvasRef();
-  // 前景截图的Skia Image
-  const [foregroundImage, setForegroundImage] = useState<ReturnType<
-    typeof useImage
-  > | null>(null);
 
   // 使用useImage加载背景图（用于普通显示）
   const backgroundImageFromHook = useImage(backgroundUri || '');
@@ -83,27 +85,53 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   // 当backgroundUri变化时，手动加载图片
   useEffect(() => {
+    let aborted = false;
     const loadImage = async () => {
       if (!backgroundUri) {
-        setLoadedBackgroundImage(null);
+        if (!aborted) setLoadedBackgroundImage(null);
         return;
       }
       try {
-        const data = await Skia.Data.fromURI(backgroundUri);
-        if (data) {
-          const image = Skia.Image.MakeImageFromEncoded(data);
-          setLoadedBackgroundImage(image);
+        let data = await Skia.Data.fromURI(backgroundUri);
+        if (!data) {
+          try {
+            const base64 = await FileSystem.readAsStringAsync(backgroundUri, {
+              encoding: 'base64',
+            });
+            if (base64) {
+              data = Skia.Data.fromBase64(base64);
+            }
+          } catch {
+            // ignore
+          }
         }
-      } catch (error) {
-        setLoadedBackgroundImage(null);
+        if (!aborted && data) {
+          const image = Skia.Image.MakeImageFromEncoded(data);
+          if (!aborted) setLoadedBackgroundImage(image);
+        }
+      } catch {
+        if (!aborted) setLoadedBackgroundImage(null);
       }
     };
     loadImage();
+    return () => {
+      aborted = true;
+    };
   }, [backgroundUri]);
 
   // 优先使用手动加载的图片，否则使用hook加载的
   const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
   const normalizedForegroundOpacity = (100 - foregroundOpacity) / 100;
+
+  const cornerBackgroundColor = React.useMemo(() => {
+    const rawColor =
+      currentStyle?.schedule_item_background_style?.backgroundColor ||
+      (themeName === 'light' ? commonColors.lightGray : commonColors.black);
+    if (!backgroundUri) {
+      return rawColor;
+    }
+    return getAlphaColor(rawColor, 0.2);
+  }, [currentStyle?.schedule_item_background_style, themeName, backgroundUri]);
 
   const renderBackgroundContent = (
     children: React.ReactNode,
@@ -116,7 +144,7 @@ const Schedule: React.FC<CourseTableProps> = ({
       baseStyle.flex = 1;
     }
 
-    if (!backgroundUri || !backgroundImage) {
+    if (!backgroundUri) {
       return (
         <View
           style={[
@@ -137,37 +165,71 @@ const Schedule: React.FC<CourseTableProps> = ({
 
     return (
       <View style={[baseStyle, { backgroundColor: 'transparent' }]}>
-        <Canvas
-          style={{
-            position: 'absolute',
-            width: width || '100%',
-            height: height || '100%',
-          }}
-        >
-          {/* 背景图片 */}
-          <SkImage
-            image={backgroundImage}
-            x={0}
-            y={0}
-            width={width}
-            height={height}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
-            opacity={bgOpacity}
+        {backgroundImage ? (
+          <Canvas
+            style={{
+              position: 'absolute',
+              width: width || '100%',
+              height: height || '100%',
+            }}
+          >
+            {/* 背景图片 */}
+            <SkImage
+              image={backgroundImage}
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              fit={
+                backgroundMode === 'cover'
+                  ? 'cover'
+                  : backgroundMode === 'contain'
+                    ? 'contain'
+                    : 'fill'
+              }
+              opacity={bgOpacity}
+            />
+            {/* 高斯模糊 */}
+            {backgroundBlurRadius > 0 && (
+              <BackdropBlur blur={backgroundBlurRadius} />
+            )}
+          </Canvas>
+        ) : (
+          <Image
+            source={{ uri: backgroundUri }}
+            style={{
+              position: 'absolute',
+              width: width || '100%',
+              height: height || '100%',
+              opacity: bgOpacity,
+            }}
+            resizeMode={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'stretch'
+            }
+            blurRadius={backgroundBlurRadius}
           />
-          {/* 高斯模糊 */}
-          <BackdropBlur blur={backgroundBlurRadius} />
-        </Canvas>
+        )}
         {children}
       </View>
     );
   };
 
+  const isSavingImageRef = useRef(false);
+
   const onSaveImageAsync = async () => {
+    if (isSavingImageRef.current) {
+      return;
+    }
+    isSavingImageRef.current = true;
     try {
-      const hasPermission = await requestSensitivePermission({
+      const hasPermission = await requestPermission({
         getPermission: () => MediaLibrary.getPermissionsAsync(true),
         isGranted: permission => permission.granted,
-        purpose: SENSITIVE_PERMISSION_PURPOSES.saveCourseTable,
+        purpose: PERMISSION_PURPOSES.saveCourseTable,
         requestPermission: () => MediaLibrary.requestPermissionsAsync(true),
       });
       if (!hasPermission) {
@@ -175,6 +237,7 @@ const Schedule: React.FC<CourseTableProps> = ({
           text: '需要相册权限才能保存截图',
           icon: 'fail',
         });
+        isSavingImageRef.current = false;
         return;
       }
       setSnapShot(true);
@@ -184,68 +247,45 @@ const Schedule: React.FC<CourseTableProps> = ({
           // 将滚动位置重置到顶部
           globalEventBus.emit('ResetScrollPosition');
 
-          // 给予时间让滚动位置重置
-          await new Promise(resolve => setTimeout(resolve, 100));
-          if (backgroundUri) {
-            // 先截取前景View
-            const fgSnapshot = await makeImageFromView(
-              fullTableRef as RefObject<View>
-            );
+          // 给予足够的时间让视图完全渲染
+          await new Promise(resolve => setTimeout(resolve, 250));
 
-            if (fgSnapshot) {
-              // 保存前景图到state，触发合成Canvas重新渲染
-              setForegroundImage(fgSnapshot as any);
-
-              // 等待Canvas渲染完成
-              await new Promise(resolve => setTimeout(resolve, 200));
-
-              // 截取合成后的Canvas
-              if (compositeCanvasRef.current) {
-                const compositeSnapshot =
-                  await compositeCanvasRef.current.makeImageSnapshotAsync();
-
-                if (compositeSnapshot) {
-                  const data = compositeSnapshot.encodeToBase64();
-                  const uri = `data:image/png;base64,${data}`;
-
-                  const manipulateResult =
-                    await ImageManipulator.manipulateAsync(uri, [], {
-                      compress: 1,
-                      format: ImageManipulator.SaveFormat.PNG,
-                    });
-
-                  if (manipulateResult && manipulateResult.uri) {
-                    await MediaLibrary.createAssetAsync(manipulateResult.uri);
-                    Toast.show({
-                      text: '截图成功',
-                      icon: 'success',
-                    });
-                    setForegroundImage(null);
-                    setSnapShot(false);
-                    return;
-                  }
-                }
-              }
+          let snapshotImage = null;
+          try {
+            if (fullTableRef.current) {
+              snapshotImage = await makeImageFromView(
+                fullTableRef as RefObject<View>
+              );
             }
-            setForegroundImage(null);
+          } catch {
+            // 忽略初次获取失败，稍后重试
           }
 
-          // 没有背景图，直接截取View
+          if (!snapshotImage) {
+            await new Promise(resolve => setTimeout(resolve, 200));
+            try {
+              if (fullTableRef.current) {
+                snapshotImage = await makeImageFromView(
+                  fullTableRef as RefObject<View>
+                );
+              }
+            } catch (err) {
+              setSnapShot(false);
+              Toast.show({ text: `截图失败：${err}`, icon: 'fail' });
+              return;
+            }
+          }
 
-          const snapshot = await makeImageFromView(
-            fullTableRef as RefObject<View>
-          );
-
-          if (!snapshot) {
+          if (!snapshotImage) {
+            setSnapShot(false);
             Toast.show({
               text: '截图失败',
               icon: 'fail',
             });
-            setSnapShot(false);
             return;
           }
 
-          const data = snapshot.encodeToBase64();
+          const data = snapshotImage.encodeToBase64();
           const uri = `data:image/png;base64,${data}`;
 
           const manipulateResult = await ImageManipulator.manipulateAsync(
@@ -259,29 +299,42 @@ const Schedule: React.FC<CourseTableProps> = ({
 
           if (manipulateResult && manipulateResult.uri) {
             await MediaLibrary.createAssetAsync(manipulateResult.uri);
+            setSnapShot(false);
             Toast.show({
               text: '截图成功',
               icon: 'success',
             });
+          } else {
             setSnapShot(false);
+            Toast.show({
+              text: '截图保存失败',
+              icon: 'fail',
+            });
           }
         } catch (error) {
-          Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
           setSnapShot(false);
-          return;
+          Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+        } finally {
+          setSnapShot(false);
+          isSavingImageRef.current = false;
         }
-      }, 500); // 给予足够的时间让视图完全渲染
+      }, 400);
     } catch (e) {
-      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
       setSnapShot(false);
+      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
+      isSavingImageRef.current = false;
     }
   };
 
+  const onSaveImageAsyncRef = useRef(onSaveImageAsync);
+  onSaveImageAsyncRef.current = onSaveImageAsync;
+
   useEffect(() => {
-    globalEventBus.on('SaveImageShot', onSaveImageAsync);
+    const handler = () => onSaveImageAsyncRef.current();
+    globalEventBus.on('SaveImageShot', handler);
 
     return () => {
-      // globalEventBus.off('SaveImageShot', onSaveImageAsync);
+      globalEventBus.off('SaveImageShot', handler);
     };
   }, []);
 
@@ -296,58 +349,73 @@ const Schedule: React.FC<CourseTableProps> = ({
     // 先按时间槽和日期分组课程
     const coursesBySlot = new Map();
     const idxMap = new Map<string, number>();
-    data.forEach((course: courseType, idx: number) => {
-      const {
-        id,
-        day,
-        teacher,
-        where,
-        class_when,
-        classname,
-        weeks,
-        week_duration,
-        credit,
-        note,
-        is_official,
-      } = course;
-      idxMap.set(course.id, idx);
-      // 计算课程的时间跨度（占几节课）
-      const timeSpan = class_when
-        .split('-')
-        .map(Number)
-        .reduce((a: number, b: number) => b - a + 1);
-
-      // 计算课程在课表中的位置
-      const rowIndex = Number(class_when.split('-')[0]) - 1; // 第几节课开始
-      const colIndex = day - 1; // 周几（0-6，对应周一到周日）
-      const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
-
-      if (rowIndex !== -1 && colIndex !== -1) {
-        // 如果该时间槽还没有课程，创建一个空数组
-        if (!coursesBySlot.has(key)) {
-          coursesBySlot.set(key, []);
-        }
-
-        // 将课程添加到对应的时间槽中
-        coursesBySlot.get(key).push({
+    (Array.isArray(data) ? data : []).forEach(
+      (course: courseType, idx: number) => {
+        const {
           id,
-          courseName: classname,
-          timeSpan,
+          day,
           teacher,
-          date: DAYS_OF_WEEK[colIndex],
-          classroom: where,
-          rowIndex,
-          colIndex,
+          where,
+          class_when,
+          classname,
           weeks,
-          isThisWeek: weeks.includes(currentWeek), // 标记是否为当前周的课程
           week_duration,
           credit,
-          class_when,
           note,
           is_official,
-        });
+        } = course;
+        const parsedRange = parseClassWhen(class_when);
+        const safeDay = Number(day);
+        if (
+          !parsedRange ||
+          !Number.isInteger(safeDay) ||
+          safeDay < 1 ||
+          safeDay > DAYS_OF_WEEK.length
+        ) {
+          return;
+        }
+
+        idxMap.set(course.id, idx);
+        // 计算课程的时间跨度（占几节课）
+        const timeSpan = parsedRange.endSection - parsedRange.startSection + 1;
+
+        // 计算课程在课表中的位置
+        const rowIndex = parsedRange.startSection - 1; // 第几节课开始
+        const colIndex = safeDay - 1; // 周几（0-6，对应周一到周日）
+        const key = `${rowIndex}-${colIndex}`; // 生成唯一键，标识时间槽位置
+
+        if (
+          rowIndex >= 0 &&
+          rowIndex < timetableMatrix.length &&
+          colIndex >= 0 &&
+          colIndex < DAYS_OF_WEEK.length
+        ) {
+          // 如果该时间槽还没有课程，创建一个空数组
+          if (!coursesBySlot.has(key)) {
+            coursesBySlot.set(key, []);
+          }
+
+          // 将课程添加到对应的时间槽中
+          coursesBySlot.get(key).push({
+            id,
+            courseName: classname,
+            timeSpan,
+            teacher,
+            date: DAYS_OF_WEEK[colIndex],
+            classroom: where,
+            rowIndex,
+            colIndex,
+            weeks: Array.isArray(weeks) ? weeks : [],
+            isThisWeek: Array.isArray(weeks) && weeks.includes(currentWeek), // 标记是否为当前周的课程
+            week_duration,
+            credit,
+            class_when,
+            note,
+            is_official,
+          });
+        }
       }
-    });
+    );
 
     // 遍历每个时间槽，选择正确的课程显示
     for (const [key, slotCourses] of coursesBySlot) {
@@ -368,7 +436,10 @@ const Schedule: React.FC<CourseTableProps> = ({
       const courseToShow = sorted[0] ?? null;
 
       if (courseToShow) {
-        timetableMatrix[rowIndex][colIndex] = {
+        const row = timetableMatrix[rowIndex];
+        if (!row || colIndex < 0 || colIndex >= row.length) continue;
+
+        row[colIndex] = {
           classname: courseToShow.courseName,
           timeSpan: courseToShow.timeSpan,
         };
@@ -380,56 +451,51 @@ const Schedule: React.FC<CourseTableProps> = ({
   }, [data, currentWeek]); // 只在data或currentWeek改变时重新计算，返回memoized结果
 
   // 内容部分
-  const content = useDeferredValue(
-    React.useMemo(() => {
-      return (
-        <View
-          style={[
-            styles.courseWrapperStyle,
-            {
-              backgroundColor: backgroundUri
-                ? 'transparent'
-                : currentStyle?.background_style?.backgroundColor,
-            },
-          ]}
-        >
-          {timetableMatrix.map((row, rowIndex: number) => (
-            <View key={rowIndex} style={styles.row}>
-              {row.map(
-                (
-                  subject: { classname: string; timeSpan: number } | null,
-                  colIndex: number
-                ) => (
-                  <View
-                    key={colIndex}
-                    style={[
-                      styles.cell,
-                      currentStyle?.schedule_border_style,
-                      {
-                        // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
-                        // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
-                        borderBottomWidth:
-                          (rowIndex + 1) % COURSE_COLLAPSE ? 0 : 1,
-                      },
-                    ]}
-                  ></View>
-                )
-              )}
-            </View>
-          ))}
-          {/* 课程内容 */}
-          {courses.map(item => (
-            <CourseContent
-              visibleIds={visibleIds}
-              key={item.id}
-              {...item}
-              originalData={data}
-              currentWeek={currentWeek}
-            />
-          ))}
+  const renderTimetableContent = (keyPrefix = '') => (
+    <View
+      style={[
+        styles.courseWrapperStyle,
+        {
+          backgroundColor: backgroundUri
+            ? 'transparent'
+            : currentStyle?.background_style?.backgroundColor,
+        },
+      ]}
+    >
+      {timetableMatrix.map((row, rowIndex: number) => (
+        <View key={`${keyPrefix}row-${rowIndex}`} style={styles.row}>
+          {row.map(
+            (
+              subject: { classname: string; timeSpan: number } | null,
+              colIndex: number
+            ) => (
+              <View
+                key={`${keyPrefix}cell-${colIndex}`}
+                style={[
+                  styles.cell,
+                  currentStyle?.schedule_border_style,
+                  {
+                    // 左侧固定栏和右侧内容下划线根据 collapse 确定比例关系
+                    // 例如：默认 collapse 为2，则代表默认 timeslot 隔2个单元出现下划线
+                    borderBottomWidth: (rowIndex + 1) % COURSE_COLLAPSE ? 0 : 1,
+                  },
+                ]}
+              />
+            )
+          )}
         </View>
-      );
-    }, [timetableMatrix, courses, visibleIds, currentStyle, backgroundUri])
+      ))}
+      {/* 课程内容 */}
+      {courses.map(item => (
+        <CourseContent
+          visibleIds={visibleIds}
+          key={`${keyPrefix}${item.id}`}
+          {...item}
+          originalData={data}
+          currentWeek={currentWeek}
+        />
+      ))}
+    </View>
   );
 
   // 计算完整课表的尺寸
@@ -437,74 +503,75 @@ const Schedule: React.FC<CourseTableProps> = ({
   const fullTableHeight =
     COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length;
 
+  const tableBackgroundColor =
+    currentStyle?.background_style?.backgroundColor ||
+    (themeName === 'light' ? '#FFFFFF' : '#1E1E1E');
+
   // 创建完整课表内容的视图，用于截图
   const fullTableContent = (
-    <View style={styles.fullTableWrapper}>
-      {/* 合成Canvas - 用于合成背景和前景后截图 */}
-      {backgroundUri && backgroundImage && foregroundImage && (
-        <Canvas
-          ref={compositeCanvasRef}
-          style={{
-            position: 'absolute',
-            width: fullTableWidth,
-            height: fullTableHeight,
-            zIndex: 10,
-          }}
-        >
-          {/* 背景图片 */}
-          <SkImage
-            image={backgroundImage}
-            x={0}
-            y={0}
-            width={fullTableWidth}
-            height={fullTableHeight}
-            fit={backgroundMode === 'cover' ? 'cover' : 'contain'}
-            opacity={1 - backgroundMaskOpacity / 100}
-          />
-          {/* 高斯模糊 */}
-          <BackdropBlur blur={backgroundBlurRadius} />
-          {/* 前景内容 */}
-          <SkImage
-            image={foregroundImage}
-            x={0}
-            y={0}
-            width={fullTableWidth}
-            height={fullTableHeight}
-            fit="fill"
-            opacity={normalizedForegroundOpacity}
-          />
-        </Canvas>
-      )}
-      {/* 前景内容 - 用于截图 */}
+    <View style={styles.fullTableWrapper} pointerEvents="none">
       <View
         ref={fullTableRef}
         collapsable={false}
         style={{
           width: fullTableWidth,
           height: fullTableHeight,
-          backgroundColor: 'transparent',
+          backgroundColor: tableBackgroundColor,
+          overflow: 'hidden',
         }}
       >
-        <View style={{ flexDirection: 'row' }}>
-          {/* 左上角空白区域 */}
-          <View
-            style={{
-              width: TIME_WIDTH,
-              height: COURSE_HEADER_HEIGHT,
-              backgroundColor:
-                themeName === 'light' ? commonColors.gray : commonColors.black,
-            }}
+        {/* 背景层：若设置了背景图片则铺满底层 */}
+        {backgroundUri && (
+          <Image
+            source={{ uri: backgroundUri }}
+            style={[
+              StyleSheet.absoluteFill,
+              { opacity: 1 - backgroundMaskOpacity / 100 },
+            ]}
+            resizeMode={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'stretch'
+            }
+            blurRadius={backgroundBlurRadius}
           />
-          {/* 顶部周标题 */}
-          <StickyTop />
-        </View>
-        <View style={{ flexDirection: 'row' }}>
-          {/* 左侧时间栏 */}
-          <View>
-            <StickyLeft />
+        )}
+        {/* 前景内容层 */}
+        <View
+          style={{
+            width: fullTableWidth,
+            height: fullTableHeight,
+            opacity: normalizedForegroundOpacity,
+          }}
+        >
+          <View style={{ flexDirection: 'row' }}>
+            {/* 左上角空白区域 */}
+            <View
+              style={[
+                styles.corner,
+                currentStyle?.schedule_border_style,
+                {
+                  backgroundColor: cornerBackgroundColor,
+                },
+              ]}
+            />
+            {/* 顶部周标题 */}
+            <StickyTop />
           </View>
-          {/* 课表内容 */}
-          {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+          <View style={{ flexDirection: 'row' }}>
+            {/* 左侧时间栏 */}
+            <View>
+              <StickyLeft />
+            </View>
+            {/* 课表内容 */}
+            {data ? (
+              renderTimetableContent('snapshot-')
+            ) : (
+              <ThemeChangeText>正在获取课表...</ThemeChangeText>
+            )}
+          </View>
         </View>
       </View>
     </View>
@@ -512,21 +579,18 @@ const Schedule: React.FC<CourseTableProps> = ({
 
   const timetableForeground = (
     <View style={[styles.container, { opacity: normalizedForegroundOpacity }]}>
-      {/* 用于截图的完整课表内容 */}
-      {snapshot && fullTableContent}
       <TimetableScrollView
         // 上方导航栏
         stickyTop={<StickyTop />}
         ref={imageRef}
         collapsable={false}
-        cornerStyle={{
-          backgroundColor: backgroundUri
-            ? 'transparent'
-            : currentStyle?.schedule_item_background_style?.backgroundColor ||
-              (themeName === 'light'
-                ? commonColors.lightGray
-                : commonColors.black),
-        }}
+        cornerStyle={[
+          styles.corner,
+          currentStyle?.schedule_border_style,
+          {
+            backgroundColor: cornerBackgroundColor,
+          },
+        ]}
         onRefresh={async (handleSuccess, handleFail) => {
           try {
             setIsFetching(true);
@@ -545,14 +609,65 @@ const Schedule: React.FC<CourseTableProps> = ({
         // 左侧时间栏
         stickyLeft={<StickyLeft />}
         style={{ flex: 1 }}
-        backgroundLayer={renderBackgroundContent(
-          <View style={styles.scrollBackgroundFill} />,
-          styles.scrollBackground
-        )}
+        backgroundLayer={
+          backgroundScrollable
+            ? renderBackgroundContent(
+                <View style={styles.scrollBackgroundFill} />,
+                styles.scrollBackground
+              )
+            : undefined
+        }
       >
         {/* 内容部分 (课程表) */}
-        {data ? content : <ThemeChangeText>正在获取课表...</ThemeChangeText>}
+        {data ? (
+          renderTimetableContent('main-')
+        ) : (
+          <ThemeChangeText>正在获取课表...</ThemeChangeText>
+        )}
       </TimetableScrollView>
+    </View>
+  );
+
+  const fixedBackground = backgroundUri && !backgroundScrollable && (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      {backgroundImage ? (
+        <Canvas style={StyleSheet.absoluteFill}>
+          <SkImage
+            image={backgroundImage}
+            x={0}
+            y={0}
+            width={viewportSize.width}
+            height={viewportSize.height}
+            fit={
+              backgroundMode === 'cover'
+                ? 'cover'
+                : backgroundMode === 'contain'
+                  ? 'contain'
+                  : 'fill'
+            }
+            opacity={1 - backgroundMaskOpacity / 100}
+          />
+          {backgroundBlurRadius > 0 && (
+            <BackdropBlur blur={backgroundBlurRadius} />
+          )}
+        </Canvas>
+      ) : (
+        <Image
+          source={{ uri: backgroundUri }}
+          style={[
+            StyleSheet.absoluteFill,
+            { opacity: 1 - backgroundMaskOpacity / 100 },
+          ]}
+          resizeMode={
+            backgroundMode === 'cover'
+              ? 'cover'
+              : backgroundMode === 'contain'
+                ? 'contain'
+                : 'stretch'
+          }
+          blurRadius={backgroundBlurRadius}
+        />
+      )}
     </View>
   );
 
@@ -563,7 +678,39 @@ const Schedule: React.FC<CourseTableProps> = ({
     },
   ];
 
-  return <View style={rootStyle}>{timetableForeground}</View>;
+  return (
+    <View
+      style={rootStyle}
+      onLayout={e => {
+        const { width, height } = e.nativeEvent.layout;
+        setViewportSize({ width, height });
+      }}
+    >
+      {snapshot && fullTableContent}
+      {fixedBackground}
+      {timetableForeground}
+      {snapshot && (
+        <View style={styles.loadingOverlay} pointerEvents="auto">
+          <View
+            style={[
+              styles.loadingCard,
+              {
+                backgroundColor:
+                  (currentStyle?.modal_background_style
+                    ?.backgroundColor as string) ||
+                  (themeName === 'dark' ? '#2C2C2E' : '#FFFFFF'),
+              },
+            ]}
+          >
+            <ActivityIndicator size="large" color={commonColors.purple} />
+            <ThemeChangeText style={styles.loadingText}>
+              正在生成截图...
+            </ThemeChangeText>
+          </View>
+        </View>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -579,6 +726,8 @@ const styles = StyleSheet.create({
   },
   fullTableWrapper: {
     position: 'absolute',
+    top: 0,
+    left: 0,
     zIndex: -100,
   },
   fullTableBackground: {},
@@ -587,14 +736,13 @@ const styles = StyleSheet.create({
     width: COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length,
     height: COURSE_ITEM_HEIGHT * TIME_SLOTS.length,
     overflow: 'visible', // 修改为visible以确保内容不被裁剪
-    zIndex: -1,
   },
   scrollBackground: {
     position: 'absolute',
     top: -COURSE_HEADER_HEIGHT,
     left: -TIME_WIDTH,
     width: TIME_WIDTH + COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length,
-    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length,
+    height: COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length + 80,
     zIndex: -2,
   },
   scrollBackgroundFill: {
@@ -604,6 +752,12 @@ const styles = StyleSheet.create({
     width: TIME_WIDTH,
     flexGrow: 0,
     flexShrink: 0,
+  },
+  corner: {
+    width: TIME_WIDTH,
+    height: COURSE_HEADER_HEIGHT,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
   },
   weekBlock: {
     width: TIME_WIDTH,
@@ -618,7 +772,6 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    zIndex: -1,
   },
   cell: {
     position: 'relative',
@@ -629,6 +782,36 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRightWidth: 1,
     zIndex: 0,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingCard: {
+    paddingHorizontal: 28,
+    paddingVertical: 22,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+    minWidth: 160,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 15,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });
 

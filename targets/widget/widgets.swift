@@ -142,10 +142,18 @@ struct CourseProvider: TimelineProvider {
         let startDate = Date(timeIntervalSince1970: schoolTime)
         let now = Date()
         
-        // 计算时间差（秒）
-        let diffTime = now.timeIntervalSince(startDate)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.firstWeekday = 2 // 周一为一周第一天
         
-        // 如果还没开学，返回 1
+        // 获取开学日期所在周的周一开始时间
+        guard let firstMonday = calendar.dateInterval(of: .weekOfYear, for: startDate)?.start else {
+            return 1
+        }
+        
+        // 计算时间差（秒）
+        let diffTime = now.timeIntervalSince(firstMonday)
+        
+        // 如果还没到第一周周一，返回 1
         guard diffTime >= 0 else {
             return 1
         }

@@ -1,8 +1,10 @@
+import type { FC } from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+
+import Button from '@/components/button';
+import Toast from '@/components/toast';
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
-import type { FC } from 'react';
-import { Modal, StyleSheet, Text, View } from 'react-native';
-import Button from '@/components/button';
 
 interface ClearModalProps {
   clearVisible: boolean;
@@ -13,13 +15,22 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
   const { clearAllEvents } = useEvents();
 
-  const handleClear = () => {
-    clearAllEvents();
-    setClearVisible(false);
+  const handleClear = async () => {
+    try {
+      await clearAllEvents();
+      Toast.show({ icon: 'success', text: '已清空所有消息' });
+      setClearVisible(false);
+    } catch {
+      Toast.show({ icon: 'fail', text: '清空失败，请稍后重试' });
+    }
   };
 
   return (
-    <Modal visible={clearVisible} transparent={true}>
+    <Modal
+      visible={clearVisible}
+      transparent={true}
+      onRequestClose={() => setClearVisible(false)}
+    >
       <View
         style={{
           flex: 1,
@@ -28,6 +39,10 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
           alignItems: 'center',
         }}
       >
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => setClearVisible(false)}
+        />
         <View style={[styles.container, currentStyle?.background_style]}>
           <View>
             <Text style={[styles.title, currentStyle?.schedule_text_style]}>
@@ -91,7 +106,7 @@ const styles = StyleSheet.create({
   modalButton: {
     marginHorizontal: 16,
     marginTop: 20,
-    minWidth: 90,
+    width: 100,
   },
   button: {
     paddingHorizontal: 40,

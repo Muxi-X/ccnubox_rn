@@ -1,11 +1,8 @@
-import { request } from '@/request';
-
-import { BASE_URL } from './config';
+import { feedbackRequest } from '@/request';
 
 const getFeishuToken = async () => {
-  return await request.post('/api/v1/auth/tenant/token', undefined, {
+  return await feedbackRequest.post('/api/v1/auth/tenant/token', undefined, {
     isToken: false,
-    baseURL: BASE_URL,
   });
 };
 

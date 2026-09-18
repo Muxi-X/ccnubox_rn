@@ -10,12 +10,10 @@ import {
   View,
 } from 'react-native';
 
-import ThemeBasedView from '@/components/view';
-import Button from '@/components/button';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import MXLogo from '@/assets/images/mx-logo.png';
+import Button from '@/components/button';
+import ThemeBasedView from '@/components/view';
+import useVisualScheme from '@/store/visualScheme';
 import handleCopy from '@/utils/handleCopy';
 import { handleOpenURL } from '@/utils/handleOpenURL';
 

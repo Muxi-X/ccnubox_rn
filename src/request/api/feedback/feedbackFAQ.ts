@@ -1,6 +1,6 @@
-import { request } from '@/request';
+import { feedbackRequest } from '@/request';
 
-import { BASE_URL, FAQTokenConfig } from './config';
+import { FAQTokenConfig } from './config';
 
 export interface FeedbackFAQRequest {
   table_identify: string;
@@ -12,9 +12,8 @@ export interface FeedbackFAQRequest {
 }
 
 const feedbackFAQ = async (params: FeedbackFAQRequest) => {
-  return request.post('/api/v1/sheet/records/faq', params, {
+  return feedbackRequest.post('/api/v1/sheet/records/faq', params, {
     otherToken: FAQTokenConfig,
-    baseURL: BASE_URL,
   });
 };
 

@@ -1,34 +1,21 @@
-import { create } from 'zustand';
-
-import { ThemeBasedComponentsType } from '@/store/types';
-
+import useVisualScheme from '@/store/visualScheme';
 import { componentMap } from '@/themeBasedComponents';
-import globalEventBus from '@/utils/eventBus';
+import { ConfigurableComponentName } from '@/themeBasedComponents/type';
 
-/** 主题特定组件 */
-const useThemeBasedComponents = create<ThemeBasedComponentsType>(
-  (set, get) => ({
-    CurrentComponents: null,
-    themeBasedComponents: null,
-    changeComponents: layoutName => {
-      const components = get().themeBasedComponents;
-      if (components) {
-        set({
-          CurrentComponents: components[layoutName],
-        });
-      }
-    },
-    setComponents: components => {
-      set({ themeBasedComponents: components });
-    },
-  })
-);
+/**
+ * 响应式获取当前布局对应的组件映射
+ */
+export const useThemeBasedComponents = () => {
+  const layoutName = useVisualScheme(state => state.layoutName);
+  return componentMap[layoutName];
+};
 
-globalEventBus.on('layoutChange', layoutName => {
-  useThemeBasedComponents.getState().changeComponents(layoutName);
-});
-globalEventBus.on('layoutSet', () => {
-  useThemeBasedComponents.getState().setComponents(componentMap);
-});
+/**
+ * 响应式获取指定的可配置主题组件
+ */
+export const useThemeBasedComponent = (name: ConfigurableComponentName) => {
+  const layoutName = useVisualScheme(state => state.layoutName);
+  return componentMap[layoutName][name];
+};
 
 export default useThemeBasedComponents;

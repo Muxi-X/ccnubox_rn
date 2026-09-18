@@ -28,12 +28,21 @@ const AnimatedSlideIn: React.FC<SlideInProps> = ({
   useEffect(() => {
     translateY.value = withDelay(
       delay,
-      withTiming(trigger ? 0 : distance, {
-        duration,
-        easing: Easing.inOut(Easing.ease),
-      })
+      withTiming(
+        trigger ? 0 : distance,
+        {
+          duration,
+          easing: Easing.inOut(Easing.ease),
+        },
+        finished => {
+          'worklet';
+          if (finished && onAnimationEnd) {
+            runOnJS(onAnimationEnd)();
+          }
+        }
+      )
     );
-  }, [duration, delay, trigger]);
+  }, [duration, delay, trigger, distance, onAnimationEnd]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -44,11 +53,6 @@ const AnimatedSlideIn: React.FC<SlideInProps> = ({
       ],
     };
   });
-  useEffect(() => {
-    if (typeof onAnimationEnd === 'function') {
-      runOnJS(onAnimationEnd)();
-    }
-  }, [translateY, onAnimationEnd]);
   return (
     <Animated.View style={[style, animatedStyle]} {...restProps}>
       {children}

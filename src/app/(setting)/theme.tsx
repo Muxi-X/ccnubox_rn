@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import TabBar from '@/components/tabs';
 import View from '@/components/view';
-
 import OtherStyle from '@/modules/setting/components/otherStyle';
 import SelectStyle from '@/modules/setting/components/selectStyle';
 

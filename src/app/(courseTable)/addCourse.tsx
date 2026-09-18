@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import useVisualScheme from '@/store/visualScheme';
-
 import { CourseDataForm } from '@/modules/courseTable/components/CourseDataForm';
+import useVisualScheme from '@/store/visualScheme';
 
 export default function AddCourse() {
   const currentStyle = useVisualScheme(state => state.currentStyle);

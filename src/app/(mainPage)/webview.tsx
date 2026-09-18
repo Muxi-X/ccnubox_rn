@@ -6,7 +6,6 @@ import WebView, { WebViewNavigation } from 'react-native-webview';
 
 import useUserStore from '@/store/user';
 import useVisualScheme from '@/store/visualScheme';
-
 import { commonColors } from '@/styles/common';
 
 export default function Webview() {

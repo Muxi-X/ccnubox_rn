@@ -3,13 +3,10 @@ import React, { FC, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import useDebounce from '@/hooks/useDebounce';
-
 import ColorTransitionView from '@/components/view';
-
-import useVisualScheme from '@/store/visualScheme';
-
 import { TABS } from '@/constants/TABBAR';
+import useDebounce from '@/hooks/useDebounce';
+import useVisualScheme from '@/store/visualScheme';
 
 import TabBarItem from './TabBarItem';
 

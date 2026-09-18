@@ -2,7 +2,6 @@ import { Button as RNEButton } from '@rneui/themed';
 import React, { FC } from 'react';
 
 import { ButtonHierarchy, ButtonProps } from '@/components/button/type';
-
 import useVisualScheme from '@/store/visualScheme';
 
 // 默认字体大小

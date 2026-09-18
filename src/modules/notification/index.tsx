@@ -2,7 +2,6 @@ import { useFocusEffect } from 'expo-router';
 import { type FC, memo, useCallback, useState } from 'react';
 import {
   Animated,
-  Image,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -12,14 +11,12 @@ import {
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
-import { openPushUrl } from '@/hooks/useJPush';
-
 import Toast from '@/components/toast';
-
+import { FeedIconMap } from '@/constants/NOTIFICATION';
+import { openPushUrl } from '@/hooks/useJPush';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
-
-import { FeedIconList } from '@/constants/notificationItem';
+import { logger } from '@/utils/logger';
 
 const formatRelativeTime = (timestamp: number): string => {
   const now = Date.now();
@@ -105,11 +102,11 @@ export const ListItem: FC<EventProps> = ({
   extend_fields,
 }) => {
   const currentStyle = useVisualScheme(state => state.currentStyle);
-  const feedIcon = FeedIconList.find(item => item.name === type);
+  const feedIcon = type ? FeedIconMap[type] : undefined;
   const { markAsRead, deleteEvent } = useEvents();
 
   const readEvent = () => {
-    console.log('[Notification] 点击通知项:', { id, type, url, extend_fields });
+    logger.info('[Notification] 点击通知项', { id, type, url, extend_fields });
     if (id && !read) {
       void markAsRead(id).catch(error => {
         Toast.show({
@@ -123,10 +120,10 @@ export const ListItem: FC<EventProps> = ({
     const fallbackUrl = extend_fields?.url;
     const targetUrl = url || fallbackUrl;
     if (targetUrl) {
-      console.log('[Notification] 发现跳转 URL:', targetUrl);
+      logger.info('[Notification] 发现跳转 URL', { targetUrl });
       openPushUrl(targetUrl);
     } else {
-      console.log('[Notification] 未发现跳转 URL');
+      logger.info('[Notification] 未发现跳转 URL');
     }
   };
 
@@ -167,7 +164,7 @@ export const ListItem: FC<EventProps> = ({
     <Swipeable renderRightActions={renderRightActions} rightThreshold={40}>
       <TouchableOpacity onPress={readEvent} style={styles.listItem}>
         <View>
-          <Image source={feedIcon.imageUrl} style={styles.icon} />
+          <feedIcon.Icon style={styles.icon} />
         </View>
         <View style={styles.content}>
           <Text style={[styles.title, currentStyle?.schedule_text_style]}>

@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
-import { ViewProps } from 'react-native';
+import { StyleProp, ViewProps, ViewStyle } from 'react-native';
 import {
   GestureUpdateEvent,
   PanGestureHandlerEventPayload,
@@ -19,7 +19,8 @@ export type courseType = {
   weeks: number[];
   where: string;
   year: string;
-  note?: string; // 添加 note 字段
+  note?: string;
+  nature?: string;
   is_official: boolean; // 是否为教务系统课程
 };
 
@@ -128,7 +129,7 @@ export interface ScrollableViewProps {
   /**
    * 左上角样式
    */
-  cornerStyle?: StyleProps;
+  cornerStyle?: StyleProp<ViewStyle>;
   /**
    * 背景层，会随内容一起滚动
    */
