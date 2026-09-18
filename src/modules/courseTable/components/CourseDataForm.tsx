@@ -1,7 +1,8 @@
-import { Button, Input, WhiteSpace } from '@ant-design/react-native';
+import { Input, WhiteSpace } from '@ant-design/react-native';
 import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
+import Button, { ButtonHierarchy } from '@/components/button';
 import Image from '@/components/image';
 import Modal from '@/components/modal';
 import Picker from '@/components/picker';
@@ -46,6 +47,8 @@ const getTimePickerValue = (
 interface CourseFormProps {
   buttonText?: string; // backward-compat
   submitText?: string; // preferred
+  buttonType?: ButtonHierarchy;
+  letterSpacing?: number | `${number}%` | string;
   pageText: string;
   mode?: 'create' | 'edit';
   onSuccess?: () => void;
@@ -337,6 +340,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
               {item.type === 'picker' ? (
                 item.title === '选择周次' ? (
                   <MultiPicker
+                    buttonType="Round"
                     data={[
                       [...Array(pickerWeekCount).keys()].map(i => ({
                         value: i + 1,
@@ -382,6 +386,7 @@ export const CourseDataForm = (props: CourseFormProps) => {
                   </MultiPicker>
                 ) : (
                   <Picker
+                    buttonType="Round"
                     defaultValue={[
                       formData.day,
                       parseInt(formData.dur_class.split('-')[0], 10) || 1,
@@ -515,9 +520,10 @@ export const CourseDataForm = (props: CourseFormProps) => {
         ></FlatList>
         <WhiteSpace size="lg" />
         <Button
-          type="primary"
-          style={styles.button}
-          loading={loading}
+          type={props.buttonType ?? 'Primary'}
+          letterSpacing={props.letterSpacing}
+          containerStyle={styles.button}
+          isLoading={loading}
           onPress={handleSubmit}
         >
           {submitText}
@@ -559,7 +565,6 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 50,
-    borderRadius: 10,
     marginHorizontal: 20,
     marginVertical: 20,
   },

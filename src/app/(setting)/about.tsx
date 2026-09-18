@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import MXLogo from '@/assets/images/mx-logo.png';
+import Button from '@/components/button';
 import ThemeBasedView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 import handleCopy from '@/utils/handleCopy';
@@ -73,12 +74,14 @@ function About() {
           </TouchableOpacity>
         </View> */}
       </View>
-      <TouchableOpacity
-        style={styles.button}
+      <Button
+        type="Primary"
+        letterSpacing="3%"
+        containerStyle={styles.button}
         onPress={() => handleOpenURL('https://ccnubox.muxixyz.com/', '浏览器')}
       >
-        <Text style={styles.buttonText}>进入华师匣子官网</Text>
-      </TouchableOpacity>
+        进入华师匣子官网
+      </Button>
     </ThemeBasedView>
   );
 }
@@ -150,10 +153,6 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
   },
   button: {
-    backgroundColor: '#7C4DFF',
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
     height: 44,
     width: '60%',
     alignSelf: 'center',

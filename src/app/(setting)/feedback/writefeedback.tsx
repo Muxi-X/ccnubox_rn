@@ -17,6 +17,7 @@ import {
   View,
 } from 'react-native';
 
+import Button from '@/components/button';
 import ThemeBasedView from '@/components/view';
 import {
   FEEDBACK_TABLE_IDENTIFY,
@@ -391,26 +392,21 @@ function WriteFeedback() {
           </View>
         </ScrollView>
         <View style={styles.bottom}>
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
+          <Button
+            type="Primary"
+            letterSpacing="25%"
+            textStyle={{ fontSize: 20 }}
+            style={{ width: 250 }}
+            disabledStyle={[
               (!isSubmitEnabled || isSubmitting) &&
                 currentStyle?.feedback_disabledSubmitButton_style,
             ]}
             onPress={handleSubmit}
             disabled={!isSubmitEnabled || isSubmitting}
+            isLoading={isSubmitting}
           >
-            <Text
-              style={[
-                styles.submitButtonText,
-                currentStyle?.text_style,
-                (!isSubmitEnabled || isSubmitting) &&
-                  styles.submitButtonDisabledText,
-              ]}
-            >
-              {isSubmitting ? '提交中...' : '提交'}
-            </Text>
-          </TouchableOpacity>
+            提交
+          </Button>
 
           <View style={styles.tipWrapper}>
             <Text style={[currentStyle?.text_style]}>
@@ -573,23 +569,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  submitButton: {
-    backgroundColor: '#7B70F1',
-    paddingVertical: 18,
-    borderRadius: 30,
-    alignItems: 'center',
-    alignSelf: 'stretch',
-  },
   submitButtonDisabled: {
     backgroundColor: '#E5E5E5',
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  submitButtonDisabledText: {
-    color: '#999999',
   },
   uploadStatus: {
     marginTop: 8,

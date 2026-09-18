@@ -1,13 +1,7 @@
 import type { FC } from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import Button from '@/components/button';
 import Toast from '@/components/toast';
 import { useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
@@ -66,34 +60,25 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
               flexDirection: 'row',
             }}
           >
-            <TouchableOpacity
+            <Button
+              type="Round"
+              letterSpacing="5%"
+              buttonStyle={{ backgroundColor: '#CECECE' }}
+              containerStyle={styles.modalButton}
               onPress={() => {
                 setClearVisible(false);
               }}
             >
-              <Text
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: '#CECECE',
-                  },
-                ]}
-              >
-                取消
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleClear}>
-              <Text
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: '#7878F8',
-                  },
-                ]}
-              >
-                确定
-              </Text>
-            </TouchableOpacity>
+              取消
+            </Button>
+            <Button
+              type="Round"
+              letterSpacing="5%"
+              containerStyle={styles.modalButton}
+              onPress={handleClear}
+            >
+              确定
+            </Button>
           </View>
         </View>
       </View>
@@ -117,6 +102,11 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 15,
     marginVertical: 15,
+  },
+  modalButton: {
+    marginHorizontal: 16,
+    marginTop: 20,
+    width: 100,
   },
   button: {
     paddingHorizontal: 40,

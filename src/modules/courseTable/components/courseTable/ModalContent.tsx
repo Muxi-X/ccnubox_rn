@@ -1,4 +1,3 @@
-import { Button } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import React, { memo, useState } from 'react';
 import {
@@ -11,6 +10,7 @@ import {
 
 import { courseTableIcons } from '@/assets/icons';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
+import Button from '@/components/button';
 import Modal from '@/components/modal';
 import ThemeChangeText from '@/components/text';
 import {
@@ -172,15 +172,13 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
             flexDirection: 'row',
             gap: 10,
             justifyContent: 'space-around',
+            alignItems: 'center',
+            paddingVertical: 10,
             borderTopWidth: 0.5,
             borderTopColor: '#E1E2F1',
           }}
         >
           <Button
-            styles={{
-              wrapperStyle: { borderWidth: 0 },
-              ghostRawText: { fontSize: 14 },
-            }}
             type="ghost"
             onPress={() => {
               Modal.clear();
@@ -189,6 +187,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                 children: '确定要删除该课程吗？',
                 mode: 'middle',
                 showCancel: true,
+                buttonType: 'Round',
                 confirmText: '删除',
                 cancelText: '取消',
                 onConfirm: () => handleDeleteCourseConfirm(courseId),
@@ -207,10 +206,6 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
             </View>
           </Button>
           <Button
-            styles={{
-              wrapperStyle: { borderWidth: 0 },
-              ghostRawText: { fontSize: 14 },
-            }}
             type="ghost"
             onPress={() => {
               Modal.clear();
@@ -300,31 +295,37 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
               </View>
 
               <View style={styles.noteActionsArea}>
-                <TouchableOpacity
-                  style={[styles.touchableBtn, isSaving && { opacity: 0.6 }]}
-                  disabled={isSaving}
+                <Button
+                  type="ghost"
+                  textStyle={{ fontSize: 14 }}
+                  buttonStyle={styles.cancelBtn}
                   onPress={() => {
                     setNoteText('');
                   }}
                 >
-                  <Text style={currentStyle?.text_style}>清除</Text>
-                </TouchableOpacity>
+                  清除
+                </Button>
 
                 <View style={styles.rightButtons}>
-                  <TouchableOpacity
-                    style={[styles.touchableBtn, isSaving && { opacity: 0.6 }]}
+                  <Button
+                    type="ghost"
+                    textStyle={{ fontSize: 14 }}
                     disabled={isSaving}
+                    buttonStyle={styles.cancelBtn}
                     onPress={() => {
                       setIsNoted(false);
                       setNoteText(currNote);
                     }}
                   >
-                    <Text style={currentStyle?.text_style}>取消</Text>
-                  </TouchableOpacity>
+                    取消
+                  </Button>
 
-                  <TouchableOpacity
-                    style={[styles.touchableBtn, isSaving && { opacity: 0.6 }]}
+                  <Button
+                    type="ghost"
+                    textStyle={{ fontSize: 14, color: '#6A69E6' }}
                     disabled={isSaving}
+                    isLoading={isSaving}
+                    buttonStyle={styles.noteBtn}
                     onPress={() => {
                       handleSaveCourseNote(
                         courseId,
@@ -335,10 +336,8 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
                       );
                     }}
                   >
-                    <Text style={currentStyle?.text_style}>
-                      {isSaving ? '保存中...' : '完成'}
-                    </Text>
-                  </TouchableOpacity>
+                    完成
+                  </Button>
                 </View>
               </View>
             </>
@@ -548,6 +547,16 @@ const styles = StyleSheet.create({
   },
   touchableBtn: {
     paddingVertical: 10,
+  },
+  noteBtn: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    minHeight: 0,
+  },
+  cancelBtn: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    minHeight: 0,
   },
 });
 

@@ -1,17 +1,11 @@
 import { Toast } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 
 import YearIcon from '@/assets/images/xuenian.png';
 import SemesterIcon from '@/assets/images/xueqi.png';
+import Button from '@/components/button';
 import MultiPicker from '@/components/picker/multiPicker';
 import type { PickerDataType } from '@/components/picker/types';
 import { queryGradeType } from '@/request/api/grade';
@@ -169,16 +163,13 @@ const CheckGrades = () => {
             {CourseTypePickerTrigger}
           </MultiPicker>
 
-          <TouchableOpacity
-            style={{
+          <Button
+            type="Primary"
+            letterSpacing="25%"
+            containerStyle={{
               width: 309,
               height: 46,
-              backgroundColor: '#7878F8',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 'auto',
-              borderRadius: 10,
+              alignSelf: 'center',
               marginTop: 26,
             }}
             onPress={() => {
@@ -191,8 +182,8 @@ const CheckGrades = () => {
               });
             }}
           >
-            <Text style={{ color: '#FFFFFF' }}>查询</Text>
-          </TouchableOpacity>
+            查询
+          </Button>
         </>
       )}
     </View>
