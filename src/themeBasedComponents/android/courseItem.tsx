@@ -7,7 +7,7 @@ import {
   COURSE_ITEM_HEIGHT,
   ITEM_COLORS,
 } from '@/constants/SCHEDULE';
-import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
+import type { CourseTransferType } from '@/modules/courseTable/types';
 
 const CourseItem: React.FC<CourseTransferType> = props => {
   const { teacher, courseName, classroom, timeSpan, date, isThisWeek } = props;

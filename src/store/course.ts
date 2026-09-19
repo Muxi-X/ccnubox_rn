@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import type { courseType } from '@/modules/courseTable/components/courseTable/type';
+import type { courseType } from '@/modules/courseTable/types';
 import {
   getCourseScopeKey,
   isValidCourseScope,

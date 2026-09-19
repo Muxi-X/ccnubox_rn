@@ -6,47 +6,13 @@ import {
 } from 'react-native-gesture-handler';
 import { StyleProps } from 'react-native-reanimated';
 
+import type { courseType } from '@/modules/courseTable/types';
 import type { SemesterOptionBase } from '@/utils/generateSemesterOptions';
-export type courseType = {
-  class_when: string;
-  classname: string;
-  credit: number;
-  day: number;
-  id: string;
-  semester: string;
-  teacher: string;
-  week_duration: string;
-  weeks: number[];
-  where: string;
-  year: string;
-  note?: string;
-  nature?: string;
-  is_official: boolean; // 是否为教务系统课程
-};
 
 export interface CourseTableProps {
   data: courseType[];
   currentWeek: number;
   onTimetableRefresh: (_forceRefresh: boolean) => Promise<void>;
-}
-
-// 课程中间类型,比 courseType 增加 rowIndex 和 colIndex
-export interface CourseTransferType {
-  id: string;
-  courseName: string;
-  teacher: string;
-  classroom: string;
-  timeSpan: number;
-  rowIndex: number;
-  colIndex: number;
-  date: string;
-  isThisWeek: boolean;
-  week_duration: string;
-  credit: number;
-  class_when: string;
-  weeks: number[]; // 添加 weeks 字段
-  note?: string; // 添加 note 字段
-  is_official: boolean; // 是否为教务系统课程
 }
 
 export type SemesterOption = SemesterOptionBase;

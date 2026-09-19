@@ -1,4 +1,4 @@
-import type { courseType } from '@/modules/courseTable/components/courseTable/type';
+import type { courseType } from '@/modules/courseTable/types';
 import { parseClassWhen } from '@/utils/courseRuntime';
 
 const MAX_REASONABLE_WEEK = 60;

@@ -1,4 +1,4 @@
-import type { courseType } from '@/modules/courseTable/components/courseTable/type';
+import type { courseType } from '@/modules/courseTable/types';
 
 type SectionTimeTuple = [hour: number, minute: number];
 
