@@ -3,10 +3,10 @@ import { router } from 'expo-router';
 import { getItem, setItem } from 'expo-secure-store';
 
 import { BASE_URL } from '@/constants/BASE_URLS';
-import requestBus from '@/store/currentRequests';
 import { OtherTokenConfig } from '@/types/axios';
 
 import { createRequestClient } from './createRequestClient';
+import { installRequestInterceptors } from './installRequestInterceptors';
 import { paths } from './schema';
 
 const axiosInstance: AxiosInstance = axios.create({
@@ -84,69 +84,12 @@ async function refreshToken(config?: OtherTokenConfig): Promise<string> {
   throw new Error(`${config.name} 未配置 refresh`);
 }
 
-axiosInstance.interceptors.request.use(
-  async config => {
-    requestBus.requestRegister();
-
-    if (config.isToken === false) return config;
-
-    try {
-      const token = await getStoredToken(config?.otherToken);
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token.trim()}`;
-      }
-    } catch {
-      throw Error('token不存在');
-    }
-
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
-
-axiosInstance.interceptors.response.use(
-  response => {
-    requestBus.requestComplete();
-
-    if (response.status >= 200 && response.status < 300) {
-      return response;
-    }
-    return Promise.reject(new Error(`Error status code: ${response.status}`));
-  },
-  async error => {
-    requestBus.requestComplete();
-    const originalRequest = error.config;
-
-    if (
-      error.response?.status === 401 &&
-      originalRequest &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true; // 防止无限循环
-
-      const tokenConfig = originalRequest?.otherToken;
-      try {
-        const newToken = await refreshToken(tokenConfig);
-
-        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-        return axiosInstance(originalRequest); // 重新发送请求
-      } catch (refreshError) {
-        if (tokenConfig) {
-          tokenConfig.onRefreshError?.(refreshError);
-          return Promise.reject(refreshError);
-        }
-
-        router.replace('/auth/login');
-        return Promise.reject(refreshError);
-      }
-    }
-
-    //   console.error('Error response:', error);
-    return Promise.reject(error);
-  }
-);
+installRequestInterceptors(axiosInstance, {
+  getToken: config => getStoredToken(config),
+  getRefresher: config => () => refreshToken(config),
+  mapTokenError: () => new Error('token不存在'),
+  onDefaultRefreshError: () => router.replace('/auth/login'),
+});
 
 const request = createRequestClient<paths>(axiosInstance);
 
