@@ -74,7 +74,7 @@ async function uploadFileToFeishuBitable(
     // 添加文本字段
     formData.append('file_name', fileName);
     formData.append('parent_type', FIXED_CONFIG.parentType);
-    formData.append('parent_node', FIXED_CONFIG.parentNode);
+    formData.append('parent_node', String(FIXED_CONFIG.parentNode));
     formData.append('size', fileInfo.size.toString());
 
     // 计算并添加校验和

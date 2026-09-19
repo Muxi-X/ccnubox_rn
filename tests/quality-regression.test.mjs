@@ -72,63 +72,83 @@ test('direct Expo haptics imports reuse the existing Harmony native bridge', asy
 
 test('feedback preserves native file access and the existing multipart request on every platform', async () => {
   for (const platform of ['ios', 'android', 'harmony']) {
-    const getInfoAsync = mock.fn(async () => ({ exists: true, size: 3 }));
-    const readAsStringAsync = mock.fn(async () => 'YWJj');
-    const post = mock.fn(async () => ({ code: 0 }));
-    const config = { parentType: 'bitable_image', parentNode: undefined };
-    const token = { name: 'fixture-upload-token' };
-    class NativeFormData {
-      parts = new Map();
-      append(name, value) {
-        this.parts.set(name, value);
-      }
-      get(name) {
-        return this.parts.get(name);
-      }
-    }
-    const { uploadFileToFeishuBitable } = load(
-      'src/utils/uploadPicture.ts',
+    const nativeFormDataModule = { exports: {} };
+    const nativePackage =
+      platform === 'harmony'
+        ? '@react-native-oh/react-native-harmony'
+        : 'react-native';
+    const { code } = require('@babel/core').transformFileSync(
+      require.resolve(`${nativePackage}/Libraries/Network/FormData.js`),
       {
-        'expo-file-system': {
-          getInfoAsync,
-          readAsStringAsync,
-          EncodingType: { Base64: 'native-base64' },
+        babelrc: false,
+        configFile: false,
+        plugins: [
+          '@babel/plugin-transform-flow-strip-types',
+          '@babel/plugin-transform-modules-commonjs',
+        ],
+      }
+    );
+    runInNewContext(code, {
+      module: nativeFormDataModule,
+      exports: nativeFormDataModule.exports,
+    });
+    const NativeFormData = nativeFormDataModule.exports.default;
+    for (const [parentNode, expectedParentNode] of [
+      [undefined, 'undefined'],
+      ['', ''],
+      ['fixture-parent', 'fixture-parent'],
+    ]) {
+      const getInfoAsync = mock.fn(async () => ({ exists: true, size: 3 }));
+      const readAsStringAsync = mock.fn(async () => 'YWJj');
+      const post = mock.fn(async () => ({ code: 0 }));
+      const config = { parentType: 'bitable_image', parentNode };
+      const token = { name: 'fixture-upload-token' };
+      const { uploadFileToFeishuBitable } = load(
+        'src/utils/uploadPicture.ts',
+        {
+          'expo-file-system': {
+            getInfoAsync,
+            readAsStringAsync,
+            EncodingType: { Base64: 'native-base64' },
+          },
+          'react-native': { Platform: { OS: platform } },
+          '@/platform/runtime': { isHarmony: platform === 'harmony' },
+          '@/request': { request: { post } },
+          '@/request/api/feedback/config': {
+            FIXED_CONFIG: config,
+            FeishuUploadTokenConfig: token,
+          },
+          './logger': { logger: { error: mock.fn(), info: mock.fn() } },
         },
-        'react-native': { Platform: { OS: platform } },
-        '@/platform/runtime': { isHarmony: platform === 'harmony' },
-        '@/request': { request: { post } },
-        '@/request/api/feedback/config': {
-          FIXED_CONFIG: config,
-          FeishuUploadTokenConfig: token,
-        },
-        './logger': { logger: { error: mock.fn(), info: mock.fn() } },
-      },
-      { FormData: NativeFormData }
-    );
-    await uploadFileToFeishuBitable('file:///test.png', 'test.png');
-    assert.equal(getInfoAsync.mock.callCount(), 1);
-    assert.equal(
-      readAsStringAsync.mock.calls[0].arguments[1].encoding,
-      platform === 'harmony' ? 'base64' : 'native-base64'
-    );
-    assert.equal(post.mock.callCount(), 1);
-    const [url, form, options] = post.mock.calls[0].arguments;
-    assert.equal(
-      url,
-      'https://open.feishu.cn/open-apis/drive/v1/medias/upload_all'
-    );
-    assert.equal(form.get('parent_node'), undefined);
-    assert.equal(form.get('parent_type'), 'bitable_image');
-    assert.equal(form.get('file_name'), 'test.png');
-    assert.equal(form.get('size'), '3');
-    assert.equal(form.get('checksum'), '38600999');
-    assert.equal(
-      form.get('file').uri,
-      platform === 'android' ? 'file:///test.png' : '/test.png'
-    );
-    assert.equal(form.get('file').type, 'image/png');
-    assert.equal(options.otherToken, token);
-    assert.equal(options.headers['Content-Type'], 'multipart/form-data');
+        { FormData: NativeFormData }
+      );
+      await uploadFileToFeishuBitable('file:///test.png', 'test.png');
+      assert.equal(getInfoAsync.mock.callCount(), 1);
+      assert.equal(
+        readAsStringAsync.mock.calls[0].arguments[1].encoding,
+        platform === 'harmony' ? 'base64' : 'native-base64'
+      );
+      assert.equal(post.mock.callCount(), 1);
+      const [url, form, options] = post.mock.calls[0].arguments;
+      assert.equal(
+        url,
+        'https://open.feishu.cn/open-apis/drive/v1/medias/upload_all'
+      );
+      const parts = form.getParts();
+      const part = name => parts.find(value => value.fieldName === name);
+      assert.equal(part('parent_node').string, expectedParentNode);
+      assert.equal(part('parent_type').string, 'bitable_image');
+      assert.equal(part('file_name').string, 'test.png');
+      assert.equal(part('size').string, '3');
+      assert.equal(part('checksum').string, '38600999');
+      assert.equal(
+        part('file').uri,
+        platform === 'android' ? 'file:///test.png' : '/test.png'
+      );
+      assert.equal(part('file').type, 'image/png');
+      assert.equal(options.otherToken, token);
+      assert.equal(options.headers['Content-Type'], 'multipart/form-data');
+    }
   }
 });
 
