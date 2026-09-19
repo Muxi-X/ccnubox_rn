@@ -1,0 +1,105 @@
+diff --git a/src/renderer/HostConfig.ts b/src/renderer/HostConfig.ts
+index 4ad489431c9a25bc5c87359b4499c4c75dca1b26..c7d323b6b4bfbfc943eb60d66da1323b1c03ff51 100644
+--- a/src/renderer/HostConfig.ts
++++ b/src/renderer/HostConfig.ts
+@@ -1,4 +1,5 @@
+ /*global NodeJS*/
++import { createContext } from "react";
+ import type { HostConfig } from "react-reconciler";
+ import { DefaultEventPriority } from "react-reconciler/constants";
+ 
+@@ -27,7 +28,7 @@ type TextInstance = Node<unknown>;
+ type SuspenseInstance = Instance;
+ type HydratableInstance = Instance;
+ type PublicInstance = Instance;
+-type HostContext = null;
++type HostContext = object;
+ type UpdatePayload = Container;
+ type ChildSet = unknown;
+ type TimeoutHandle = NodeJS.Timeout;
+@@ -49,6 +50,10 @@ type SkiaHostConfig = HostConfig<
+   NoTimeout
+ >;
+ 
++const containers = new WeakMap<Instance, Container>();
++const hostContext = {};
++let currentUpdatePriority = 0;
++
+ const appendNode = (parent: Node<unknown>, child: Node<unknown>) => {
+   parent.addChild(child);
+ };
+@@ -93,12 +98,12 @@ export const skHostConfig: SkiaHostConfig = {
+ 
+   getRootHostContext: (_rootContainerInstance: Container) => {
+     debug("getRootHostContext");
+-    return null;
++    return hostContext;
+   },
+ 
+   getChildHostContext(_parentHostContext, _type, _rootContainerInstance) {
+     debug("getChildHostContext");
+-    return null;
++    return hostContext;
+   },
+ 
+   shouldSetTextContent(_type, _props) {
+@@ -126,6 +131,7 @@ export const skHostConfig: SkiaHostConfig = {
+     debug("createInstance", type);
+     const [props, reanimatedProps] = extractReanimatedProps(pristineProps);
+     const node = createNode(container, type, props);
++    containers.set(node, container);
+     bindReanimatedProps(container, node, reanimatedProps);
+     return node;
+   },
+@@ -166,26 +172,8 @@ export const skHostConfig: SkiaHostConfig = {
+     return node;
+   },
+ 
+-  prepareUpdate: (
+-    _instance,
+-    type,
+-    oldProps,
+-    newProps,
+-    rootContainerInstance,
+-    _hostContext
+-  ) => {
+-    debug("prepareUpdate");
+-    const propsAreEqual = shallowEq(oldProps, newProps);
+-    if (propsAreEqual) {
+-      return null;
+-    }
+-    debug("update ", type);
+-    return rootContainerInstance;
+-  },
+-
+   commitUpdate(
+     instance,
+-    updatePayload,
+     type,
+     prevProps,
+     nextProps,
+@@ -197,7 +185,7 @@ export const skHostConfig: SkiaHostConfig = {
+     }
+     const [props, reanimatedProps] = extractReanimatedProps(nextProps);
+     instance.setProps(props);
+-    bindReanimatedProps(updatePayload, instance, reanimatedProps);
++    bindReanimatedProps(containers.get(instance)!, instance, reanimatedProps);
+   },
+ 
+   commitTextUpdate: (
+@@ -241,4 +229,15 @@ export const skHostConfig: SkiaHostConfig = {
+   beforeActiveInstanceBlur: () => {},
+   afterActiveInstanceBlur: () => {},
+   detachDeletedInstance: () => {},
++  maySuspendCommit: () => false,
++  preloadInstance: () => true,
++  startSuspendingCommit() {},
++  suspendInstance() {},
++  waitForCommitToBeReady: () => null,
++  NotPendingTransition: null,
++  HostTransitionContext: createContext(null),
++  setCurrentUpdatePriority(priority: number) { currentUpdatePriority = priority; },
++  getCurrentUpdatePriority: () => currentUpdatePriority,
++  resolveUpdatePriority: () => currentUpdatePriority || DefaultEventPriority,
++  resetFormInstance() {},
+ };

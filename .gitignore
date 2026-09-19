@@ -9,6 +9,38 @@ dist/
 web-build/
 expo-env.d.ts
 
+# Expo Harmony reproducible metadata is kept; only transient Harmony output is ignored.
+.expo-harmony/*-report.json
+.expo-harmony/signing.local.json
+.expo-harmony/shims/
+
+# Harmony build intermediates
+harmony/.hvigor/
+harmony/.idea/
+harmony/signing/
+harmony/**/.cxx/
+harmony/**/.preview/
+harmony/**/build/
+harmony/**/oh_modules/
+harmony/**/oh-package-lock.json5
+harmony/**/hvigorw
+harmony/**/hvigorw.bat
+harmony/entry/src/main/resources/rawfile/bundle.harmony.js
+harmony/entry/src/main/resources/rawfile/assets/
+harmony/expo-harmony-local-deps/
+harmony/**/*.hap
+harmony/**/*.hsp
+harmony/**/*.app
+harmony/**/*.har
+harmony/**/*.abc
+harmony/**/*.ap
+harmony/**/*.res
+harmony/**/*.so
+harmony/**/*.log
+harmony/**/hvigor-*.log
+harmony/**/*.p7b
+harmony/**/*.cer
+
 # Native
 .kotlin/
 *.orig.*

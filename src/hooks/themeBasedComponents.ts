@@ -7,7 +7,7 @@ import { ConfigurableComponentName } from '@/themeBasedComponents/type';
  */
 export const useThemeBasedComponents = () => {
   const layoutName = useVisualScheme(state => state.layoutName);
-  return componentMap[layoutName];
+  return componentMap![layoutName];
 };
 
 /**
@@ -15,7 +15,7 @@ export const useThemeBasedComponents = () => {
  */
 export const useThemeBasedComponent = (name: ConfigurableComponentName) => {
   const layoutName = useVisualScheme(state => state.layoutName);
-  return componentMap[layoutName][name];
+  return componentMap![layoutName][name];
 };
 
 export default useThemeBasedComponents;
