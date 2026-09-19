@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { ViewProps } from 'react-native';
 
+import { ButtonHierarchy } from '@/components/button';
 import { PortalBaseProps } from '@/components/portal';
 
 export interface ModalProps extends PortalBaseProps {
@@ -21,6 +22,8 @@ export interface ModalProps extends PortalBaseProps {
   confirmText?: string;
   /* 是否显示取消按钮 */
   showCancel?: boolean;
+  /* 按钮分级类型 */
+  buttonType?: ButtonHierarchy;
   /* modal 类型 */
   mode?: 'bottom' | 'middle';
   show?: () => void;

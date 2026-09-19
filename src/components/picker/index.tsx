@@ -76,6 +76,7 @@ const Picker: React.FC<DatePickerProps> = ({
   onColumnChange,
   prefixes,
   mode = 'bottom',
+  buttonType,
   style,
   itemHeight = PICKER_ITEM_HEIGHT,
   data = basicColumns,
@@ -144,6 +145,7 @@ const Picker: React.FC<DatePickerProps> = ({
       onClose={onClose}
       onCancel={onCancel}
       mode={mode}
+      buttonType={buttonType}
       triggerComponent={children}
       style={style}
     >

@@ -6,22 +6,7 @@ import updateInfo from './src/assets/data/updateInfo.json' with { type: 'json' }
 export default ({ config }: ConfigContext): ExpoConfig => {
   const isProduction = process.env.EXPO_PUBLIC_ENV === 'production';
   const apsEnvironment = isProduction ? 'production' : 'development';
-  const isEasBuild = process.env.EAS_BUILD === 'true';
-  const hasPrivateKeyArg =
-    process.argv.includes('--private-key-path') ||
-    process.argv.some((arg: string) => arg.startsWith('--private-key-path='));
-  const enableCodeSigning =
-    (isEasBuild ||
-      hasPrivateKeyArg ||
-      process.env.ENABLE_CODE_SIGNING === 'true') &&
-    process.env.DISABLE_CODE_SIGNING !== 'true';
 
-  const codeSigningConfig: ExpoConfig['updates'] = enableCodeSigning
-    ? {
-        codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
-        codeSigningCertificate: './certs/certificate.pem',
-      }
-    : {};
   const plugins: (string | [] | [string] | [string, any])[] = [];
   for (const plugin of config.plugins ?? []) {
     const [name, configurations] = Array.isArray(plugin)
@@ -96,7 +81,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
     updates: {
       url: 'https://ota-api.muxixyz.com/manifest',
-      ...codeSigningConfig,
+      codeSigningMetadata: process.env.DISABLE_CODE_SIGNING
+        ? undefined
+        : { keyid: 'main', alg: 'rsa-v1_5-sha256' },
+      codeSigningCertificate: process.env.DISABLE_CODE_SIGNING
+        ? undefined
+        : './certs/certificate.pem',
       enabled: true,
 
       requestHeaders: {

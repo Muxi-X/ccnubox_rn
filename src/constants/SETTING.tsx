@@ -71,6 +71,7 @@ export const SETTING_ITEMS: SettingItem[] = [
         mode: 'middle',
         title: '退出登录',
         children: '确定要退出登录吗？',
+        buttonType: 'Round',
         confirmText: '确定',
         cancelText: '取消',
         onConfirm: async () => {

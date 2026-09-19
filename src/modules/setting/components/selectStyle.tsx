@@ -1,4 +1,3 @@
-import { Switch } from '@ant-design/react-native';
 import { Image, Text, View } from 'react-native';
 
 import AndroidDarkIcon from '@/assets/images/theme/androidIconDark.png';
@@ -6,6 +5,7 @@ import AndroidLightIcon from '@/assets/images/theme/androidIconLight.png';
 import IosDarkIcon from '@/assets/images/theme/iosIconDark.png';
 import IosLightIcon from '@/assets/images/theme/iosIconLight.png';
 import Button from '@/components/button';
+import Switch from '@/components/switch';
 import ThemeBasedView from '@/components/view';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -101,7 +101,8 @@ export default function SelectStyle() {
           iOS风格
         </Text>
         <Button
-          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
+          type="Secondary"
+          containerStyle={{ width: '40%', marginRight: 10 }}
           onPress={() => {
             if (!isIconStyleApplied('ios')) {
               changeIconStyle('ios');
@@ -144,7 +145,8 @@ export default function SelectStyle() {
           Android风格
         </Text>
         <Button
-          style={[{ width: '40%', borderRadius: 10, marginRight: 10 }]}
+          type="Secondary"
+          containerStyle={{ width: '40%', marginRight: 10 }}
           onPress={() => {
             if (!isIconStyleApplied('android')) {
               changeIconStyle('android');

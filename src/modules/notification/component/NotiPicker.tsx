@@ -1,15 +1,9 @@
-import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { type FC, useEffect, useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import Button from '@/components/button';
+import Switch from '@/components/switch';
 import Toast from '@/components/toast';
 import { FeedIconList } from '@/constants/NOTIFICATION';
 import changeFeedAllowList from '@/request/api/feeds/changeFeedAllowList';
@@ -124,22 +118,23 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
                 checked={!!checkList[item.name]}
                 style={styles.switch}
                 trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-                thumbColor="#979797"
+                thumbColor="#FFFFFF"
                 onChange={() => handleToggle(item.name)}
               />
             </View>
           ))}
 
           <View style={[styles.footer, currentStyle?.background_style]}>
-            <TouchableHighlight
-              style={[styles.button, loading && styles.buttonDisabled]}
+            <Button
+              type="Primary"
+              containerStyle={{ width: styles.button.width, marginTop: 10 }}
+              textStyle={{ fontSize: 17 }}
               onPress={handleConfirm}
-              disabled={loading}
+              isLoading={loading}
+              letterSpacing="25%"
             >
-              <Text style={styles.buttonText}>
-                {loading ? '保存中...' : '确认'}
-              </Text>
-            </TouchableHighlight>
+              确认
+            </Button>
           </View>
         </View>
       </View>
@@ -196,7 +191,7 @@ const styles = StyleSheet.create({
   },
   switch: {
     width: 40,
-    height: 20,
+    height: 24,
     marginRight: 10,
   },
   footer: {
@@ -206,18 +201,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#7B70F1',
-    width: 150,
+    width: 200,
+    marginTop: 10,
     height: 30,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
   },
 });
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import Button from '@/components/button';
 import { commonColors } from '@/styles/common';
 
 import ClearModal from './ClearModal';
@@ -17,43 +18,25 @@ const NotificationHeaderRight = () => {
         flexDirection: 'row',
       }}
     >
-      <TouchableOpacity
-        style={[
-          styles.notificationBtn,
-          {
-            backgroundColor: '#7878F8',
-          },
-        ]}
+      <Button
+        containerStyle={styles.notificationBtnContainer}
+        buttonStyle={[styles.notificationBtn, { backgroundColor: '#7878F8' }]}
+        textStyle={{ color: commonColors.white, fontSize: 14 }}
         onPress={() => setNotiVisible(true)}
       >
-        <Text
-          style={{
-            color: commonColors.white,
-          }}
-        >
-          通知设置
-        </Text>
-      </TouchableOpacity>
+        通知设置
+      </Button>
       <NotiPicker visible={notiVisible} setVisible={setNotiVisible} />
-      <TouchableOpacity
-        style={[
-          styles.notificationBtn,
-          {
-            backgroundColor: '#EBEBEB',
-          },
-        ]}
+      <Button
+        containerStyle={styles.notificationBtnContainer}
+        buttonStyle={[styles.notificationBtn, { backgroundColor: '#EBEBEB' }]}
+        textStyle={{ color: '#FF6F6F', fontSize: 14 }}
         onPress={() => {
           setClearVisible(true);
         }}
       >
-        <Text
-          style={{
-            color: '#FF6F6F',
-          }}
-        >
-          一键清空
-        </Text>
-      </TouchableOpacity>
+        一键清空
+      </Button>
       <ClearModal
         clearVisible={clearVisible}
         setClearVisible={setClearVisible}
@@ -63,12 +46,16 @@ const NotificationHeaderRight = () => {
 };
 
 const styles = StyleSheet.create({
+  notificationBtnContainer: {
+    marginRight: 10,
+    borderRadius: 10,
+  },
   notificationBtn: {
     borderColor: commonColors.gray,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    marginRight: 10,
+    minHeight: 0,
   },
 });
 

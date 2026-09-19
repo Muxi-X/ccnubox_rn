@@ -62,8 +62,9 @@
 ### 2.3 认证与双 Token 状态机
 
 - **Token 体系**：
-  - `shortToken`：JWT 短令牌，请求 API 时注入 `Authorization: Bearer <shortToken>`，生命周期较短。
+  - `shortToken`：JWT 短令牌，请求 API 时注入 `Authorization: Bearer <shortToken>`，生命周期较短，由网络拦截器直接操作 `expo-secure-store` 进行安全读写。
   - `longToken`：长刷新令牌，持久化保存在安全存储（`expo-secure-store`）中。
+  - 用户凭据（学号与密码）由 `useUserStore`（`src/store/user.ts`）通过 `expo-secure-store` 单独持久化加密存储。
 - **自动无缝续期**：
   - 遇到 HTTP 401 响应时，系统通过 Promise 互斥队列调用 `/users/refresh_token` 请求新短 Token。
   - 换取成功后静默替换本地短 Token，并重放之前失败的并发请求。
@@ -73,13 +74,21 @@
 
 ## 3. 全局状态 (Zustand Stores) 拓扑与存储规划
 
-| Store 模块        | 文件路径                       | 持久化方式      | 存储 Key             | 核心职责                                                |
-| :---------------- | :----------------------------- | :-------------- | :------------------- | :------------------------------------------------------ |
-| `useAuth`         | `src/store/auth.ts`            | SecureStore     | `auth`               | 保存登录学号、长短 Token、用户基本信息及认证状态        |
-| `useTimeStore`    | `src/store/time.ts`            | AsyncStorage    | `time-store`         | 保存当前学年、当前学期、选中周次、开学与放假时间戳      |
-| `useCourse`       | `src/store/course.ts`          | AsyncStorage    | `course-store`       | 保存分学期的课程数据存储桶、当前活跃学期、课程分类标签  |
-| `useVisualScheme` | `src/store/visualScheme.ts`    | AsyncStorage    | `visualScheme`       | 保存全局主题模式、自动跟随系统设置、多端布局与图标定制  |
-| `useElectricity`  | `src/store/electricity.ts`     | AsyncStorage    | `electricity-store`  | 保存绑定的宿舍房间信息、历史房间列表与预警阈值          |
-| `useNotification` | `src/store/notification.ts`    | AsyncStorage    | `notification-store` | 保存系统通知列表、未读消息计数与分类过滤配置            |
-| `usePortalStore`  | `src/store/portal.ts`          | 内存状态 (None) | -                    | 全局 Portal 视图层挂载节点管理（Modal、ActionSheet 等） |
-| `requestBus`      | `src/store/currentRequests.ts` | 内存状态 (None) | -                    | 活跃网络请求计数器，供全局加载指示器与诊断工具订阅      |
+| Store 模块                 | 文件路径                             | 持久化方式      | 存储 Key                        | 核心职责                                                     |
+| :------------------------- | :----------------------------------- | :-------------- | :------------------------------ | :----------------------------------------------------------- |
+| `useUserStore`             | `src/store/user.ts`                  | SecureStore     | `user`                          | 保存学生学号与加密登录密码                                   |
+| `useTimeStore`             | `src/store/time.ts`                  | AsyncStorage    | `time-store`                    | 保存当前学年、当前学期、选中周次、开学与放假时间戳           |
+| `useCourse`                | `src/store/course.ts`                | AsyncStorage    | `course-store`                  | 保存分学期的课程数据存储桶、当前活跃学期、课程分类标签       |
+| `useCourseTableAppearance` | `src/store/courseTableAppearance.ts` | AsyncStorage    | `course-table-appearance-store` | 保存课表自定义外观（背景图、不透明度、周末显示、每日节次等） |
+| `useVisualScheme`          | `src/store/visualScheme.ts`          | AsyncStorage    | `visualScheme`                  | 保存全局主题模式、自动跟随系统设置、多端布局与图标定制       |
+| `useElectricity`           | `src/store/electricity.ts`           | AsyncStorage    | `electricity-store`             | 保存绑定的宿舍房间信息、历史房间列表与预警阈值               |
+| `usePushSubscriptionStore` | `src/store/pushSubscription.ts`      | AsyncStorage    | `push-subscription`             | 保存通知推送权限授权状态、弹窗提示记录与极光推送设备 Token   |
+| `useGridOrderStore`        | `src/store/gridOrder.ts`             | AsyncStorage    | `grid_order`                    | 保存首页九宫格功能微应用图标的自定义拖拽顺序                 |
+| `useClassroomStore`        | `src/store/classroom.ts`             | AsyncStorage    | `classroom_star_v2`             | 保存用户关注与星标收藏的自习室教室列表                       |
+| `usePrivacyStore`          | `src/store/privacy.ts`               | AsyncStorage    | `privacy`                       | 保存用户是否已阅读并同意隐私保护指引的状态                   |
+| `useScraper`               | `src/store/scraper.ts`               | AsyncStorage    | `scraper`                       | 保存教务系统爬虫状态、抓取配置及底层 WebView 实例引用        |
+| `usePortalStore`           | `src/store/portal.ts`                | 内存状态 (None) | -                               | 全局 Portal 视图层挂载节点管理（Modal、ActionSheet 等）      |
+| `requestBus`               | `src/store/currentRequests.ts`       | 内存状态 (None) | -                               | 活跃网络请求计数器，供全局加载指示器与诊断工具订阅           |
+| `useHeaderRight`           | `src/store/headerRight.ts`           | 内存状态 (None) | -                               | 顶部导航栏右侧动态操作按钮注入（如课表周次切换、编辑保存等） |
+| `useEvents`                | `src/store/events.ts`                | 内存状态 (None) | -                               | 校历重要日程与事件列表缓存                                   |
+| `useFAQs`                  | `src/store/FAQs.ts`                  | 内存状态 (None) | -                               | 意见反馈模块中的常见问题解答缓存                             |

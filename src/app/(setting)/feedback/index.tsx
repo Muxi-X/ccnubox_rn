@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 
 import NormalIcon from '@/assets/images/normal-question.png.png';
+import Button from '@/components/button';
 import Loading from '@/components/loading';
 import SearchBar from '@/components/searchBar';
 import ThemeBasedView from '@/components/view';
@@ -311,12 +312,15 @@ function FeedbackPage() {
           </ScrollView>
         </SafeAreaView>
         <View style={styles.bottom}>
-          <TouchableOpacity
+          <Button
+            type="Primary"
+            textStyle={{ fontSize: 18 }}
             onPress={() => router.push('/feedback/writefeedback')}
-            style={styles.button}
+            buttonStyle={styles.button}
+            letterSpacing="25%"
           >
-            <Text style={styles.buttonText}>我要反馈</Text>
-          </TouchableOpacity>
+            我要反馈
+          </Button>
 
           <View style={currentStyle?.background_style}>
             <View style={styles.groupRow}>
@@ -394,16 +398,9 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#847AF2',
-    borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 90,
     marginVertical: 10,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 400,
-    letterSpacing: 13,
-    color: '#FFFFFF',
   },
 });
 

@@ -123,9 +123,11 @@ function SignOff() {
             placeholder="请输入密码"
           />
           <Button
+            type="ghost"
             onPress={handleSubmit}
             isLoading={isSubmitting}
-            style={styles.submitButton}
+            containerStyle={styles.submitButton}
+            textStyle={{ color: commonColors.white }}
           >
             确认注销
           </Button>

@@ -104,7 +104,7 @@ android {
         applicationId 'com.muxixyz.ccnubox'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 26
+        versionCode 30
         versionName "3.2.0"
 // @generated begin jpush-manifest-placeholders - expo prebuild (DO NOT MODIFY) sync-87077b7ca314ad6dbdcb587907322ed1e71f09e5
         manifestPlaceholders += [

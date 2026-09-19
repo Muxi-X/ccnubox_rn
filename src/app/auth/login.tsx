@@ -234,7 +234,8 @@ const LoginPage: FC = () => {
         <Button
           onPress={handleLogin}
           isLoading={loginTriggered}
-          style={[styles.login_button, currentStyle?.button_style]}
+          type="Secondary"
+          containerStyle={[styles.login_button]}
         >
           登录
         </Button>

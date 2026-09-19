@@ -1,9 +1,9 @@
-import { Switch } from '@ant-design/react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import Modal from '@/components/modal';
+import Switch from '@/components/switch';
 import Toast from '@/components/toast';
 import usePushSubscriptionStore from '@/store/pushSubscription';
 import useVisualScheme from '@/store/visualScheme';
@@ -112,7 +112,7 @@ function PushSubscriptionItem() {
         onChange={handleSwitchChange}
         style={styles.switch}
         trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-        thumbColor={loading ? '#B9B9B9' : '#979797'}
+        thumbColor={loading ? '#fefefe' : '#FFFFFF'}
       />
     </View>
   );
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   },
   switch: {
     width: 40,
-    height: 20,
+    height: 24,
+    marginRight: 10,
   },
 });

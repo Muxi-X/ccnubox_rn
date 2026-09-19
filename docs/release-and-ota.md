@@ -149,7 +149,11 @@ _注意：脚本在执行发布命令前会自动加载 `.env` 及本地 `.env.l
 ```
 
 - `updateInfo.json` 的内容会在构建时由 `app.config.ts` 动态装载到应用全局 `extra.updateInfo` 中。
-- 向 GitHub `main` 分支提交包含 `src/assets/data/updateInfo.json` 的修改时，GitHub Actions（`test_update.yml`）会自动触发 EAS Update 发布到 `test` 测试通道。
+- 向 GitHub `main` 分支提交包含 `src/assets/data/updateInfo.json` 的修改时，GitHub Actions 工作流（`.github/workflows/preview.yml`）会自动触发热更新发布至 `preview` 预览通道：
+  ```bash
+  pnpm exec eoas publish --branch preview --nonInteractive -m "$COMMIT_MESSAGE"
+  ```
+- 针对生产环境（`production`）的热更新，建议在完成测试验证后通过本地脚本 `pnpm run ota:prod` 或手动触发相应的发布流程。此外，仓库还配置有 `ci.yml` 与 `lint_and_format_check.yml` 保障静态代码质量，以及 `build.yml` 验证应用编译一致性。
 
 ---
 

@@ -5,5 +5,5 @@ module.exports = {
     'oxfmt --no-error-on-unmatched-pattern',
   ],
   '**/*.{json,jsonc,yml,yaml,md}': ['oxfmt --no-error-on-unmatched-pattern'],
-  '{app.json,android/**,ios/**}': [() => 'expo prebuild'],
+  '{app.json,android/**,ios/**}': [() => 'pnpm prebuild'],
 };

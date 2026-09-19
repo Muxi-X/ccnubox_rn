@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Toast from '@/components/toast';
 import { queryGradeDetail } from '@/request/api/grade';
@@ -84,6 +85,7 @@ const ScoreCalculation: React.FC = () => {
     Modal.show({
       mode: 'middle',
       showCancel: false,
+      buttonType: 'Round',
       confirmText: '我知道了',
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
@@ -156,6 +158,7 @@ const ScoreCalculation: React.FC = () => {
     Modal.show({
       mode: 'middle',
       showCancel: false,
+      buttonType: 'Round',
       confirmText: '我知道了',
       children: (
         <View style={{ paddingVertical: 20, width: 290 }}>
@@ -332,12 +335,14 @@ const ScoreCalculation: React.FC = () => {
       )}
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.calculateButton]}
+        <Button
+          type="Primary"
+          letterSpacing="15%"
+          buttonStyle={styles.calculateButton}
           onPress={showResultModal}
         >
-          <Text style={styles.calculateButtonText}>计算学分绩</Text>
-        </TouchableOpacity>
+          计算学分绩
+        </Button>
       </View>
     </View>
   );
@@ -457,6 +462,8 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontWeight: '400',
     fontSize: 20,
+    lineHeight: 26,
+    includeFontPadding: false,
     color: '#242424',
   },
   textItem: {
@@ -464,6 +471,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#707070',
     lineHeight: 26,
+    includeFontPadding: false,
     paddingBottom: 11,
   },
   textHighlight: {
@@ -471,6 +479,8 @@ const styles = StyleSheet.create({
   },
   resultTitle: {
     fontSize: 20,
+    lineHeight: 26,
+    includeFontPadding: false,
     color: '#ABAAAA',
     fontWeight: '400',
   },
@@ -480,10 +490,14 @@ const styles = StyleSheet.create({
   },
   resultScore: {
     fontSize: 64,
+    lineHeight: 74,
+    includeFontPadding: false,
     color: '#000',
   },
   resultLabel: {
     fontSize: 14,
+    lineHeight: 20,
+    includeFontPadding: false,
     color: '#000',
   },
   footer: {
@@ -494,12 +508,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
   calculateButton: {
-    backgroundColor: '#7878F8',
     paddingVertical: 12,
     paddingHorizontal: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 13,
   },
   calculateButtonText: {
     color: '#FFF',

@@ -91,3 +91,17 @@
    - `./plugins/config-android-url-scheme.js`：注入 `<queries>` 标签保障微信/支付宝 Scheme 调起。
    - `./plugins/ios-disable-liquid-glass.js`：适配 iOS 26 新视觉特性的透明度控制。
    - `./plugins/remove-unused-ios-permissions.js`：剔除未使用的 iOS 权限描述以避免审核阻碍。
+
+---
+
+## 6. 专题架构指南索引
+
+- 🌐 [核心领域模型全景 (Domain Context)](../CONTEXT.md)
+- 📅 [课表核心算法与视图引擎](timetable.md)
+- 🏫 [校园微服务与数据体系](campus-services.md)
+- 🛡️ [生命周期与认证安全规范](auth-and-lifecycle.md)
+- 📱 [桌面小组件与实时活动指南](widgets.md)
+- 🔔 [消息推送与厂商通道集成](push-notifications.md)
+- 🔌 [网络请求与 OpenAPI 规范驱动](api-and-request.md)
+- 🚀 [构建打包与 OTA 热更新运维](release-and-ota.md)
+- 🔒 [敏感权限清单与来源合规](permissions.md)
