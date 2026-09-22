@@ -145,39 +145,38 @@ const LoginPage: FC = () => {
           placeholder="请输入教务系统密码"
         ></Input>
         <View style={styles.rules}>
-          <Checkbox
-            checked={privacyChecked}
-            onChange={onCheckPrivacy}
-            label={
-              <Text style={styles.rules_radio}>
-                已阅读并同意
-                <Text
-                  style={{
-                    color: commonColors.purple,
-                  }}
-                  onPress={() => {
-                    router.push('/(setting)/agreement');
-                    Modal.clear();
-                  }}
-                >
-                  《用户协议》
-                </Text>
-                和
-                <Text
-                  style={{
-                    color: commonColors.purple,
-                  }}
-                  onPress={() => {
-                    router.push('/(setting)/privacy');
-                    Modal.clear();
-                  }}
-                >
-                  《隐私政策》
-                </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Checkbox checked={privacyChecked} onChange={onCheckPrivacy} />
+
+            <Text style={[styles.rules_radio, { marginLeft: 8 }]}>
+              已阅读并同意
+              <Text
+                style={{
+                  color: commonColors.purple,
+                }}
+                onPress={() => {
+                  router.push('/(setting)/agreement');
+                  Modal.clear();
+                }}
+              >
+                《用户协议》
               </Text>
-            }
-          />
+              和
+              <Text
+                style={{
+                  color: commonColors.purple,
+                }}
+                onPress={() => {
+                  router.push('/(setting)/privacy');
+                  Modal.clear();
+                }}
+              >
+                《隐私政策》
+              </Text>
+            </Text>
+          </View>
         </View>
+
         <Button
           onPress={handleLogin}
           isLoading={loginTriggered}

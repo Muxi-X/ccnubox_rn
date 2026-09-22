@@ -196,33 +196,17 @@ const ScoreCalculation: React.FC = () => {
     () => (
       <View style={styles.headerRightRow}>
         <Text style={[styles.headerRightLabel, textStyle]}>全选</Text>
-        {/* 头部全选checkbox；RNE不支持半选，checked只传isAllSelected；半选保留视觉覆盖 */}
-        <View style={{ position: 'relative' }}>
-          <Checkbox
-            checked={isAllSelected}
-            onChange={val => handleSelectAllToggle(val)}
-            color="#9379F6"
-            uncheckedColor="#C7C7C7"
-          />
-          {isPartiallySelected && !isAllSelected ? (
-            <View
-              style={{
-                position: 'absolute',
-                width: 12,
-                height: 3,
-                backgroundColor: '#9379F6',
-                top: '50%',
-                left: '50%',
-                transform: [{ translateX: -6 }, { translateY: -1.5 }],
-                borderRadius: 2,
-              }}
-            />
-          ) : null}
-        </View>
+        {/* 移除外层相对定位容器和手动半选横线，直接使用Checkbox组件的indeterminate */}
+        <Checkbox
+          checked={isAllSelected}
+          indeterminate={isPartiallySelected && !isAllSelected}
+          onChange={val => handleSelectAllToggle(val)}
+        />
       </View>
     ),
     [isAllSelected, isPartiallySelected, handleSelectAllToggle, textStyle]
   );
+
   useEffect(() => {
     setHeaderRight(selectAllNode);
     return () => setHeaderRight(null);
@@ -268,8 +252,6 @@ const ScoreCalculation: React.FC = () => {
                     <Checkbox
                       checked={isSelected}
                       onChange={() => handleCourseSelection(course)}
-                      color="#9379F6"
-                      uncheckedColor="#C7C7C7"
                     />
                   </View>
                 </TouchableOpacity>

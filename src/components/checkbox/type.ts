@@ -1,11 +1,6 @@
-import type { CheckBoxProps as RneRawCheckBoxProps } from '@rneui/base';
-// 获取RNE原生title类型
-type RneTitle = RneRawCheckBoxProps['title'];
 export interface CheckboxProps {
-  checked?: boolean;
-  defaultChecked?: boolean;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
   disabled?: boolean;
-  label?: RneTitle | null;
-  onChange?: (checked: boolean) => void;
-  [restProp: string]: unknown;
+  indeterminate?: boolean; // 半选，用于全选框
 }

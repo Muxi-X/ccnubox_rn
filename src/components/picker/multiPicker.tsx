@@ -1,9 +1,9 @@
-import CheckBox from '@/components/checkbox';
+import Checkbox from '@/components/checkbox';
 import { ModalTrigger } from '@/components/modal';
 import { DatePickerProps, PickerDataType } from '@/components/picker/types';
 import useVisualScheme from '@/store/visualScheme';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 /**
  * 位于底部的多选组件, 数据格式保持与 picker 基本一致
@@ -66,7 +66,6 @@ const MultiPicker: React.FC<DatePickerProps> = ({
     () => new Set(multiPickerValue),
     [multiPickerValue]
   );
-
   const title = useMemo(
     () => titleDisplayLogic(multiPickerValue, data),
     [multiPickerValue, data]
@@ -178,28 +177,10 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     createQuickSelect(isChecked, allSet);
   };
 
-  const renderCheckboxItem = (
-    label: string,
-    checked: boolean,
-    onChangeCb: (checked: boolean) => void
-  ) => (
-    <View style={styles.checkItemWrap}>
-      <CheckBox
-        label={label}
-        checked={checked}
-        onChange={onChangeCb}
-        labelTextStyle={{
-          color: currentStyle?.text_style?.color,
-          fontSize: 14,
-        }}
-        color={
-          currentStyle?.classroom_accent_style?.backgroundColor ?? '#7878F8'
-        }
-        uncheckedColor={currentStyle?.text_style?.color ?? '#cccccc'}
-      />
-      <View style={styles.itemTransparentLine} />
-    </View>
-  );
+  const labelTextStyle = {
+    color: currentStyle?.text_style?.color,
+    fontSize: 14,
+  };
 
   return (
     <ScrollView
@@ -208,28 +189,27 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       showsHorizontalScrollIndicator={false}
     >
       <View style={styles.listBody}>
-        {renderCheckboxItem('全选', checkAll, onCheckAllChange)}
-        <>
-          {plainOptions.map(a => (
-            <View key={a.value} style={styles.checkItemWrap}>
-              <CheckBox
-                label={a.label}
+        <View style={styles.checkItemWrap}>
+          <View style={styles.row}>
+            <Checkbox checked={checkAll} onChange={onCheckAllChange} />
+            <Text style={[styles.labelText, labelTextStyle]}>全选</Text>
+          </View>
+          <View style={styles.itemTransparentLine} />
+        </View>
+
+        {plainOptions.map(a => (
+          <View key={a.value} style={styles.checkItemWrap}>
+            <View style={styles.row}>
+              <Checkbox
                 checked={checkedList.has(a.value)}
                 onChange={isChecked => onChange(a.value, isChecked)}
-                labelTextStyle={{
-                  color: currentStyle?.text_style?.color,
-                  fontSize: 14,
-                }}
-                color={
-                  currentStyle?.classroom_accent_style?.backgroundColor ??
-                  '#7878F8'
-                }
-                uncheckedColor={currentStyle?.text_style?.color ?? '#cccccc'}
               />
-              <View style={styles.itemTransparentLine} />
+              <Text style={[styles.labelText, labelTextStyle]}>{a.label}</Text>
             </View>
-          ))}
-        </>
+            <View style={styles.itemTransparentLine} />
+          </View>
+        ))}
+
         <View style={styles.bodyBottomTransparentLine} />
       </View>
     </ScrollView>
@@ -245,6 +225,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 2,
     backgroundColor: 'rgba(0,0,0,0)',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+  },
+  labelText: {
+    marginLeft: 10,
   },
   itemTransparentLine: {
     height: 1,

@@ -1,42 +1,64 @@
-import { CheckBox } from '@rneui/themed';
-import { FC, useState } from 'react';
+import { commonColors } from '@/styles/common';
+import { Icon } from '@ant-design/react-native';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import type { CheckboxProps } from './type';
 
-import { CheckboxProps } from './type';
-
-const Checkbox: FC<CheckboxProps> = ({
+const Checkbox: React.FC<CheckboxProps> = ({
   checked,
-  defaultChecked = false,
-  disabled = false,
-  label,
   onChange,
-  ...rest
+  disabled = false,
+  indeterminate = false,
 }) => {
-  const [innerChecked, setInnerChecked] = useState(defaultChecked);
-
-  const isControlled = checked !== undefined;
-  const mergedChecked = isControlled ? checked : innerChecked;
-
   const handlePress = () => {
-    if (disabled) return;
-    const nextChecked = !mergedChecked;
-
-    if (!isControlled) {
-      setInnerChecked(nextChecked);
+    if (!disabled) {
+      onChange(!checked);
     }
-
-    onChange?.(nextChecked);
   };
 
   return (
-    <CheckBox
-      {...rest}
-      title={label ?? undefined}
-      checked={mergedChecked}
-      disabled={disabled}
-      onPress={handlePress}
-      containerStyle={{ backgroundColor: 'transparent' }}
-    />
+    <TouchableOpacity onPress={handlePress} disabled={disabled}>
+      <View
+        style={[
+          styles.checkbox,
+          {
+            backgroundColor: checked ? commonColors.purple : commonColors.white,
+            borderColor: checked ? commonColors.purple : commonColors.darkGray,
+          },
+        ]}
+      >
+        {checked && !indeterminate && (
+          <Icon
+            name="check"
+            size={20}
+            color={commonColors.white}
+            style={styles.checkIcon}
+          />
+        )}
+        {indeterminate && <View style={styles.partialCheckbox} />}
+      </View>
+    </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkIcon: {
+    fontWeight: '600',
+  },
+  partialCheckbox: {
+    width: 12,
+    height: 12,
+    borderRadius: 2,
+    backgroundColor: commonColors.purple,
+  },
+});
 
 export default Checkbox;
