@@ -24,15 +24,9 @@ function PushSubscriptionItem() {
     setLoading(true);
     try {
       await enablePushSubscription();
-      Toast.show({
-        icon: 'success',
-        text: '已开启消息推送',
-      });
+      Toast.success('已开启消息推送');
     } catch (error) {
-      Toast.show({
-        icon: 'fail',
-        text: error instanceof Error ? error.message : '开启消息推送失败',
-      });
+      Toast.fail(error instanceof Error ? error.message : '开启消息推送失败');
     } finally {
       setLoading(false);
     }
@@ -42,15 +36,9 @@ function PushSubscriptionItem() {
     setLoading(true);
     try {
       await disablePushSubscription();
-      Toast.show({
-        icon: 'success',
-        text: '已关闭消息推送',
-      });
+      Toast.success('已关闭消息推送');
     } catch (error) {
-      Toast.show({
-        icon: 'fail',
-        text: error instanceof Error ? error.message : '关闭消息推送失败',
-      });
+      Toast.fail(error instanceof Error ? error.message : '关闭消息推送失败');
     } finally {
       setLoading(false);
     }

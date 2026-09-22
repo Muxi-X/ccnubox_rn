@@ -43,7 +43,7 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
           }
         })
         .catch(() => {
-          Toast.show({ icon: 'fail', text: '获取推送设置失败' });
+          Toast.fail('获取推送设置失败');
         });
     }
   }, [visible]);
@@ -52,10 +52,10 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
     setLoading(true);
     try {
       await changeFeedAllowList(checkList);
-      Toast.show({ icon: 'success', text: '修改成功' });
+      Toast.success('修改成功');
       setVisible(false);
     } catch {
-      Toast.show({ icon: 'fail', text: '修改失败，请检查网络' });
+      Toast.fail('修改失败，请检查网络');
     } finally {
       setLoading(false);
     }

@@ -18,7 +18,7 @@ import handleCopy from '@/utils/handleCopy';
 import { handleOpenURL } from '@/utils/handleOpenURL';
 
 function About() {
-  const number = '791185783';
+  const number = '1102766072';
   const version = Application.nativeApplicationVersion;
   const otaVersion =
     Constants.default.expoConfig?.extra?.updateInfo?.otaVersion || '';

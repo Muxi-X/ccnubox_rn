@@ -233,10 +233,7 @@ const Schedule: React.FC<CourseTableProps> = ({
         requestPermission: () => MediaLibrary.requestPermissionsAsync(true),
       });
       if (!hasPermission) {
-        Toast.show({
-          text: '需要相册权限才能保存截图',
-          icon: 'fail',
-        });
+        Toast.fail('需要相册权限才能保存截图');
         isSavingImageRef.current = false;
         return;
       }
@@ -271,17 +268,14 @@ const Schedule: React.FC<CourseTableProps> = ({
               }
             } catch (err) {
               setSnapShot(false);
-              Toast.show({ text: `截图失败：${err}`, icon: 'fail' });
+              Toast.fail(`截图失败：${err}`);
               return;
             }
           }
 
           if (!snapshotImage) {
             setSnapShot(false);
-            Toast.show({
-              text: '截图失败',
-              icon: 'fail',
-            });
+            Toast.fail('截图失败');
             return;
           }
 
@@ -300,20 +294,14 @@ const Schedule: React.FC<CourseTableProps> = ({
           if (manipulateResult && manipulateResult.uri) {
             await MediaLibrary.createAssetAsync(manipulateResult.uri);
             setSnapShot(false);
-            Toast.show({
-              text: '截图成功',
-              icon: 'success',
-            });
+            Toast.success('截图成功');
           } else {
             setSnapShot(false);
-            Toast.show({
-              text: '截图保存失败',
-              icon: 'fail',
-            });
+            Toast.fail('截图保存失败');
           }
         } catch (error) {
           setSnapShot(false);
-          Toast.show({ text: `截图失败：${error}`, icon: 'fail' });
+          Toast.fail(`截图失败：${error}`);
         } finally {
           setSnapShot(false);
           isSavingImageRef.current = false;
@@ -321,7 +309,7 @@ const Schedule: React.FC<CourseTableProps> = ({
       }, 400);
     } catch (e) {
       setSnapShot(false);
-      Toast.show({ text: `截图失败：${e}`, icon: 'fail' });
+      Toast.fail(`截图失败：${e}`);
       isSavingImageRef.current = false;
     }
   };

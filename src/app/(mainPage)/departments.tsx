@@ -79,7 +79,7 @@ function Departments() {
         }
       })
       .catch(_err => {
-        Toast.show({ icon: 'fail', text: '获取部门信息失败，请稍后重试' });
+        Toast.fail('获取部门信息失败，请稍后重试');
       });
   }, []);
 

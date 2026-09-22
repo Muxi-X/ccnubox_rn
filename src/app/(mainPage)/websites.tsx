@@ -46,7 +46,7 @@ const Websites = () => {
         }
       })
       .catch(_error => {
-        Toast.show({ icon: 'fail', text: '获取常用网站失败' });
+        Toast.fail('获取常用网站失败');
       });
   }, []);
 

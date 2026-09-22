@@ -1,4 +1,4 @@
-import { Provider, Toast } from '@ant-design/react-native';
+import { Provider } from '@ant-design/react-native';
 import { loadAsync } from 'expo-font';
 import * as Haptics from 'expo-haptics';
 import { Stack, useRootNavigationState } from 'expo-router';
@@ -46,8 +46,6 @@ export default function RootLayout() {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       antoutline: require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
     });
-    // 配置Toast
-    Toast.config({ mask: false, stackable: true });
     // 在 store 中设置爬虫 ref
     setRef(scraperRef as React.RefObject<WebView>);
     // 在 store 中配置 portal ref

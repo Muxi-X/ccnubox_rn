@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -18,6 +17,7 @@ import {
 } from 'react-native';
 
 import Button from '@/components/button';
+import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
 import {
   FEEDBACK_TABLE_IDENTIFY,

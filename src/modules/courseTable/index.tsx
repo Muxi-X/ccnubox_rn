@@ -210,10 +210,7 @@ const CourseTablePage: FC = () => {
 
       if (parsed.droppedCount > 0) {
         log.warn(`课表数据已忽略 ${parsed.droppedCount} 条异常课程`);
-        Toast.show({
-          text: `发现 ${parsed.droppedCount} 条异常课程，已安全忽略`,
-          icon: 'fail',
-        });
+        Toast.fail(`发现 ${parsed.droppedCount} 条异常课程，已安全忽略`);
       }
 
       replaceSemesterCourses(
@@ -267,10 +264,7 @@ const CourseTablePage: FC = () => {
         useCourse.getState().courses.length > 0 ? 'stale' : 'error'
       );
       log.error('Failed to retry timetable:', error);
-      Toast.show({
-        text: getTimetableErrorMessage(error),
-        icon: 'fail',
-      });
+      Toast.fail(getTimetableErrorMessage(error));
     }
   }, [fetchSemesterInfo, fetchTimetable, onTimetableRefresh]);
 
@@ -285,7 +279,7 @@ const CourseTablePage: FC = () => {
         option => option.year === newYear && option.semester === newSemester
       );
       if (!nextSemester) {
-        Toast.show({ text: '学期信息无效，请重新选择', icon: 'fail' });
+        Toast.fail('学期信息无效，请重新选择');
         return;
       }
 
@@ -306,10 +300,7 @@ const CourseTablePage: FC = () => {
           setTimetableStatus(
             useCourse.getState().courses.length > 0 ? 'stale' : 'error'
           );
-          Toast.show({
-            text: getTimetableErrorMessage(error),
-            icon: 'fail',
-          });
+          Toast.fail(getTimetableErrorMessage(error));
         } finally {
           setIsLoadingTimetable(false);
         }
@@ -346,10 +337,7 @@ const CourseTablePage: FC = () => {
 
       if (!targetYear || !targetSemester) {
         setTimetableStatus('error');
-        Toast.show({
-          text: '学期信息加载失败，请稍后重试',
-          icon: 'fail',
-        });
+        Toast.fail('学期信息加载失败，请稍后重试');
         return;
       }
 
@@ -363,10 +351,7 @@ const CourseTablePage: FC = () => {
         setTimetableStatus(
           useCourse.getState().courses.length > 0 ? 'stale' : 'error'
         );
-        Toast.show({
-          text: getTimetableErrorMessage(error),
-          icon: 'fail',
-        });
+        Toast.fail(getTimetableErrorMessage(error));
       }
     };
 

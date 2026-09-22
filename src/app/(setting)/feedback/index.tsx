@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -19,6 +18,7 @@ import NormalIcon from '@/assets/images/normal-question.png.png';
 import Button from '@/components/button';
 import Loading from '@/components/loading';
 import SearchBar from '@/components/searchBar';
+import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
 import { FAQ_RECORD_NAMES, FAQ_TABLE_IDENTIFY } from '@/constants/FEEDBACKS';
 import FAQItem from '@/modules/setting/components/faqitem';
@@ -31,7 +31,7 @@ import { logger } from '@/utils/logger';
 
 function FeedbackPage() {
   const router = useRouter();
-  const number = '791185783';
+  const number = '1102766072';
   const user = getItem('user');
   const userId = user ? JSON.parse(user)?.state?.student_id : '';
 

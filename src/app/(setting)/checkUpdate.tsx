@@ -211,7 +211,7 @@ function CheckUpdate(): React.ReactNode {
         logger.error('[Updates] 重启应用失败', err, {
           updatesBasicInfo: getUpdatesBasicInfo(),
         });
-        Toast.show({ text: '应用更新失败，请稍后重试。' });
+        Toast.fail('应用更新失败，请稍后重试。');
       }
       return;
     }
@@ -220,7 +220,7 @@ function CheckUpdate(): React.ReactNode {
       logger.info('[Updates] 当前构建环境不支持或未启用热更新', {
         updatesBasicInfo: getUpdatesBasicInfo(),
       });
-      Toast.show({ text: '当前构建不支持热更新检查。' });
+      Toast.info('当前构建不支持热更新检查。');
       return;
     }
 
@@ -243,13 +243,13 @@ function CheckUpdate(): React.ReactNode {
         void Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Success
         );
-        Toast.show({ text: '更新已下载，可以立即重启应用。' });
+        Toast.success('更新已下载，可以立即重启应用。');
       } catch (err) {
         logger.error('[Updates] 下载更新失败', err, {
           availableUpdate,
           updatesBasicInfo: getUpdatesBasicInfo(),
         });
-        Toast.show({ text: '下载更新失败，请检查网络后重试。' });
+        Toast.fail('下载更新失败，请检查网络后重试。');
       } finally {
         setIsManualDownloading(false);
         void reportUpdatesLogs(60000);
@@ -272,7 +272,7 @@ function CheckUpdate(): React.ReactNode {
       });
 
       if (checkResult.isAvailable) {
-        Toast.show({ text: '发现新版本，正在自动下载…' });
+        Toast.info('发现新版本，正在自动下载…');
         logger.info('[Updates] 发现新版本，开始自动下载', {
           manifest: checkResult.manifest,
           updatesBasicInfo: getUpdatesBasicInfo(),
@@ -286,18 +286,18 @@ function CheckUpdate(): React.ReactNode {
         void Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Success
         );
-        Toast.show({ text: '更新已下载，可以立即重启应用。' });
+        Toast.success('更新已下载，可以立即重启应用。');
       } else {
         void Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Success
         );
-        Toast.show({ text: '已是最新版', icon: 'success' });
+        Toast.success('已是最新版');
       }
     } catch (err) {
       logger.error('[Updates] 检查更新失败', err, {
         updatesBasicInfo: getUpdatesBasicInfo(),
       });
-      Toast.show({ text: '检查更新失败，请检查网络后重试。' });
+      Toast.fail('检查更新失败，请检查网络后重试。');
     } finally {
       setIsManualChecking(false);
       setIsManualDownloading(false);

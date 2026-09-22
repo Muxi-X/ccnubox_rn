@@ -83,7 +83,7 @@ const IndexPage: FC = () => {
           onPress={async () => {
             if (registerId) {
               await Clipboard.setStringAsync(registerId);
-              Toast.show({ content: '已复制 Register ID', duration: 1 });
+              Toast.success('已复制 Register ID', 1);
             }
           }}
         >

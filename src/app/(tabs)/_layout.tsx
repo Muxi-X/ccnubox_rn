@@ -59,16 +59,12 @@ export default function TabLayout() {
       onConfirm: () => {
         void enablePushSubscription()
           .then(() => {
-            Toast.show({
-              icon: 'success',
-              text: '已开启消息推送',
-            });
+            Toast.success('已开启消息推送');
           })
           .catch(error => {
-            Toast.show({
-              icon: 'fail',
-              text: error instanceof Error ? error.message : '开启消息推送失败',
-            });
+            Toast.fail(
+              error instanceof Error ? error.message : '开启消息推送失败'
+            );
           });
       },
     });

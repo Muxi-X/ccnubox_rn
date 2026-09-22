@@ -59,12 +59,9 @@ const NotificationPage: FC = () => {
     setRefreshing(true);
     try {
       await getFeedEvents();
-      Toast.show({ icon: 'success', text: '刷新成功', duration: 1000 });
+      Toast.success('刷新成功', 1000);
     } catch (error) {
-      Toast.show({
-        icon: 'fail',
-        text: error instanceof Error ? error.message : '刷新失败',
-      });
+      Toast.fail(error instanceof Error ? error.message : '刷新失败');
     } finally {
       setRefreshing(false);
     }
@@ -109,10 +106,7 @@ export const ListItem: FC<EventProps> = ({
     logger.info('[Notification] 点击通知项', { id, type, url, extend_fields });
     if (id && !read) {
       void markAsRead(id).catch(error => {
-        Toast.show({
-          icon: 'fail',
-          text: error instanceof Error ? error.message : '标记消息已读失败',
-        });
+        Toast.fail(error instanceof Error ? error.message : '标记消息已读失败');
       });
     }
 
@@ -130,10 +124,7 @@ export const ListItem: FC<EventProps> = ({
   const handleDelete = () => {
     if (id) {
       void deleteEvent(id).catch(error => {
-        Toast.show({
-          icon: 'fail',
-          text: error instanceof Error ? error.message : '删除消息失败',
-        });
+        Toast.fail(error instanceof Error ? error.message : '删除消息失败');
       });
     }
   };

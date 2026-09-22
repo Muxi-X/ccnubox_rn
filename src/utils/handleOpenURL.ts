@@ -16,7 +16,7 @@ export const handleOpenURL = async (url: string, appName: string) => {
   try {
     const supported = await Linking.canOpenURL(url);
     if (!supported) {
-      Toast.show({ text: `无法打开${appName}，请确保已安装该应用` });
+      Toast.fail(`无法打开${appName}，请确保已安装该应用`);
       return;
     }
     await Linking.openURL(url);
@@ -24,9 +24,9 @@ export const handleOpenURL = async (url: string, appName: string) => {
     //console.error('打开链接时出错:', error);
     if (error instanceof Error) {
       if (error.message.includes('scheme')) {
-        Toast.show({ text: `请先安装${appName}` });
+        Toast.fail(`请先安装${appName}`);
       } else {
-        Toast.show({ text: '打开链接失败，请稍后重试' });
+        Toast.fail('打开链接失败，请稍后重试');
       }
     }
   }

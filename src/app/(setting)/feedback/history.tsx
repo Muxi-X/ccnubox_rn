@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import { useRouter } from 'expo-router';
 import { getItem } from 'expo-secure-store';
 import React, {
@@ -17,6 +16,7 @@ import {
 } from 'react-native';
 
 import Loading from '@/components/loading';
+import Toast from '@/components/toast';
 import {
   FEEDBACK_RECORD_NAMES,
   FEEDBACK_TABLE_IDENTIFY,

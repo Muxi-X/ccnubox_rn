@@ -63,7 +63,7 @@ const ElectricityBillinBalance = () => {
       setPriceData(priceInfo);
     } catch (error) {
       logger.error('获取电费数据异常', error);
-      Toast.show({ icon: 'fail', text: '获取电费数据失败' });
+      Toast.fail('获取电费数据失败');
     } finally {
       setLoading(false);
     }
@@ -144,12 +144,12 @@ const ElectricityBillinBalance = () => {
       if (value === '' || value === null) {
         await cancelStandard({ room_id });
         setStandardLimit(null);
-        Toast.show({ icon: 'success', text: '已取消电费提醒' });
+        Toast.success('已取消电费提醒');
       } else {
         // 设置电费标准
         const limitValue = parseInt(value, 10);
         if (isNaN(limitValue) || limitValue <= 0) {
-          Toast.show({ icon: 'fail', text: '请输入有效金额' });
+          Toast.fail('请输入有效金额');
           return;
         }
 
@@ -159,11 +159,11 @@ const ElectricityBillinBalance = () => {
           limit: limitValue,
         });
         setStandardLimit(limitValue);
-        Toast.show({ icon: 'success', text: '电费标准设置成功' });
+        Toast.success('电费标准设置成功');
       }
     } catch (error) {
       logger.error('设置电费标准异常', error);
-      Toast.show({ icon: 'fail', text: '设置失败，请稍后重试' });
+      Toast.fail('设置失败，请稍后重试');
     }
   };
 

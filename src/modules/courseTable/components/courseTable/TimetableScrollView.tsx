@@ -132,19 +132,12 @@ const TimetableScrollView = (
     onRefresh(
       () => {
         // 请求成功后立即显示提示，提高响应速度
-        Toast.show({
-          text: '后续学校课表数据可能发生变化 请以教务系统为准',
-          icon: 'success',
-          duration: 1000,
-        });
+        Toast.success('后续学校课表数据可能发生变化 请以教务系统为准', 1000);
         closeRefresh();
       },
       () => {
         // 请求失败后立即显示提示，提高响应速度
-        Toast.show({
-          text: '刷新失败',
-          icon: 'fail',
-        });
+        Toast.fail('刷新失败');
         closeRefresh();
       }
     );

@@ -285,16 +285,10 @@ export default function OtherStyle({
 
       if (result && !result.canceled && result.assets?.[0]?.uri) {
         setBackgroundUri(result.assets[0].uri);
-        Toast.show({
-          text: '背景图片设置成功',
-          icon: 'success',
-        });
+        Toast.success('背景图片设置成功');
       }
     } catch (error) {
-      Toast.show({
-        text: `选择图片失败：${error}`,
-        icon: 'fail',
-      });
+      Toast.fail(`选择图片失败：${error}`);
     } finally {
       setIsPicking(false);
     }
@@ -302,10 +296,7 @@ export default function OtherStyle({
 
   const handleClearBackground = () => {
     setBackgroundUri(undefined);
-    Toast.show({
-      text: '已清除背景图片',
-      icon: 'success',
-    });
+    Toast.success('已清除背景图片');
   };
 
   const handleBlurRadiusChange = (value: number) => {

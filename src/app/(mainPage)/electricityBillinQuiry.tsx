@@ -91,7 +91,7 @@ const ElectricityBillinQuiry = () => {
       }
     } catch (error) {
       logger.error('加载楼栋数据失败', error);
-      Toast.show({ icon: 'fail', text: '加载楼栋数据失败' });
+      Toast.fail('加载楼栋数据失败');
     } finally {
       setLoading(false);
     }
@@ -127,7 +127,7 @@ const ElectricityBillinQuiry = () => {
     } catch (error) {
       setRooms([]);
       logger.error('获取宿舍房间数据异常', error);
-      Toast.show({ icon: 'fail', text: '加载房间数据失败' });
+      Toast.fail('加载房间数据失败');
     }
   };
 

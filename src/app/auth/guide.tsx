@@ -1,4 +1,4 @@
-import { Icon, Toast } from '@ant-design/react-native';
+import { Icon } from '@ant-design/react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { setItem } from 'expo-secure-store';
@@ -28,6 +28,7 @@ import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
 import Modal from '@/components/modal';
 import Pagination from '@/components/pagination';
+import Toast from '@/components/toast';
 import { GUIDE_CONTENTS } from '@/constants/GUIDE';
 import usePrivacy from '@/store/privacy';
 import useVisualScheme from '@/store/visualScheme';
@@ -124,7 +125,7 @@ const GuidePage: FC = () => {
     if (pageNum > GUIDE_CONTENTS.length - 1 || pageNum < 0) {
       Toast.show({
         icon: <Icon name="coffee" style={{ marginBottom: 6 }}></Icon>,
-        content: '别划啦',
+        text: '别划啦',
       });
       return;
     }

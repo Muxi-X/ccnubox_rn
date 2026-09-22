@@ -1,12 +1,16 @@
+import type { ReactNode } from 'react';
+
 import { PortalBaseProps } from '@/components/portal';
 
+export type ToastIconType = 'success' | 'fail' | 'info' | 'loading';
+
 export interface ToastProps extends PortalBaseProps {
-  /* 是否可见 */
-  visible?: boolean;
-  /* icon 类型 */
-  icon?: 'success' | 'fail';
-  /* toast文字 */
+  /* icon 类型或自定义图标节点 */
+  icon?: ToastIconType | ReactNode;
+  /* toast 文字 */
   text?: string;
-  /* 持续时间(毫秒)，默认2000ms 不要小于400ms 要不然动画会被爆掉 */
+  /* 持续时间(毫秒或秒)，默认 2000ms */
   duration?: number;
+  /* 关闭回调 */
+  onClose?: () => void;
 }

@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -13,6 +12,7 @@ import {
 } from 'react-native';
 
 import Loading from '@/components/loading';
+import Toast from '@/components/toast';
 import ThemeBasedView from '@/components/view';
 import {
   FEEDBACK_TABLE_IDENTIFY,

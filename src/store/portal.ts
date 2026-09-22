@@ -53,6 +53,17 @@ export const usePortalStore = create<PortalStore>((set, get) => ({
     });
     get().updateFromElements();
   },
+  deleteBatchChildren: keys => {
+    if (!keys || keys.length === 0) return;
+    const tmpMap = { ...get().elements };
+    keys.forEach(k => {
+      delete tmpMap[k];
+    });
+    set({
+      elements: tmpMap,
+    });
+    get().updateFromElements();
+  },
   clearAll: () => {
     set({
       elements: {},

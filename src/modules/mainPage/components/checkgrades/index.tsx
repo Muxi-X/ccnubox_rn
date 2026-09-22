@@ -1,4 +1,3 @@
-import { Toast } from '@ant-design/react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
@@ -8,6 +7,7 @@ import SemesterIcon from '@/assets/images/xueqi.png';
 import Button from '@/components/button';
 import MultiPicker from '@/components/picker/multiPicker';
 import type { PickerDataType } from '@/components/picker/types';
+import Toast from '@/components/toast';
 import { queryGradeType } from '@/request/api/grade';
 import { querySemesterList } from '@/request/api/semester';
 import useCourse from '@/store/course';

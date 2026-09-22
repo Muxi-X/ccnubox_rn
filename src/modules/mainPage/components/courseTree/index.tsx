@@ -1,4 +1,4 @@
-import { Icon, Toast } from '@ant-design/react-native';
+import { Icon } from '@ant-design/react-native';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -12,6 +12,7 @@ import {
 
 import FlagIcon from '@/assets/images/flag.png';
 import Image from '@/components/image';
+import Toast from '@/components/toast';
 import { queryGradeScore } from '@/request/api/grade';
 import useVisualScheme from '@/store/visualScheme';
 interface BaseCourseNode {

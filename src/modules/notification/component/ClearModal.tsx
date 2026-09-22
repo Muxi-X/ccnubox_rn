@@ -18,10 +18,10 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
   const handleClear = async () => {
     try {
       await clearAllEvents();
-      Toast.show({ icon: 'success', text: '已清空所有消息' });
+      Toast.success('已清空所有消息');
       setClearVisible(false);
     } catch {
-      Toast.show({ icon: 'fail', text: '清空失败，请稍后重试' });
+      Toast.fail('清空失败，请稍后重试');
     }
   };
 

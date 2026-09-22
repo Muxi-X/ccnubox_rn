@@ -185,7 +185,7 @@ const ScoreCalculation: React.FC = () => {
         parsedSemester = JSON.parse(semester);
       }
     } catch {
-      Toast.show({ icon: 'fail', text: '参数解析错误' });
+      Toast.fail('参数解析错误');
       return;
     }
 
@@ -223,7 +223,7 @@ const ScoreCalculation: React.FC = () => {
         }
       })
       .catch(_error => {
-        Toast.show({ icon: 'fail', text: '获取成绩失败，请稍后重试' });
+        Toast.fail('获取成绩失败，请稍后重试');
       })
       .finally(() => {
         setLoading(false);

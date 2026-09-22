@@ -57,7 +57,7 @@ function SignOff() {
           }
 
           Modal.clear();
-          Toast.show({ icon: 'success', text: '账号已注销' });
+          Toast.success('账号已注销');
           router.replace('/auth/login');
         } catch (error: any) {
           const errMsg =
@@ -65,7 +65,7 @@ function SignOff() {
             error?.response?.data?.msg ||
             error?.message ||
             '注销失败，请检查密码或网络连接';
-          Toast.show({ icon: 'fail', text: errMsg });
+          Toast.fail(errMsg);
         } finally {
           setIsSubmitting(false);
         }
