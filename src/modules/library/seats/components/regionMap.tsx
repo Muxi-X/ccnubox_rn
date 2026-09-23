@@ -144,7 +144,7 @@ export default function RegionMap({ selectedRegion }: RegionMapProps) {
         {/* 使用新的 CustomBottomSheet 组件 */}
         <CustomBottomSheet
           ref={bottomSheetRef}
-          snapPoints={['50%', '90%']}
+          snapPoints={['70%', '90%']}
           enablePanDownToClose={true}
           showBackdrop={true}
           enableScrollView={true}

@@ -138,7 +138,10 @@ export default function LibraryPage() {
             常用功能
           </Text>
           <View style={styles.functionsGrid}>
-            <TouchableOpacity style={styles.functionItem}>
+            <TouchableOpacity
+              style={styles.functionItem}
+              onPress={() => router.push('/(library)/appointmentRecords')}
+            >
               <View
                 style={[
                   styles.functionIcon,
@@ -152,7 +155,10 @@ export default function LibraryPage() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.functionItem}>
+            <TouchableOpacity
+              style={styles.functionItem}
+              onPress={() => router.push('/(library)/myFavourites')}
+            >
               <View
                 style={[
                   styles.functionIcon,
@@ -166,7 +172,10 @@ export default function LibraryPage() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.functionItem}>
+            <TouchableOpacity
+              style={styles.functionItem}
+              onPress={() => router.push('/(library)/usageStatistics')}
+            >
               <View
                 style={[
                   styles.functionIcon,
@@ -180,7 +189,10 @@ export default function LibraryPage() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.functionItem}>
+            <TouchableOpacity
+              style={styles.functionItem}
+              onPress={() => router.push('/(library)/trustScore')}
+            >
               <View
                 style={[
                   styles.functionIcon,

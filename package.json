@@ -55,6 +55,7 @@
     "react-native-date-picker": "^5.0.13",
     "react-native-draggable-grid": "^2.2.1",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-gifted-charts": "^1.4.70",
     "react-native-pdf-renderer": "^1.6.0",
     "react-native-reanimated": "~3.17.5",
     "react-native-reanimated-carousel": "^4.0.2",

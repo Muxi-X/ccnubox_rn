@@ -17,10 +17,7 @@ const styles = StyleSheet.create({
 
 export const MainF1Room = () => (
   <View style={styles.container}>
-    <Image
-      source={require('@/assets/images/library/Main_F1_StudyRoom.jpg')}
-      style={styles.image}
-    />
+    <Image style={styles.image} />
   </View>
 );
 
