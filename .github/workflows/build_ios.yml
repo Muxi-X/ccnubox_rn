@@ -1,0 +1,76 @@
+name: iOS Build Test (Fast)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-ios:
+    runs-on: macos-14 # M2 runner，比 Intel 快很多
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9.14.4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ⚡️ 跳过 prebuild（你已有 ios 文件夹）
+      - name: Prebuild iOS project (only if needed)
+        run: |
+          if [ ! -f ios/Podfile ]; then
+            echo "🧩 No Podfile found, running expo prebuild..."
+            pnpm expo prebuild --platform ios --non-interactive --no-install
+          else
+            echo "✅ Podfile exists, skip prebuild."
+          fi
+        env:
+          EXPO_NO_DOCTOR: 1
+
+      - name: Cache CocoaPods & DerivedData
+        uses: actions/cache@v3
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --silent
+
+      - name: Build iOS app (Release)
+        run: |
+          cd ios
+          xcodebuild \
+            -workspace ccnubox.xcworkspace \
+            -scheme ccnubox \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -derivedDataPath build \
+            -quiet \
+            -parallelizeTargets \
+            -UseNewBuildSystem=YES
+        env:
+          CI: true
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ iOS build failed. Please check the logs above."

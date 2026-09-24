@@ -1,0 +1,67 @@
+name: Android Build Test (Fast)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9.14.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 如果 android/ 文件夹已存在，可跳过 prebuild
+      - name: Prebuild Android project
+        run: |
+          if [ ! -f "android/gradlew" ]; then
+            echo "🧩 No gradlew found, running expo prebuild..."
+            pnpm expo prebuild --platform android --non-interactive --no-install
+          else
+            echo "✅ gradlew exists, skip prebuild."
+          fi
+        env:
+          EXPO_NO_DOCTOR: 1
+
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Set up Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+
+      - name: Build Android Debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon --parallel --build-cache --configure-on-demand
+        env:
+          CI: true
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ Android build failed. Please check the logs above."
