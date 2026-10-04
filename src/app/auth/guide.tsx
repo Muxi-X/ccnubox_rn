@@ -26,7 +26,7 @@ import NextIcon from '@/assets/images/next.png';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Pagination from '@/components/pagination';
 import Toast from '@/components/toast';
 import { GUIDE_CONTENTS } from '@/constants/GUIDE';
@@ -59,9 +59,8 @@ const GuidePage: FC = () => {
   useFocusEffect(
     useCallback(() => {
       if (hydrated && !agreement) {
-        Modal.show({
+        Dialog.confirm({
           children: <AgreementModal />,
-          mode: 'middle',
           cancelText: '不同意',
           confirmText: '同意并接受',
           onConfirm: () => {
@@ -75,7 +74,7 @@ const GuidePage: FC = () => {
               router.replace('/auth/guide');
             }
           },
-          onClose() {
+          onBackdropPress() {
             if (Platform.OS === 'android') {
               router.replace('/auth/guide');
             } else if (Platform.OS === 'ios') {
@@ -242,7 +241,7 @@ export const AgreementModal: FC = () => {
         style={{ color: commonColors.purple, textDecorationLine: 'underline' }}
         onPress={() => {
           router.push('/(setting)/agreement');
-          Modal.clear();
+          Dialog.clear();
         }}
       >
         《用户协议》
@@ -252,7 +251,7 @@ export const AgreementModal: FC = () => {
         style={{ color: commonColors.purple, textDecorationLine: 'underline' }}
         onPress={() => {
           router.push('/(setting)/privacy');
-          Modal.clear();
+          Dialog.clear();
         }}
       >
         《隐私政策》

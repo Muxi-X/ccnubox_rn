@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import Button from '@/components/button';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Toast from '@/components/toast';
 import { queryGradeDetail } from '@/request/api/grade';
 import { useHeaderRightStore } from '@/store/headerRight';
@@ -82,13 +82,10 @@ const ScoreCalculation: React.FC = () => {
 
   const showCourseDetails = (course: GradeData) => {
     setSelectedCourse(course);
-    Modal.show({
-      mode: 'middle',
-      showCancel: false,
-      buttonType: 'Round',
+    Dialog.alert({
       confirmText: '我知道了',
       children: (
-        <View style={{ paddingVertical: 20, width: 290 }}>
+        <View style={{ paddingVertical: 10, width: '100%' }}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, currentStyle?.text_style]}>
               {course.title}
@@ -125,12 +122,6 @@ const ScoreCalculation: React.FC = () => {
               绩点:{' '}
               <Text style={styles.textHighlight}>{course.details?.score}</Text>
             </Text>
-            <Text style={styles.textItem}>
-              学分绩点:{' '}
-              <Text style={styles.textHighlight}>
-                {course.details?.creditScore}
-              </Text>
-            </Text>
           </View>
         </View>
       ),
@@ -155,13 +146,10 @@ const ScoreCalculation: React.FC = () => {
 
   const showResultModal = () => {
     const averageScore = calculateAverageScore();
-    Modal.show({
-      mode: 'middle',
-      showCancel: false,
-      buttonType: 'Round',
+    Dialog.alert({
       confirmText: '我知道了',
       children: (
-        <View style={{ paddingVertical: 20, width: 290 }}>
+        <View style={{ paddingVertical: 10, width: '100%' }}>
           <View style={styles.modalHeader}>
             <Text style={styles.resultTitle}>计算结果</Text>
           </View>

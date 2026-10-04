@@ -15,7 +15,7 @@ import {
 
 import logo from '@/assets/images/mx-logo.png';
 import Button from '@/components/button';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Toast from '@/components/toast';
 import { deactivate } from '@/request/api/auth';
 import useUserStore from '@/store/user';
@@ -36,9 +36,11 @@ function SignOff() {
 
   const handleSubmit = () => {
     if (!isValid || isSubmitting) return;
-    Modal.show({
+    Dialog.confirm({
       title: '确认注销',
-      children: '此操作将永久注销该账户且不可恢复，是否继续？',
+      message: '此操作将永久注销该账户且不可恢复，是否继续？',
+      confirmText: '确认',
+      cancelText: '取消',
       onConfirm: async () => {
         setIsSubmitting(true);
         try {
@@ -56,7 +58,6 @@ function SignOff() {
             // 忽略存储清理异常
           }
 
-          Modal.clear();
           Toast.success('账号已注销');
           router.replace('/auth/login');
         } catch (error: any) {
@@ -70,8 +71,6 @@ function SignOff() {
           setIsSubmitting(false);
         }
       },
-      onCancel: () => {},
-      mode: 'middle',
     });
   };
 

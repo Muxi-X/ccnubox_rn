@@ -3,7 +3,7 @@ import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { classroomIcons } from '@/assets/icons';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Text from '@/components/text';
 import { useClassroomData } from '@/hooks';
 import { ClassroomContent } from '@/modules/mainPage/components/classroom';
@@ -27,14 +27,13 @@ export default function Classroom() {
 
   React.useEffect(() => {
     if (!warningHydrated || warningShown) return;
-    Modal.show({
+    Dialog.alert({
       title: '温馨提示',
-      children:
+      message:
         '空闲教室数据来自学校官方平台，但仍可能更新不及时或出现错误，请以实际教室使用情况为准。',
       confirmText: '我知道了',
-      mode: 'middle',
       onConfirm: () => setWarningShown(true),
-      onClose: () => setWarningShown(true),
+      onBackdropPress: () => setWarningShown(true),
     });
   }, [warningHydrated, warningShown, setWarningShown]);
 

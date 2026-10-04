@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import { type PermissionPurpose } from '@/constants/PERMISSIONS';
 
 export type PermissionRequest<TPermission> = {
@@ -75,15 +75,14 @@ const showPurposeModal = (purpose: PermissionPurpose): Promise<boolean> => {
       }
     };
 
-    Modal.show({
+    Dialog.confirm({
       title: purpose.title,
-      children: purpose.description,
-      mode: 'middle',
+      message: purpose.description,
       confirmText: '继续',
       cancelText: '取消',
       onConfirm: () => finish(true),
       onCancel: () => finish(false),
-      onClose: () => finish(false),
+      onBackdropPress: () => finish(false),
     });
   });
 };

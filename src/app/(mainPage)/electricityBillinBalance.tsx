@@ -11,7 +11,7 @@ import {
 
 import ACIcon from '@/assets/images/kongtiao.png';
 import LightIcon from '@/assets/images/zhaoming.png';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Toast from '@/components/toast';
 import {
   cancelStandard,
@@ -96,9 +96,8 @@ const ElectricityBillinBalance = () => {
     // 使用 ref 来存储临时输入值，避免闭包问题
     let tempInputValue = standardLimit ? String(standardLimit) : '';
 
-    Modal.show({
+    Dialog.confirm({
       title: '设置电费标准',
-      mode: 'middle',
       children: (
         <View style={styles.inputContainer}>
           <Text style={[styles.inputLabel, currentStyle?.text_style]}>
@@ -129,7 +128,6 @@ const ElectricityBillinBalance = () => {
       ),
       onConfirm: () => handleConfirmStandard(tempInputValue),
       confirmText: '确定',
-      showCancel: true,
       cancelText: '取消',
     });
   };

@@ -7,7 +7,7 @@ import checkUpdatePng from '@/assets/images/check-update.png';
 import exitPng from '@/assets/images/exit.png';
 import feedbackPng from '@/assets/images/feedback.png';
 import personPng from '@/assets/images/person.png';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import { logout } from '@/request/api/auth';
 import { removeFeedToken } from '@/request/api/feeds';
 import usePushSubscriptionStore from '@/store/pushSubscription';
@@ -65,11 +65,9 @@ export const SETTING_ITEMS: SettingItem[] = [
     icon: exitPng,
     text: '退出',
     to: () => {
-      Modal.show({
-        mode: 'middle',
+      Dialog.confirm({
         title: '退出登录',
-        children: '确定要退出登录吗？',
-        buttonType: 'Round',
+        message: '确定要退出登录吗？',
         confirmText: '确定',
         cancelText: '取消',
         onConfirm: async () => {
@@ -103,7 +101,6 @@ export const SETTING_ITEMS: SettingItem[] = [
             // 忽略本地清理异常
           }
 
-          Modal.clear();
           router.replace('/auth/login');
         },
       });

@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Switch from '@/components/switch';
 import Toast from '@/components/toast';
 import usePushSubscriptionStore from '@/store/pushSubscription';
@@ -45,8 +45,7 @@ function PushSubscriptionItem() {
   };
 
   const openEnableModal = () => {
-    Modal.show({
-      mode: 'middle',
+    Dialog.confirm({
       title: '订阅消息推送',
       children: <PushSubscriptionPromptContent />,
       confirmText: '确定',
@@ -58,10 +57,9 @@ function PushSubscriptionItem() {
   };
 
   const openDisableModal = () => {
-    Modal.show({
-      mode: 'middle',
+    Dialog.confirm({
       title: '关闭消息推送',
-      children: '关闭后将不再收到消息提醒，可在设置中重新开启。',
+      message: '关闭后将不再收到消息提醒，可在设置中重新开启。',
       confirmText: '确定',
       cancelText: '取消',
       onConfirm: () => {

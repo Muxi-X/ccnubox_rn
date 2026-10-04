@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { Platform, Text } from 'react-native';
 
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import TabBar from '@/components/navi';
 import Toast from '@/components/toast';
 import { TABS } from '@/constants/TABBAR';
@@ -47,16 +47,19 @@ export default function TabLayout() {
     }
 
     promptTriggeredRef.current = true;
-    Modal.show({
-      mode: 'middle',
+    Dialog.confirm({
       title: '订阅消息推送',
       children: <PushSubscriptionPromptContent />,
       confirmText: '确定',
       cancelText: '取消',
-      onClose: () => {
+      onCancel: () => {
+        setPromptShown(true);
+      },
+      onBackdropPress: () => {
         setPromptShown(true);
       },
       onConfirm: () => {
+        setPromptShown(true);
         void enablePushSubscription()
           .then(() => {
             Toast.success('已开启消息推送');

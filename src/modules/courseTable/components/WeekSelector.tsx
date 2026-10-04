@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
 import { logger } from '@/utils/logger';
@@ -99,14 +99,11 @@ const WeekSelector: FC<WeekSelectorProps> = ({
   const showSemesterChangeModal = useCallback(
     (params: { year: string; semester: string; week?: number }) => {
       const { year: targetYear, semester: targetSemester, week } = params;
-      Modal.show({
+      Dialog.confirm({
         title: '切换学期',
-        children: `确定要切换到「${pendingLabel}」吗？切换后将重新加载课表数据。`,
-        mode: 'middle',
-        buttonType: 'Round',
+        message: `确定要切换到「${pendingLabel}」吗？切换后将重新加载课表数据。`,
         confirmText: '确定',
         cancelText: '取消',
-        showCancel: true,
         onConfirm: async () => {
           logger.info('确认切换学期', { targetYear, targetSemester });
           await onApply({ year: targetYear, semester: targetSemester, week });

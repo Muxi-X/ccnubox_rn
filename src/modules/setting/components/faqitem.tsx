@@ -9,7 +9,7 @@ import { SvgProps, SvgXml } from 'react-native-svg';
 
 import { feedbackIcons } from '@/assets/icons';
 import Button from '@/components/button';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import useVisualScheme from '@/store/visualScheme';
 
 const {
@@ -91,7 +91,7 @@ const FAQItem: React.FC<FAQItemProps> = ({
     description,
     onConfirm,
   }: ConfirmModalProps) => {
-    Modal.show({
+    Dialog.confirm({
       title: (
         <View style={styles.titleWrapper}>
           <IconComponent style={styles.titleIcon} />
@@ -100,15 +100,9 @@ const FAQItem: React.FC<FAQItemProps> = ({
           </Text>
         </View>
       ),
-      children: (
-        <Text style={[styles.contentText, currentStyle?.text_style]}>
-          {description}
-        </Text>
-      ),
-      mode: 'middle',
+      message: description,
       confirmText: '确认',
       cancelText: '取消',
-      showCancel: true,
       onConfirm,
     });
   };

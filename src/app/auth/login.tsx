@@ -18,7 +18,7 @@ import MXLogo from '@/assets/images/mx-logo.png';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import AnimatedOpacity from '@/components/animatedView/AnimatedOpacity';
 import Button from '@/components/button';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import Toast from '@/components/toast';
 import { BASE_URL } from '@/constants/BASE_URLS';
 import { useKeyboardStatus } from '@/hooks';
@@ -174,7 +174,7 @@ const LoginPage: FC = () => {
                 }}
                 onPress={() => {
                   router.push('/(setting)/agreement');
-                  Modal.clear();
+                  Dialog.clear();
                 }}
               >
                 《用户协议》
@@ -186,7 +186,7 @@ const LoginPage: FC = () => {
                 }}
                 onPress={() => {
                   router.push('/(setting)/privacy');
-                  Modal.clear();
+                  Dialog.clear();
                 }}
               >
                 《隐私政策》

@@ -1,10 +1,8 @@
 import type { FC } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import Button from '@/components/button';
+import Dialog from '@/components/dialog';
 import Toast from '@/components/toast';
 import { useEvents } from '@/store/events';
-import useVisualScheme from '@/store/visualScheme';
 
 interface ClearModalProps {
   clearVisible: boolean;
@@ -12,7 +10,6 @@ interface ClearModalProps {
 }
 
 const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
-  const currentStyle = useVisualScheme(state => state.currentStyle);
   const { clearAllEvents } = useEvents();
 
   const handleClear = async () => {
@@ -26,94 +23,17 @@ const ClearModal: FC<ClearModalProps> = ({ clearVisible, setClearVisible }) => {
   };
 
   return (
-    <Modal
-      visible={clearVisible}
-      transparent={true}
-      onRequestClose={() => setClearVisible(false)}
-    >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={() => setClearVisible(false)}
-        />
-        <View style={[styles.container, currentStyle?.background_style]}>
-          <View>
-            <Text style={[styles.title, currentStyle?.schedule_text_style]}>
-              确定要清除所有消息吗？
-            </Text>
-          </View>
-          <View>
-            <Text style={[styles.content, currentStyle?.schedule_text_style]}>
-              被清除的消息不能恢复哦，请及时查收重要信息
-            </Text>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <Button
-              type="Round"
-              letterSpacing="5%"
-              buttonStyle={{ backgroundColor: '#CECECE' }}
-              containerStyle={styles.modalButton}
-              onPress={() => {
-                setClearVisible(false);
-              }}
-            >
-              取消
-            </Button>
-            <Button
-              type="Round"
-              letterSpacing="5%"
-              containerStyle={styles.modalButton}
-              onPress={handleClear}
-            >
-              确定
-            </Button>
-          </View>
-        </View>
-      </View>
-    </Modal>
+    <Dialog
+      isVisible={clearVisible}
+      title="确定要清除所有消息吗？"
+      message="被清除的消息不能恢复哦，请及时查收重要信息"
+      confirmText="确定"
+      cancelText="取消"
+      onConfirm={handleClear}
+      onCancel={() => setClearVisible(false)}
+      onBackdropPress={() => setClearVisible(false)}
+    />
   );
 };
-export default ClearModal;
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    padding: 30,
-    alignItems: 'center',
-    borderRadius: 15,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  content: {
-    fontSize: 15,
-    marginVertical: 15,
-  },
-  modalButton: {
-    marginHorizontal: 16,
-    marginTop: 20,
-    width: 100,
-  },
-  button: {
-    paddingHorizontal: 40,
-    paddingVertical: 5,
-    borderRadius: 20,
-    marginTop: 20,
-    marginHorizontal: 30,
-    color: '#fff',
-  },
-});
+export default ClearModal;
