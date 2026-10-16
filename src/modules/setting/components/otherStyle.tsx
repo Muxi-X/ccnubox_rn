@@ -398,15 +398,24 @@ export default function OtherStyle({
   };
 
   const handleCropConfirm = async (crop: BackgroundCropRect) => {
-    if (!cropSourceUri) return;
+    const sourceUri = cropSourceUri;
+    const scrollable = backgroundScrollable;
+    if (!sourceUri) return;
     try {
       setIsCropping(true);
-      const result = await cropBackgroundImage(cropSourceUri, crop);
+      const result = await cropBackgroundImage(sourceUri, crop);
       const savedUri = await copyBackgroundToDocuments(result.uri, 'jpg');
       const previous = useCourseTableAppearance.getState();
-      setBackgroundCrop(backgroundScrollable, savedUri, crop);
+      const currentSourceUri =
+        previous.backgroundSourceUri || previous.backgroundUri;
+      if (currentSourceUri !== sourceUri) {
+        void removeBackgroundFiles([savedUri]);
+        setIsCropModalVisible(false);
+        return;
+      }
+      setBackgroundCrop(scrollable, savedUri, crop);
       void removeBackgroundFiles([
-        backgroundScrollable
+        scrollable
           ? previous.backgroundScrollableCropUri
           : previous.backgroundFixedCropUri,
       ]);
