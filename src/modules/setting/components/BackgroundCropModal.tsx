@@ -93,6 +93,7 @@ export default function BackgroundCropModal({
   const startingY = useSharedValue(0);
 
   useEffect(() => {
+    if (!visible || !uri) return;
     let cancelled = false;
     let context: ImageManipulatorContext | undefined;
     let image: ImageRef | undefined;
@@ -115,7 +116,7 @@ export default function BackgroundCropModal({
     return () => {
       cancelled = true;
     };
-  }, [sourceSize, uri]);
+  }, [sourceSize, uri, visible]);
 
   const metrics = useMemo(() => {
     if (!imageSize.width || !imageSize.height) return null;
