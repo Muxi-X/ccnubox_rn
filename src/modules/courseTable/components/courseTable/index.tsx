@@ -60,11 +60,11 @@ const Schedule: React.FC<CourseTableProps> = ({
   const themeName = useVisualScheme(state => state.themeName);
   const {
     backgroundUri,
-    backgroundMode,
     backgroundScrollable = true,
     foregroundOpacity,
     backgroundMaskOpacity,
     backgroundBlurRadius,
+    setBackgroundViewportSize,
   } = useCourseTableAppearance();
   const [viewportSize, setViewportSize] = useState<{
     width: number;
@@ -82,13 +82,17 @@ const Schedule: React.FC<CourseTableProps> = ({
   // 手动加载的背景图（用于截图时确保已加载）
   const [loadedBackgroundImage, setLoadedBackgroundImage] =
     useState<SkImageType | null>(null);
+  const [loadedBackgroundUri, setLoadedBackgroundUri] = useState<string>();
 
   // 当backgroundUri变化时，手动加载图片
   useEffect(() => {
     let aborted = false;
     const loadImage = async () => {
       if (!backgroundUri) {
-        if (!aborted) setLoadedBackgroundImage(null);
+        if (!aborted) {
+          setLoadedBackgroundImage(null);
+          setLoadedBackgroundUri(undefined);
+        }
         return;
       }
       try {
@@ -107,10 +111,16 @@ const Schedule: React.FC<CourseTableProps> = ({
         }
         if (!aborted && data) {
           const image = Skia.Image.MakeImageFromEncoded(data);
-          if (!aborted) setLoadedBackgroundImage(image);
+          if (!aborted) {
+            setLoadedBackgroundImage(image);
+            setLoadedBackgroundUri(backgroundUri);
+          }
         }
       } catch {
-        if (!aborted) setLoadedBackgroundImage(null);
+        if (!aborted) {
+          setLoadedBackgroundImage(null);
+          setLoadedBackgroundUri(undefined);
+        }
       }
     };
     loadImage();
@@ -120,7 +130,10 @@ const Schedule: React.FC<CourseTableProps> = ({
   }, [backgroundUri]);
 
   // 优先使用手动加载的图片，否则使用hook加载的
-  const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
+  const backgroundImage =
+    loadedBackgroundUri === backgroundUri && loadedBackgroundImage
+      ? loadedBackgroundImage
+      : backgroundImageFromHook;
   const normalizedForegroundOpacity = (100 - foregroundOpacity) / 100;
 
   const cornerBackgroundColor = React.useMemo(() => {
@@ -180,13 +193,7 @@ const Schedule: React.FC<CourseTableProps> = ({
               y={0}
               width={width}
               height={height}
-              fit={
-                backgroundMode === 'cover'
-                  ? 'cover'
-                  : backgroundMode === 'contain'
-                    ? 'contain'
-                    : 'fill'
-              }
+              fit="cover"
               opacity={bgOpacity}
             />
             {/* 高斯模糊 */}
@@ -203,13 +210,7 @@ const Schedule: React.FC<CourseTableProps> = ({
               height: height || '100%',
               opacity: bgOpacity,
             }}
-            resizeMode={
-              backgroundMode === 'cover'
-                ? 'cover'
-                : backgroundMode === 'contain'
-                  ? 'contain'
-                  : 'stretch'
-            }
+            resizeMode="cover"
             blurRadius={backgroundBlurRadius}
           />
         )}
@@ -528,13 +529,7 @@ const Schedule: React.FC<CourseTableProps> = ({
               StyleSheet.absoluteFill,
               { opacity: 1 - backgroundMaskOpacity / 100 },
             ]}
-            resizeMode={
-              backgroundMode === 'cover'
-                ? 'cover'
-                : backgroundMode === 'contain'
-                  ? 'contain'
-                  : 'stretch'
-            }
+            resizeMode="cover"
             blurRadius={backgroundBlurRadius}
           />
         )}
@@ -638,13 +633,7 @@ const Schedule: React.FC<CourseTableProps> = ({
             y={0}
             width={viewportSize.width}
             height={viewportSize.height}
-            fit={
-              backgroundMode === 'cover'
-                ? 'cover'
-                : backgroundMode === 'contain'
-                  ? 'contain'
-                  : 'fill'
-            }
+            fit="cover"
             opacity={1 - backgroundMaskOpacity / 100}
           />
           {backgroundBlurRadius > 0 && (
@@ -658,13 +647,7 @@ const Schedule: React.FC<CourseTableProps> = ({
             StyleSheet.absoluteFill,
             { opacity: 1 - backgroundMaskOpacity / 100 },
           ]}
-          resizeMode={
-            backgroundMode === 'cover'
-              ? 'cover'
-              : backgroundMode === 'contain'
-                ? 'contain'
-                : 'stretch'
-          }
+          resizeMode="cover"
           blurRadius={backgroundBlurRadius}
         />
       )}
@@ -684,6 +667,7 @@ const Schedule: React.FC<CourseTableProps> = ({
       onLayout={e => {
         const { width, height } = e.nativeEvent.layout;
         setViewportSize({ width, height });
+        setBackgroundViewportSize({ width, height });
       }}
     >
       {snapshot && fullTableContent}

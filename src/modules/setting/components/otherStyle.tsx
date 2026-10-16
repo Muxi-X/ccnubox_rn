@@ -8,7 +8,8 @@ import {
   SkImage as SkImageType,
   useImage,
 } from '@shopify/react-native-skia';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
+import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
@@ -22,13 +23,74 @@ import Slider from '@/components/slider';
 import Toast from '@/components/toast';
 import { default as ThemeBasedView } from '@/components/view';
 import { PERMISSION_PURPOSES } from '@/constants/PERMISSIONS';
-import { COURSE_ITEM_WIDTH, DAYS_OF_WEEK } from '@/constants/SCHEDULE';
+import {
+  COURSE_HEADER_HEIGHT,
+  COURSE_ITEM_HEIGHT,
+  COURSE_ITEM_WIDTH,
+  DAYS_OF_WEEK,
+  TIME_SLOTS,
+  TIME_WIDTH,
+} from '@/constants/SCHEDULE';
 import { CourseTransferType } from '@/modules/courseTable/components/courseTable/type';
-import useCourseTableAppearance from '@/store/courseTableAppearance';
+import BackgroundCropModal from '@/modules/setting/components/BackgroundCropModal';
+import useCourseTableAppearance, {
+  type BackgroundCropRect,
+} from '@/store/courseTableAppearance';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
 import { componentMap } from '@/themeBasedComponents';
 import { runPermissionAction } from '@/utils/requestPermission';
+
+const BACKGROUND_DIRECTORY = 'course-table-background/';
+
+async function copyBackgroundToDocuments(uri: string, extension: string) {
+  const documentDirectory = FileSystem.documentDirectory;
+  if (!documentDirectory) throw new Error('无法访问应用存储目录');
+  const directory = `${documentDirectory}${BACKGROUND_DIRECTORY}`;
+  await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+  const safeExtension = extension.replace(/[^a-zA-Z0-9]/g, '') || 'jpg';
+  const destination = `${directory}${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2)}.${safeExtension}`;
+  await FileSystem.copyAsync({ from: uri, to: destination });
+  return destination;
+}
+
+async function removeBackgroundFiles(uris: Array<string | undefined>) {
+  const documentDirectory = FileSystem.documentDirectory;
+  if (!documentDirectory) return;
+  const prefix = `${documentDirectory}${BACKGROUND_DIRECTORY}`;
+  await Promise.all(
+    [...new Set(uris.filter((uri): uri is string => Boolean(uri)))].map(
+      async uri => {
+        if (!uri.startsWith(prefix)) return;
+        try {
+          await FileSystem.deleteAsync(uri, { idempotent: true });
+        } catch {
+          // Ignore stale background files.
+        }
+      }
+    )
+  );
+}
+
+async function cropBackgroundImage(uri: string, crop: BackgroundCropRect) {
+  const context = ImageManipulator.manipulate(uri);
+  try {
+    context.crop(crop);
+    const image = await context.renderAsync();
+    try {
+      return await image.saveAsync({
+        compress: 0.92,
+        format: SaveFormat.JPEG,
+      });
+    } finally {
+      image.release();
+    }
+  } finally {
+    context.release();
+  }
+}
 
 const LAYOUTS = [
   {
@@ -43,12 +105,6 @@ const LAYOUTS = [
     imageDark: IosDarkImage,
     imageLight: IosLightImage,
   },
-] as const;
-
-const BACKGROUND_MODES = [
-  { key: 'cover', label: '裁剪铺满' },
-  { key: 'contain', label: '完整显示' },
-  { key: 'stretch', label: '拉伸铺满' },
 ] as const;
 
 const LayoutButton = memo(function LayoutButton({
@@ -109,13 +165,18 @@ export default function OtherStyle({
   const changeLayout = useVisualScheme(state => state.changeLayout);
   const {
     backgroundUri,
-    backgroundMode,
+    backgroundSourceUri,
+    backgroundSourceSize,
+    backgroundScrollableCropRect,
+    backgroundFixedCropRect,
+    backgroundViewportSize,
     backgroundScrollable,
     foregroundOpacity,
     backgroundMaskOpacity,
     backgroundBlurRadius,
     setBackgroundUri,
-    setBackgroundMode,
+    setBackgroundSource,
+    setBackgroundCrop,
     setBackgroundScrollable,
     setForegroundOpacity,
     setBackgroundMaskOpacity,
@@ -125,6 +186,8 @@ export default function OtherStyle({
   const CourseItem = componentMap?.[layoutName].CourseItem;
 
   const [isPicking, setIsPicking] = useState(false);
+  const [isCropping, setIsCropping] = useState(false);
+  const [isCropModalVisible, setIsCropModalVisible] = useState(false);
   // 使用本地 state 存储滑块的临时值，减少 store 更新频率
   const [localOpacity, setLocalOpacity] = useState(foregroundOpacity);
   const [localBlurRadius, setLocalBlurRadius] = useState(backgroundBlurRadius);
@@ -135,16 +198,30 @@ export default function OtherStyle({
   const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maskTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const cropSourceUri = backgroundSourceUri || backgroundUri || '';
+  const fallbackViewportSize = Dimensions.get('window');
+  const fixedViewportSize = backgroundViewportSize || fallbackViewportSize;
+  const cropAspectRatio = backgroundScrollable
+    ? (TIME_WIDTH + COURSE_ITEM_WIDTH * DAYS_OF_WEEK.length) /
+      (COURSE_HEADER_HEIGHT + COURSE_ITEM_HEIGHT * TIME_SLOTS.length)
+    : fixedViewportSize.width / fixedViewportSize.height;
+  const currentCropRect = backgroundScrollable
+    ? backgroundScrollableCropRect
+    : backgroundFixedCropRect;
   // 背景图加载 — 与课表实际渲染保持一致
   const backgroundImageFromHook = useImage(backgroundUri || '');
   const [loadedBackgroundImage, setLoadedBackgroundImage] =
     useState<SkImageType | null>(null);
+  const [loadedBackgroundUri, setLoadedBackgroundUri] = useState<string>();
 
   useEffect(() => {
     let aborted = false;
     const loadImage = async () => {
       if (!backgroundUri) {
-        if (!aborted) setLoadedBackgroundImage(null);
+        if (!aborted) {
+          setLoadedBackgroundImage(null);
+          setLoadedBackgroundUri(undefined);
+        }
         return;
       }
       try {
@@ -163,10 +240,16 @@ export default function OtherStyle({
         }
         if (!aborted && data) {
           const image = Skia.Image.MakeImageFromEncoded(data);
-          if (!aborted) setLoadedBackgroundImage(image);
+          if (!aborted) {
+            setLoadedBackgroundImage(image);
+            setLoadedBackgroundUri(backgroundUri);
+          }
         }
       } catch {
-        if (!aborted) setLoadedBackgroundImage(null);
+        if (!aborted) {
+          setLoadedBackgroundImage(null);
+          setLoadedBackgroundUri(undefined);
+        }
       }
     };
     loadImage();
@@ -175,7 +258,10 @@ export default function OtherStyle({
     };
   }, [backgroundUri]);
 
-  const backgroundImage = loadedBackgroundImage || backgroundImageFromHook;
+  const backgroundImage =
+    loadedBackgroundUri === backgroundUri && loadedBackgroundImage
+      ? loadedBackgroundImage
+      : backgroundImageFromHook;
 
   // 同步 store 的值到本地 state
   useEffect(() => {
@@ -232,13 +318,7 @@ export default function OtherStyle({
               y={0}
               width={COURSE_ITEM_WIDTH * 3}
               height={180}
-              fit={
-                backgroundMode === 'cover'
-                  ? 'cover'
-                  : backgroundMode === 'contain'
-                    ? 'contain'
-                    : 'fill'
-              }
+              fit="cover"
               opacity={1 - localMaskOpacity / 100}
             />
             {localBlurRadius > 0 && <BackdropBlur blur={localBlurRadius} />}
@@ -250,13 +330,7 @@ export default function OtherStyle({
               styles.previewBlurCanvas,
               { opacity: 1 - localMaskOpacity / 100 },
             ]}
-            resizeMode={
-              backgroundMode === 'cover'
-                ? 'cover'
-                : backgroundMode === 'contain'
-                  ? 'contain'
-                  : 'stretch'
-            }
+            resizeMode="cover"
             blurRadius={localBlurRadius}
           />
         )}
@@ -270,21 +344,36 @@ export default function OtherStyle({
   const handlePickImage = async () => {
     try {
       setIsPicking(true);
-      const { width: screenWidth, height: screenHeight } =
-        Dimensions.get('window');
       const result = await runPermissionAction({
         action: () =>
           ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
-            allowsEditing: true,
-            aspect: [Math.round(screenWidth), Math.round(screenHeight)],
+            allowsEditing: false,
             quality: 0.9,
           }),
         purpose: PERMISSION_PURPOSES.courseTableBackground,
       });
 
-      if (result && !result.canceled && result.assets?.[0]?.uri) {
-        setBackgroundUri(result.assets[0].uri);
+      const asset = result && !result.canceled ? result.assets?.[0] : undefined;
+      if (asset?.uri) {
+        const fileExtension =
+          asset.fileName?.split('.').pop() ||
+          asset.mimeType?.split('/').pop()?.replace('jpeg', 'jpg') ||
+          'jpg';
+        const savedUri = await copyBackgroundToDocuments(
+          asset.uri,
+          fileExtension
+        );
+        const previous = useCourseTableAppearance.getState();
+        setBackgroundSource(savedUri, {
+          width: asset.width,
+          height: asset.height,
+        });
+        void removeBackgroundFiles([
+          previous.backgroundSourceUri,
+          previous.backgroundScrollableCropUri,
+          previous.backgroundFixedCropUri,
+        ]);
         Toast.show({
           text: '背景图片设置成功',
           icon: 'success',
@@ -300,8 +389,50 @@ export default function OtherStyle({
     }
   };
 
+  const handleOpenCrop = () => {
+    if (!cropSourceUri) return;
+    if (!backgroundSourceUri) {
+      setBackgroundSource(backgroundUri);
+    }
+    setIsCropModalVisible(true);
+  };
+
+  const handleCropConfirm = async (crop: BackgroundCropRect) => {
+    if (!cropSourceUri) return;
+    try {
+      setIsCropping(true);
+      const result = await cropBackgroundImage(cropSourceUri, crop);
+      const savedUri = await copyBackgroundToDocuments(result.uri, 'jpg');
+      const previous = useCourseTableAppearance.getState();
+      setBackgroundCrop(backgroundScrollable, savedUri, crop);
+      void removeBackgroundFiles([
+        backgroundScrollable
+          ? previous.backgroundScrollableCropUri
+          : previous.backgroundFixedCropUri,
+      ]);
+      setIsCropModalVisible(false);
+      Toast.show({ text: '背景裁剪已保存', icon: 'success' });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : '未知错误';
+      Toast.show({ text: `裁剪图片失败：${message}`, icon: 'fail' });
+    } finally {
+      setIsCropping(false);
+    }
+  };
+
   const handleClearBackground = () => {
+    const previous = useCourseTableAppearance.getState();
     setBackgroundUri(undefined);
+    void removeBackgroundFiles([
+      previous.backgroundSourceUri,
+      previous.backgroundScrollableCropUri,
+      previous.backgroundFixedCropUri,
+    ]);
     Toast.show({
       text: '已清除背景图片',
       icon: 'success',
@@ -457,6 +588,18 @@ export default function OtherStyle({
               清除
             </Button>
           )}
+          {backgroundUri && (
+            <Button
+              type="Secondary"
+              containerStyle={[styles.actionButton, styles.actionButtonSpacing]}
+              buttonStyle={styles.actionButtonInner}
+              onPress={handleOpenCrop}
+              isLoading={isCropping}
+              disabled={isCropping}
+            >
+              裁剪
+            </Button>
+          )}
           <Button
             type="Secondary"
             containerStyle={styles.actionButton}
@@ -480,55 +623,6 @@ export default function OtherStyle({
             onChange={checked => setBackgroundScrollable(checked)}
             style={{ marginRight: 40 }}
             trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-          />
-        </View>
-      )}
-
-      {/* 填充模式 */}
-      {backgroundUri && (
-        <View style={styles.modeSection}>
-          <Text style={[currentStyle?.text_style, styles.settingLabel]}>
-            填充模式
-          </Text>
-          <ButtonGroup
-            buttons={BACKGROUND_MODES.map(m => m.label)}
-            selectedIndex={BACKGROUND_MODES.findIndex(
-              m => m.key === backgroundMode
-            )}
-            onPress={index => {
-              const mode = BACKGROUND_MODES[index];
-              if (mode) {
-                setBackgroundMode(mode.key);
-              }
-            }}
-            containerStyle={[
-              styles.modeButtonGroup,
-              {
-                borderColor: themeName === 'dark' ? '#444' : '#ddd',
-                backgroundColor: themeName === 'dark' ? '#1c1c1e' : '#fff',
-              },
-            ]}
-            buttonStyle={{
-              backgroundColor: 'transparent',
-            }}
-            textStyle={[
-              styles.modeButtonText,
-              { color: themeName === 'dark' ? '#aaa' : '#666' },
-            ]}
-            selectedTextStyle={{
-              color: '#9379F6',
-              fontWeight: '600',
-            }}
-            selectedButtonStyle={{
-              backgroundColor:
-                themeName === 'dark'
-                  ? 'rgba(147, 121, 246, 0.15)'
-                  : 'rgba(147, 121, 246, 0.08)',
-            }}
-            innerBorderStyle={{
-              color: themeName === 'dark' ? '#444' : '#ddd',
-              width: 1,
-            }}
           />
         </View>
       )}
@@ -615,6 +709,17 @@ export default function OtherStyle({
           </Text>
         </View>
       </View>
+      <BackgroundCropModal
+        visible={isCropModalVisible}
+        uri={cropSourceUri}
+        sourceSize={backgroundSourceSize}
+        aspectRatio={cropAspectRatio}
+        modeLabel={backgroundScrollable ? '随课表移动' : '固定屏幕'}
+        confirming={isCropping}
+        initialCrop={currentCropRect}
+        onCancel={() => setIsCropModalVisible(false)}
+        onConfirm={handleCropConfirm}
+      />
     </ThemeBasedView>
   );
 }
@@ -730,20 +835,6 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 8,
     opacity: 0.7,
-  },
-  modeSection: {
-    gap: 8,
-  },
-  modeButtonGroup: {
-    height: 38,
-    marginHorizontal: 40,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    overflow: 'hidden',
-  },
-  modeButtonText: {
-    fontSize: 14,
   },
   layoutButtonGroup: {
     height: 120,
