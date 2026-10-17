@@ -34,6 +34,9 @@ if (!targetBranch) {
 }
 
 const extraArgs = process.argv.slice(3);
+if (extraArgs[0] === '--') {
+  extraArgs.shift();
+}
 const args = [
   'publish',
   '--branch',
