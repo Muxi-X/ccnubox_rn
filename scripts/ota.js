@@ -47,7 +47,7 @@ console.log(`[OTA] 正在发布热更新至分支: ${targetBranch}`);
 
 const child = spawn('eoas', args, {
   stdio: 'inherit',
-  shell: true,
+  shell: false,
   env: process.env,
   cwd: rootDir,
 });
