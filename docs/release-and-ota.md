@@ -149,10 +149,11 @@ _注意：脚本在执行发布命令前会自动加载 `.env` 及本地 `.env.l
 ```
 
 - `updateInfo.json` 的内容会在构建时由 `app.config.ts` 动态装载到应用全局 `extra.updateInfo` 中。
-- 向 GitHub `main` 分支提交包含 `src/assets/data/updateInfo.json` 的修改时，GitHub Actions 工作流（`.github/workflows/preview.yml`）会自动触发热更新发布至 `preview` 预览通道：
+- 在任意分支 push 或任意目标分支的 PR 中修改 `src/assets/data/updateInfo.json` 时，GitHub Actions 工作流（`.github/workflows/preview.yml`）会通过 `pnpm run ota:prev` 发布热更新至 `preview` 预览通道。fork PR 会触发 workflow，但跳过发布 job，因为 GitHub 不会向 fork PR 提供仓库 secrets。
   ```bash
-  pnpm exec eoas publish --branch preview --nonInteractive -m "$COMMIT_MESSAGE"
+  pnpm run ota:prev -- -m "$COMMIT_MESSAGE"
   ```
+- `scripts/ota.js` 要求 `EXPO_TOKEN`。请在 GitHub 仓库的 **Settings → Secrets and variables → Actions → New repository secret** 中添加名为 `EXPO_TOKEN` 的 secret，值使用有权向该 Expo/EAS 项目发布 update 的 Expo access token。也可以配置同名的组织级 secret，并将该仓库加入访问范围。
 - 针对生产环境（`production`）的热更新，建议在完成测试验证后通过本地脚本 `pnpm run ota:prod` 或手动触发相应的发布流程。此外，仓库还配置有 `ci.yml` 与 `lint_and_format_check.yml` 保障静态代码质量，以及 `build.yml` 验证应用编译一致性。
 
 ---
