@@ -84,6 +84,17 @@ function CheckUpdate(): React.ReactNode {
 
     const targetChannel =
       Updates.channel === 'preview' ? 'production' : 'preview';
+    const clearChannelOverride = () => {
+      try {
+        Updates.setUpdateRequestHeadersOverride(null);
+      } catch (clearErr) {
+        logger.error('[Updates] 清除热更新通道覆盖失败', clearErr, {
+          targetChannel,
+          updatesBasicInfo: getUpdatesBasicInfo(),
+        });
+      }
+    };
+
     try {
       Updates.setUpdateRequestHeadersOverride({
         'expo-channel-name': targetChannel,
@@ -96,20 +107,40 @@ function CheckUpdate(): React.ReactNode {
         void (async () => {
           try {
             const checkResult = await Updates.checkForUpdateAsync();
-            if (checkResult.isAvailable) {
-              await Updates.fetchUpdateAsync();
+            if (!checkResult.isAvailable && !checkResult.isRollBackToEmbedded) {
+              clearChannelOverride();
+              setIsSwitchingChannel(false);
+              Toast.show({
+                text: `${targetChannel} 通道暂无可用更新，已恢复当前通道。`,
+              });
+              return;
+            }
+
+            const fetchResult = await Updates.fetchUpdateAsync();
+            if (!fetchResult.isNew && !fetchResult.isRollBackToEmbedded) {
+              clearChannelOverride();
+              setIsSwitchingChannel(false);
+              Toast.show({
+                text: '下载更新失败，已恢复当前通道，请稍后重试。',
+              });
+              return;
             }
           } catch (err) {
-            logger.warn('[Updates] 切换通道后检查更新失败，将重启后继续检查', {
+            logger.warn('[Updates] 切换通道后检查或下载更新失败，已撤销切换', {
               targetChannel,
               error: err,
               updatesBasicInfo: getUpdatesBasicInfo(),
             });
+            clearChannelOverride();
+            setIsSwitchingChannel(false);
+            Toast.show({ text: '切换热更新通道失败，请检查网络后重试。' });
+            return;
           }
 
           try {
             await Updates.reloadAsync();
           } catch (err) {
+            clearChannelOverride();
             setIsSwitchingChannel(false);
             logger.error('[Updates] 切换热更新通道后重启失败', err, {
               targetChannel,
