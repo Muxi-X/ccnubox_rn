@@ -310,7 +310,7 @@ pnpm ota:prev
 ```
 
 - **自动化 CI 发布**：
-  修改 `src/assets/data/updateInfo.json` 中的更新内容和版本并推送到 GitHub `main` 分支时，GitHub Actions（`.github/workflows/preview.yml`）会自动触发热更新发布到 `preview` 预览通道。正式生产发布建议使用 `pnpm ota:prod`。
+  在任意分支 push 或任意目标分支的 PR 中修改 `src/assets/data/updateInfo.json` 时，GitHub Actions（`.github/workflows/preview.yml`）会自动发布热更新到 `preview` 预览通道。fork PR 会触发 workflow，但因无法访问仓库密钥而跳过发布。需在仓库或组织的 Actions secrets 中配置 `EXPO_TOKEN`。正式生产发布建议使用 `pnpm ota:prod`。
 - **`runtimeVersion` 严格一致性**：
   OTA 更新仅在客户端原生工程的 `runtimeVersion` 与 OTA 包的 `runtimeVersion` 严格一致时才会被客户端下载与应用。
 

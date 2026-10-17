@@ -2,15 +2,19 @@ name: Preview
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - "src/assets/data/updateInfo.json"
+  pull_request:
     paths:
       - "src/assets/data/updateInfo.json"
   workflow_dispatch:
 
 jobs:
   ota-publish:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -30,10 +34,5 @@ jobs:
       - name: Publish OTA Update
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: |
-          if [ -n "$COMMIT_MESSAGE" ]; then
-            pnpm exec eoas publish --branch preview --nonInteractive -m "$COMMIT_MESSAGE"
-          else
-            pnpm exec eoas publish --branch preview --nonInteractive
-          fi
+          COMMIT_MESSAGE: ${{ github.event.pull_request.title || github.event.head_commit.message || github.sha }}
+        run: pnpm run ota:prev -- -m "$COMMIT_MESSAGE"
