@@ -48,7 +48,13 @@ const args = [
 // eslint-disable-next-line no-console
 console.log(`[OTA] 正在发布热更新至分支: ${targetBranch}`);
 
-const child = spawn('eoas', args, {
+const eoasCliPath = path.join(
+  path.dirname(require.resolve('eoas/package.json')),
+  'bin',
+  'run.js'
+);
+
+const child = spawn(process.execPath, [eoasCliPath, ...args], {
   stdio: 'inherit',
   shell: false,
   env: process.env,
