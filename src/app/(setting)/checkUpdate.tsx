@@ -3,8 +3,8 @@ import * as Application from 'expo-application';
 import * as Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import * as Updates from 'expo-updates';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import Button from '@/components/button';
@@ -31,6 +31,9 @@ function CheckUpdate(): React.ReactNode {
 
   const [isManualChecking, setIsManualChecking] = useState(false);
   const [isManualDownloading, setIsManualDownloading] = useState(false);
+  const [isSwitchingChannel, setIsSwitchingChannel] = useState(false);
+  const hashTapCount = useRef(0);
+  const lastHashTapAt = useRef(0);
 
   const {
     currentlyRunning,
@@ -51,13 +54,79 @@ function CheckUpdate(): React.ReactNode {
   const isChecking = isManualChecking || hookIsChecking;
   const isDownloading = isManualDownloading || hookIsDownloading;
   const isBusy =
-    isChecking || isDownloading || isRestarting || isStartupProcedureRunning;
+    isChecking ||
+    isDownloading ||
+    isRestarting ||
+    isStartupProcedureRunning ||
+    isSwitchingChannel;
 
   const currentUpdateId = Updates.updateId ?? currentlyRunning?.updateId;
   const shortUpdateId = currentUpdateId ? currentUpdateId.slice(-8) : null;
   const availableUpdateId = availableUpdate?.updateId
     ? availableUpdate.updateId.slice(-8)
     : null;
+
+  const handleUpdateIdPress = () => {
+    const now = Date.now();
+    if (now - lastHashTapAt.current > 1500) {
+      hashTapCount.current = 0;
+    }
+    lastHashTapAt.current = now;
+    hashTapCount.current += 1;
+
+    if (hashTapCount.current < 5 || isSwitchingChannel) return;
+    hashTapCount.current = 0;
+
+    if (__DEV__ || !Updates.isEnabled) {
+      Toast.show({ text: '当前构建不支持切换热更新通道。' });
+      return;
+    }
+
+    const targetChannel =
+      Updates.channel === 'preview' ? 'production' : 'preview';
+    try {
+      Updates.setUpdateRequestHeadersOverride({
+        'expo-channel-name': targetChannel,
+      });
+      setIsSwitchingChannel(true);
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Toast.show({ text: `已切换至 ${targetChannel} 通道，正在检查更新。` });
+
+      setTimeout(() => {
+        void (async () => {
+          try {
+            const checkResult = await Updates.checkForUpdateAsync();
+            if (checkResult.isAvailable) {
+              await Updates.fetchUpdateAsync();
+            }
+          } catch (err) {
+            logger.warn('[Updates] 切换通道后检查更新失败，将重启后继续检查', {
+              targetChannel,
+              error: err,
+              updatesBasicInfo: getUpdatesBasicInfo(),
+            });
+          }
+
+          try {
+            await Updates.reloadAsync();
+          } catch (err) {
+            setIsSwitchingChannel(false);
+            logger.error('[Updates] 切换热更新通道后重启失败', err, {
+              targetChannel,
+              updatesBasicInfo: getUpdatesBasicInfo(),
+            });
+            Toast.show({ text: '应用重启失败，请手动重启后重试。' });
+          }
+        })();
+      }, 1000);
+    } catch (err) {
+      logger.error('[Updates] 切换热更新通道失败', err, {
+        targetChannel,
+        updatesBasicInfo: getUpdatesBasicInfo(),
+      });
+      Toast.show({ text: '切换热更新通道失败。' });
+    }
+  };
 
   // 页面挂载时打印当前所有 Updates 相关基础信息
   useEffect(() => {
@@ -335,13 +404,29 @@ function CheckUpdate(): React.ReactNode {
             {updateInfo?.updateTime ? (
               <TypoText level="body">{updateInfo.updateTime}</TypoText>
             ) : null}
-            <TypoText level="body" style={styles.updateIdText}>
-              当前运行:{' '}
-              {currentlyRunning?.isEmbeddedLaunch
-                ? '内嵌构建 (Embedded)'
-                : 'OTA 更新'}
-              {shortUpdateId ? ` (ID: ${shortUpdateId})` : ''}
-            </TypoText>
+            {shortUpdateId ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`当前更新 ID ${shortUpdateId}`}
+                disabled={isSwitchingChannel}
+                onPress={handleUpdateIdPress}
+              >
+                <TypoText level="body" style={styles.updateIdText}>
+                  当前运行:{' '}
+                  {currentlyRunning?.isEmbeddedLaunch
+                    ? '内嵌构建 (Embedded)'
+                    : 'OTA 更新'}
+                  {` (ID: ${shortUpdateId})`}
+                </TypoText>
+              </Pressable>
+            ) : (
+              <TypoText level="body" style={styles.updateIdText}>
+                当前运行:{' '}
+                {currentlyRunning?.isEmbeddedLaunch
+                  ? '内嵌构建 (Embedded)'
+                  : 'OTA 更新'}
+              </TypoText>
+            )}
             {lastCheckForUpdateTimeSinceRestart ? (
               <TypoText level="body" style={styles.lastCheckText}>
                 上次检查:{' '}
