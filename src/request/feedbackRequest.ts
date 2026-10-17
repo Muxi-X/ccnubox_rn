@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-import { getItem } from 'expo-secure-store';
 
 import { FEEDBACK_BASE_URL } from '@/constants/BASE_URLS';
+import { getItem } from '@/platform/storage';
 import requestBus from '@/store/currentRequests';
 import { OtherTokenConfig } from '@/types/axios';
 

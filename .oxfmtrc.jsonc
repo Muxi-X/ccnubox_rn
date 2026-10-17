@@ -20,6 +20,12 @@
     ".husky/**",
     ".vscode/**",
     ".github/**",
+    // These files are owned by expo-harmony-toolkit; reformatting them breaks
+    // the managed-file hashes used by sync-template's drift detection.
+    ".expo-harmony/**",
+    "harmony/**",
+    "index.harmony.js",
+    "metro.harmony.config.js",
     "dist/**",
     "package.json",
     "pnpm-lock.yaml",
