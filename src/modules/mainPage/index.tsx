@@ -1,9 +1,14 @@
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { FC, memo, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { DraggableGrid } from 'react-native-draggable-grid';
-import { ScrollView } from 'react-native-gesture-handler';
+import {
+  Gesture,
+  GestureDetector,
+  ScrollView,
+} from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -112,19 +117,39 @@ const IndexPage: FC = () => {
             loop
             scrollAnimationDuration={1500}
             renderItem={({ item, index }) => {
-              return (
+              const banner = (
                 <View style={styles.bannerItem} key={index}>
-                  <Pressable onPress={() => openBrowser(item.navUrl)}>
-                    <Image
-                      source={{ uri: item.bannerUrl, cache: 'force-cache' }}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 10,
-                      }}
-                    ></Image>
-                  </Pressable>
+                  <Image
+                    source={{ uri: item.bannerUrl, cache: 'force-cache' }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: 10,
+                    }}
+                  ></Image>
                 </View>
+              );
+
+              if (Platform.OS === 'ios') {
+                const tapGesture = Gesture.Tap()
+                  .maxDistance(10)
+                  .onEnd((_, success) => {
+                    if (success) {
+                      runOnJS(openBrowser)(item.navUrl);
+                    }
+                  });
+
+                return (
+                  <GestureDetector gesture={tapGesture}>
+                    {banner}
+                  </GestureDetector>
+                );
+              }
+
+              return (
+                <Pressable onPress={() => openBrowser(item.navUrl)}>
+                  {banner}
+                </Pressable>
               );
             }}
           ></Carousel>
