@@ -86,12 +86,14 @@ const res = await request.post('/course/note', {
 
 ### 4.2 401 拦截与请求重放机制
 
-在 `src/request/index.ts` 中实现了完整的防抖重试队列：
+`src/request/installRequestInterceptors.ts` 负责两个客户端共用的 token 注入、请求计数和 401 重试流程；各客户端保留自己的 token 读取与刷新方式。
 
-1. 当请求收到 `401 Unauthorized` 时，系统拦截该错误。
-2. 若当前已有刷新 Promise 在进行中，其他 401 请求将等待同一个刷新 Promise，避免同时发起多次刷新调用。
-3. 刷新成功后，更新本地 `shortToken` 缓存，使用新 Token 自动重放原失败请求。
-4. 若刷新失败或长 Token 已过期，系统自动中断队列并重定向用户至 `/auth/login`。
+1. `isToken: false` 跳过自动 token 注入；其余请求读取对应 token，去除首尾空白后写入 `Authorization`。
+2. 首次收到 `401 Unauthorized` 时标记 `_retry`，尝试刷新并重放原请求。重放再次返回 401 时直接拒绝，不再刷新。
+3. 主服务的短 token 刷新仍由 `src/request/index.ts` 管理。并发请求共用正在执行的刷新 Promise；刷新成功后写入 `shortToken`，失败时跳转 `/auth/login`。
+4. 配置 `otherToken` 的请求沿用其 `refresh` 与 `onRefreshError`。反馈客户端没有可用的 `refresh` 时直接返回原 401，不跳转主服务登录页。
+
+重放请求仍会经过请求拦截器，按原有优先级重新读取显式 token 或本地缓存。重放失败不视为刷新失败，不会再次触发 `onRefreshError`。
 
 ---
 
@@ -99,6 +101,17 @@ const res = await request.post('/course/note', {
 
 在 `src/store/currentRequests.ts` 中维护了一个轻量级的内存级请求总线：
 
-- 任何通过 `axiosInstance` 发起的请求在发出时调用 `requestRegister()`（计数 +1）。
-- 在响应或错误返回时调用 `requestComplete()`（计数 -1）。
-- 全局 UI（例如全局下拉刷新指示器、页面 Loading 遮罩）可随时通过订阅 `requestBus` 获取当前应用是否仍有后台网络活动。
+- 两个客户端共用同一个总线，每次进入请求拦截器时调用 `requestRegister()`，增加 `totalRequestNum`。
+- 响应成功或失败时调用 `requestComplete()`，增加 `resolvedRequestNum`；读取 token 失败、尚未发出 HTTP 请求时也会完成计数。
+- 两个计数相等且一秒内没有新请求时，总线将计数归零，并通过 `globalEventBus` 发出 `request_complete` 事件。
+- 401 重放单独计数。主服务通过原始 `axios.get` 发出的短 token 刷新请求不进入这组拦截器，不计入总线。
+
+## 6. 请求层回归测试
+
+使用 Node.js 22 执行：
+
+```bash
+pnpm run test:request
+```
+
+测试通过 `request` 和 `feedbackRequest` 公开入口调用真实 Axios，仅替换 HTTP adapter、原生依赖和服务地址。覆盖查询参数、token 优先级、401 重试、刷新失败回调、登录跳转以及请求计数；不连接真实后端。该命令也在 CI 中执行。
