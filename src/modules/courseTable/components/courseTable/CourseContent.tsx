@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import {
   COURSE_HORIZONTAL_PADDING,
   COURSE_ITEM_HEIGHT,
@@ -116,8 +116,18 @@ const CourseContent: React.FC<CourseContentProps> = memo(
               COURSE_HORIZONTAL_PADDING + COURSE_ITEM_WIDTH * props.colIndex,
           }}
           onPress={() => {
-            Modal.show({
-              isTransparent: true,
+            Dialog.show({
+              confirmText: false,
+              cancelText: false,
+              containerStyle: {
+                backgroundColor: 'transparent',
+                shadowOpacity: 0,
+                elevation: 0,
+                paddingVertical: 0,
+                paddingHorizontal: 0,
+                width: 'auto',
+                maxWidth: '100%',
+              },
               children:
                 slotCourses.length > 1 ? (
                   <ScrollView
@@ -137,7 +147,6 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                 ) : (
                   slotCourses.map((c, i) => renderCourse(c, i))
                 ),
-              mode: 'middle',
             });
           }}
         >

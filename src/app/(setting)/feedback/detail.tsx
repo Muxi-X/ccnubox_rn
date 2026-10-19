@@ -1,14 +1,16 @@
+import { Overlay } from '@rneui/themed';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
-  Modal,
   ScrollView,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import Loading from '@/components/loading';
@@ -203,13 +205,13 @@ export default function FeedbackDetail() {
               <View
                 style={[
                   styles.circle,
-                  statusStep === step
+                  (statusStep === step
                     ? currentStyle?.feedback_detail_statusCircle_style?.[
                         STATUS_STYLE_KEY[STATUS_LABELS[step - 1]]
                       ]
                     : currentStyle?.feedback_detail_statusCircle_style?.[
                         'default'
-                      ],
+                      ]) as ViewStyle,
                 ]}
               >
                 <Text
@@ -226,10 +228,10 @@ export default function FeedbackDetail() {
               <Text
                 style={[
                   styles.stepLabel,
-                  statusStep === step &&
+                  (statusStep === step &&
                     currentStyle?.feedback_statusText_style?.[
                       STATUS_STYLE_KEY[STATUS_LABELS[step - 1]]
-                    ],
+                    ]) as TextStyle,
                 ]}
               >
                 {STATUS_LABELS[index]}
@@ -245,7 +247,7 @@ export default function FeedbackDetail() {
                       styles.connectorBar,
                       currentStyle?.feedback_detail_statusCircle_style?.[
                         'default'
-                      ],
+                      ] as ViewStyle,
                     ]}
                   />
                 ))}
@@ -301,7 +303,7 @@ export default function FeedbackDetail() {
                   styles.itemStatuscontainer,
                   currentStyle?.feedback_status_style?.[
                     STATUS_STYLE_KEY[feedbackItem.fields.status] ?? 'pending'
-                  ],
+                  ] as ViewStyle,
                 ]}
               >
                 <Text
@@ -309,7 +311,7 @@ export default function FeedbackDetail() {
                     styles.itemStatustext,
                     currentStyle?.feedback_statusText_style?.[
                       STATUS_STYLE_KEY[feedbackItem.fields.status] ?? 'pending'
-                    ],
+                    ] as TextStyle,
                   ]}
                 >
                   {feedbackItem.fields.status}
@@ -415,30 +417,28 @@ export default function FeedbackDetail() {
         </View>
       </ScrollView>
 
-      <Modal
-        visible={previewVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setPreviewVisible(false)}
+      <Overlay
+        fullScreen
+        isVisible={previewVisible}
+        onBackdropPress={() => setPreviewVisible(false)}
+        overlayStyle={styles.previewOverlay}
       >
-        <View style={styles.previewOverlay}>
-          <TouchableOpacity
-            style={[StyleSheet.absoluteFill, styles.previewTouchable]}
-            activeOpacity={1}
-            onPress={() => {
-              setPreviewVisible(false);
-            }}
-          >
-            {previewImage && (
-              <Image
-                source={{ uri: previewImage }}
-                style={styles.previewImage}
-                resizeMode="contain"
-              />
-            )}
-          </TouchableOpacity>
-        </View>
-      </Modal>
+        <TouchableOpacity
+          style={[StyleSheet.absoluteFill, styles.previewTouchable]}
+          activeOpacity={1}
+          onPress={() => {
+            setPreviewVisible(false);
+          }}
+        >
+          {previewImage && (
+            <Image
+              source={{ uri: previewImage }}
+              style={styles.previewImage}
+              resizeMode="contain"
+            />
+          )}
+        </TouchableOpacity>
+      </Overlay>
     </View>
   );
 }

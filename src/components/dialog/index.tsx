@@ -131,7 +131,7 @@ const Dialog: FC<DialogProps> & {
               onPress={handleCancel}
               disabled={isLoading}
             >
-              {cancelText as string}
+              {cancelText}
             </Button>
           )}
           {showConfirm && (
@@ -142,7 +142,7 @@ const Dialog: FC<DialogProps> & {
               onPress={handleConfirm}
               isLoading={isLoading}
             >
-              {confirmText as string}
+              {confirmText}
             </Button>
           )}
         </View>
@@ -157,7 +157,7 @@ Dialog.show = (props: DialogProps) => {
     .getState()
     .appendChildren(<Dialog {...props} />, 'dialog');
   return () => {
-    if (key !== undefined && key >= 0) {
+    if (key >= 0) {
       usePortalStore.getState().deleteChildren(key);
     }
   };

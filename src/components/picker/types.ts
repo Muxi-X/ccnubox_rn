@@ -1,11 +1,16 @@
 import { ReactElement } from 'react';
 
+import { BottomSheetTriggerProps } from '@/components/bottomSheet/type';
 import { ButtonHierarchy } from '@/components/button';
-import { ModalTriggerProps } from '@/components/modal/types';
 
 export type PickerDataType = { value: string | number; label: string }[][];
 export type ConnectorDataType = { content: string; columnIndex: number }[];
-export interface DatePickerProps extends Omit<ModalTriggerProps, 'onConfirm'> {
+export interface DatePickerProps extends Omit<
+  BottomSheetTriggerProps,
+  'onConfirm'
+> {
+  /** 兼容历史参数 mode（现已全面收敛至 BottomSheet 底部模式） */
+  mode?: 'bottom' | 'middle';
   /** 按钮分级类型 */
   buttonType?: ButtonHierarchy;
   /** 数据，必须有 label 和 value */

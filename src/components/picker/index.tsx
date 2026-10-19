@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ModalTrigger } from '@/components/modal';
+import { BottomSheetTrigger } from '@/components/bottomSheet';
 import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 import useVisualScheme from '@/store/visualScheme';
@@ -139,12 +139,11 @@ const Picker: React.FC<DatePickerProps> = ({
     return percent2px(94) - 60;
   }, []);
   return (
-    <ModalTrigger
+    <BottomSheetTrigger
       title={title}
       onConfirm={handleConfirm}
       onClose={onClose}
       onCancel={onCancel}
-      mode={mode}
       buttonType={buttonType}
       triggerComponent={children}
       style={style}
@@ -214,7 +213,7 @@ const Picker: React.FC<DatePickerProps> = ({
         style={{ height: 3 * itemHeight, width: '100%' }}
         cascade={false}
       />
-    </ModalTrigger>
+    </BottomSheetTrigger>
   );
 };
 

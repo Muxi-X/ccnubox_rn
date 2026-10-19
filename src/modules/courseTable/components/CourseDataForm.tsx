@@ -3,8 +3,8 @@ import * as React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import Button, { ButtonHierarchy } from '@/components/button';
+import Dialog from '@/components/dialog';
 import Image from '@/components/image';
-import Modal from '@/components/modal';
 import Picker from '@/components/picker';
 import MultiPicker from '@/components/picker/multiPicker';
 import { courseType } from '@/modules/courseTable/components/courseTable/type';
@@ -205,53 +205,23 @@ export const CourseDataForm = (props: CourseFormProps) => {
 
   const handleSubmit = async () => {
     if (!formData.name.trim()) {
-      Modal.show({
-        title: '提示',
-        children: `请输入${props.pageText === 'test' ? '考试' : '课程'}名称`,
-        mode: 'middle',
-        showCancel: false,
-        confirmText: '确定',
-      });
+      Dialog.alert(`请输入${props.pageText === 'test' ? '考试' : '课程'}名称`);
       return;
     }
     if (formData.weeks.length === 0) {
-      Modal.show({
-        title: '提示',
-        children: '请选择周次',
-        mode: 'middle',
-        showCancel: false,
-        confirmText: '确定',
-      });
+      Dialog.alert('请选择周次');
       return;
     }
     if (!formData.where.trim()) {
-      Modal.show({
-        title: '提示',
-        children: `请输入${text}地点`,
-        mode: 'middle',
-        showCancel: false,
-        confirmText: '确定',
-      });
+      Dialog.alert(`请输入${text}地点`);
       return;
     }
     if (!formData.teacher.trim()) {
-      Modal.show({
-        title: '提示',
-        children: '请输入教师',
-        mode: 'middle',
-        showCancel: false,
-        confirmText: '确定',
-      });
+      Dialog.alert('请输入教师');
       return;
     }
     if (!props.onSubmit && (!semester || !year)) {
-      Modal.show({
-        title: '提示',
-        children: '学期信息尚未加载，请稍后重试',
-        mode: 'middle',
-        showCancel: false,
-        confirmText: '确定',
-      });
+      Dialog.alert('学期信息尚未加载，请稍后重试');
       return;
     }
 
@@ -281,11 +251,9 @@ export const CourseDataForm = (props: CourseFormProps) => {
 
       createAndCacheCourse(trimmedFormData, semester, year);
 
-      Modal.show({
+      Dialog.alert({
         title: '成功',
-        children: props.mode === 'edit' ? '已保存' : '课程添加成功',
-        mode: 'middle',
-        showCancel: false,
+        message: props.mode === 'edit' ? '已保存' : '课程添加成功',
         confirmText: '确定',
         onConfirm: () => {
           if (props.mode !== 'edit') {
@@ -306,14 +274,11 @@ export const CourseDataForm = (props: CourseFormProps) => {
     } catch (err: any) {
       const serverMsg =
         err?.response?.data?.msg || err?.response?.data?.message;
-      Modal.show({
+      Dialog.alert({
         title: '错误',
-        children:
+        message:
           serverMsg ||
           (props.mode === 'edit' ? '保存失败，请重试' : '添加课程失败，请重试'),
-        mode: 'middle',
-        showCancel: false,
-        confirmText: '确定',
       });
     } finally {
       setLoading(false);
@@ -451,13 +416,9 @@ export const CourseDataForm = (props: CourseFormProps) => {
 
                       // 开始时间晚于结束时间提示
                       if (startClassNum > endClassNum) {
-                        Modal.show({
-                          title: '小提示',
-                          children: '课程开始时间不能晚于结束时间，请重新选择',
-                          mode: 'middle',
-                          showCancel: false,
-                          confirmText: '确定',
-                        });
+                        Dialog.alert(
+                          '课程开始时间不能晚于结束时间，请重新选择'
+                        );
                         return;
                       }
 

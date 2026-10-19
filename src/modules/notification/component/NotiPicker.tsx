@@ -1,7 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { type FC, useEffect, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
+import BottomSheet from '@/components/bottomSheet';
 import Button from '@/components/button';
 import Switch from '@/components/switch';
 import Toast from '@/components/toast';
@@ -69,76 +70,69 @@ const NotiPicker: FC<NotiPickerProps> = ({ visible, setVisible }) => {
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent={true}
-      onRequestClose={() => setVisible(false)}
+    <BottomSheet
+      isVisible={visible}
+      onBackdropPress={() => setVisible(false)}
+      showHandle={false}
+      contentStyle={currentStyle?.background_style}
     >
-      <View style={styles.overlay}>
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={() => setVisible(false)}
-        />
-        <View style={styles.container}>
-          <View style={[styles.header, currentStyle?.background_style]}>
-            <Text
-              style={[styles.headerTitle, currentStyle?.schedule_text_style]}
-            >
-              请选择要推送的消息
-            </Text>
-            <Text
-              style={[
-                styles.headerSubtitle,
-                currentStyle?.notification_text_style,
-              ]}
-            >
-              选择以后将为您推送以下消息
-            </Text>
-            <MaterialIcons
-              name="close"
-              color={currentStyle?.schedule_text_style?.color}
-              size={24}
-              style={styles.closeIcon}
-              onPress={() => setVisible(false)}
+      <View style={styles.container}>
+        <View style={[styles.header, currentStyle?.background_style]}>
+          <Text style={[styles.headerTitle, currentStyle?.schedule_text_style]}>
+            请选择要推送的消息
+          </Text>
+          <Text
+            style={[
+              styles.headerSubtitle,
+              currentStyle?.notification_text_style,
+            ]}
+          >
+            选择以后将为您推送以下消息
+          </Text>
+          <MaterialIcons
+            name="close"
+            color={currentStyle?.schedule_text_style?.color}
+            size={24}
+            style={styles.closeIcon}
+            onPress={() => setVisible(false)}
+          />
+        </View>
+
+        {FeedIconList.map(item => (
+          <View
+            style={[styles.listItem, currentStyle?.background_style]}
+            key={item.name}
+          >
+            <item.Icon style={styles.icon} />
+            <View style={styles.content}>
+              <Text style={[styles.title, currentStyle?.schedule_text_style]}>
+                {item.text}提醒
+              </Text>
+            </View>
+            <Switch
+              checked={!!checkList[item.name]}
+              style={styles.switch}
+              trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
+              thumbColor="#FFFFFF"
+              onChange={() => handleToggle(item.name)}
             />
           </View>
+        ))}
 
-          {FeedIconList.map(item => (
-            <View
-              style={[styles.listItem, currentStyle?.background_style]}
-              key={item.name}
-            >
-              <item.Icon style={styles.icon} />
-              <View style={styles.content}>
-                <Text style={[styles.title, currentStyle?.schedule_text_style]}>
-                  {item.text}提醒
-                </Text>
-              </View>
-              <Switch
-                checked={!!checkList[item.name]}
-                style={styles.switch}
-                trackColor={{ false: '#ECEBFF', true: '#C9B7FF' }}
-                thumbColor="#FFFFFF"
-                onChange={() => handleToggle(item.name)}
-              />
-            </View>
-          ))}
-
-          <View style={[styles.footer, currentStyle?.background_style]}>
-            <Button
-              type="Primary"
-              containerStyle={{ width: styles.button.width, marginTop: 10 }}
-              textStyle={{ fontSize: 17 }}
-              onPress={handleConfirm}
-              isLoading={loading}
-              letterSpacing="25%"
-            >
-              确认
-            </Button>
-          </View>
+        <View style={[styles.footer, currentStyle?.background_style]}>
+          <Button
+            type="Primary"
+            containerStyle={{ width: styles.button.width, marginTop: 10 }}
+            textStyle={{ fontSize: 17 }}
+            onPress={handleConfirm}
+            isLoading={loading}
+            letterSpacing="25%"
+          >
+            确认
+          </Button>
         </View>
       </View>
-    </Modal>
+    </BottomSheet>
   );
 };
 

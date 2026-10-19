@@ -1,7 +1,7 @@
 import { View } from '@ant-design/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import { CourseDataForm } from '@/modules/courseTable/components/CourseDataForm';
 import { updateCourse } from '@/request/api/course';
 import useCourse from '@/store/course';
@@ -64,35 +64,27 @@ export default function EditCourse() {
                   )
                 );
                 router.back();
-                Modal.show({
+                Dialog.alert({
                   title: '编辑成功',
-                  children: '编辑已保存',
-                  mode: 'middle',
-                  showCancel: false,
+                  message: '编辑已保存',
                 });
               } else {
-                Modal.show({
+                Dialog.alert({
                   title: '编辑失败',
-                  children: '保存失败，请稍后重试',
-                  mode: 'middle',
-                  showCancel: false,
+                  message: '保存失败，请稍后重试',
                 });
               }
             })
             .catch(err => {
               if (err?.response?.data?.code === 50001) {
-                Modal.show({
+                Dialog.alert({
                   title: '编辑失败',
-                  children: '从教务系统导入的课程不支持编辑',
-                  mode: 'middle',
-                  showCancel: false,
+                  message: '从教务系统导入的课程不支持编辑',
                 });
               } else {
-                Modal.show({
+                Dialog.alert({
                   title: '编辑失败',
-                  children: '网络异常，请稍后重试',
-                  mode: 'middle',
-                  showCancel: false,
+                  message: '网络异常，请稍后重试',
                 });
               }
             });

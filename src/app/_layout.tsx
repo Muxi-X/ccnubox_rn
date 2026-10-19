@@ -83,8 +83,7 @@ export default function RootLayout() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
     >
-      {/* Provider 中带有 Portal，没有 Provider，Toast 和 Modal 会失效，误删  */}
-      {/* FIX_ME 自建 portal 组件，支持自定义 Toast Modal */}
+      {/* AntD Provider 仅用于提供部分遗留表单项的主题色与触觉反馈，弹窗体系已完全独立 */}
       {/* 手势检测 */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Scraper
@@ -106,7 +105,7 @@ export default function RootLayout() {
               />
             ))}
           </Stack>
-          {/* portal */}
+          {/* 全局自建 PortalRoot，全 App 的 Toast、Dialog、BottomSheet 均挂载于此，完全独立于 AntD */}
           <PortalRoot ref={portalRef} />
         </SafeAreaProvider>
       </GestureHandlerRootView>

@@ -11,7 +11,7 @@ import {
 import { courseTableIcons } from '@/assets/icons';
 import AnimatedFade from '@/components/animatedView/AnimatedFade';
 import Button from '@/components/button';
-import Modal from '@/components/modal';
+import Dialog from '@/components/dialog';
 import ThemeChangeText from '@/components/text';
 import {
   addCourseNote,
@@ -77,7 +77,7 @@ function handleDeleteCourseConfirm(id: string) {
     });
 }
 
-// 封装modal
+// 封装modal提示
 function showModal(title: string, message: string, isSuccess: boolean = true) {
   const currentStyle = useVisualScheme.getState().currentStyle;
 
@@ -87,8 +87,9 @@ function showModal(title: string, message: string, isSuccess: boolean = true) {
     <FailIcon height={150} width={150} />
   );
 
-  Modal.show({
+  Dialog.alert({
     title,
+    confirmText: '确定',
     children: (
       <View
         style={{
@@ -109,8 +110,6 @@ function showModal(title: string, message: string, isSuccess: boolean = true) {
         </Text>
       </View>
     ),
-    mode: 'middle',
-    showCancel: false,
   });
 }
 
@@ -181,13 +180,10 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
           <Button
             type="ghost"
             onPress={() => {
-              Modal.clear();
-              Modal.show({
+              Dialog.clear();
+              Dialog.confirm({
                 title: '删除课程',
-                children: '确定要删除该课程吗？',
-                mode: 'middle',
-                showCancel: true,
-                buttonType: 'Round',
+                message: '确定要删除该课程吗？',
                 confirmText: '删除',
                 cancelText: '取消',
                 onConfirm: () => handleDeleteCourseConfirm(courseId),
@@ -208,7 +204,7 @@ const ModalContentFooter: React.FC<ModalContentFooterProps> = memo(
           <Button
             type="ghost"
             onPress={() => {
-              Modal.clear();
+              Dialog.clear();
               router.push({
                 pathname: '/(courseTable)/editCourse',
                 params: { id: courseId },

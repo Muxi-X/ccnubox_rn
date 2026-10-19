@@ -2,7 +2,7 @@ import { Checkbox, List, ListProps } from '@ant-design/react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text } from 'react-native';
 
-import { ModalTrigger } from '@/components/modal';
+import { BottomSheetTrigger } from '@/components/bottomSheet';
 import { DatePickerProps, PickerDataType } from '@/components/picker/types';
 import useVisualScheme from '@/store/visualScheme';
 
@@ -49,7 +49,6 @@ const MultiPicker: React.FC<DatePickerProps> = ({
   onConfirm,
   onClose,
   defaultValue,
-  mode = 'bottom',
   buttonType,
   style,
   data = [],
@@ -83,12 +82,11 @@ const MultiPicker: React.FC<DatePickerProps> = ({
     if (onConfirm) onConfirm(multiPickerValue.map(item => String(item)));
   };
   return (
-    <ModalTrigger
+    <BottomSheetTrigger
       title={title}
       onConfirm={handleConfirm}
       onClose={onClose}
       onCancel={onCancel}
-      mode={mode}
       buttonType={buttonType}
       triggerComponent={children}
       style={style}
@@ -102,7 +100,7 @@ const MultiPicker: React.FC<DatePickerProps> = ({
         onPick={handlePick}
         pickedItems={new Set(multiPickerValue)}
       />
-    </ModalTrigger>
+    </BottomSheetTrigger>
   );
 };
 
