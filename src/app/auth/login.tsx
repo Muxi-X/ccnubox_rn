@@ -148,7 +148,7 @@ const LoginPage: FC = () => {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Checkbox checked={privacyChecked} onChange={onCheckPrivacy} />
 
-            <Text style={[styles.rules_radio, { marginLeft: 8 }]}>
+            <Text style={[styles.rules_radio, { marginLeft: 4 }]}>
               已阅读并同意
               <Text
                 style={{

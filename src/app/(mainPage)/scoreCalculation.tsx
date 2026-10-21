@@ -350,24 +350,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderWidth: 2,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  checkIcon: {
-    fontWeight: '600',
-  },
-  partialCheckbox: {
-    width: 12,
-    height: 12,
-    borderRadius: 2,
-    backgroundColor: '#9379F6',
-  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'center',

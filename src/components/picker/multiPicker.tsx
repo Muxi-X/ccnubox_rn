@@ -191,7 +191,13 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       <View style={styles.listBody}>
         <View style={styles.checkItemWrap}>
           <View style={styles.row}>
-            <Checkbox checked={checkAll} onChange={onCheckAllChange} />
+            <Checkbox
+              checked={checkAll}
+              indeterminate={
+                checkedList.size > 0 && checkedList.size < plainOptions.length
+              }
+              onChange={onCheckAllChange}
+            />
             <Text style={[styles.labelText, labelTextStyle]}>全选</Text>
           </View>
           <View style={styles.itemTransparentLine} />
