@@ -2,7 +2,7 @@ import { Button } from '@ant-design/react-native';
 import React from 'react';
 import { Text, View } from 'react-native';
 
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 interface Props {
   children: React.ReactNode;
@@ -24,7 +24,9 @@ export default class CourseTableErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    log.error('课表渲染异常:', error, info.componentStack);
+    logger.error('课表渲染异常', error, {
+      componentStack: info.componentStack,
+    });
   }
 
   render() {
