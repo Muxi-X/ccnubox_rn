@@ -33,8 +33,6 @@ const CourseContent: React.FC<CourseContentProps> = memo(
     // 缓存当前的范围
     const currRange = useMemo(() => parseClassWhen(class_when), [class_when]);
 
-    // 现在slotCourses在课表重叠的时候会全包含
-    // (比如之前在课程重叠时，点击1-4只包含1-4的信息，现在1-4会额外包含1-2和3-4的信息)
     const slotCourses = useMemo(() => {
       return originalData.filter(c => {
         if (!currRange) return false;
@@ -127,6 +125,8 @@ const CourseContent: React.FC<CourseContentProps> = memo(
                 paddingHorizontal: 0,
                 width: 'auto',
                 maxWidth: '100%',
+                marginVertical: 'auto',
+                alignSelf: 'center',
               },
               children:
                 slotCourses.length > 1 ? (

@@ -90,6 +90,10 @@ function showModal(title: string, message: string, isSuccess: boolean = true) {
   Dialog.alert({
     title,
     confirmText: '确定',
+    containerStyle: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     children: (
       <View
         style={{

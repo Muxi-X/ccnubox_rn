@@ -10,6 +10,7 @@ import Button from '@/components/button';
 import { usePortalStore } from '@/store/portal';
 import useVisualScheme from '@/store/visualScheme';
 import { commonStyles } from '@/styles/common';
+import { popupTokens } from '@/styles/popupTokens';
 
 const BottomSheet: FC<BottomSheetProps> & {
   show: (_props: BottomSheetProps) => () => void;
@@ -63,8 +64,9 @@ const BottomSheet: FC<BottomSheetProps> & {
     closeBottomSheet();
   };
 
-  const shouldRenderButtons =
-    showButtons || Boolean(onConfirm) || Boolean(confirmText && cancelText);
+  const hasConfirm = Boolean(confirmText && (onConfirm || showButtons));
+  const hasCancel = Boolean(cancelText && (onCancel || showButtons));
+  const shouldRenderButtons = showButtons || hasConfirm || hasCancel;
 
   return (
     <RNEUIBottomSheet
@@ -120,8 +122,13 @@ const BottomSheet: FC<BottomSheetProps> & {
         <View style={styles.body}>{children}</View>
 
         {shouldRenderButtons && (
-          <View style={styles.actionsContainer}>
-            {cancelText !== false && (
+          <View
+            style={[
+              styles.actionsContainer,
+              !hasCancel && { justifyContent: 'center' },
+            ]}
+          >
+            {hasCancel && (
               <Button
                 type={buttonType}
                 letterSpacing="5%"
@@ -130,17 +137,22 @@ const BottomSheet: FC<BottomSheetProps> & {
                   styles.cancelButtonStyle,
                   themeName === 'dark' && { backgroundColor: '#2A2A2E' },
                 ]}
-                textStyle={{ color: '#6A69E6' }}
+                textStyle={{ color: '#867DF1' }}
                 onPress={handleCancel}
               >
                 {cancelText}
               </Button>
             )}
-            {confirmText !== false && (
+            {hasConfirm && (
               <Button
                 type={buttonType}
                 letterSpacing="5%"
-                containerStyle={styles.buttonContainer}
+                containerStyle={
+                  hasCancel
+                    ? styles.buttonContainer
+                    : [styles.buttonContainer, { width: 280 }]
+                }
+                buttonStyle={{ backgroundColor: '#867DF1' }}
                 onPress={handleConfirm}
               >
                 {confirmText}
@@ -212,10 +224,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   contentCard: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: popupTokens.radius.modal, // 25
+    borderTopRightRadius: popupTokens.radius.modal, // 25
     overflow: 'hidden',
-    paddingBottom: 24,
+    paddingBottom: 0,
   },
   handleContainer: {
     width: '100%',

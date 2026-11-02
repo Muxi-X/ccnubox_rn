@@ -205,23 +205,38 @@ export const CourseDataForm = (props: CourseFormProps) => {
 
   const handleSubmit = async () => {
     if (!formData.name.trim()) {
-      Dialog.alert(`请输入${props.pageText === 'test' ? '考试' : '课程'}名称`);
+      Dialog.alert({
+        title: '提示',
+        message: `请输入${props.pageText === 'test' ? '考试' : '课程'}名称`,
+      });
       return;
     }
     if (formData.weeks.length === 0) {
-      Dialog.alert('请选择周次');
+      Dialog.alert({
+        title: '提示',
+        message: '请选择周次',
+      });
       return;
     }
     if (!formData.where.trim()) {
-      Dialog.alert(`请输入${text}地点`);
+      Dialog.alert({
+        title: '提示',
+        message: `请输入${text}地点`,
+      });
       return;
     }
     if (!formData.teacher.trim()) {
-      Dialog.alert('请输入教师');
+      Dialog.alert({
+        title: '提示',
+        message: '请输入教师',
+      });
       return;
     }
     if (!props.onSubmit && (!semester || !year)) {
-      Dialog.alert('学期信息尚未加载，请稍后重试');
+      Dialog.alert({
+        title: '提示',
+        message: '学期信息尚未加载，请稍后重试',
+      });
       return;
     }
 

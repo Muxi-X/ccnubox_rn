@@ -83,46 +83,41 @@ const ScoreCalculation: React.FC = () => {
   const showCourseDetails = (course: GradeData) => {
     setSelectedCourse(course);
     Dialog.alert({
+      size: 'grade',
+      title: course.title,
       confirmText: '我知道了',
       children: (
-        <View style={{ paddingVertical: 10, width: '100%' }}>
-          <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, currentStyle?.text_style]}>
-              {course.title}
-            </Text>
-            {/* <Image
-              style={styles.modalLogo}
-              source={require('../../assets/images/mx-logo.png')}
-            /> */}
-          </View>
-          <View style={styles.modalContent}>
-            <Text style={styles.textItem}>
-              {course.details.regularGradePercent}:{' '}
-              <Text style={styles.textHighlight}>
-                {course.details?.usualGrade}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              {course.details.finalGradePercent}:{' '}
-              <Text style={styles.textHighlight}>
-                {course.details?.finalGrade}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              总成绩:{' '}
-              <Text style={styles.textHighlight}>
-                {course.details?.allGrade}
-              </Text>
-            </Text>
-            <Text style={styles.textItem}>
-              学分:{' '}
-              <Text style={styles.textHighlight}>{course.details?.credit}</Text>
-            </Text>
-            <Text style={styles.textItem}>
-              绩点:{' '}
-              <Text style={styles.textHighlight}>{course.details?.score}</Text>
-            </Text>
-          </View>
+        <View style={{ paddingTop: 8, width: '100%' }}>
+          <Dialog.Row
+            fontSize={18}
+            label={`${course.details.regularGradePercent}:`}
+            value={course.details?.usualGrade}
+          />
+          <Dialog.Row
+            fontSize={18}
+            label={`${course.details.finalGradePercent}:`}
+            value={course.details?.finalGrade}
+          />
+          <Dialog.Row
+            fontSize={18}
+            label="总成绩:"
+            value={course.details?.allGrade}
+          />
+          <Dialog.Row
+            fontSize={18}
+            label="学分:"
+            value={course.details?.credit}
+          />
+          <Dialog.Row
+            fontSize={18}
+            label="绩点:"
+            value={course.details?.score}
+          />
+          <Dialog.Row
+            fontSize={18}
+            label="学分绩点:"
+            value={course.details?.creditScore}
+          />
         </View>
       ),
     });
@@ -147,18 +142,11 @@ const ScoreCalculation: React.FC = () => {
   const showResultModal = () => {
     const averageScore = calculateAverageScore();
     Dialog.alert({
+      size: 'calculate',
+      title: '计算结果',
       confirmText: '我知道了',
-      children: (
-        <View style={{ paddingVertical: 10, width: '100%' }}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.resultTitle}>计算结果</Text>
-          </View>
-          <View style={styles.resultContent}>
-            <Text style={[styles.resultScore, textStyle]}>{averageScore}</Text>
-            <Text style={[styles.resultLabel, textStyle]}>平时学分绩</Text>
-          </View>
-        </View>
-      ),
+      titleWrapperStyle: { marginBottom: 12 },
+      children: <Dialog.ScoreDisplay value={averageScore} label="平时学分绩" />,
     });
   };
 

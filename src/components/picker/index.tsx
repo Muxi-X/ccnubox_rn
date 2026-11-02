@@ -1,12 +1,14 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { BottomSheetTrigger } from '@/components/bottomSheet';
+import Dialog from '@/components/dialog';
 import { PickerConnector, PickerView } from '@/components/picker/pickerView';
 import { DatePickerProps } from '@/components/picker/types';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors, commonStyles } from '@/styles/common';
+import { usePopupColors } from '@/styles/popupTokens';
 import { percent2px } from '@/utils';
 
 // picker 左侧紫色条宽度
@@ -92,6 +94,8 @@ const Picker: React.FC<DatePickerProps> = ({
   },
 }) => {
   const themeName = useVisualScheme(state => state.themeName);
+  const popupColors = usePopupColors();
+  const [middleVisible, setMiddleVisible] = useState(false);
   const borderLeftColor = useMemo(() => {
     return themeName === 'light'
       ? commonColors.lightGray
@@ -138,6 +142,118 @@ const Picker: React.FC<DatePickerProps> = ({
   const contentWidth = useMemo(() => {
     return percent2px(94) - 60;
   }, []);
+
+  const middlePickerStyles = useMemo(
+    () => ({
+      itemStyle: {
+        fontSize: 15,
+        color: popupColors.secondaryText,
+      },
+      itemActiveStyle: {
+        fontSize: 15,
+        fontWeight: 'bold' as const,
+        color: popupColors.primaryText,
+      },
+      maskMiddle: {
+        borderTopWidth: 0,
+        borderBottomWidth: 0,
+        borderLeftWidth: 0,
+      },
+    }),
+    [popupColors.primaryText, popupColors.secondaryText]
+  );
+
+  if (!isBottomMode) {
+    return (
+      <>
+        <TouchableOpacity onPress={() => setMiddleVisible(true)} style={style}>
+          {children ?? <Text>触发弹窗</Text>}
+        </TouchableOpacity>
+        <Dialog
+          size="picker"
+          isVisible={middleVisible}
+          title={title}
+          confirmText="确定"
+          cancelText="取消"
+          onConfirm={() => {
+            handleConfirm();
+            setMiddleVisible(false);
+          }}
+          onCancel={() => {
+            if (onCancel) onCancel();
+            setMiddleVisible(false);
+          }}
+          onBackdropPress={() => {
+            if (onClose) onClose();
+            setMiddleVisible(false);
+          }}
+          containerStyle={{
+            paddingHorizontal: 16,
+          }}
+        >
+          <View style={{ width: '100%', marginVertical: 8 }}>
+            {prefixes && (
+              <View style={styles.prefixContainer}>
+                {prefixes.map((prefix, index) => (
+                  <Text
+                    style={[
+                      styles.prefix,
+                      { color: popupColors.secondaryText, fontSize: 15 },
+                    ]}
+                    key={`prefix-${index}`}
+                  >
+                    {prefix ?? ''}
+                  </Text>
+                ))}
+              </View>
+            )}
+
+            {connectors && connectors.length > 0 && (
+              <PickerConnector
+                connectors={connectors}
+                totalWidth={contentWidth}
+                itemHeight={itemHeight}
+                data={data}
+              />
+            )}
+
+            <PickerView
+              data={data}
+              numberOfLines={1}
+              itemHeight={itemHeight}
+              onChange={handlePick}
+              value={pickerValue}
+              renderMaskBottom={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    opacity: 0.3,
+                    borderRadius: 5,
+                  }}
+                />
+              )}
+              renderMaskTop={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor:
+                      themeName === 'light'
+                        ? commonColors.white
+                        : commonColors.black,
+                    opacity: 0.3,
+                  }}
+                />
+              )}
+              styles={middlePickerStyles}
+              style={{ height: 3 * itemHeight, width: '100%' }}
+              cascade={false}
+            />
+          </View>
+        </Dialog>
+      </>
+    );
+  }
+
   return (
     <BottomSheetTrigger
       title={title}

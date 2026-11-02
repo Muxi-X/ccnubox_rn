@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 16,
   },
   icon: {
     width: 30,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   footer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingBottom: 14,
   },
   button: {
     backgroundColor: '#7B70F1',
