@@ -1,7 +1,7 @@
 {
   "otaVersion": "3.2.1",
-  "updateTime": "2026-10-17",
+  "updateTime": "2026-11-03",
   "newFeatures": ["支持手动裁剪课表背景图，移除填充模式选项"],
-  "fixedIssues": [],
+  "fixedIssues": ["修复预览通道热更新缺失接口地址导致网络请求失败的问题"],
   "knownIssues": ["部分机型在三键虚拟按钮导航模式下弹窗底部可能存在轻微遮挡"]
 }

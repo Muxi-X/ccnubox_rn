@@ -31,6 +31,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Pull EAS environment variables
+        run: eas env:pull preview --non-interactive --path .env.local
+
       - name: Publish OTA Update
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
