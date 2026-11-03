@@ -1,5 +1,6 @@
 import { Icon } from '@ant-design/react-native';
 import { File as ExpoFile, Paths } from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as React from 'react';
 import {
   ActivityIndicator,
@@ -8,11 +9,12 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import PdfRendererView from 'react-native-pdf-renderer';
 import { WebView } from 'react-native-webview';
 
 import Text from '@/components/text';
 import View from '@/components/view';
+import PdfRendererView from '@/platform/pdfRenderer';
+import { isHarmony } from '@/platform/runtime';
 import queryCalendars from '@/request/api/queryCalendars';
 import useVisualScheme from '@/store/visualScheme';
 import { commonColors } from '@/styles/common';
@@ -164,23 +166,27 @@ export default function Calendar() {
         />
       </View>
       {selectedYear && links[selectedYear] ? (
-        Platform.select({
-          ios: (
-            <WebView
-              style={[styles.webview, { width }]}
-              source={{ uri: links[selectedYear], cache: true }}
-              scalesPageToFit
-              javaScriptEnabled
-              domStorageEnabled
-            />
-          ),
-          android: (
-            <AndroidCalendarView
-              url={links[selectedYear]}
-              year={selectedYear}
-            />
-          ),
-        })
+        isHarmony ? (
+          <AndroidCalendarView url={links[selectedYear]} year={selectedYear} />
+        ) : (
+          Platform.select({
+            ios: (
+              <WebView
+                style={[styles.webview, { width }]}
+                source={{ uri: links[selectedYear], cache: true }}
+                scalesPageToFit
+                javaScriptEnabled
+                domStorageEnabled
+              />
+            ),
+            android: (
+              <AndroidCalendarView
+                url={links[selectedYear]}
+                year={selectedYear}
+              />
+            ),
+          })
+        )
       ) : (
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>暂无校历数据</Text>
@@ -190,7 +196,7 @@ export default function Calendar() {
   );
 }
 
-// Android: 下载 PDF 到本地后用 PdfRendererView 渲染
+// Android / Harmony: 下载 PDF 到本地后用平台原生 renderer 渲染
 const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
   url,
   year,
@@ -199,6 +205,22 @@ const AndroidCalendarView: React.FC<{ url: string; year: number }> = ({
   const [source, setSource] = React.useState<string>();
 
   React.useEffect(() => {
+    if (isHarmony) {
+      const localUri = `${FileSystem.documentDirectory}calendar_${year}.pdf`;
+      FileSystem.getInfoAsync(localUri)
+        .then(info =>
+          info.exists
+            ? localUri
+            : FileSystem.downloadAsync(url, localUri).then(file => file.uri)
+        )
+        .then(setSource)
+        .catch(() => {
+          // 下载失败处理
+        })
+        .finally(() => setDownloading(false));
+      return;
+    }
+
     const localFile = new ExpoFile(Paths.document, `calendar_${year}.pdf`);
 
     if (localFile.exists) {

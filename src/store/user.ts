@@ -1,6 +1,10 @@
-import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+
+import {
+  isUsingSecureStorageFallback,
+  secureStorage,
+} from '@/platform/storage';
 
 interface UserState {
   student_id: string;
@@ -8,11 +12,6 @@ interface UserState {
   setStudentId: (student_id: string) => void;
   setPassword: (password: string) => void;
 }
-
-const SecureStorage = {
-  ...SecureStore,
-  removeItem: SecureStore.deleteItemAsync,
-};
 
 const useUserStore = create<UserState>()(
   persist(
@@ -26,7 +25,11 @@ const useUserStore = create<UserState>()(
     },
     {
       name: 'user',
-      storage: createJSONStorage(() => SecureStorage),
+      partialize: state => ({
+        student_id: state.student_id,
+        password: isUsingSecureStorageFallback ? '' : state.password,
+      }),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

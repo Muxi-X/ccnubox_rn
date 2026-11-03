@@ -14,6 +14,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import Toast from '@/components/toast';
 import { FeedIconMap } from '@/constants/NOTIFICATION';
 import { openPushUrl } from '@/hooks/useJPush';
+import { formatNotificationTime } from '@/platform/dateTime';
 import { type EventProps, useEvents } from '@/store/events';
 import useVisualScheme from '@/store/visualScheme';
 import { logger } from '@/utils/logger';
@@ -25,7 +26,7 @@ const formatRelativeTime = (timestamp: number): string => {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
   if (days === 0) {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return formatNotificationTime(date);
   } else if (days === 1) {
     return '昨天';
   } else if (days === 2) {

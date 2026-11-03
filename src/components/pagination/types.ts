@@ -1,4 +1,4 @@
-import { TextStyle, ViewStyle } from 'react-native';
+import { ViewStyle } from 'react-native';
 
 export interface PaginationType {
   /**
@@ -19,5 +19,5 @@ export interface PaginationType {
    * active: 激活样式
    * both: 普通、激活通用样式
    */
-  styles?: Partial<Record<'common' | 'active' | 'both', ViewStyle | TextStyle>>;
+  styles?: Partial<Record<'common' | 'active' | 'both', ViewStyle>>;
 }

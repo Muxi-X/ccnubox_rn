@@ -1,7 +1,8 @@
 import { router, SplashScreen } from 'expo-router';
-import { getItem, setItem } from 'expo-secure-store';
 import * as React from 'react';
 
+import { isHarmony } from '@/platform/runtime';
+import { getItem, setItem } from '@/platform/storage';
 import useCourse from '@/store/course';
 import { reportUpdatesLogs } from '@/utils/easUpdate';
 import { setupGlobalErrorHandler } from '@/utils/errorHandler';
@@ -26,7 +27,11 @@ const Index = () => {
 
         if (!token) {
           if (firstLaunch === null) {
-            setItem('firstLaunch', 'false');
+            if (isHarmony) {
+              await setItem('firstLaunch', 'false');
+            } else {
+              setItem('firstLaunch', 'false');
+            }
             logger.info('首次启动，跳转到引导页');
             router.replace('/auth/guide');
           } else {
